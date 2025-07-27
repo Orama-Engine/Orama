@@ -1,3 +1,4 @@
+using Orama.Components;
 using Orama.Resources;
 
 namespace Orama.Utils;
@@ -8,19 +9,37 @@ namespace Orama.Utils;
 public static class SceneManager
 {
 	/// <summary> The currently active Scene. </summary>
-    public static Scene Current { get; private set; } = new Scene();
+    public static Scene Current { get; private set; } = null!;
     
     /// <summary> Initialize the Scene Manager. </summary>
-    public static void Initialize() { }
+    public static void Initialize()
+	{
+		NewScene();
+	}
 
-    /// <summary> Creates a new Scene. </summary>
-    public static void NewScene()
-    {
-        Clear();
-    }
+	/// <summary> Creates a new Scene. </summary>
+	public static void NewScene()
+	{
+		Clear();
+		Current = new Scene();
 
-    /// <summary> Clears the current Scene. </summary>
-    public static void Clear()
+		// Create new entities here
+		Entity mesh = new Entity();
+		mesh.AddComponent(new MeshRenderer());
+		Current.Add(mesh);
+
+		// Start all components
+		foreach (var entity in Current.AllEntities)
+		{
+			foreach (var component in entity.Components)
+			{
+				component.Start();
+			}
+		}
+	}
+
+	/// <summary> Clears the current Scene. </summary>
+	public static void Clear()
     {
         if (Current != null)
         {
@@ -32,5 +51,12 @@ public static class SceneManager
     /// <summary> Runs each frame. </summary>
     public static void Update()
     {
+		foreach(var entity in Current.AllEntities)
+		{
+			foreach(var component in entity.Components)
+			{
+				component.Update();
+			}
+		}
     }
 }

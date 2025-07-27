@@ -1,0 +1,12 @@
+﻿using Orama.Math;
+using Orama.Resources;
+
+namespace Orama.Rendering;
+
+public interface IClientRenderable
+{
+	public Vector3[] Vertices { get; }
+	public uint[] Indices { get; }
+	public Material Material { get; }
+
+}

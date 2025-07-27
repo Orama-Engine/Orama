@@ -1,3 +1,4 @@
+using Orama.Components;
 using Orama.Utils;
 
 namespace Orama.Resources;
