@@ -1,5 +1,4 @@
-﻿using Orama.Math;
-using System.Xml.Linq;
+﻿using System.Numerics;
 using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
@@ -17,26 +16,26 @@ public static class Window
 	internal static Action? closing;
 
 	public static event Action<bool>? FocusChanged;
-	public static event Action<Vector2I>? Resize;
+	public static event Action<Vector2>? Resize;
 
-	public static event Action<Vector2I>? Move;
+	public static event Action<Vector2>? Move;
 	public static event Action<string[]>? FileDrop;
 
 	public static int Width => InternalWindow.Width;
 	public static int Height => InternalWindow.Height;
 
 	/// <summary> The size of the window. </summary>
-	public static Vector2I Size
+	public static Vector2 Size
 	{
-		get => new Vector2I(InternalWindow.Width, InternalWindow.Height);
-		set { InternalWindow.Width = value.X; InternalWindow.Height = value.Y; }
+		get => new Vector2(InternalWindow.Width, InternalWindow.Height);
+		set { InternalWindow.Width = (int)value.X; InternalWindow.Height = (int)value.Y; }
 	}
 
 	/// <summary> The position of the window. </summary>
-	public static Vector2I Position
+	public static Vector2 Position
 	{
-		get => new Vector2I(InternalWindow.X, InternalWindow.Y);
-		set { InternalWindow.X = value.X; InternalWindow.Y = value.Y; }
+		get => new Vector2(InternalWindow.X, InternalWindow.Y);
+		set { InternalWindow.X = (int)value.X; InternalWindow.Y = (int)value.Y; }
 	}
 
 	/// <summary> The frame rate of the window. </summary>
@@ -60,16 +59,16 @@ public static class Window
 		set => InternalWindow.WindowState = value;
 	}
 
-	public static void Start(string title, Vector2I size, Vector2I position)
+	public static void Start(string title, Vector2 size, Vector2 position)
 	{
 		WindowCreateInfo windowInfo = new()
 		{
 			WindowTitle = title,
 			WindowInitialState = WindowState.Normal,
-			WindowWidth = size.X,
-			WindowHeight = size.Y,
-			X = position.X,
-			Y = position.Y
+			WindowWidth = (int)size.X,
+			WindowHeight = (int)size.Y,
+			X = (int)position.X,
+			Y = (int)position.Y,
 		};
 
 		InternalWindow = VeldridStartup.CreateWindow(ref windowInfo);

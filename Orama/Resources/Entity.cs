@@ -1,6 +1,6 @@
+using System.Numerics;
 using System.Collections.ObjectModel;
 using Orama.Components;
-using Orama.Math;
 
 namespace Orama.Resources;
 

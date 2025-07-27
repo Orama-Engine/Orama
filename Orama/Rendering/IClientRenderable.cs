@@ -1,4 +1,4 @@
-﻿using Orama.Math;
+﻿using System.Numerics;
 using Orama.Resources;
 
 namespace Orama.Rendering;

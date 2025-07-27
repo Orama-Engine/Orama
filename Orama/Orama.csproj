@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="DefaultAssets\" />
   </ItemGroup>
 

@@ -1,10 +1,9 @@
-﻿using Orama.Math;
+﻿using System.Numerics;
 using Orama.Resources;
 using System.Numerics;
 using Veldrid;
 using Veldrid.SPIRV;
 using Veldrid.StartupUtilities;
-using Matrix4x4 = Orama.Math.Matrix4x4;
 
 namespace Orama.Rendering;
 

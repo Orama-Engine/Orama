@@ -1,8 +1,6 @@
-﻿using Orama.Rendering;
+﻿using System.Numerics;
+using Orama.Rendering;
 using Orama.Resources;
-
-using Matrix4x4 = Orama.Math.Matrix4x4;
-using Vector3 = Orama.Math.Vector3;
 
 namespace Orama.Components;
 
@@ -56,7 +54,7 @@ internal class MeshRenderer : Component, IClientRenderable
 
 	public Material Material => Material.Default;
 
-	Math.Vector3[] IClientRenderable.Vertices => _cubeVertices;
+	Vector3[] IClientRenderable.Vertices => _cubeVertices;
 
 	uint[] IClientRenderable.Indices => _cubeIndices;
 

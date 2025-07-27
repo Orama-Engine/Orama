@@ -1,5 +1,4 @@
-﻿
-using Orama.Math;
+﻿using System.Numerics;
 using Orama.Rendering;
 using Veldrid;
 using Vulkan;

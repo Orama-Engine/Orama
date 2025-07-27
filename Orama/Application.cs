@@ -1,4 +1,4 @@
-﻿using Orama.Math;
+﻿using System.Numerics;
 using Orama.Rendering;
 using Orama.Resources.ResourceLibrary;
 using Orama.Utils;
@@ -28,7 +28,7 @@ public static class Application
 		Window.update += AppUpdate;
 		Window.closing += AppClose;
 		
-		Window.Start(title, new Vector2I(width, height), new Vector2I(100, 100));
+		Window.Start(title, new Vector2(width, height), new Vector2(100, 100));
 	}
 
 	public static void AppInitialize()

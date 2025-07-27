@@ -1,4 +1,4 @@
-﻿namespace Orama.Math;
+using System.Numerics;
 
 public class Transform
 {
@@ -6,7 +6,10 @@ public class Transform
 	public Quaternion Rotation { get; set; }
 	public Vector3 Scale { get; set; }
 
-	public Matrix4x4 Matrix => Matrix4x4.CreateTransform(Position, Rotation, Scale);
+	public Matrix4x4 Matrix =>
+		Matrix4x4.CreateScale(Scale) *
+		Matrix4x4.CreateFromQuaternion(Rotation) *
+		Matrix4x4.CreateTranslation(Position);
 
 	public Transform(Vector3 position, Quaternion rotation, Vector3 scale) =>
 		(Position, Rotation, Scale) = (position, rotation, scale);

@@ -1,5 +1,4 @@
 ﻿using Orama.InputManagement;
-using Orama.Math;
 
 namespace Orama.Components;
 

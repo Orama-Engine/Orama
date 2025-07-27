@@ -1,4 +1,4 @@
-﻿using Orama.Math;
+﻿using System.Numerics;
 
 namespace Orama.Components;
 
@@ -27,7 +27,8 @@ public class Camera : Component
 	{
 		get
 		{
-			return Matrix4x4.Invert(TransformMatrix);
+			Matrix4x4.Invert(TransformMatrix, out var view);
+			return view;
 		}
 	}
 
