@@ -1,3 +1,4 @@
+using Orama.Math;
 using Orama.Resources;
 
 namespace Orama.Components;
@@ -8,7 +9,10 @@ namespace Orama.Components;
 public class Component
 {
 	/// <summary> The component's parent Entity. </summary>
-	public Entity? Entity { get; internal set; }
+	public Entity Entity { get; internal set; } = null!;
+
+	/// <summary> The component's parent Transform. </summary>
+	public Transform Transform => Entity.Transform;
 	
 	/// <summary> Runs once on component initialisation. </summary>
 	public virtual void Start() { }

@@ -23,9 +23,10 @@ public static class SceneManager
 		Clear();
 		Current = new Scene();
 
-		// Create new entities here
+		// Create new entities
 		Entity mesh = new Entity();
 		mesh.AddComponent(new MeshRenderer());
+		mesh.AddComponent(new Camera());
 		Current.Add(mesh);
 
 		// Start all components

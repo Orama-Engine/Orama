@@ -1,4 +1,5 @@
-﻿using Orama.Math;
+﻿using Orama.Components;
+using Orama.Math;
 using Orama.Rendering;
 using Orama.Resources.ResourceLibrary;
 using Orama.Utils;
@@ -26,7 +27,7 @@ class OramaDesktop
 
 		Application.Render += () =>
 		{
-			Graphics.OnRender(Matrix4x4.Identity, Matrix4x4.Identity);
+			Graphics.OnRender(Camera.Main?.ViewMatrix ?? Matrix4x4.Identity, Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity);
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());

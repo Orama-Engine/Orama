@@ -213,6 +213,78 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable, IReadOnlyList<flo
 		return scaleMatrix * rotationMatrix * translationMatrix;
 	}
 
+	public static Matrix4x4 Invert(Matrix4x4 matrix)
+	{
+		Matrix4x4 result = new();
+
+		float a00 = matrix.M11, a01 = matrix.M12, a02 = matrix.M13, a03 = matrix.M14;
+		float a10 = matrix.M21, a11 = matrix.M22, a12 = matrix.M23, a13 = matrix.M24;
+		float a20 = matrix.M31, a21 = matrix.M32, a22 = matrix.M33, a23 = matrix.M34;
+		float a30 = matrix.M41, a31 = matrix.M42, a32 = matrix.M43, a33 = matrix.M44;
+
+		float b00 = a00 * a11 - a01 * a10;
+		float b01 = a00 * a12 - a02 * a10;
+		float b02 = a00 * a13 - a03 * a10;
+		float b03 = a01 * a12 - a02 * a11;
+		float b04 = a01 * a13 - a03 * a11;
+		float b05 = a02 * a13 - a03 * a12;
+		float b06 = a20 * a31 - a21 * a30;
+		float b07 = a20 * a32 - a22 * a30;
+		float b08 = a20 * a33 - a23 * a30;
+		float b09 = a21 * a32 - a22 * a31;
+		float b10 = a21 * a33 - a23 * a31;
+		float b11 = a22 * a33 - a23 * a32;
+
+		float det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+
+		if (System.Math.Abs(det) < 1e-6f)
+			return default;
+
+		float invDet = 1.0f / det;
+
+		result = new Matrix4x4(
+			(a11 * b11 - a12 * b10 + a13 * b09) * invDet,
+			(-a01 * b11 + a02 * b10 - a03 * b09) * invDet,
+			(a31 * b05 - a32 * b04 + a33 * b03) * invDet,
+			(-a21 * b05 + a22 * b04 - a23 * b03) * invDet,
+
+			(-a10 * b11 + a12 * b08 - a13 * b07) * invDet,
+			(a00 * b11 - a02 * b08 + a03 * b07) * invDet,
+			(-a30 * b05 + a32 * b02 - a33 * b01) * invDet,
+			(a20 * b05 - a22 * b02 + a23 * b01) * invDet,
+
+			(a10 * b10 - a11 * b08 + a13 * b06) * invDet,
+			(-a00 * b10 + a01 * b08 - a03 * b06) * invDet,
+			(a30 * b04 - a31 * b02 + a33 * b00) * invDet,
+			(-a20 * b04 + a21 * b02 - a23 * b00) * invDet,
+
+			(-a10 * b09 + a11 * b07 - a12 * b06) * invDet,
+			(a00 * b09 - a01 * b07 + a02 * b06) * invDet,
+			(-a30 * b03 + a31 * b01 - a32 * b00) * invDet,
+			(a20 * b03 - a21 * b01 + a22 * b00) * invDet
+		);
+
+		return result;
+	}
+
+	public static Matrix4x4 CreatePerspectiveFieldOfView(float fovRadians, float aspectRatio, float nearPlane, float farPlane)
+	{
+		float yScale = 1f / (float)System.Math.Tan(fovRadians / 2f);
+		float xScale = yScale / aspectRatio;
+		float zRange = farPlane - nearPlane;
+		float zScale = -(farPlane + nearPlane) / zRange;
+		float zTranslate = -(2f * farPlane * nearPlane) / zRange;
+
+		return new Matrix4x4(
+			xScale, 0, 0, 0,
+			0, yScale, 0, 0,
+			0, 0, zScale, -1,
+			0, 0, zTranslate, 0
+		);
+	}
+
+
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public static bool operator ==(Matrix4x4 left, Matrix4x4 right) => left.Equals(right);
