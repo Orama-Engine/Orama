@@ -1,4 +1,4 @@
-﻿namespace Orama.Math.Vectors;
+﻿namespace Orama.Math;
 
 /// <summary>
 /// Represents a quaternion for rotations.
