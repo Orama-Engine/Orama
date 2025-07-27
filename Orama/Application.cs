@@ -1,6 +1,6 @@
 ﻿using Orama.Math;
 using Orama.Rendering;
-using Orama.Resources;
+using Orama.Resources.ResourceLibrary;
 using Orama.Utils;
 
 namespace Orama;

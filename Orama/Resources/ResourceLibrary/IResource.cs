@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Resources;
+﻿namespace Orama.Resources.ResourceLibrary;
 
 /// <summary>
 /// Represents a resource.
