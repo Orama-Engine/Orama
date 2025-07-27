@@ -168,6 +168,51 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable, IReadOnlyList<flo
 
 	public override int GetHashCode() => (int)(M11 * M12) ^ (int)(M21 * M22) ^ (int)(M31 * M32);
 
+	public static Matrix4x4 CreateFromQuaternion(Quaternion q)
+	{
+		float xx = q.X * q.X;
+		float yy = q.Y * q.Y;
+		float zz = q.Z * q.Z;
+		float xy = q.X * q.Y;
+		float xz = q.X * q.Z;
+		float yz = q.Y * q.Z;
+		float wx = q.W * q.X;
+		float wy = q.W * q.Y;
+		float wz = q.W * q.Z;
+
+		return new Matrix4x4(
+			1 - 2 * (yy + zz), 2 * (xy + wz), 2 * (xz - wy), 0,
+			2 * (xy - wz), 1 - 2 * (xx + zz), 2 * (yz + wx), 0,
+			2 * (xz + wy), 2 * (yz - wx), 1 - 2 * (xx + yy), 0,
+			0, 0, 0, 1
+		);
+	}
+
+	public static Matrix4x4 CreateTranslation(Vector3 position)
+	{
+		return new Matrix4x4(
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			position.X, position.Y, position.Z, 1
+		);
+	}
+
+	public static Matrix4x4 CreateTransform(Vector3 position, Quaternion rotation, Vector3 scale)
+	{
+		// Scale * Rotation * Translation
+		var scaleMatrix = new Matrix4x4(
+			scale.X, 0, 0, 0,
+			0, scale.Y, 0, 0,
+			0, 0, scale.Z, 0,
+			0, 0, 0, 1);
+
+		var rotationMatrix = CreateFromQuaternion(rotation);
+		var translationMatrix = CreateTranslation(position);
+
+		return scaleMatrix * rotationMatrix * translationMatrix;
+	}
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public static bool operator ==(Matrix4x4 left, Matrix4x4 right) => left.Equals(right);

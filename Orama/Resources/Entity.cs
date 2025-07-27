@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Orama.Components;
+using Orama.Math;
 
 namespace Orama.Resources;
 
@@ -10,6 +11,8 @@ namespace Orama.Resources;
 public class Entity
 {
 	public string Name { get; set; } = "Entity";
+
+	public Transform Transform { get; set; } = new();
 
 	private readonly List<Component> components = new();
 	

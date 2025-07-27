@@ -19,6 +19,9 @@ public struct Vector3 : IEquatable<Vector3>, IReadOnlyList<float>, IFormattable,
 	/// <summary>Zero vector.</summary>
 	public static Vector3 Zero => new(0);
 
+	/// <summary>One vector.</summary>
+	public static Vector3 One => new(1);
+
 	/// <summary>Up vector.</summary>
 	public static Vector3 Up => new(0, 1, 0);
 
