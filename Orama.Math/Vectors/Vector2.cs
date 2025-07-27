@@ -1,53 +1,97 @@
-﻿
-using System.Collections;
-using System.Numerics;
+﻿using System.Collections;
 
 namespace Orama.Math.Vectors;
 
 /// <summary>
-/// Represents a 2D floating point vector.
+/// Represents a 2D floating-point vector.
 /// </summary>
-public struct Vector2<T> : IEquatable<Vector2<T>>, IReadOnlyList<T>, 
-    IFormattable, IComparable
-    where T : IFloatingPoint<T>
+public struct Vector2 : IEquatable<Vector2>, IReadOnlyList<float>, IFormattable, IComparable<Vector2>, IComparable
 {
-    // Index accessor
-    public T this[int index] => index switch { 0 => X, 1 => Y, _ => throw new IndexOutOfRangeException() };
+    /// <summary>X component of the vector.</summary>
+    public float X { get; set; }
 
-    /// <summary> The X component of the vector. </summary>
-    public T X { get; set; }
+    /// <summary>Y component of the vector.</summary>
+    public float Y { get; set; }
 
-    /// <summary> The Y component of the vector. </summary>
-    public T Y { get; set; }
+    /// <summary>
+    /// Initializes a new vector with the specified component values.
+    /// </summary>
+    public Vector2(float x, float y) => (X, Y) = (x, y);
 
-    /// <summary>Creates a vector with elements that have the specified values.</summary>
-    /// <param name="x">The value to assign to the <see cref="X"/> parameter.</param>
-    /// <param name="y">The value to assign to the <see cref="Y"/> parameter.</param>
-    public Vector2(T x, T y) => (X, Y) = (x, y);
+    /// <summary>
+    /// Initializes a new vector where all components have the same value.
+    /// </summary>
+    public Vector2(float value) => (X, Y) = (value, value);
 
-    /// <summary>Creates a vector with elements that have the specified value.</summary>
-    /// <param name="value">The value to assign to the <see cref="X"/> and <see cref="Y"/> parameters.</param>
-    public Vector2(T value) => (X, Y) = (value, value);
-
+    /// <inheritdoc/>
     public int Count => 2;
 
-    public int CompareTo(object? obj)
+    /// <inheritdoc/>
+    public float this[int index] => index switch
     {
-        if (obj is Vector2<T> vector)
-            return CompareTo(vector);
+        0 => X,
+        1 => Y,
+        _ => throw new IndexOutOfRangeException(nameof(index))
+    };
 
-        return -1;
+    /// <inheritdoc/>
+    public int CompareTo(Vector2 other)
+    {
+        var xCompare = X.CompareTo(other.X);
+        if (xCompare != 0)
+            return xCompare;
+
+        return Y.CompareTo(other.Y);
     }
 
-    public bool Equals(Vector2<T> other) => X.Equals(other.X) && Y.Equals(other.Y);
+    /// <inheritdoc/>
+    public int CompareTo(object? obj) =>
+        obj is Vector2 other ? CompareTo(other) : -1;
 
-    public IEnumerator<T> GetEnumerator()
+    /// <inheritdoc/>
+    public bool Equals(Vector2 other) =>
+        X.Equals(other.X) && Y.Equals(other.Y);
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj) =>
+        obj is Vector2 other && Equals(other);
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(X, Y);
+
+    /// <inheritdoc/>
+    public IEnumerator<float> GetEnumerator()
     {
         yield return X;
         yield return Y;
     }
 
-    public string ToString(string? format, IFormatProvider? formatProvider) => $"({X.ToString(format, formatProvider)}, {Y.ToString(format, formatProvider)})";
-
+    /// <inheritdoc/>
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <inheritdoc/>
+    public override string ToString() => ToString(null, null);
+
+    /// <inheritdoc/>
+    public string ToString(string? format, IFormatProvider? formatProvider) =>
+        $"({X.ToString(format, formatProvider)}, {Y.ToString(format, formatProvider)})";
+
+    #region Operators
+
+    public static Vector2 operator +(Vector2 a, Vector2 b) => new(a.X + b.X, a.Y + b.Y);
+    public static Vector2 operator -(Vector2 a, Vector2 b) => new(a.X - b.X, a.Y - b.Y);
+    public static Vector2 operator *(Vector2 a, Vector2 b) => new(a.X * b.X, a.Y * b.Y);
+    public static Vector2 operator /(Vector2 a, Vector2 b) => new(a.X / b.X, a.Y / b.Y);
+
+    public static Vector2 operator +(Vector2 a, float b) => new(a.X + b, a.Y + b);
+    public static Vector2 operator -(Vector2 a, float b) => new(a.X - b, a.Y - b);
+    public static Vector2 operator *(Vector2 a, float b) => new(a.X * b, a.Y * b);
+    public static Vector2 operator /(Vector2 a, float b) => new(a.X / b, a.Y / b);
+
+    public static Vector2 operator -(Vector2 v) => new(-v.X, -v.Y);
+
+    public static bool operator ==(Vector2 left, Vector2 right) => left.Equals(right);
+    public static bool operator !=(Vector2 left, Vector2 right) => !(left == right);
+
+    #endregion
 }

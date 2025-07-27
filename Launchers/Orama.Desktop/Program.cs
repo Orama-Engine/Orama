@@ -7,6 +7,6 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello World!");
+        Orama.Application.Run();
     }
 }
