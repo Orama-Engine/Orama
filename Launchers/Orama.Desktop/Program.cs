@@ -9,6 +9,6 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
-        Orama.Application.Run(new DefaultResourceLibrary());
+        Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
     }
 }

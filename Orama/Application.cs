@@ -1,4 +1,5 @@
 ﻿using Orama.Math;
+using Orama.Rendering;
 using Orama.Resources;
 
 namespace Orama;
@@ -13,14 +14,42 @@ public static class Application
 	/// </summary>
 	public static IResourceLibrary ResourceLibrary { get; set; } = null!;
 
-    public static void Run(IResourceLibrary resourceLibrary)
+	public static event Action Initialize;
+	public static event Action Update;
+	public static event Action Render;
+	public static event Action Quitting;
+
+	public static void Run(string title, int width, int height, IResourceLibrary resourceLibrary)
     {
 		ResourceLibrary = resourceLibrary;
 
-		TextAsset ta = ResourceLibrary.GetResource<TextAsset>("DefaultAssets/test.txt");
-		ta.Content = "Output!";
+		Window.load += AppInitialize;
+		Window.update += AppUpdate;
+		Window.closing += AppClose;
 
-		ResourceLibrary.WriteResource("DefaultAssets/test.txt", ta);
+		Window.Start(title, new Vector2I(width, height), new Vector2I(100, 100));
+	}
+
+	public static void AppInitialize()
+	{
+		Initialize?.Invoke();
+	}
+
+	public static void AppUpdate()
+	{
+		try
+		{
+			Update?.Invoke();
+			Render?.Invoke();
+		}
+		catch (Exception e)
+		{
+			Console.WriteLine(e.Message);
+		}
+	}
+
+	public static void AppClose()
+	{
 
 	}
 }
