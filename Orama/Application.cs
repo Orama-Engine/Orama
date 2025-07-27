@@ -38,7 +38,6 @@ public static class Application
 
 	public static void AppUpdate()
 	{
-		InputManager.Update(100.0f);
 		try
 		{
 			Update?.Invoke();

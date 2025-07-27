@@ -10,6 +10,7 @@ namespace Orama.Utils;
 public static class InputManager
 {
 	private static HashSet<Key> keysDown = new();
+	private static HashSet<Key> keysDownLastFrame = new();
 
 	/// <summary>
 	/// Runs each frame
@@ -24,16 +25,27 @@ public static class InputManager
 		
 		InputSnapshot snapshot = Window.InternalWindow.PumpEvents();
 		
+		keysDownLastFrame = new HashSet<Key>(keysDown);
 		keysDown.Clear();
+		
 		foreach (var keyEvent in snapshot.KeyEvents)
 		{
 			if (keyEvent.Down)
 			{
 				keysDown.Add(keyEvent.Key.ToEngineKey());
-				Console.WriteLine($"Key pressed: {keyEvent.Key}");
+			}
+		}
+
+		foreach (var key in keysDown)
+		{
+			if (!keysDownLastFrame.Contains(key))
+			{
+				KeyPressed?.Invoke(key);
 			}
 		}
 	}
 	
 	public static bool IsKeyDown(Key key) => keysDown.Contains(key);
+	
+	public static event Action<Key>? KeyPressed;
 }
