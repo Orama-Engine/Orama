@@ -1,4 +1,4 @@
-namespace Orama.Resources;
+namespace Orama.InputManagement;
 
 /// <summary>
 /// Represents a keyboard key.

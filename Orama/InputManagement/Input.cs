@@ -1,13 +1,13 @@
 using Orama.Rendering;
 using Veldrid;
-using Key = Orama.Resources.Key;
+using Key = Orama.InputManagement.Key;
 
-namespace Orama.Utils;
+namespace Orama.InputManagement;
 
 /// <summary>
 /// Manages user input.
 /// </summary>
-public static class InputManager
+public static class Input
 {
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<Key> keysDownLastFrame = new();
@@ -15,15 +15,14 @@ public static class InputManager
 	/// <summary>
 	/// Runs each frame
 	/// </summary>
-	/// <param name="deltaTime"></param>
-	public static void Update(float deltaTime)
+	public static void Update()
 	{
 		if (Window.InternalWindow == null)
 		{
 			return;
 		}
-		
-		InputSnapshot snapshot = Window.InternalWindow.PumpEvents();
+
+		InputSnapshot snapshot = Window.LatestInputSnapshot;
 		
 		keysDownLastFrame = new HashSet<Key>(keysDown);
 		keysDown.Clear();

@@ -26,7 +26,7 @@ public static class SceneManager
 		// Create new entities
 		Entity mesh = new Entity();
 		mesh.AddComponent(new MeshRenderer());
-		mesh.AddComponent(new Camera());
+		mesh.AddComponent(new CameraController());
 		Current.Add(mesh);
 
 		// Start all components

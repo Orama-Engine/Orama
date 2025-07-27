@@ -1,4 +1,5 @@
 ﻿using Orama.Components;
+using Orama.InputManagement;
 using Orama.Math;
 using Orama.Rendering;
 using Orama.Resources.ResourceLibrary;
@@ -22,7 +23,7 @@ class OramaDesktop
 		Application.Update += () =>
 		{
 			SceneManager.Update();
-			InputManager.Update(100.0f);
+			Input.Update();
 		};
 
 		Application.Render += () =>
