@@ -14,7 +14,6 @@ class OramaDesktop
 		Application.Initialize += () =>
 		{
 			SceneManager.Initialize();
-			Graphics.Initialize();
 		};
 
 		Application.Update += () =>
@@ -24,7 +23,6 @@ class OramaDesktop
 
 		Application.Render += () =>
 		{
-			Graphics.EndFrame();
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());

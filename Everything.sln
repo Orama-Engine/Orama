@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Desktop", "Launchers\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Orama.Math.csproj", "{04408730-B3E2-4EAC-89EA-62DA54E065E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Artisan", "Orama.Artisan\Orama.Artisan.csproj", "{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,18 @@ Global
 		{04408730-B3E2-4EAC-89EA-62DA54E065E8}.Release|x64.Build.0 = Release|Any CPU
 		{04408730-B3E2-4EAC-89EA-62DA54E065E8}.Release|x86.ActiveCfg = Release|Any CPU
 		{04408730-B3E2-4EAC-89EA-62DA54E065E8}.Release|x86.Build.0 = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|x64.Build.0 = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Debug|x86.Build.0 = Debug|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|x64.ActiveCfg = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|x64.Build.0 = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|x86.ActiveCfg = Release|Any CPU
+		{69A9272C-3A4F-4325-8E6C-F5B71977A4CC}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -6,7 +6,7 @@ using Vulkan;
 
 namespace Orama.Resources;
 
-public class Mesh : IGeometryDrawData
+public class Mesh
 {
 	public Vector3[] Vertices { get; set; }
 	public int[] Indices { get; set; }
