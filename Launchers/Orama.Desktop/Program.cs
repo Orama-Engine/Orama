@@ -10,6 +10,11 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
+		Application.Initialize += () =>
+		{
+			SceneManager.Initialize();
+		};
+
 		Application.Update += () =>
 		{
 			SceneManager.Update();

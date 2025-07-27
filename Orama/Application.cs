@@ -15,10 +15,10 @@ public static class Application
 	/// </summary>
 	public static IResourceLibrary ResourceLibrary { get; set; } = null!;
 
-	public static event Action Initialize;
-	public static event Action Update;
-	public static event Action Render;
-	public static event Action Quitting;
+	public static event Action Initialize = null!;
+	public static event Action Update = null!;
+	public static event Action Render = null!;
+	public static event Action Quitting = null!;
 
 	public static void Run(string title, int width, int height, IResourceLibrary resourceLibrary)
     {
@@ -34,8 +34,6 @@ public static class Application
 	public static void AppInitialize()
 	{
 		Initialize?.Invoke();
-
-		SceneManager.Initialize();
 	}
 
 	public static void AppUpdate()
