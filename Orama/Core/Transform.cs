@@ -1,5 +1,9 @@
 using System.Numerics;
 
+// Wasn't sure if this fit the core directory..
+// can freely change if you wish.
+namespace Orama.Core;
+
 public class Transform
 {
 	public Vector3 Position { get; set; }

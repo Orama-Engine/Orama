@@ -1,4 +1,5 @@
 using System.Numerics;
+using Orama.Core;
 using Orama.Resources;
 
 namespace Orama.Components;

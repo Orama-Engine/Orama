@@ -1,4 +1,4 @@
-﻿using Orama.InputManagement;
+﻿using Orama.UserInput;
 
 namespace Orama.Components;
 

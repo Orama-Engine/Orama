@@ -7,7 +7,7 @@ using Veldrid.StartupUtilities;
 
 namespace Orama.Rendering;
 
-public static class Graphics
+public static class Renderer
 {
 	private static GraphicsDevice? _graphicsDevice;
 	private static CommandList? _commandList;

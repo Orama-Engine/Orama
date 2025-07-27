@@ -1,4 +1,4 @@
-namespace Orama.InputManagement;
+namespace Orama.UserInput;
 
 public static class KeyTranslator
 {

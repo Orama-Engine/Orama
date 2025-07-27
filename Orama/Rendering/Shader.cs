@@ -1,7 +1,6 @@
-﻿using Orama.Utils;
-using System;
+﻿using System;
 
-namespace Orama.Resources;
+namespace Orama.Rendering;
 
 public class Shader
 {

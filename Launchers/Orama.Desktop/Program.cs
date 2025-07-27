@@ -1,8 +1,9 @@
 ﻿using System.Numerics;
 using Orama.Components;
+using Orama.Engine;
 using Orama.Rendering;
 using Orama.Resources.ResourceLibrary;
-using Orama.Utils;
+using Orama.UserInput;
 
 namespace Orama.Desktop;
 
@@ -16,7 +17,7 @@ class OramaDesktop
 		Application.Initialize += () =>
 		{
 			SceneManager.Initialize();
-			Graphics.OnLoad();
+			Renderer.OnLoad();
 		};
 
 		Application.Update += () =>
@@ -27,7 +28,7 @@ class OramaDesktop
 
 		Application.Render += () =>
 		{
-			Graphics.OnRender(Camera.Main?.ViewMatrix ?? Matrix4x4.Identity, Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity);
+			Renderer.OnRender(Camera.Main?.ViewMatrix ?? Matrix4x4.Identity, Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity);
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());

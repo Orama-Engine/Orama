@@ -1,8 +1,7 @@
-using Orama.InputManagement;
 using Orama.Rendering;
 using Veldrid;
 
-using Key = Orama.InputManagement.Key;
+namespace Orama.UserInput;
 
 /// <summary>
 /// Access into Input.

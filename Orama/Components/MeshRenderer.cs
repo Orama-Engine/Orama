@@ -64,6 +64,6 @@ internal class MeshRenderer : Component, IClientRenderable
 
 	public override void Update()
 	{
-		Graphics.AddRenderable(this);
+		Renderer.AddRenderable(this);
 	}
 }
