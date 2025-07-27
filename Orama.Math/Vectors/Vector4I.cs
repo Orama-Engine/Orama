@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
-namespace Orama.Math.Vectors;
+namespace Orama.Math;
 
 /// <summary>
 /// Represents a 4D integer vector.
@@ -18,6 +19,13 @@ public struct Vector4I : IEquatable<Vector4I>, IReadOnlyList<int>, IFormattable,
 
     /// <summary>W component of the vector.</summary>
     public int W { get; set; }
+
+    /// <summary>Zero vector.</summary>
+    public static Vector4I Zero => new(0);
+
+    /// <summary>Squared length of the vector.</summary>
+    public long LengthSquared =>
+        (long)X * X + (long)Y * Y + (long)Z * Z + (long)W * W;
 
     /// <summary>
     /// Initializes a new vector with the specified component values.
@@ -108,6 +116,22 @@ public struct Vector4I : IEquatable<Vector4I>, IReadOnlyList<int>, IFormattable,
 
     public static bool operator ==(Vector4I left, Vector4I right) => left.Equals(right);
     public static bool operator !=(Vector4I left, Vector4I right) => !(left == right);
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>Returns a normalized vector as floating point values.</summary>
+    public Vector4 Normalize()
+    {
+        float length = MathF.Sqrt(X * X + Y * Y + Z * Z + W * W);
+        if (length == 0f) return new Vector4(0f, 0f, 0f, 0f);
+        return new Vector4(X / length, Y / length, Z / length, W / length);
+    }
+
+    /// <summary>Returns the dot product of this vector and another.</summary>
+    public int Dot(Vector4I other) =>
+        X * other.X + Y * other.Y + Z * other.Z + W * other.W;
 
     #endregion
 }

@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
-namespace Orama.Math.Vectors;
+namespace Orama.Math;
 
 /// <summary>
 /// Represents a 3D integer vector.
@@ -15,6 +16,13 @@ public struct Vector3I : IEquatable<Vector3I>, IReadOnlyList<int>, IFormattable,
 
     /// <summary>Z component of the vector.</summary>
     public int Z { get; set; }
+
+    /// <summary>Zero vector.</summary>
+    public static Vector3I Zero => new(0);
+
+    /// <summary>Squared length of the vector.</summary>
+    public long LengthSquared =>
+        (long)X * X + (long)Y * Y + (long)Z * Z;
 
     /// <summary>
     /// Initializes a new vector with the specified component values.
@@ -102,6 +110,22 @@ public struct Vector3I : IEquatable<Vector3I>, IReadOnlyList<int>, IFormattable,
 
     public static bool operator ==(Vector3I left, Vector3I right) => left.Equals(right);
     public static bool operator !=(Vector3I left, Vector3I right) => !(left == right);
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>Returns a normalized vector as floating point values.</summary>
+    public Vector3 Normalize()
+    {
+        float length = MathF.Sqrt(X * X + Y * Y + Z * Z);
+        if (length == 0f) return new Vector3(0f, 0f, 0f);
+        return new Vector3(X / length, Y / length, Z / length);
+    }
+
+    /// <summary>Returns the dot product of this vector and another.</summary>
+    public int Dot(Vector3I other) =>
+        X * other.X + Y * other.Y + Z * other.Z;
 
     #endregion
 }

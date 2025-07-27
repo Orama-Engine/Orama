@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
-namespace Orama.Math.Vectors;
+namespace Orama.Math;
 
 /// <summary>
 /// Represents a 4D floating-point vector.
@@ -18,6 +19,15 @@ public struct Vector4 : IEquatable<Vector4>, IReadOnlyList<float>, IFormattable,
 
     /// <summary>W component of the vector.</summary>
     public float W { get; set; }
+
+    /// <summary>Zero vector.</summary>
+    public static Vector4 Zero => new(0);
+
+    /// <summary>Squared length of the vector.</summary>
+    public float LengthSquared => X * X + Y * Y + Z * Z + W * W;
+
+    /// <summary>Length (magnitude) of the vector.</summary>
+    public float Length => MathF.Sqrt(LengthSquared);
 
     /// <summary>
     /// Initializes a new vector with the specified component values.
@@ -107,6 +117,22 @@ public struct Vector4 : IEquatable<Vector4>, IReadOnlyList<float>, IFormattable,
 
     public static bool operator ==(Vector4 left, Vector4 right) => left.Equals(right);
     public static bool operator !=(Vector4 left, Vector4 right) => !(left == right);
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>Returns a normalized (unit length) version of this vector.</summary>
+    public Vector4 Normalize()
+    {
+        float length = Length;
+        if (length == 0) return new Vector4(0, 0, 0, 0);
+        float invLength = 1.0f / length;
+        return new Vector4(X * invLength, Y * invLength, Z * invLength, W * invLength);
+    }
+
+    /// <summary>Returns the dot product of this vector and another.</summary>
+    public float Dot(Vector4 other) => X * other.X + Y * other.Y + Z * other.Z + W * other.W;
 
     #endregion
 }

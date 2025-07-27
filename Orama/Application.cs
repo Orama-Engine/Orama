@@ -1,4 +1,4 @@
-﻿using Orama.Math.Vectors;
+﻿using Orama.Math;
 
 namespace Orama;
 

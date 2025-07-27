@@ -1,6 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 
-namespace Orama.Math.Vectors;
+namespace Orama.Math;
 
 /// <summary>
 /// Represents a 2D floating-point vector.
@@ -12,6 +13,16 @@ public struct Vector2 : IEquatable<Vector2>, IReadOnlyList<float>, IFormattable,
 
     /// <summary>Y component of the vector.</summary>
     public float Y { get; set; }
+
+    /// <summary>Zero vector.</summary>
+    public static Vector2 Zero => new(0);
+
+
+    /// <summary>Squared length of the vector.</summary>
+    public float LengthSquared => X * X + Y * Y;
+
+    /// <summary>Length (magnitude) of the vector.</summary>
+    public float Length => MathF.Sqrt(LengthSquared);
 
     /// <summary>
     /// Initializes a new vector with the specified component values.
@@ -92,6 +103,22 @@ public struct Vector2 : IEquatable<Vector2>, IReadOnlyList<float>, IFormattable,
 
     public static bool operator ==(Vector2 left, Vector2 right) => left.Equals(right);
     public static bool operator !=(Vector2 left, Vector2 right) => !(left == right);
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>Returns a normalized (unit length) version of this vector.</summary>
+    public Vector2 Normalize()
+    {
+        float length = Length;
+        if (length == 0) return new Vector2(0, 0);
+        float invLength = 1.0f / length;
+        return new Vector2(X * invLength, Y * invLength);
+    }
+
+    /// <summary>Returns the dot product of this vector and another.</summary>
+    public float Dot(Vector2 other) => X * other.X + Y * other.Y;
 
     #endregion
 }
