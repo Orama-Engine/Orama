@@ -2,6 +2,9 @@ using Orama.Resources;
 
 namespace Orama.Utils;
 
+/// <summary>
+/// Manages Scenes and their operations.
+/// </summary>
 public static class SceneManager
 {
     public static Scene Current { get; private set; } = new Scene();
