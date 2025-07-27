@@ -9,7 +9,7 @@ Each vector type implements the following interfaces:
   - `IComparable<Vector<T>>`
   - `IComparable`
 
-Each vector exposes named [properties](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties) (`X`, `Y`, `Z`, `W` as applicable), index-based access via this[int index],
+Each vector exposes named [properties](https://learn.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/properties) (`X`, `Y`, `Z`, `W` as applicable), index-based access via `this[int index]`,
 and multiple constructors, including:
   -  Uniform value initialization (e.g., `new Vector2<T>(value)`)
   -  Per-component initialization (e.g., `new Vector2<T>(x, y)`)
