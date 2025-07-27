@@ -1,6 +1,7 @@
 ﻿using Orama.Math;
 using Orama.Rendering;
 using Orama.Resources;
+using Orama.Utils;
 
 namespace Orama;
 
@@ -33,6 +34,8 @@ public static class Application
 	public static void AppInitialize()
 	{
 		Initialize?.Invoke();
+
+		SceneManager.Initialize();
 	}
 
 	public static void AppUpdate()
