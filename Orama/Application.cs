@@ -27,7 +27,7 @@ public static class Application
 		Window.load += AppInitialize;
 		Window.update += AppUpdate;
 		Window.closing += AppClose;
-
+		
 		Window.Start(title, new Vector2I(width, height), new Vector2I(100, 100));
 	}
 
@@ -38,6 +38,7 @@ public static class Application
 
 	public static void AppUpdate()
 	{
+		InputManager.Update(100.0f);
 		try
 		{
 			Update?.Invoke();
@@ -47,6 +48,7 @@ public static class Application
 		{
 			Console.WriteLine(e.Message);
 		}
+		
 	}
 
 	public static void AppClose()

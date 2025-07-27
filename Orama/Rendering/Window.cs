@@ -85,6 +85,8 @@ public static class Window
 		{
 			Sdl2Events.ProcessEvents();
 			LatestInputSnapshot = InternalWindow.PumpEvents();
+			
+			update?.Invoke();
 		}
 	}
 }
