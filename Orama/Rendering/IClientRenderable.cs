@@ -1,4 +1,6 @@
 ﻿
+using Orama.Math;
+
 namespace Orama.Rendering;
 
 /// <summary>
@@ -6,4 +8,5 @@ namespace Orama.Rendering;
 /// </summary>
 public interface IClientRenderable
 {
+	public void GetRenderingData(out IGeometryDrawData drawData, out Matrix4x4 model);
 }

@@ -1,6 +1,6 @@
 ﻿
 namespace Orama.Rendering;
 
-internal interface IGeometryDrawData
+public interface IGeometryDrawData
 {
 }

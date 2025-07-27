@@ -166,6 +166,8 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>, IFormattable, IReadOnlyList<flo
 		yield return M41; yield return M42; yield return M43; yield return M44;
 	}
 
+	public override int GetHashCode() => (int)(M11 * M12) ^ (int)(M21 * M22) ^ (int)(M31 * M32);
+
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public static bool operator ==(Matrix4x4 left, Matrix4x4 right) => left.Equals(right);

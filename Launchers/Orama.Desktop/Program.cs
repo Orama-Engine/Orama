@@ -1,4 +1,5 @@
-﻿using Orama.Resources.ResourceLibrary;
+﻿using Orama.Rendering;
+using Orama.Resources.ResourceLibrary;
 using Orama.Utils;
 
 namespace Orama.Desktop;
@@ -13,11 +14,17 @@ class OramaDesktop
 		Application.Initialize += () =>
 		{
 			SceneManager.Initialize();
+			Graphics.Initialize();
 		};
 
 		Application.Update += () =>
 		{
 			SceneManager.Update();
+		};
+
+		Application.Render += () =>
+		{
+			Graphics.EndFrame();
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());

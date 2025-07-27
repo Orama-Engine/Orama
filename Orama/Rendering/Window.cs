@@ -22,6 +22,9 @@ public static class Window
 	public static event Action<Vector2I>? Move;
 	public static event Action<string[]>? FileDrop;
 
+	public static int Width => InternalWindow.Width;
+	public static int Height => InternalWindow.Height;
+
 	/// <summary> The size of the window. </summary>
 	public static Vector2I Size
 	{
