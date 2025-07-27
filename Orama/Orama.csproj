@@ -10,4 +10,14 @@
     <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DefaultAssets\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="DefaultAssets\test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,21 @@
+﻿
+namespace Orama.Resources;
+
+public class DefaultResourceLibrary : IResourceLibrary
+{
+	/// <inheritdoc/>
+	public T GetResource<T>(string path) where T : IResource<T>, new()
+	{
+		using var stream = File.OpenRead(Path.Combine(AppContext.BaseDirectory, path));
+		return new T().Deserialize(stream);
+	}
+
+	/// <inheritdoc/>
+	public void WriteResource<T>(string path, T resource) where T : IResource<T>, new()
+	{
+		using var stream = File.OpenWrite(Path.Combine(AppContext.BaseDirectory, path));
+		// Clear all data in the file before writing
+		stream.SetLength(0);
+		resource.Serialize(stream);
+	}
+}
