@@ -110,6 +110,12 @@ public struct Vector3 : IEquatable<Vector3>, IReadOnlyList<float>, IFormattable,
 	public static Vector3 operator *(Vector3 a, float b) => new(a.X * b, a.Y * b, a.Z * b);
 	public static Vector3 operator /(Vector3 a, float b) => new(a.X / b, a.Y / b, a.Z / b);
 
+	public static Vector3 operator +(float b, Vector3 a) => new(a.X + b, a.Y + b, a.Z + b);
+	public static Vector3 operator -(float b, Vector3 a) => new(b - a.X, b - a.Y, b - a.Z);
+	public static Vector3 operator *(float b, Vector3 a) => new(a.X * b, a.Y * b, a.Z * b);
+	public static Vector3 operator /(float b, Vector3 a) => new(b / a.X, b / a.Y, b / a.Z);
+
+
 	public static Vector3 operator -(Vector3 v) => new(-v.X, -v.Y, -v.Z);
 
 	public static bool operator ==(Vector3 left, Vector3 right) => left.Equals(right);
@@ -139,6 +145,45 @@ public struct Vector3 : IEquatable<Vector3>, IReadOnlyList<float>, IFormattable,
 			Z * other.X - X * other.Z,
 			X * other.Y - Y * other.X
 		);
+
+	/// <summary>
+	/// Transforms this vector by the given Transform (scale, rotation, translation).
+	/// </summary>
+	public Vector3 Transform(Transform t)
+	{
+		// Scale
+		Vector3 scaled = new Vector3(X * t.Scale.X, Y * t.Scale.Y, Z * t.Scale.Z);
+
+		// Rotate by quaternion
+		Vector3 rotated = RotateByQuaternion(scaled, t.Rotation);
+
+		// Translate
+		return rotated + t.Position;
+	}
+
+	public static Vector3 Transform(Vector3 v, Quaternion rotation)
+	{
+		// Quaternion multiplication: q * v * q^-1
+		// where v is treated as a quaternion with w=0
+		var qVec = new Vector3(rotation.X, rotation.Y, rotation.Z);
+		var uv = qVec.Cross(v);
+		var uuv = qVec.Cross(uv);
+		uv = uv * (2.0f * rotation.W);
+		uuv = uuv * 2.0f;
+		return v + uv + uuv;
+	}
+
+
+	private static Vector3 RotateByQuaternion(Vector3 v, Quaternion q)
+	{
+		Vector3 u = new Vector3(q.X, q.Y, q.Z);
+		float s = q.W;
+
+		Vector3 cross1 = u.Cross(v);
+		Vector3 cross2 = u.Cross(cross1);
+
+		return v + (s * cross1 + cross2) * 2.0f;
+	}
 
 	#endregion
 }
