@@ -37,6 +37,7 @@ class OramaDesktop
 		{
 			SceneManager.Update();
 			Input.Update();
+			Console.WriteLine($"Mouse Position: {Input.MousePosition.X}, {Input.MousePosition.Y}");
 		};
 
 		Application.Render += () =>

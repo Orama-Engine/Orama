@@ -23,6 +23,9 @@ public static class Input
 			return;
 
 		InputSnapshot snapshot = Window.LatestInputSnapshot;
+		
+		// Update mouse position
+		MousePosition = new Vector2(snapshot.MousePosition.X, snapshot.MousePosition.Y);
 
 		keysDownLastFrame = new HashSet<Key>(keysDown);
 		buttonsDownLastFrame = new HashSet<MouseButton>(buttonsDown);
