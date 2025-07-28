@@ -41,8 +41,8 @@ public class Mesh : IClientRenderable
 		Material = Material.Default
 	};
 
-	public Vector3[] Vertices { get; set; }
-	public uint[] Indices { get; set; }
-	public Material Material { get; set; }
+	public Vector3[] Vertices { get; set; } = [];
+	public uint[] Indices { get; set; } = [];
+	public Material Material { get; set; } = Material.Default;
 
 }
