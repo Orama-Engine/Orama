@@ -9,8 +9,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Launchers", "Launchers", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Desktop", "Launchers\Orama.Desktop\Orama.Desktop.csproj", "{AC34BEBA-24E1-08C3-9FC3-7B8AFEADA16B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Serialization", "Orama.Serialization\Orama.Serialization.csproj", "{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,18 +43,6 @@ Global
 		{AC34BEBA-24E1-08C3-9FC3-7B8AFEADA16B}.Release|x64.Build.0 = Release|Any CPU
 		{AC34BEBA-24E1-08C3-9FC3-7B8AFEADA16B}.Release|x86.ActiveCfg = Release|Any CPU
 		{AC34BEBA-24E1-08C3-9FC3-7B8AFEADA16B}.Release|x86.Build.0 = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|x64.Build.0 = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Debug|x86.Build.0 = Debug|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|x64.ActiveCfg = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|x64.Build.0 = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|x86.ActiveCfg = Release|Any CPU
-		{B8CE3BE3-CDD1-4979-A11A-165C3B98AE9F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

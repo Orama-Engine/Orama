@@ -2,14 +2,13 @@ using Orama.Components;
 using Orama.Engine;
 using Orama.Entities;
 using Orama.Resources.ResourceLibrary;
-using Orama.Serialization;
 
 namespace Orama.Resources;
 
 /// <summary>
 /// Represents a Scene containing and managing a collection of Entities.
 /// </summary>
-public class Scene : IResource<Scene>
+public class Scene
 {
     /// <summary> Creates an empty Scene. </summary>
     public Scene() { }
@@ -44,14 +43,4 @@ public class Scene : IResource<Scene>
     {
 	    allEntities.Clear();
     }
-
-	public Scene Deserialize(Stream stream)
-	{
-		return Serializer.Deserialize<Scene>(stream);
-	}
-
-	public Stream Serialize()
-	{
-		return Serializer.Serialize<Scene>(this);
-	}
 }
