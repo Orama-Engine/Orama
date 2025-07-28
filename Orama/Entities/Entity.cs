@@ -2,7 +2,7 @@ using System.Numerics;
 using System.Collections.ObjectModel;
 using Orama.Components;
 
-namespace Orama.Core;
+namespace Orama.Entities;
 
 /// <summary>
 /// The base class for all Entities in a Scene.

@@ -1,5 +1,5 @@
 using Orama.Components;
-using Orama.Core;
+using Orama.Entities;
 using Orama.Resources;
 
 namespace Orama.Engine;

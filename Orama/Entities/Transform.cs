@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace Orama.Core;
+namespace Orama.Entities;
 
 public class Transform
 {

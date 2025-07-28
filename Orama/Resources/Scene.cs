@@ -1,7 +1,8 @@
 using Orama.Components;
 using Orama.Engine;
+using Orama.Entities;
 
-namespace Orama.Core;
+namespace Orama.Resources;
 
 /// <summary>
 /// Represents a Scene containing and managing a collection of Entities.
