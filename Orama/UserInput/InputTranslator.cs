@@ -1,7 +1,7 @@
 namespace Orama.UserInput;
 
 // Currently requires cleanup.
-public static class KeyTranslator
+public static class InputTranslator
 {
 	/// <summary>
 	/// Translates a Veldrid key to an Orama Engine Key.
@@ -95,6 +95,21 @@ public static class KeyTranslator
 			Veldrid.Key.Space => Key.Space,
 			Veldrid.Key.Escape => Key.Escape,
 			_ => Key.Unknown
+		};
+	}
+
+	public static MouseButton ToEngineMouseButton(this Veldrid.MouseButton veldridMouseButton)
+	{
+		return veldridMouseButton switch
+		{
+			Veldrid.MouseButton.Left => MouseButton.Left,
+			Veldrid.MouseButton.Right => MouseButton.Right,
+			Veldrid.MouseButton.Middle => MouseButton.Middle,
+			Veldrid.MouseButton.Button4 => MouseButton.Button4,
+			Veldrid.MouseButton.Button5 => MouseButton.Button5,
+			Veldrid.MouseButton.Button6 => MouseButton.Button6,
+			Veldrid.MouseButton.Button7 => MouseButton.Button7,
+			Veldrid.MouseButton.Button8 => MouseButton.Button8,
 		};
 	}
 }
