@@ -2,6 +2,7 @@ using Orama.Components;
 using Orama.Engine;
 using Orama.Entities;
 using Orama.Resources.ResourceLibrary;
+using Orama.Serialization;
 
 namespace Orama.Resources;
 
@@ -46,11 +47,11 @@ public class Scene : IResource<Scene>
 
 	public Scene Deserialize(Stream stream)
 	{
-		throw new NotImplementedException();
+		return Serializer.Deserialize<Scene>(stream);
 	}
 
 	public Stream Serialize()
 	{
-		throw new NotImplementedException();
+		return Serializer.Serialize<Scene>(this);
 	}
 }
