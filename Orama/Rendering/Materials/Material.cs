@@ -1,9 +1,4 @@
 ﻿using Orama.Rendering.Shaders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Orama.Rendering.Materials;
 
@@ -15,4 +10,9 @@ public class Material
 	};
 
 	public Shader Shader { get; set; }
+
+	/// <summary>
+	/// Custom properties.
+	/// </summary>
+	public Dictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 }
