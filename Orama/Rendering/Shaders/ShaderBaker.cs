@@ -1,7 +1,7 @@
 ﻿using Veldrid;
 using Veldrid.SPIRV;
 
-namespace Orama.Rendering;
+namespace Orama.Rendering.Shaders;
 
 /// <summary>
 /// Provides methods for compiling GLSL shader source code into SPIR-V bytecode.

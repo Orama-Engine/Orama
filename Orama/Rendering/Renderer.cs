@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Orama.Rendering.Materials;
 using Orama.Resources;
 using Veldrid;
 using Veldrid.SPIRV;
