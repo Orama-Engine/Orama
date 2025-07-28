@@ -6,8 +6,8 @@ public class Shader
 {
 	public static Shader Default { get; } = new Shader(VertexSource, FragmentSource);
 
-	public byte[] VertexBytes { get; }
-	public byte[] FragmentBytes { get; }
+	internal byte[] VertexBytes { get; }
+	internal byte[] FragmentBytes { get; }
 
 	public Shader(string vertexSource, string fragmentSource)
 	{
