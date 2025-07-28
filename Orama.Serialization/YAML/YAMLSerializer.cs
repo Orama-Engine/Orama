@@ -32,9 +32,7 @@ namespace Orama.Serialization.YAML
 		public Stream Serialize<T>(T value)
 		{
 			if (value == null)
-			{
 				throw new ArgumentNullException(nameof(value));
-			}
 
 			// Filter properties and fields according to rules
 			var propertiesToSerialize = typeof(T)

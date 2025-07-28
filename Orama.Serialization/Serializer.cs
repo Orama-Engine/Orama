@@ -17,14 +17,15 @@ public static class Serializer
 
 	public static readonly Dictionary<SerializationType, ISerializer> Serializers = new()
 	{
-		{ SerializationType.YAML, new YAMLSerializer() }
+		{ SerializationType.YAML, new YAMLSerializer() },
+		{ SerializationType.JSON, new JSON.JSONSerializer() }
 	};
 
 	/// <summary>
 	/// Serialize an object.
 	/// </summary>
 	/// <returns>Serialized stream.</returns>
-	public static Stream Serialize<T>(T value, SerializationType type = SerializationType.YAML)
+	public static Stream Serialize<T>(T value, SerializationType type = SerializationType.JSON)
 	{
 		return Serializers[type].Serialize(value!);
 	}
@@ -33,7 +34,7 @@ public static class Serializer
 	/// Deserialize an object
 	/// </summary>
 	/// <returns>Deserialized object</returns>
-	public static T Deserialize<T>(Stream stream, SerializationType type = SerializationType.YAML)
+	public static T Deserialize<T>(Stream stream, SerializationType type = SerializationType.JSON)
 	{
 		return Serializers[type].Deserialize<T>(stream);
 	}
