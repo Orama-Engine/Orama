@@ -1,11 +1,29 @@
 namespace Orama.UserInput;
 
+// Currently requires cleanup.
 public static class KeyTranslator
 {
+	/// <summary>
+	/// Translates a Veldrid key to an Orama Engine Key.
+	/// </summary>
+	/// <param name="veldridKey"></param>
+	/// <returns></returns>
 	public static Key ToEngineKey(this Veldrid.Key veldridKey)
 	{
 		return veldridKey switch
 		{
+			Veldrid.Key.F1 => Key.F1,
+			Veldrid.Key.F2 => Key.F2,
+			Veldrid.Key.F3 => Key.F3,
+			Veldrid.Key.F4 => Key.F4,
+			Veldrid.Key.F5 => Key.F5,
+			Veldrid.Key.F6 => Key.F6,
+			Veldrid.Key.F7 => Key.F7,
+			Veldrid.Key.F8 => Key.F8,
+			Veldrid.Key.F9 => Key.F9,
+			Veldrid.Key.F10 => Key.F10,
+			Veldrid.Key.F11 => Key.F11,
+			Veldrid.Key.F12 => Key.F12,
 			Veldrid.Key.A => Key.A,
 			Veldrid.Key.B => Key.B,
 			Veldrid.Key.C => Key.C,
@@ -32,10 +50,48 @@ public static class KeyTranslator
 			Veldrid.Key.X => Key.X,
 			Veldrid.Key.Y => Key.Y,
 			Veldrid.Key.Z => Key.Z,
+			Veldrid.Key.Number1 => Key.One,
+			Veldrid.Key.Number2 => Key.Two,
+			Veldrid.Key.Number3 => Key.Three,
+			Veldrid.Key.Number4 => Key.Four,
+			Veldrid.Key.Number5 => Key.Five,
+			Veldrid.Key.Number6 => Key.Six,
+			Veldrid.Key.Number7 => Key.Seven,
+			Veldrid.Key.Number8 => Key.Eight,
+			Veldrid.Key.Number9 => Key.Nine,
+			Veldrid.Key.Number0 => Key.Zero,
+			Veldrid.Key.Keypad0 => Key.NumpadZero,
+			Veldrid.Key.Keypad1 => Key.NumpadOne,
+			Veldrid.Key.Keypad2 => Key.NumpadTwo,
+			Veldrid.Key.Keypad3 => Key.NumpadThree,
+			Veldrid.Key.Keypad4 => Key.NumpadFour,
+			Veldrid.Key.Keypad5 => Key.NumpadFive,
+			Veldrid.Key.Keypad6 => Key.NumpadSix,
+			Veldrid.Key.Keypad7 => Key.NumpadSeven,
+			Veldrid.Key.Keypad8 => Key.NumpadEight,
+			Veldrid.Key.Keypad9 => Key.NumpadNine,
+			Veldrid.Key.Comma => Key.Comma,
+			Veldrid.Key.Period => Key.Period,
+			Veldrid.Key.Slash => Key.Slash,
+			Veldrid.Key.BackSlash => Key.Backslash,
+			Veldrid.Key.Semicolon => Key.Semicolon,
+			Veldrid.Key.Quote => Key.Quote,
+			Veldrid.Key.BracketLeft => Key.BracketL,
+			Veldrid.Key.BracketRight => Key.BracketR,
+			Veldrid.Key.Minus => Key.Minus,
+			Veldrid.Key.Grave => Key.Grave,
+			Veldrid.Key.Plus => Key.Plus,
 			Veldrid.Key.Up => Key.Up,
 			Veldrid.Key.Down => Key.Down,
 			Veldrid.Key.Left => Key.Left,
 			Veldrid.Key.Right => Key.Right,
+			Veldrid.Key.ShiftLeft => Key.ShiftL,
+			Veldrid.Key.ShiftRight => Key.ShiftR,
+			Veldrid.Key.ControlLeft => Key.CtrlL,
+			Veldrid.Key.ControlRight => Key.CtrlR,
+			Veldrid.Key.AltLeft => Key.AltL,
+			Veldrid.Key.AltRight => Key.AltR,
+			Veldrid.Key.Enter => Key.Enter,
 			Veldrid.Key.Space => Key.Space,
 			Veldrid.Key.Escape => Key.Escape,
 			_ => Key.Unknown
