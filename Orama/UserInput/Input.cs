@@ -10,10 +10,12 @@ namespace Orama.UserInput;
 public static class Input
 {
 	public static Vector2 MousePosition { get; private set; }
+	public static Vector2 MouseDelta { get; private set; }
 	
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<MouseButton> buttonsDown = new();
-	
+
+	private static Vector2 mousePositionLastFrame = new();
 	private static HashSet<Key> keysDownLastFrame = new();
 	private static HashSet<MouseButton> buttonsDownLastFrame = new();
 
@@ -26,7 +28,9 @@ public static class Input
 		
 		// Update mouse position
 		MousePosition = new Vector2(snapshot.MousePosition.X, snapshot.MousePosition.Y);
+		MouseDelta = MousePosition - mousePositionLastFrame;
 
+		mousePositionLastFrame = MousePosition;
 		keysDownLastFrame = new HashSet<Key>(keysDown);
 		buttonsDownLastFrame = new HashSet<MouseButton>(buttonsDown);
 

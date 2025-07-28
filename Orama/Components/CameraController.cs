@@ -17,7 +17,11 @@ public class CameraController : Camera
 		HandleRotation();
 
 		if (Input.KeyPressed(Key.Q))
+		{
 			Console.WriteLine("Camera position: " + Transform.Position);
+			Console.WriteLine("Camera rotation: " + Transform.Rotation);
+			Console.WriteLine("Mouse Position: " + Input.MousePosition);
+		}
 	}
 
 	private void HandleMovement()
@@ -37,27 +41,22 @@ public class CameraController : Camera
 
 	private void HandleRotation()
 	{
-		// Update pitch
-		if (Input.IsKeyDown(Key.Up))
-			pitch += RotationSpeed;
+		if (Input.IsMouseButtonDown(MouseButton.Right))
+		{
+			// Use mouse delta to update yaw and pitch
+			yaw += -Input.MouseDelta.X * RotationSpeed;
+			pitch += -Input.MouseDelta.Y * RotationSpeed;
 
-		if (Input.IsKeyDown(Key.Down))
-			pitch -= RotationSpeed;
+			// Clamp pitch to avoid flipping
+			pitch = Math.Clamp(pitch, -MathF.PI / 2 + 0.01f, MathF.PI / 2 - 0.01f);
 
-		pitch = Math.Clamp(pitch, -MathF.PI / 2 + 0.01f, MathF.PI / 2 - 0.01f);
+			// Create quaternions from yaw and pitch
+			var yawQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitY, yaw);
+			var pitchQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, pitch);
 
-		// Update yaw
-		if (Input.IsKeyDown(Key.Left))
-			yaw += RotationSpeed;
-
-		if (Input.IsKeyDown(Key.Right))
-			yaw -= RotationSpeed;
-
-		// Apply rotation
-		var yawQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitY, yaw);
-		var pitchQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, pitch);
-
-		Transform.Rotation = yawQuat * pitchQuat;
+			// Apply combined rotation
+			Transform.Rotation = yawQuat * pitchQuat;
+		}
 	}
 
 }
