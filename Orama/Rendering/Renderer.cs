@@ -1,6 +1,5 @@
 ﻿using System.Numerics;
 using Orama.Resources;
-using System.Numerics;
 using Veldrid;
 using Veldrid.SPIRV;
 using Veldrid.StartupUtilities;

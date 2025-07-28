@@ -1,7 +1,5 @@
 using System.Numerics;
 
-// Wasn't sure if this fit the core directory..
-// can freely change if you wish.
 namespace Orama.Core;
 
 public class Transform
@@ -29,13 +27,4 @@ public class Transform
 
 	// Up direction (local +Y)
 	public Vector3 Up => Vector3.Transform(new Vector3(0, 1, 0), Rotation);
-
-	// Left direction (local -X)
-	public Vector3 Left => Vector3.Transform(new Vector3(-1, 0, 0), Rotation);
-
-	// Backward direction (local +Z)
-	public Vector3 Back => Vector3.Transform(new Vector3(0, 0, 1), Rotation);
-
-	// Down direction (local -Y)
-	public Vector3 Down => Vector3.Transform(new Vector3(0, -1, 0), Rotation);
 }

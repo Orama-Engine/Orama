@@ -9,7 +9,7 @@ public class CameraController : Camera
 	public override void Update()
 	{
 		if (Input.IsKeyDown(Key.A))
-			Transform.Position += Transform.Left * Speed;
+			Transform.Position += -Transform.Right * Speed;
 
 		if (Input.IsKeyDown(Key.D))
 			Transform.Position += Transform.Right * Speed;
@@ -18,7 +18,7 @@ public class CameraController : Camera
 			Transform.Position += Transform.Forward * Speed;
 
 		if (Input.IsKeyDown(Key.S))
-			Transform.Position += Transform.Back * Speed;
+			Transform.Position += -Transform.Forward * Speed;
 
 		if (Input.IsKeyPressed(Key.Q))
 			Console.WriteLine("Camera position: " + Transform.Position);
