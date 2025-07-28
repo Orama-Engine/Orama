@@ -1,3 +1,4 @@
+using System.Numerics;
 using Orama.Rendering;
 using Veldrid;
 
@@ -9,7 +10,10 @@ namespace Orama.UserInput;
 public static class Input
 {
 	private static HashSet<Key> keysDown = new();
+	private static HashSet<MouseButton> buttonsDown = new();
+	
 	private static HashSet<Key> keysDownLastFrame = new();
+	private static HashSet<MouseButton> buttonsDownLastFrame = new();
 
 	public static void Update()
 	{
@@ -19,6 +23,7 @@ public static class Input
 		InputSnapshot snapshot = Window.LatestInputSnapshot;
 
 		keysDownLastFrame = new HashSet<Key>(keysDown);
+		buttonsDownLastFrame = new HashSet<MouseButton>(buttonsDown);
 
 		// Update key state
 		foreach (var keyEvent in snapshot.KeyEvents)
@@ -29,6 +34,16 @@ public static class Input
 			else
 				keysDown.Remove(engineKey);
 		}
+		
+		// Update Mouse Button state
+		foreach (var mouseButtonEvent in snapshot.MouseEvents)
+		{
+			MouseButton engineMouseButton = mouseButtonEvent.MouseButton.ToEngineMouseButton();
+			if (mouseButtonEvent.Down)
+				buttonsDown.Add(engineMouseButton);
+			else
+				buttonsDown.Remove(engineMouseButton);
+		}
 	}
 
 	/// <summary>
@@ -36,10 +51,24 @@ public static class Input
 	/// </summary>
 	/// <param name="key">Key to check.</param>
 	public static bool IsKeyDown(Key key) => keysDown.Contains(key);
+	
+	/// <summary>
+	/// Checks if a mouse button is currently pressed.
+	/// </summary>
+	/// <param name="button"></param>
+	/// <returns></returns>
+	public static bool IsMouseButtonDown(MouseButton button) => buttonsDown.Contains(button);
 
 	/// <summary>
 	/// Checks if a key was pressed this frame.
 	/// </summary>
 	/// <param name="key">Key to check.</param>
 	public static bool KeyPressed(Key key) => keysDown.Contains(key) && !keysDownLastFrame.Contains(key);
+	
+	/// <summary>
+	/// Checks if a mouse button was pressed this frame.
+	/// </summary>
+	/// <param name="mouseButton"></param>
+	/// <returns></returns>
+	public static bool MouseButtonClicked(MouseButton mouseButton) => buttonsDown.Contains(mouseButton) && !buttonsDownLastFrame.Contains(mouseButton);
 }
