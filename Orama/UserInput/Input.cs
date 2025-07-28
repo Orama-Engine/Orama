@@ -9,6 +9,8 @@ namespace Orama.UserInput;
 /// </summary>
 public static class Input
 {
+	public static Vector2 MousePosition { get; private set; }
+	
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<MouseButton> buttonsDown = new();
 	
@@ -70,5 +72,5 @@ public static class Input
 	/// </summary>
 	/// <param name="mouseButton"></param>
 	/// <returns></returns>
-	public static bool MouseButtonClicked(MouseButton mouseButton) => buttonsDown.Contains(mouseButton) && !buttonsDownLastFrame.Contains(mouseButton);
+	public static bool MouseButtonPressed(MouseButton mouseButton) => buttonsDown.Contains(mouseButton) && !buttonsDownLastFrame.Contains(mouseButton);
 }
