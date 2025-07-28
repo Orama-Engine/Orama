@@ -32,6 +32,10 @@ public static class KeyTranslator
 			Veldrid.Key.X => Key.X,
 			Veldrid.Key.Y => Key.Y,
 			Veldrid.Key.Z => Key.Z,
+			Veldrid.Key.Up => Key.Up,
+			Veldrid.Key.Down => Key.Down,
+			Veldrid.Key.Left => Key.Left,
+			Veldrid.Key.Right => Key.Right,
 			Veldrid.Key.Space => Key.Space,
 			Veldrid.Key.Escape => Key.Escape,
 			_ => Key.Unknown
