@@ -24,12 +24,6 @@ public static class SceneManager
 		Clear();
 		Current = new Scene();
 
-		// Create new entities
-		Entity mesh = new Entity();
-		mesh.AddComponent(new MeshRenderer());
-		mesh.AddComponent(new CameraController());
-		Current.Add(mesh);
-
 		// Start all components
 		foreach (var entity in Current.AllEntities)
 		{
@@ -61,4 +55,10 @@ public static class SceneManager
 			}
 		}
     }
+
+	public static void LoadScene(Scene scene)
+	{
+		Clear();
+		Current = scene;
+	}
 }
