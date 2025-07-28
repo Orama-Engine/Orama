@@ -16,7 +16,7 @@ public class DefaultResourceLibrary : IResourceLibrary
 	}
 
 	/// <inheritdoc/>
-	public void WriteResource<T>(string path, T resource) where T : IResource<T>, new()
+	public void SaveResource<T>(string path, T resource) where T : IResource<T>, new()
 	{
 		using var stream = File.OpenWrite(Path.Combine(AppContext.BaseDirectory, path));
 		stream.SetLength(0);

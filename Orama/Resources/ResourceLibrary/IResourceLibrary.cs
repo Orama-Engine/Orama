@@ -16,5 +16,5 @@ public interface IResourceLibrary
 	/// </summary>
 	/// <typeparam name="T">The type of the resource.</typeparam>
 	/// <param name="path">Path to save to.</param>
-	void WriteResource<T>(string path, T resource) where T : IResource<T>, new();
+	void SaveResource<T>(string path, T resource) where T : IResource<T>, new();
 }
