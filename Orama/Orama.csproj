@@ -17,6 +17,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Orama.Serialization\Orama.Serialization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Assets\test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

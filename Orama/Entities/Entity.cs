@@ -1,6 +1,7 @@
 using System.Numerics;
 using System.Collections.ObjectModel;
 using Orama.Components;
+using Orama.Echo;
 
 namespace Orama.Entities;
 
@@ -8,12 +9,13 @@ namespace Orama.Entities;
 /// The base class for all Entities in a Scene.
 /// Holds a collection of Components that contain the logic for the specific Entity.
 /// </summary>
-public class Entity
+public class Entity : ISerializationCallbackReceiver
 {
 	public string Name { get; set; } = "Entity";
 
 	public Transform Transform { get; set; } = new();
 
+	[SerializeField]
 	private readonly List<Component> components = new();
 	
 	/// <summary> Read-only collection of the Entity's Components </summary>
@@ -46,5 +48,14 @@ public class Entity
 	public T GetComponent<T>() where T : Component
 	{
 		return components.OfType<T>().FirstOrDefault();
+	}
+
+	public void OnBeforeSerialize() { }
+
+	public void OnAfterDeserialize()
+	{
+		// Reconstruct all component instances
+		foreach (var component in components)
+			component.Entity = this;
 	}
 }

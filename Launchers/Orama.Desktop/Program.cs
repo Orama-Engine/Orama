@@ -28,7 +28,9 @@ class OramaDesktop
 			ent.AddComponent(new CameraController());
 			test.Add(ent);
 
-			SceneManager.LoadScene(test);
+			Application.ResourceLibrary.WriteResource<Scene>("Assets/testscene.orama", test);
+
+			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
 		};
 
 		Application.Update += () =>
