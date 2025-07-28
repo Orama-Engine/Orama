@@ -16,7 +16,7 @@ public class CameraController : Camera
 		HandleMovement();
 		HandleRotation();
 
-		if (Input.IsKeyPressed(Key.Q))
+		if (Input.KeyPressed(Key.Q))
 			Console.WriteLine("Camera position: " + Transform.Position);
 	}
 

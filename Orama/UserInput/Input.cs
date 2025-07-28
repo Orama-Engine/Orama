@@ -11,9 +11,6 @@ public static class Input
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<Key> keysDownLastFrame = new();
 
-	/// <summary> Called when a key is pressed. </summary>
-	public static event Action<Key>? KeyPressed;
-
 	public static void Update()
 	{
 		if (Window.InternalWindow == null)
@@ -32,11 +29,6 @@ public static class Input
 			else
 				keysDown.Remove(engineKey);
 		}
-
-		// Fire KeyPressed only for newly pressed keys this frame
-		foreach (var key in keysDown)
-			if (!keysDownLastFrame.Contains(key))
-				KeyPressed?.Invoke(key);
 	}
 
 	/// <summary>
@@ -49,5 +41,5 @@ public static class Input
 	/// Checks if a key was pressed this frame.
 	/// </summary>
 	/// <param name="key">Key to check.</param>
-	public static bool IsKeyPressed(Key key) => keysDown.Contains(key) && !keysDownLastFrame.Contains(key);
+	public static bool KeyPressed(Key key) => keysDown.Contains(key) && !keysDownLastFrame.Contains(key);
 }
