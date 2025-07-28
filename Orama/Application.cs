@@ -34,11 +34,6 @@ public static class Application
 	public static void AppInitialize()
 	{
 		Initialize?.Invoke();
-
-		Material material = Material.Default;
-		Stream stream = Serialization.Serializer.Serialize(material);
-		using var reader = new StreamReader(stream);
-		Console.WriteLine(reader.ReadToEnd());
 	}
 
 	public static void AppUpdate()

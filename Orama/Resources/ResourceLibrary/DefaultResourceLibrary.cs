@@ -14,6 +14,8 @@ public class DefaultResourceLibrary : IResourceLibrary
 	{
 		using var stream = File.OpenWrite(Path.Combine(AppContext.BaseDirectory, path));
 		stream.SetLength(0);
-		resource.Serialize(stream);
+
+		Stream output = resource.Serialize();
+		output.CopyTo(stream);
 	}
 }

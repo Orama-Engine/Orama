@@ -20,9 +20,8 @@ internal class TextAsset : IResource<TextAsset>
 		};
 	}
 
-	public void Serialize(Stream stream)
+	public Stream Serialize()
 	{
-		using var writer = new StreamWriter(stream);
-		writer.Write(Content);
+		return new MemoryStream(Encoding.UTF8.GetBytes(Content));
 	}
 }
