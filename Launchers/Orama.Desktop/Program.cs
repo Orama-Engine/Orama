@@ -1,7 +1,9 @@
 ﻿using System.Numerics;
 using Orama.Components;
 using Orama.Engine;
+using Orama.Entities;
 using Orama.Rendering;
+using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
 using Orama.UserInput;
 
@@ -18,6 +20,15 @@ class OramaDesktop
 		{
 			SceneManager.Initialize();
 			Renderer.OnLoad();
+
+			// Load a test scene
+			Scene test = new();
+			Entity ent = new();
+			ent.AddComponent(new MeshRenderer());
+			ent.AddComponent(new CameraController());
+			test.Add(ent);
+
+			SceneManager.LoadScene(test);
 		};
 
 		Application.Update += () =>
