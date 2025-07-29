@@ -21,7 +21,6 @@ public static class Input
 
 	/// <summary> The change in mouse position since the last frame. </summary>
 	public static Vector2 MouseDelta { get; private set; }
-	
 
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<MouseButton> buttonsDown = new();
@@ -45,7 +44,7 @@ public static class Input
 		// Update mouse position
 		MousePosition = new Vector2(snapshot.MousePosition.X, snapshot.MousePosition.Y);
 		
-		// If cursor is locked, mouse delta is movement away from center of screen
+		// If cursor is locked, mouse delta is distance from window center to avoid snapping back
 		if (CursorLocked)
 			MouseDelta = MousePosition - new Vector2(Window.Width / 2, Window.Height / 2);
 		else

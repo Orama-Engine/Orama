@@ -54,9 +54,12 @@ public class Scene : IResource<Scene>
 		return Serializer.Deserialize<Scene>(tag);
 	}
 
-	public Stream Serialize()
+	public void Serialize(Stream stream)
 	{
 		var tag = Serializer.Serialize(this);
-		return new MemoryStream(Encoding.UTF8.GetBytes(tag.WriteToString()));
+		var serializedString = tag.WriteToString();
+		using var writer = new StreamWriter(stream, Encoding.UTF8, leaveOpen: true);
+		writer.Write(serializedString);
+		writer.Flush();
 	}
 }

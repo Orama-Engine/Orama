@@ -18,10 +18,9 @@ public class DefaultResourceLibrary : IResourceLibrary
 	/// <inheritdoc/>
 	public void SaveResource<T>(string path, T resource) where T : IResource<T>, new()
 	{
-		using var stream = File.OpenWrite(Path.Combine(AppContext.BaseDirectory, path));
-		stream.SetLength(0);
+		using var stream = File.OpenWrite(path);
+		stream.SetLength(0); // Clear content
 
-		Stream output = resource.Serialize();
-		output.CopyTo(stream);
+		resource.Serialize(stream);
 	}
 }
