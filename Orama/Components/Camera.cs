@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Orama.Echo;
+using System.Numerics;
 
 namespace Orama.Components;
 
@@ -6,10 +7,10 @@ public class Camera : Component
 {
 	public static Camera? Main { get; private set; }
 
-	public float FieldOfViewDegrees { get; set; } = 60f;
-	public float AspectRatio { get; set; } = 16f / 9f;
-	public float NearPlane { get; set; } = 0.1f;
-	public float FarPlane { get; set; } = 1000f;
+	[SerializeProperty] public float FieldOfViewDegrees { get; set; } = 60f;
+	[SerializeProperty] public float AspectRatio { get; set; } = 16f / 9f;
+	[SerializeProperty] public float NearPlane { get; set; } = 0.1f;
+	[SerializeProperty] public float FarPlane { get; set; } = 1000f;
 
 	public Camera() => Main = this;
 

@@ -16,6 +16,11 @@ public class SerializeFieldAttribute : Attribute
 {
 }
 
+[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+public class SerializePropertyAttribute : Attribute
+{
+}
+
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = true)]
 public class FormerlySerializedAsAttribute : Attribute
 {

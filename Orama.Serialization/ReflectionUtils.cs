@@ -82,4 +82,26 @@ public static class ReflectionUtils
             return false;
         return true;
     }
+
+	internal static PropertyInfo[] GetSerializableProperties(this object target)
+	{
+		Type targetType = target.GetType();
+		return targetType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+			.Where(property => IsPropertySerializable(property))
+			.ToArray();
+	}
+
+	private static bool IsPropertySerializable(PropertyInfo property)
+	{
+		// Check if property should be serialized
+		bool shouldSerialize = property.CanWrite && property.CanRead && property.GetCustomAttribute<SerializePropertyAttribute>() != null;
+		if (!shouldSerialize)
+			return false;
+		// Check if property should be ignored
+		bool shouldIgnore = property.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
+							property.GetCustomAttribute<NonSerializedAttribute>() != null;
+		if (shouldIgnore)
+			return false;
+		return true;
+	}
 }

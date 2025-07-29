@@ -66,6 +66,31 @@ public sealed class AnyObjectFormat : ISerializationFormat
                     // We don't want to stop the serialization process because of a single field, so we just skip it and continue
                 }
             }
+
+			foreach (System.Reflection.PropertyInfo property in value.GetSerializableProperties())
+			{
+				try
+				{
+					object? propValue = property.GetValue(value);
+					if (propValue == null)
+					{
+						if (Attribute.GetCustomAttribute(property, typeof(IgnoreOnNullAttribute)) != null)
+							continue;
+						compound.Add(property.Name, new(EchoType.Null, null));
+					}
+					else
+					{
+						// Serialize with property type as target to enable polymorphism detection
+						EchoObject tag = Serializer.Serialize(property.PropertyType, propValue, context);
+						compound.Add(property.Name, tag);
+					}
+				}
+				catch (Exception ex)
+				{
+					Serializer.Logger.Error($"Failed to serialize property {property.Name}", ex);
+					// We don't want to stop the serialization process because of a single property, so we just skip it and continue
+				}
+			}
         }
 
         // Add reference ID if needed
