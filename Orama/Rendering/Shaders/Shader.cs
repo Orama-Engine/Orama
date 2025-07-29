@@ -9,14 +9,6 @@ public class Shader
 	internal byte[] VertexBytes { get; }
 	internal byte[] FragmentBytes { get; }
 
-	public Shader(string vertexSource, string fragmentSource)
-	{
-		if (vertexSource is null) throw new ArgumentNullException(nameof(vertexSource));
-		if (fragmentSource is null) throw new ArgumentNullException(nameof(fragmentSource));
-
-		(VertexBytes, FragmentBytes) = ShaderBaker.Bake(vertexSource, fragmentSource);
-	}
-
 	private const string VertexSource = @"
 #version 450
 
@@ -43,4 +35,12 @@ void main()
 {
     fsoutColor = vec4(1.0); // white
 }";
+
+	public Shader(string vertexSource, string fragmentSource)
+	{
+		if (vertexSource is null) throw new ArgumentNullException(nameof(vertexSource));
+		if (fragmentSource is null) throw new ArgumentNullException(nameof(fragmentSource));
+
+		(VertexBytes, FragmentBytes) = ShaderBaker.Bake(vertexSource, fragmentSource);
+	}
 }
