@@ -21,6 +21,9 @@ public static class Input
 
 	/// <summary> The change in mouse position since the last frame. </summary>
 	public static Vector2 MouseDelta { get; private set; }
+	
+	/// <summary> Scroll delta since the last frame. </summary>
+	public static float ScrollDelta { get; private set; }
 
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<MouseButton> buttonsDown = new();
@@ -53,6 +56,7 @@ public static class Input
 		mousePositionLastFrame = MousePosition;
 		keysDownLastFrame = new HashSet<Key>(keysDown);
 		buttonsDownLastFrame = new HashSet<MouseButton>(buttonsDown);
+		ScrollDelta = snapshot.WheelDelta;
 
 		// Update key state
 		foreach (var keyEvent in snapshot.KeyEvents)
