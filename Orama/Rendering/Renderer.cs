@@ -55,6 +55,11 @@ public static class Renderer
 		var sdl2Window = Window.InternalWindow
 						 ?? throw new Exception("Sdl2Window not initialized");
 
+		sdl2Window.Resized += () =>
+		{
+			_graphicsDevice.ResizeMainWindow((uint)sdl2Window.Width, (uint)sdl2Window.Height);
+		};
+
 		var options = new GraphicsDeviceOptions(
 			debug: false,
 			swapchainDepthFormat: null,

@@ -28,7 +28,11 @@ public static class Window
 	public static Vector2 Size
 	{
 		get => new Vector2(InternalWindow.Width, InternalWindow.Height);
-		set { InternalWindow.Width = (int)value.X; InternalWindow.Height = (int)value.Y; }
+		set
+		{
+			InternalWindow.Width = (int)value.X;
+			InternalWindow.Height = (int)value.Y;
+		}
 	}
 
 	/// <summary> The position of the window. </summary>
