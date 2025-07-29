@@ -197,8 +197,7 @@ public static class Renderer
 		if (_graphicsDevice == null || _commandList == null)
 			return;
 
-		// For demonstration, model matrix is identity
-		Matrix4x4 modelMatrix = Matrix4x4.Identity;
+		Matrix4x4 modelMatrix = renderable.ModelMatrix;
 
 		int matrixSize = sizeof(float) * 16;
 		byte[] uboData = new byte[matrixSize * 3];

@@ -25,8 +25,11 @@ class OramaDesktop
 			Scene test = new();
 			Entity ent = new();
 			ent.AddComponent(new MeshRenderer());
-			ent.AddComponent(new CameraController());
 			test.Add(ent);
+
+			Entity cam = new();
+			cam.AddComponent(new CameraController());
+			test.Add(cam);
 
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
