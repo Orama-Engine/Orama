@@ -1,5 +1,6 @@
 using System.Numerics;
 using Orama.Rendering;
+using Veldrid.Sdl2;
 using Veldrid;
 
 namespace Orama.UserInput;
@@ -9,12 +10,21 @@ namespace Orama.UserInput;
 /// </summary>
 public static class Input
 {
+	/// <summary> Whether the cursor is visible. </summary>
+	public static bool CursorVisible { get; set; } = true;
+
+	/// <summary> Whether the cursor is locked to the center of the window. </summary>
+	public static bool CursorLocked { get; set; } = false;
+
+	/// <summary> The current position of the mouse. </summary>
 	public static Vector2 MousePosition { get; private set; }
+
+	/// <summary> The change in mouse position since the last frame. </summary>
 	public static Vector2 MouseDelta { get; private set; }
 	
+
 	private static HashSet<Key> keysDown = new();
 	private static HashSet<MouseButton> buttonsDown = new();
-
 	private static Vector2 mousePositionLastFrame = new();
 	private static HashSet<Key> keysDownLastFrame = new();
 	private static HashSet<MouseButton> buttonsDownLastFrame = new();
@@ -24,11 +34,22 @@ public static class Input
 		if (Window.InternalWindow == null)
 			return;
 
+		// Update cursor state
+		// TODO: Non-native way to do this?
+		Sdl2Native.SDL_ShowCursor(CursorVisible ? 1 : 0);
+		if (CursorLocked)
+			Sdl2Native.SDL_WarpMouseInWindow(Window.InternalWindow.SdlWindowHandle, Window.Width / 2, Window.Height / 2);
+
 		InputSnapshot snapshot = Window.LatestInputSnapshot;
-		
+
 		// Update mouse position
 		MousePosition = new Vector2(snapshot.MousePosition.X, snapshot.MousePosition.Y);
-		MouseDelta = MousePosition - mousePositionLastFrame;
+		
+		// If cursor is locked, mouse delta is movement away from center of screen
+		if (CursorLocked)
+			MouseDelta = MousePosition - new Vector2(Window.Width / 2, Window.Height / 2);
+		else
+			MouseDelta = MousePosition - mousePositionLastFrame;
 
 		mousePositionLastFrame = MousePosition;
 		keysDownLastFrame = new HashSet<Key>(keysDown);

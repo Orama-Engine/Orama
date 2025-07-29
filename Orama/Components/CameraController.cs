@@ -43,6 +43,9 @@ public class CameraController : Camera
 	{
 		if (Input.IsMouseButtonDown(MouseButton.Right))
 		{
+			Input.CursorVisible = false;
+			Input.CursorLocked = true;
+
 			// Use mouse delta to update yaw and pitch
 			yaw += -Input.MouseDelta.X * RotationSpeed;
 			pitch += -Input.MouseDelta.Y * RotationSpeed;
@@ -56,7 +59,10 @@ public class CameraController : Camera
 
 			// Apply combined rotation
 			Transform.Rotation = yawQuat * pitchQuat;
+		} else
+		{
+			Input.CursorVisible = true;
+			Input.CursorLocked = false;
 		}
 	}
-
 }
