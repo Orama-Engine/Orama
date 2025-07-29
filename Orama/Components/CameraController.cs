@@ -1,12 +1,13 @@
-﻿using Orama.UserInput;
+﻿using Orama.Echo;
+using Orama.UserInput;
 using System.Numerics;
 
 namespace Orama.Components;
 
 public class CameraController : Camera
 {
-	public float Speed = 0.25f;
-	public float RotationSpeed = 0.005f;
+	[SerializeProperty] public float Speed { get; set; } = 0.25f;
+	[SerializeProperty] public float RotationSpeed { get; set; } = 0.005f;
 
 	private float yaw = 0f;
 	private float pitch = 0f;

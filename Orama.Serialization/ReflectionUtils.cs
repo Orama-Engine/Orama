@@ -75,11 +75,13 @@ public static class ReflectionUtils
         bool shouldSerialize = field.GetCustomAttribute<SerializeFieldAttribute>() != null;
         if (!shouldSerialize)
             return false;
+
         // Check if field should be ignored
         bool shouldIgnore = field.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
                             field.GetCustomAttribute<NonSerializedAttribute>() != null;
         if (shouldIgnore)
             return false;
+
         return true;
     }
 
@@ -97,11 +99,13 @@ public static class ReflectionUtils
 		bool shouldSerialize = property.CanWrite && property.CanRead && property.GetCustomAttribute<SerializePropertyAttribute>() != null;
 		if (!shouldSerialize)
 			return false;
+
 		// Check if property should be ignored
 		bool shouldIgnore = property.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
 							property.GetCustomAttribute<NonSerializedAttribute>() != null;
 		if (shouldIgnore)
 			return false;
+
 		return true;
 	}
 }
