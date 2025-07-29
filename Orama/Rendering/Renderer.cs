@@ -9,6 +9,11 @@ namespace Orama.Rendering;
 
 public static class Renderer
 {
+	/// <summary>
+	/// The graphics backend in use.
+	/// </summary>
+	public static GraphicsBackend GraphicsBackend => _graphicsDevice.BackendType;
+
 	private static GraphicsDevice? _graphicsDevice;
 	private static CommandList? _commandList;
 	private static RgbaFloat _clearColor;
