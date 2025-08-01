@@ -49,6 +49,12 @@ class OramaDesktop
 			RenderPipelineManager.RenderFrame(context);
 		};
 
+		Application.Quitting += () =>
+		{
+			RenderPipelineManager.Current.Dispose();
+		};
+
+
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
     }
 }
