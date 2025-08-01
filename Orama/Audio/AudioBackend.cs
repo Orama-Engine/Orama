@@ -7,13 +7,6 @@ namespace Orama.Audio;
 /// </summary>
 public static class AudioBackend
 {
-	// Internal dictionaries to pass through to the AudioManager
-	internal static Dictionary<int, uint> sources = new();
-	internal static Dictionary<int, uint> buffers = new();
-	
-	// Buffer and Source Ids
-	private static int nextBufferId = 1;
-	private static int nextSourceId = 1;
 		
 	private static ALContext? alContextApi;
 	private static AL? al;
@@ -77,8 +70,40 @@ public static class AudioBackend
 			alContextApi?.CloseDevice(device);
 			device = null;
 		}
+
+		if (al != null)
+		{
+			al.Dispose();
+			al = null;
+		}
 		
 		Console.WriteLine("Audio device shutdown successfully.");
+	}
+
+	/// <summary>
+	/// Plays an audio source.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
+	public static void PlaySource(uint source)
+	{
+		if (al == null)
+			throw new InvalidOperationException("Audio not initialized.");
+		
+		al.SourcePlay(source);
+	}
+
+	/// <summary>
+	/// Stops an audio source.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
+	public static void StopSource(uint source)
+	{
+		if (al == null)
+			throw new InvalidOperationException("Audio not initialized.");
+		
+		al.SourceStop(source);
 	}
 
 	/// <summary>
@@ -99,9 +124,7 @@ public static class AudioBackend
 
 		fixed(byte* pData = data)
 			al.BufferData(buffer, format, pData, size, sampleRate);
-
-		int id = nextBufferId++;
-		buffers.Add(id, buffer);
+		
 		return buffer;
 	}
 
@@ -110,19 +133,17 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="buffer"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static void DeleteBuffer(int id)
+	public static void DeleteBuffer(uint buffer)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
 
-		buffers.Remove(id);
-		al.DeleteBuffer(buffers[id]);
+		al.DeleteBuffer(buffer);
 	}
 
 	/// <summary>
 	/// Generates an audio source.
 	/// </summary>
-	/// <param name="id"></param>
 	/// <returns>Audio Source.</returns>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized, source has the same ID or generation fails.</exception>
 	public static uint GenerateSource()
@@ -133,9 +154,7 @@ public static class AudioBackend
 		var source = al.GenSource();
 		if (source == 0)
 			throw new InvalidOperationException("Failed to generate source.");
-
-		int id = nextBufferId++;
-		sources.Add(id, source);
+		
 		return source;
 	}
 
@@ -144,12 +163,28 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="source"></param>
 	/// <param name="buffer"></param>
-	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized or there is no audio source.</exception>
+	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized.</exception>
 	public static void AttachBufferToSource(uint source, uint buffer)
 	{
-		if (al == null || !sources.ContainsValue(source))
-			throw new InvalidOperationException("Audio not initialized or there is no audio source available.");
+		if (al == null)
+			throw new InvalidOperationException("Audio not initialized.");
 
 		al.SetSourceProperty(source, SourceInteger.Buffer, buffer);
+	}
+
+	/// <summary>
+	/// Delete an audio source and clean up resources.
+	/// </summary>
+	/// <param name="source"></param>
+	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized or deletion fails.</exception>
+	public static void DeleteSource(uint source)
+	{
+		if (al == null)
+			throw new InvalidOperationException("Audio not initialized.");
+		
+		if (source == 0)
+			throw new InvalidOperationException("Failed to delete source.");
+
+		al.DeleteSource(source);
 	}
 }
