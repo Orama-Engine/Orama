@@ -8,9 +8,14 @@ namespace Orama.Rendering;
 /// <summary>
 /// Provides Context for rendering a frame.
 /// </summary>
-public sealed class RenderContext
+public struct RenderContext
 {
 	public Camera RenderingCamera = null!;
+
+	public RenderContext(Camera targetCamera)
+	{
+		RenderingCamera = targetCamera;
+	}
 
 	public Matrix4x4 ViewMatrix => RenderingCamera.ViewMatrix;
 	public Matrix4x4 ProjectionMatrix => RenderingCamera.ProjectionMatrix;
