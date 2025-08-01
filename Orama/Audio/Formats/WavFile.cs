@@ -9,6 +9,14 @@ public class WavFile
 	public int BitsPerSample { get; }
 	public byte[] PcmData { get; }
 	
+	/// <summary>
+	/// Constructs a WAV file with the specified audio properties and PCM data.
+	/// </summary>
+	/// <param name="channels"></param>
+	/// <param name="sampleRate"></param>
+	/// <param name="bitsPerSample"></param>
+	/// <param name="pcmData"></param>
+	/// <exception cref="InvalidDataException">Thrown when the WAV file fails to construct.</exception>
 	public WavFile(int channels, int sampleRate, int bitsPerSample, byte[] pcmData)
 	{
 		if (channels <= 0 || sampleRate <= 0 || bitsPerSample <= 0 || pcmData == null || pcmData.Length == 0)
