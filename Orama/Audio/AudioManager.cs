@@ -6,6 +6,10 @@ public static class AudioManager
 	public static Dictionary<string, uint> SourceCache = new();
 	public static Dictionary<string, uint> BufferCache = new();
 
+	/// <summary>
+	/// Plays the sound at the specified file path.
+	/// </summary>
+	/// <param name="filePath"></param>
 	public static void PlaySound(string filePath)
 	{
 		// Normalise the path before using it as a key for the caches
@@ -37,6 +41,10 @@ public static class AudioManager
 		SourceCache[key] = source;
 	}
 
+	/// <summary>
+	/// Stops the sound at the specified file path if it's playing.
+	/// </summary>
+	/// <param name="filePath"></param>
 	public static void StopSound(string filePath)
 	{
 		string key = Path.GetFullPath(filePath).ToLowerInvariant();
