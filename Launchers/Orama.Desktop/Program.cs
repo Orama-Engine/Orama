@@ -56,6 +56,7 @@ class OramaDesktop
 
 		Application.Quitting += () =>
 		{
+			RenderPipelineManager.Current.Dispose();
 			AudioBackend.Shutdown();
 		};
 
