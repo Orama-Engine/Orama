@@ -19,7 +19,8 @@ class OramaDesktop
 		Application.Initialize += () =>
 		{
 			SceneManager.Initialize();
-			Renderer.OnLoad();
+			Renderer.Initialize();
+			RenderPipelineManager.Current.Initialize();
 
 			// Load a test scene
 			Scene test = new();
@@ -44,7 +45,9 @@ class OramaDesktop
 
 		Application.Render += () =>
 		{
-			Renderer.OnRender(Camera.Main?.ViewMatrix ?? Matrix4x4.Identity, Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity);
+			RenderContext context = new();
+			context.RenderingCamera = Camera.Main ?? new();
+			RenderPipelineManager.RenderFrame(context);
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());

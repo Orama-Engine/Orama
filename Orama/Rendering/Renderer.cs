@@ -9,121 +9,65 @@ namespace Orama.Rendering;
 
 public static class Renderer
 {
-	/// <summary>
-	/// The graphics backend in use.
-	/// </summary>
 	public static GraphicsBackend GraphicsBackend => _graphicsDevice.BackendType;
 
 	private static GraphicsDevice? _graphicsDevice;
 	private static CommandList? _commandList;
-	private static RgbaFloat _clearColor;
-
-	private class RenderableResources
-	{
-		public DeviceBuffer VertexBuffer { get; }
-		public DeviceBuffer IndexBuffer { get; }
-		public Pipeline Pipeline { get; }
-		public ResourceLayout ResourceLayout { get; }
-		public Veldrid.Shader[] Shaders { get; }
-
-		public RenderableResources(DeviceBuffer vb, DeviceBuffer ib, Pipeline pipeline,
-								   ResourceLayout layout, Veldrid.Shader[] shaders)
-		{
-			VertexBuffer = vb;
-			IndexBuffer = ib;
-			Pipeline = pipeline;
-			ResourceLayout = layout;
-			Shaders = shaders;
-		}
-	}
-
-	private class MaterialResources
-	{
-		public byte[] VertexBytes { get; }
-		public byte[] FragmentBytes { get; }
-
-		public MaterialResources(byte[] vertexBytes, byte[] fragmentBytes)
-		{
-			VertexBytes = vertexBytes ?? throw new ArgumentNullException(nameof(vertexBytes));
-			FragmentBytes = fragmentBytes ?? throw new ArgumentNullException(nameof(fragmentBytes));
-		}
-	}
 
 	private static readonly Dictionary<IClientRenderable, RenderableResources> _renderableResources = new();
 	private static readonly Dictionary<Material, MaterialResources> _materialResources = new();
+	private static readonly List<IClientRenderable> _renderables = new();
 
-	// Collection of renderables to draw each frame
-	private static readonly List<IClientRenderable> _currentFrameRenderables = new();
-
-	public static void OnLoad()
+	public static void Initialize()
 	{
-		var sdl2Window = Window.InternalWindow
-						 ?? throw new Exception("Sdl2Window not initialized");
+		var window = Window.InternalWindow ?? throw new Exception("Sdl2Window not initialized");
 
-		sdl2Window.Resized += () =>
+		window.Resized += () =>
 		{
-			_graphicsDevice.ResizeMainWindow((uint)sdl2Window.Width, (uint)sdl2Window.Height);
+			_graphicsDevice?.ResizeMainWindow((uint)window.Width, (uint)window.Height);
 		};
 
-		var options = new GraphicsDeviceOptions(
-			debug: false,
-			swapchainDepthFormat: null,
-			syncToVerticalBlank: true,
-			resourceBindingModel: ResourceBindingModel.Improved,
-			preferStandardClipSpaceYDirection: true,
-			preferDepthRangeZeroToOne: true);
-
-		_graphicsDevice = VeldridStartup.CreateGraphicsDevice(sdl2Window, options, GraphicsBackend.Vulkan);
+		_graphicsDevice = VeldridStartup.CreateGraphicsDevice(window, new GraphicsDeviceOptions(), GraphicsBackend.Vulkan);
 		_commandList = _graphicsDevice.ResourceFactory.CreateCommandList();
 	}
 
-	public static void SetClearColor(System.Drawing.Color color)
+	public static void Clear(Vector4 clearColor)
 	{
-		_clearColor = new RgbaFloat(color.R / 255f, color.G / 255f, color.B / 255f, color.A / 255f);
+		_commandList?.ClearColorTarget(0, new(clearColor));
 	}
 
-	/// <summary>
-	/// Call this each frame for every renderable to draw this frame.
-	/// </summary>
+	public static void BeginFrame()
+	{
+		_commandList?.Begin();
+		_commandList?.SetFramebuffer(_graphicsDevice!.SwapchainFramebuffer);
+	}
+
+	public static void EndFrame()
+	{
+		_commandList?.End();
+		_graphicsDevice!.SubmitCommands(_commandList);
+		_graphicsDevice.SwapBuffers();
+		_renderables.Clear();
+	}
+
 	public static void AddRenderable(IClientRenderable renderable)
 	{
-		_currentFrameRenderables.Add(renderable);
+		_renderables.Add(renderable);
 	}
 
-	public static void OnRender(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+	public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
 	{
-		if (_graphicsDevice == null || _commandList == null)
-			return;
-
-		_commandList.Begin();
-		try
+		foreach (var renderable in _renderables)
 		{
-			_commandList.SetFramebuffer(_graphicsDevice.SwapchainFramebuffer);
-			_commandList.ClearColorTarget(0, _clearColor);
-
-			foreach (var renderable in _currentFrameRenderables)
+			if (!_renderableResources.TryGetValue(renderable, out var res))
 			{
-				if (!_renderableResources.TryGetValue(renderable, out var res))
-				{
-					res = InitializeRenderableResources(renderable);
-					if (res == null) continue;
-					_renderableResources[renderable] = res;
-				}
-
-				RenderSingle(renderable, res, viewMatrix, projectionMatrix);
+				res = InitializeRenderableResources(renderable);
+				if (res == null) continue;
+				_renderableResources[renderable] = res;
 			}
+
+			Draw(renderable, res, viewMatrix, projectionMatrix);
 		}
-		finally
-		{
-			_commandList.End();
-		}
-
-
-		_graphicsDevice.SubmitCommands(_commandList);
-		_graphicsDevice.SwapBuffers();
-
-		// Clear for next frame
-		_currentFrameRenderables.Clear();
 	}
 
 	private static RenderableResources? InitializeRenderableResources(IClientRenderable renderable)
@@ -192,7 +136,7 @@ public static class Renderer
 		return new RenderableResources(vertexBuffer, indexBuffer, pipeline, resourceLayout, shaders);
 	}
 
-	private static void RenderSingle(IClientRenderable renderable, RenderableResources res, Matrix4x4 view, Matrix4x4 proj)
+	private static void Draw(IClientRenderable renderable, RenderableResources res, Matrix4x4 view, Matrix4x4 proj)
 	{
 		if (_graphicsDevice == null || _commandList == null)
 			return;
@@ -266,10 +210,38 @@ public static class Renderer
 
 	public static void DisposeMaterial(Material material)
 	{
-		// Currently material resources only cache shader byte arrays, no GPU resources to dispose
 		if (_materialResources.ContainsKey(material))
-		{
 			_materialResources.Remove(material);
-		}
+	}
+}
+
+public class RenderableResources
+{
+	public DeviceBuffer VertexBuffer { get; }
+	public DeviceBuffer IndexBuffer { get; }
+	public Pipeline Pipeline { get; }
+	public ResourceLayout ResourceLayout { get; }
+	public Veldrid.Shader[] Shaders { get; }
+
+	public RenderableResources(DeviceBuffer vb, DeviceBuffer ib, Pipeline pipeline,
+							   ResourceLayout layout, Veldrid.Shader[] shaders)
+	{
+		VertexBuffer = vb;
+		IndexBuffer = ib;
+		Pipeline = pipeline;
+		ResourceLayout = layout;
+		Shaders = shaders;
+	}
+}
+
+public class MaterialResources
+{
+	public byte[] VertexBytes { get; }
+	public byte[] FragmentBytes { get; }
+
+	public MaterialResources(byte[] vertexBytes, byte[] fragmentBytes)
+	{
+		VertexBytes = vertexBytes ?? throw new ArgumentNullException(nameof(vertexBytes));
+		FragmentBytes = fragmentBytes ?? throw new ArgumentNullException(nameof(fragmentBytes));
 	}
 }
