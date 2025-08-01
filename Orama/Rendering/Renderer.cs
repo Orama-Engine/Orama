@@ -124,7 +124,7 @@ public static class Renderer
 			BlendState = BlendStateDescription.SingleOverrideBlend,
 			DepthStencilState = DepthStencilStateDescription.Disabled,
 			RasterizerState = new RasterizerStateDescription(
-				FaceCullMode.None, PolygonFillMode.Solid, FrontFace.Clockwise, depthClipEnabled: true, scissorTestEnabled: false),
+				FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.Clockwise, depthClipEnabled: true, scissorTestEnabled: false),
 			PrimitiveTopology = PrimitiveTopology.TriangleList,
 			ResourceLayouts = new[] { resourceLayout },
 			ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
