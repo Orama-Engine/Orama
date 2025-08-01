@@ -7,7 +7,13 @@ namespace Orama.Audio;
 /// </summary>
 public static class AudioBackend
 {
-	public static Dictionary<int, uint> Sources = new();
+	// Internal dictionaries to pass through to the AudioManager
+	internal static Dictionary<int, uint> sources = new();
+	internal static Dictionary<int, uint> buffers = new();
+	
+	// Buffer and Source Ids
+	private static int nextBufferId = 1;
+	private static int nextSourceId = 1;
 		
 	private static ALContext? alContextApi;
 	private static AL? al;
@@ -94,6 +100,8 @@ public static class AudioBackend
 		fixed(byte* pData = data)
 			al.BufferData(buffer, format, pData, size, sampleRate);
 
+		int id = nextBufferId++;
+		buffers.Add(id, buffer);
 		return buffer;
 	}
 
@@ -102,12 +110,13 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="buffer"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static void DeleteBuffer(uint buffer)
+	public static void DeleteBuffer(int id)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
-		
-		al.DeleteBuffer(buffer);
+
+		buffers.Remove(id);
+		al.DeleteBuffer(buffers[id]);
 	}
 
 	/// <summary>
@@ -116,19 +125,17 @@ public static class AudioBackend
 	/// <param name="id"></param>
 	/// <returns>Audio Source.</returns>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized, source has the same ID or generation fails.</exception>
-	public static uint GenerateSource(int id)
+	public static uint GenerateSource()
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
-		
-		if (Sources.ContainsKey(id))
-			throw new InvalidOperationException("Source Id already registered.");
 		
 		var source = al.GenSource();
 		if (source == 0)
 			throw new InvalidOperationException("Failed to generate source.");
 
-		Sources.Add(id, source);
+		int id = nextBufferId++;
+		sources.Add(id, source);
 		return source;
 	}
 
@@ -140,7 +147,7 @@ public static class AudioBackend
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized or there is no audio source.</exception>
 	public static void AttachBufferToSource(uint source, uint buffer)
 	{
-		if (al == null || !Sources.ContainsValue(source))
+		if (al == null || !sources.ContainsValue(source))
 			throw new InvalidOperationException("Audio not initialized or there is no audio source available.");
 
 		al.SetSourceProperty(source, SourceInteger.Buffer, buffer);
