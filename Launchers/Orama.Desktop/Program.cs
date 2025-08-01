@@ -45,8 +45,7 @@ class OramaDesktop
 
 		Application.Render += () =>
 		{
-			RenderContext context = new();
-			context.RenderingCamera = Camera.Main ?? new();
+			RenderContext context = new RenderContext(Camera.Main ?? new());
 			RenderPipelineManager.RenderFrame(context);
 		};
 
