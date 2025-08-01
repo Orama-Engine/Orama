@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Orama.Audio;
 using Orama.Components;
 using Orama.Engine;
 using Orama.Entities;
@@ -20,6 +21,7 @@ class OramaDesktop
 		{
 			SceneManager.Initialize();
 			Renderer.Initialize();
+			AudioBackend.Initialize();
 			RenderPipelineManager.Current.Initialize();
 
 			// Load a test scene
@@ -35,6 +37,8 @@ class OramaDesktop
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
 			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
+			
+			AudioManager.PlaySound("Assets/scream.wav");
 		};
 
 		Application.Update += () =>
@@ -48,6 +52,11 @@ class OramaDesktop
 			RenderContext context = new();
 			context.RenderingCamera = Camera.Main ?? new();
 			RenderPipelineManager.RenderFrame(context);
+		};
+
+		Application.Quitting += () =>
+		{
+			AudioBackend.Shutdown();
 		};
 
         Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
