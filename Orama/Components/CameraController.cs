@@ -25,13 +25,6 @@ public class CameraController : Camera
 		
 		HandleMovement();
 		HandleRotation();
-
-		if (Input.KeyPressed(Key.Q))
-		{
-			Console.WriteLine("Camera position: " + Transform.Position);
-			Console.WriteLine("Camera rotation: " + Transform.Rotation);
-			Console.WriteLine("Mouse Position: " + Input.MousePosition);
-		}
 	}
 
 	private void HandleMovement()
