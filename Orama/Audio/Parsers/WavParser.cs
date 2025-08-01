@@ -9,6 +9,7 @@ public static class WavParser
 		using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 		using var reader = new BinaryReader(fs);
 		
+		// Checks for the .wav headers
 		var riff = new string(reader.ReadChars(4));
 		if (riff != "RIFF")
 			throw new FormatException("Unable to find 'RIFF' header.");
@@ -24,7 +25,7 @@ public static class WavParser
 		int sampleRate = 0;
 		int bitsPerSample = 0;
 		byte[] pcmData = null;
-
+		
 		while (reader.BaseStream.Position < reader.BaseStream.Length)
 		{
 			string chunkId = new string(reader.ReadChars(4));
