@@ -25,13 +25,6 @@ public static class AudioManager
 			BufferCache[key] = buffer;
 		}
 
-		// Stops and deletes the source if it already exists
-		if (SourceCache.TryGetValue(key, out var prevSource))
-		{
-			AudioBackend.StopSource(prevSource);
-			AudioBackend.DeleteSource(prevSource);
-		}
-
 		var source = AudioBackend.GenerateSource();
 		AudioBackend.AttachBufferToSource(source, BufferCache[key]);
 		
