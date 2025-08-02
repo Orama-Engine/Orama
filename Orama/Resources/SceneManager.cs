@@ -2,7 +2,7 @@ using Orama.Components;
 using Orama.Entities;
 using Orama.Resources;
 
-namespace Orama.Engine;
+namespace Orama.Resources;
 
 /// <summary>
 /// Manages Scenes and their operations.

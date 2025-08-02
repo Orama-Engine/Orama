@@ -1,7 +1,6 @@
 ﻿using System.Numerics;
 using Orama.Audio;
 using Orama.Components;
-using Orama.Engine;
 using Orama.Entities;
 using Orama.Rendering;
 using Orama.Resources;
@@ -45,6 +44,9 @@ class OramaDesktop
 		{
 			SceneManager.Update();
 			Input.Update();
+			
+			if (Input.MouseButtonPressed(MouseButton.Left))
+				AudioManager.PlaySound("Assets/scream.wav");
 		};
 
 		Application.Render += () =>
