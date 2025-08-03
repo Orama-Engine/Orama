@@ -36,17 +36,14 @@ class OramaDesktop
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
 			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
-			
-			AudioManager.PlaySound("Assets/scream.wav");
+
+			Application.ResourceLibrary.GetResource<Resources.Audio>("Assets/scream.wav").Play();
 		};
 
 		Application.Update += () =>
 		{
 			SceneManager.Update();
 			Input.Update();
-			
-			if (Input.MouseButtonPressed(MouseButton.Left))
-				AudioManager.PlaySound("Assets/scream.wav");
 		};
 
 		Application.Render += () =>

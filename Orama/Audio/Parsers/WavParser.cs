@@ -1,13 +1,12 @@
-using Orama.Audio.Formats;
+using Orama.Resources;
 
-namespace Orama.Audio;
+namespace Orama.Audio.Parsers;
 
 public static class WavParser
 {
-	public static WavFile FromFile(string path)
+	public static Resources.Audio FromStream(Stream stream)
 	{
-		using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
-		using var reader = new BinaryReader(fs);
+		using var reader = new BinaryReader(stream);
 		
 		// Checks for the .wav headers
 		var riff = new string(reader.ReadChars(4));
@@ -64,7 +63,9 @@ public static class WavParser
 		
 		if (pcmData == null)
 			throw new InvalidDataException("No PCM data found in WAV file.");
-		
-		return new WavFile(channels, sampleRate, bitsPerSample, pcmData);
+
+		var audio = new Resources.Audio();
+		audio.Deserialize(stream);
+		return audio;
 	}
 }
