@@ -11,13 +11,8 @@ public class SerializeIgnoreAttribute : Attribute
 {
 }
 
-[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-public class SerializeFieldAttribute : Attribute
-{
-}
-
-[AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-public class SerializePropertyAttribute : Attribute
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+public class SerializeAttribute : Attribute
 {
 }
 

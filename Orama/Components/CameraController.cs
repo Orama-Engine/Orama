@@ -6,8 +6,8 @@ namespace Orama.Components;
 
 public class CameraController : Camera
 {
-	[SerializeProperty] public float Speed { get; set; } = 0.005f;
-	[SerializeProperty] public float RotationSpeed { get; set; } = 0.001f;
+	[Serialize] public float Speed { get; set; } = 0.005f;
+	[Serialize] public float RotationSpeed { get; set; } = 0.001f;
 
 	private float yaw = 0f;
 	private float pitch = 0f;

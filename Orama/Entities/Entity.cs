@@ -15,7 +15,7 @@ public class Entity : ISerializationCallbackReceiver
 
 	public Transform Transform { get; set; } = new();
 
-	[SerializeField]
+	[Serialize]
 	private readonly List<Component> components = new();
 	
 	/// <summary> Read-only collection of the Entity's Components </summary>

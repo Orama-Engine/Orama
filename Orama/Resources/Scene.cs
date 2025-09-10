@@ -14,7 +14,7 @@ public class Scene : IResource<Scene>
     /// <summary> Creates an empty Scene. </summary>
     public Scene() { }
 
-	[SerializeField]
+	[Serialize]
     private HashSet<Entity> allEntities = new();
     
     /// <summary> The number of registered Entities. </summary>

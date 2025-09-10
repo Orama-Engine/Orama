@@ -8,9 +8,9 @@ public class Camera : Component
 {
 	public static Camera? Main { get; private set; }
 
-	[SerializeProperty] public float FieldOfViewDegrees { get; set; } = 60f;
-	[SerializeProperty] public float NearPlane { get; set; } = 0.1f;
-	[SerializeProperty] public float FarPlane { get; set; } = 1000f;
+	[Serialize] public float FieldOfViewDegrees { get; set; } = 60f;
+	[Serialize] public float NearPlane { get; set; } = 0.1f;
+	[Serialize] public float FarPlane { get; set; } = 1000f;
 
 	public float AspectRatio { get; set; } = 16f / 9f;
 

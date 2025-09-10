@@ -72,7 +72,7 @@ public static class ReflectionUtils
     private static bool IsFieldSerializable(FieldInfo field)
     {
         // Check if field should be serialized
-        bool shouldSerialize = field.GetCustomAttribute<SerializeFieldAttribute>() != null;
+        bool shouldSerialize = field.GetCustomAttribute<SerializeAttribute>() != null;
         if (!shouldSerialize)
             return false;
 
@@ -96,7 +96,7 @@ public static class ReflectionUtils
 	private static bool IsPropertySerializable(PropertyInfo property)
 	{
 		// Check if property should be serialized
-		bool shouldSerialize = property.CanWrite && property.CanRead && property.GetCustomAttribute<SerializePropertyAttribute>() != null;
+		bool shouldSerialize = property.CanWrite && property.CanRead && property.GetCustomAttribute<SerializeAttribute>() != null;
 		if (!shouldSerialize)
 			return false;
 
