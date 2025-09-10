@@ -28,7 +28,8 @@ class OramaDesktop
 			Entity ent = new();
 			ent.AddComponent(new MeshRenderer());
 
-			ent.Transform.Position = new Vector3(0, 2, 0);
+			ent.Transform.Position = new Vector3(0, 2, -5);
+			Console.WriteLine(ent.Transform.Matrix);
 			test.Add(ent);
 
 			Entity cam = new();

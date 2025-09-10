@@ -58,7 +58,7 @@ public class CameraController : Camera
 
 			// Create quaternions from yaw and pitch
 			var yawQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitY, yaw);
-			var pitchQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, -pitch);
+			var pitchQuat = Quaternion.CreateFromAxisAngle(Vector3.UnitX, pitch);
 
 			// Apply combined rotation
 			Transform.Rotation = yawQuat * pitchQuat;

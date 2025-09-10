@@ -44,8 +44,12 @@ public class Camera : Component
 		get
 		{
 			float aspectRatio = Window.Width / (float)Window.Height;
-			float fovRadians = FieldOfViewDegrees * (float)(System.Math.PI / 180.0);
-			return Matrix4x4.CreatePerspectiveFieldOfView(fovRadians, aspectRatio, NearPlane, FarPlane);
+			float fovRadians = FieldOfViewDegrees * (float)(Math.PI / 180.0);
+			var proj = Matrix4x4.CreatePerspectiveFieldOfView(fovRadians, aspectRatio, NearPlane, FarPlane);
+			
+			proj.M22 *= -1; // Manually flip the matrix's Y axis so it's not inverted, might create issues later on.
+
+			return proj;
 		}
 	}
 }
