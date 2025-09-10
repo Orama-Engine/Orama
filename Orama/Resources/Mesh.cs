@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Orama.Echo;
 using Orama.Rendering;
 using Orama.Rendering.Materials;
 
@@ -44,5 +45,6 @@ public class Mesh : IClientRenderable
 	public Vector3[] Vertices { get; set; } = [];
 	public uint[] Indices { get; set; } = [];
 	public Material Material { get; set; } = Material.Default;
-	public Matrix4x4 ModelMatrix { get; set; } = Matrix4x4.Identity;
+
+	[SerializeIgnore] public Matrix4x4 ModelMatrix { get; set; } = Matrix4x4.Identity;
 }

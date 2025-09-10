@@ -15,13 +15,12 @@ public class Entity : ISerializationCallbackReceiver
 
 	public Transform Transform { get; set; } = new();
 
-	[Serialize]
-	private readonly List<Component> components = new();
+	[Serialize] private readonly List<Component> components = new();
 	
 	/// <summary> Read-only collection of the Entity's Components </summary>
-	public ReadOnlyCollection<Component> Components => components.AsReadOnly();
+	[SerializeIgnore] public ReadOnlyCollection<Component> Components => components.AsReadOnly();
 	
-	public Entity() { } // Constructor
+	public Entity() { }
 
 	/// <summary> Destroys the Entity and its Components. </summary>
 	public void Destroy()
@@ -30,21 +29,21 @@ public class Entity : ISerializationCallbackReceiver
 			RemoveComponent(component);
 	}
 
-	/// <summary> Adds a Component to the Entity. </summary> <param name="component"></param>
+	/// <summary> Adds a Component to the Entity. </summary>
 	public void AddComponent(Component component)
 	{
 		components.Add(component);
 		component.Entity = this;
 	}
 
-	/// <summary> Removes a Component from the Entity. </summary> <param name="component"></param>
+	/// <summary> Removes a Component from the Entity. </summary>
 	public void RemoveComponent(Component component)
 	{
 		components.Remove(component);
-		component.Entity = null;
+		component.Entity = null!;
 	}
 	
-	/// <summary> Returns a target Component. </summary> <typeparam name="T"></typeparam> <returns></returns>
+	/// <summary> Returns a target Component. </summary>
 	public T GetComponent<T>() where T : Component
 	{
 		return components.OfType<T>().FirstOrDefault();

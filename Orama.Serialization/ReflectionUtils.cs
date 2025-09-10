@@ -44,46 +44,44 @@ public static class ReflectionUtils
         });
     }
 
-    internal static FieldInfo[] GetSerializableFields(this object target)
-    {
-        Type targetType = target.GetType();
-        return SerializableFieldsCache.GetOrAdd(targetType.TypeHandle, _ => {
-            const BindingFlags flags = BindingFlags.Public |
-                                     BindingFlags.NonPublic |
-                                     BindingFlags.Instance;
+	internal static FieldInfo[] GetSerializableFields(this object target)
+	{
+		Type targetType = target.GetType();
+		return SerializableFieldsCache.GetOrAdd(targetType.TypeHandle, _ =>
+		{
+			const BindingFlags flags = BindingFlags.Public |
+									   BindingFlags.NonPublic |
+									   BindingFlags.Instance;
 
-            // Start with the current type
-            List<FieldInfo> fields = new List<FieldInfo>();
-            Type? currentType = targetType;
+			List<FieldInfo> fields = new List<FieldInfo>();
+			Type? currentType = targetType;
 
-            // Walk up the inheritance hierarchy to collect fields from all base types
-            while (currentType != null && currentType != typeof(object))
-            {
-                fields.AddRange(currentType.GetFields(flags)
-                    .Where(field => IsFieldSerializable(field)));
+			while (currentType != null && currentType != typeof(object))
+			{
+				fields.AddRange(currentType.GetFields(flags)
+					.Where(field => IsFieldSerializable(field)));
 
-                currentType = currentType.BaseType;
-            }
+				currentType = currentType.BaseType;
+			}
 
-            return fields.ToArray();
-        });
-    }
+			return fields.ToArray();
+		});
+	}
 
-    private static bool IsFieldSerializable(FieldInfo field)
-    {
-        // Check if field should be serialized
-        bool shouldSerialize = field.GetCustomAttribute<SerializeAttribute>() != null;
-        if (!shouldSerialize)
-            return false;
+	private static bool IsFieldSerializable(FieldInfo field)
+	{
+		// Ignore explicitly ignored or [NonSerialized]
+		if (field.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
+			field.GetCustomAttribute<NonSerializedAttribute>() != null)
+			return false;
 
-        // Check if field should be ignored
-        bool shouldIgnore = field.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
-                            field.GetCustomAttribute<NonSerializedAttribute>() != null;
-        if (shouldIgnore)
-            return false;
+		// Public fields are serialized by default
+		if (field.IsPublic)
+			return true;
 
-        return true;
-    }
+		// Non-public fields require [Serialize] attribute
+		return field.GetCustomAttribute<SerializeAttribute>() != null;
+	}
 
 	internal static PropertyInfo[] GetSerializableProperties(this object target)
 	{
@@ -95,17 +93,20 @@ public static class ReflectionUtils
 
 	private static bool IsPropertySerializable(PropertyInfo property)
 	{
-		// Check if property should be serialized
-		bool shouldSerialize = property.CanWrite && property.CanRead && property.GetCustomAttribute<SerializeAttribute>() != null;
-		if (!shouldSerialize)
+		// Must be readable/writable
+		if (!property.CanRead || !property.CanWrite)
 			return false;
 
-		// Check if property should be ignored
-		bool shouldIgnore = property.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
-							property.GetCustomAttribute<NonSerializedAttribute>() != null;
-		if (shouldIgnore)
+		// Ignore explicitly ignored or [NonSerialized]
+		if (property.GetCustomAttribute<SerializeIgnoreAttribute>() != null ||
+			property.GetCustomAttribute<NonSerializedAttribute>() != null)
 			return false;
 
-		return true;
+		// Public properties are serialized by default
+		if (property.GetMethod?.IsPublic == true && property.SetMethod?.IsPublic == true)
+			return true;
+
+		// Non-public properties require [Serialize] attribute
+		return property.GetCustomAttribute<SerializeAttribute>() != null;
 	}
 }

@@ -6,6 +6,9 @@ namespace Orama.Components;
 
 public class Camera : Component
 {
+	/// <summary>
+	/// The main/currently active camera.
+	/// </summary>
 	public static Camera? Main { get; private set; }
 
 	[Serialize] public float FieldOfViewDegrees { get; set; } = 60f;
@@ -35,6 +38,7 @@ public class Camera : Component
 		}
 	}
 
+	// Projection Matrix
 	public Matrix4x4 ProjectionMatrix
 	{
 		get

@@ -160,6 +160,7 @@ public sealed class AnyObjectFormat : ISerializationFormat
         }
         else
         {
+			// Fields
             foreach (System.Reflection.FieldInfo field in result.GetSerializableFields())
             {
                 if (!TryGetFieldValue(value, field, out EchoObject? fieldValue))
@@ -181,7 +182,27 @@ public sealed class AnyObjectFormat : ISerializationFormat
                     // We don't want to stop the deserialization process because of a single field, so we just skip it and continue
                 }
             }
-        }
+
+			// Properties
+			foreach (PropertyInfo property in result.GetSerializableProperties())
+			{
+				if (!property.CanWrite)
+					continue;
+
+				if (!value.TryGet(property.Name, out EchoObject? propValue))
+					continue;
+
+				try
+				{
+					object? deserializedValue = Serializer.Deserialize(propValue, property.PropertyType, context);
+					property.SetValue(result, deserializedValue);
+				}
+				catch (Exception ex)
+				{
+					Serializer.Logger.Error($"Failed to deserialize property {property.Name}", ex);
+				}
+			}
+		}
 
         if (result is ISerializationCallbackReceiver callback)
             callback.OnAfterDeserialize();

@@ -27,6 +27,8 @@ class OramaDesktop
 			Scene test = new();
 			Entity ent = new();
 			ent.AddComponent(new MeshRenderer());
+
+			ent.Transform.Position = new Vector3(0, 2, 0);
 			test.Add(ent);
 
 			Entity cam = new();
@@ -36,8 +38,6 @@ class OramaDesktop
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
 			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
-
-			Application.ResourceLibrary.GetResource<Resources.Audio>("Assets/scream.wav").Play();
 		};
 
 		Application.Update += () =>
