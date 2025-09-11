@@ -19,6 +19,10 @@ public static class Renderer
 	private static readonly Dictionary<Material, MaterialResources> _materialResources = new();
 	private static readonly List<IClientRenderable> _renderables = new();
 
+	private static Framebuffer? _mainFramebuffer;
+	private static Texture? _colorTarget;
+	private static Texture? _depthTarget;
+
 	public static void Initialize()
 	{
 		var window = Window.InternalWindow ?? throw new Exception("Sdl2Window not initialized");
@@ -26,25 +30,32 @@ public static class Renderer
 		window.Resized += () =>
 		{
 			_graphicsDevice?.ResizeMainWindow((uint)window.Width, (uint)window.Height);
+			CreateRenderTarget((uint)window.Width, (uint)window.Height);
 		};
 
 		_graphicsDevice = VeldridStartup.CreateGraphicsDevice(window, new GraphicsDeviceOptions(), GraphicsBackend.Vulkan);
 		_commandList = _graphicsDevice.ResourceFactory.CreateCommandList();
+		CreateRenderTarget((uint)window.Width, (uint)window.Height);
 	}
 
-	public static void Clear(Vector4 clearColor)
-	{
-		_commandList?.ClearColorTarget(0, new(clearColor));
-	}
+	public static void Clear(Vector4 clearColor) => _commandList?.ClearColorTarget(0, new(clearColor));
+
+	public static void ClearDepth() => _commandList?.ClearDepthStencil(1f);
 
 	public static void BeginFrame()
 	{
 		_commandList?.Begin();
-		_commandList?.SetFramebuffer(_graphicsDevice!.SwapchainFramebuffer);
+		_commandList?.SetFramebuffer(_mainFramebuffer ?? _graphicsDevice!.SwapchainFramebuffer);
 	}
 
 	public static void EndFrame()
 	{
+		if (_mainFramebuffer != null)
+		{
+			_commandList.SetFramebuffer(_graphicsDevice!.SwapchainFramebuffer);
+			_commandList.CopyTexture(_colorTarget, _graphicsDevice.SwapchainFramebuffer.ColorTargets[0].Target);
+		}
+
 		_commandList?.End();
 		_graphicsDevice!.SubmitCommands(_commandList);
 		_graphicsDevice.SwapBuffers();
@@ -129,13 +140,13 @@ public static class Renderer
 		GraphicsPipelineDescription pipelineDesc = new GraphicsPipelineDescription
 		{
 			BlendState = BlendStateDescription.SingleOverrideBlend,
-			DepthStencilState = DepthStencilStateDescription.Disabled,
+			DepthStencilState = DepthStencilStateDescription.DepthOnlyLessEqualRead,
 			RasterizerState = new RasterizerStateDescription(
 				FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.Clockwise, depthClipEnabled: true, scissorTestEnabled: false),
 			PrimitiveTopology = PrimitiveTopology.TriangleList,
 			ResourceLayouts = new[] { resourceLayout },
 			ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
-			Outputs = _graphicsDevice.SwapchainFramebuffer.OutputDescription
+			Outputs = _mainFramebuffer?.OutputDescription ?? _graphicsDevice.SwapchainFramebuffer.OutputDescription
 		};
 
 		Pipeline pipeline = factory.CreateGraphicsPipeline(pipelineDesc);
@@ -307,6 +318,30 @@ public static class Renderer
 		}
 	}
 
+	private static void CreateRenderTarget(uint width, uint height)
+	{
+		if (_graphicsDevice == null) 
+			return;
+
+		DisposeRenderTarget();
+
+		var factory = _graphicsDevice.ResourceFactory;
+
+		// Color texture
+		_colorTarget = factory.CreateTexture(TextureDescription.Texture2D(
+			width, height, mipLevels: 1, arrayLayers: 1,
+			PixelFormat.B8_G8_R8_A8_UNorm, TextureUsage.RenderTarget | TextureUsage.Sampled));
+
+		// Depth texture
+		_depthTarget = factory.CreateTexture(TextureDescription.Texture2D(
+			width, height, mipLevels: 1, arrayLayers: 1,
+			PixelFormat.D32_Float_S8_UInt, TextureUsage.DepthStencil | TextureUsage.Sampled));
+
+		// Framebuffer
+		_mainFramebuffer = factory.CreateFramebuffer(new FramebufferDescription(
+			_depthTarget, _colorTarget));
+	}
+
 	public static void DisposeRenderable(IClientRenderable renderable)
 	{
 		if (_renderableResources.TryGetValue(renderable, out var res))
@@ -326,5 +361,17 @@ public static class Renderer
 	{
 		if (_materialResources.ContainsKey(material))
 			_materialResources.Remove(material);
+	}
+
+	private static void DisposeRenderTarget()
+	{
+		_mainFramebuffer?.Dispose();
+		_mainFramebuffer = null;
+
+		_colorTarget?.Dispose();
+		_colorTarget = null;
+
+		_depthTarget?.Dispose();
+		_depthTarget = null;
 	}
 }

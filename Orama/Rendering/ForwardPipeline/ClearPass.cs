@@ -10,5 +10,6 @@ public class ClearPass : RenderPass
 	public override void Execute(RenderContext context)
 	{
 		Renderer.Clear(new System.Numerics.Vector4(0f, 0f, 0f, 1f));
+		Renderer.ClearDepth();
 	}
 }
