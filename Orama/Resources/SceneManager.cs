@@ -51,5 +51,9 @@ public static class SceneManager
 	{
 		Clear();
 		Current = scene;
+
+		// Start all entities (this also starts their components)
+		foreach (var entity in Current.AllEntities)
+			entity.Start();
 	}
 }

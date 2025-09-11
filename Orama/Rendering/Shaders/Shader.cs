@@ -31,9 +31,13 @@ void main()
 
 layout(location = 0) out vec4 fsoutColor;
 
+layout(set = 0, binding = 1) uniform MaterialData {
+    vec4 Color;
+};
+
 void main()
 {
-    fsoutColor = vec4(1.0); // white
+    fsoutColor = Color;
 }";
 
 	public Shader(string vertexSource, string fragmentSource)

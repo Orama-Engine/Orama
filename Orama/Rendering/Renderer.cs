@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Runtime.InteropServices;
 using Orama.Rendering.Materials;
 using Orama.Resources;
 using Veldrid;
@@ -99,10 +100,15 @@ public static class Renderer
 		// Ensure material resources cached
 		var material = renderable.Material;
 		if (!_materialResources.ContainsKey(material))
-		{
 			_materialResources[material] = new MaterialResources(material.Shader.VertexBytes!, material.Shader.FragmentBytes!);
-		}
+
 		var matRes = _materialResources[material];
+
+		if (matRes.UniformBuffer == null)
+		{
+			matRes.UniformBuffer = factory.CreateBuffer(
+				new BufferDescription(256, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
+		}
 
 		// Create shaders
 		ShaderDescription vertexShaderDesc = new ShaderDescription(ShaderStages.Vertex, matRes.VertexBytes, "main");
@@ -116,7 +122,8 @@ public static class Renderer
 
 		// Resource layout (uniform buffer for matrices)
 		ResourceLayout resourceLayout = factory.CreateResourceLayout(new ResourceLayoutDescription(
-			new ResourceLayoutElementDescription("ubo", ResourceKind.UniformBuffer, ShaderStages.Vertex)
+			new ResourceLayoutElementDescription("Matrices", ResourceKind.UniformBuffer, ShaderStages.Vertex),
+			new ResourceLayoutElementDescription("MaterialData", ResourceKind.UniformBuffer, ShaderStages.Fragment)
 		));
 
 		GraphicsPipelineDescription pipelineDesc = new GraphicsPipelineDescription
@@ -143,6 +150,7 @@ public static class Renderer
 
 		Matrix4x4 modelMatrix = renderable.ModelMatrix;
 
+		// Camera matrices
 		int matrixSize = sizeof(float) * 16;
 		byte[] uboData = new byte[matrixSize * 3];
 		Buffer.BlockCopy(GetMatrixBytes(modelMatrix), 0, uboData, 0, matrixSize);
@@ -150,12 +158,23 @@ public static class Renderer
 		Buffer.BlockCopy(GetMatrixBytes(proj), 0, uboData, matrixSize * 2, matrixSize);
 
 		var factory = _graphicsDevice.ResourceFactory;
-		DeviceBuffer uniformBuffer = factory.CreateBuffer(new BufferDescription((uint)uboData.Length, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
-		_graphicsDevice.UpdateBuffer(uniformBuffer, 0, uboData);
+
+		// Camera uniform buffer
+		DeviceBuffer cameraBuffer = factory.CreateBuffer(
+			new BufferDescription((uint)uboData.Length, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
+		_graphicsDevice.UpdateBuffer(cameraBuffer, 0, uboData);
+
+		// Material parameters
+		var matRes = _materialResources[renderable.Material];
+
+		byte[] materialData = PackMaterialParameters(renderable.Material.Properties.Values);
+		_graphicsDevice.UpdateBuffer(matRes.UniformBuffer!, 0, materialData);
 
 		ResourceSet resourceSet = factory.CreateResourceSet(new ResourceSetDescription(
-			res.ResourceLayout,
-			uniformBuffer));
+	res.ResourceLayout,
+	cameraBuffer,            // slot 0: matrices
+	matRes.UniformBuffer!    // slot 1: material params
+));
 
 		_commandList.SetPipeline(res.Pipeline);
 		_commandList.SetVertexBuffer(0, res.VertexBuffer);
@@ -163,7 +182,7 @@ public static class Renderer
 		_commandList.SetGraphicsResourceSet(0, resourceSet);
 		_commandList.DrawIndexed((uint)renderable.Indices.Length, 1, 0, 0, 0);
 
-		uniformBuffer.Dispose();
+		cameraBuffer.Dispose();
 		resourceSet.Dispose();
 	}
 
@@ -191,6 +210,101 @@ public static class Renderer
 		Buffer.BlockCopy(BitConverter.GetBytes(matrix.M44), 0, bytes, 15 * 4, 4);
 
 		return bytes;
+	}
+
+	private static byte[] PackMaterialParameters(IEnumerable<object> parameters)
+	{
+		List<byte> buffer = new();
+		int offset = 0;
+
+		foreach (var parameter in parameters)
+		{
+			switch (parameter)
+			{
+				case float f:
+					Align(ref buffer, ref offset, 4);
+					buffer.AddRange(BitConverter.GetBytes(f));
+					offset += 4;
+					break;
+
+				case int i:
+					Align(ref buffer, ref offset, 4);
+					buffer.AddRange(BitConverter.GetBytes(i));
+					offset += 4;
+					break;
+
+				case bool b:
+					Align(ref buffer, ref offset, 4);
+					buffer.AddRange(BitConverter.GetBytes(b ? 1 : 0));
+					offset += 4;
+					break;
+
+				case Vector2 v2:
+					Align(ref buffer, ref offset, 8);
+					buffer.AddRange(BitConverter.GetBytes(v2.X));
+					buffer.AddRange(BitConverter.GetBytes(v2.Y));
+					offset += 8;
+					break;
+
+				case Vector3 v3:
+					Align(ref buffer, ref offset, 16);
+					buffer.AddRange(BitConverter.GetBytes(v3.X));
+					buffer.AddRange(BitConverter.GetBytes(v3.Y));
+					buffer.AddRange(BitConverter.GetBytes(v3.Z));
+					buffer.AddRange(new byte[4]); // pad to 16
+					offset += 16;
+					break;
+
+				case Vector4 v4:
+					Align(ref buffer, ref offset, 16);
+					buffer.AddRange(BitConverter.GetBytes(v4.X));
+					buffer.AddRange(BitConverter.GetBytes(v4.Y));
+					buffer.AddRange(BitConverter.GetBytes(v4.Z));
+					buffer.AddRange(BitConverter.GetBytes(v4.W));
+					offset += 16;
+					break;
+
+				case Matrix4x4 m:
+					Align(ref buffer, ref offset, 16);
+					buffer.AddRange(BitConverter.GetBytes(m.M11));
+					buffer.AddRange(BitConverter.GetBytes(m.M12));
+					buffer.AddRange(BitConverter.GetBytes(m.M13));
+					buffer.AddRange(BitConverter.GetBytes(m.M14));
+
+					buffer.AddRange(BitConverter.GetBytes(m.M21));
+					buffer.AddRange(BitConverter.GetBytes(m.M22));
+					buffer.AddRange(BitConverter.GetBytes(m.M23));
+					buffer.AddRange(BitConverter.GetBytes(m.M24));
+
+					buffer.AddRange(BitConverter.GetBytes(m.M31));
+					buffer.AddRange(BitConverter.GetBytes(m.M32));
+					buffer.AddRange(BitConverter.GetBytes(m.M33));
+					buffer.AddRange(BitConverter.GetBytes(m.M34));
+
+					buffer.AddRange(BitConverter.GetBytes(m.M41));
+					buffer.AddRange(BitConverter.GetBytes(m.M42));
+					buffer.AddRange(BitConverter.GetBytes(m.M43));
+					buffer.AddRange(BitConverter.GetBytes(m.M44));
+
+					offset += 64;
+					break;
+
+				default:
+					throw new NotSupportedException($"Unsupported uniform type: {parameter.GetType()}");
+			}
+		}
+
+		return buffer.ToArray();
+	}
+
+	private static void Align(ref List<byte> buffer, ref int offset, int alignment)
+	{
+		int padding = (alignment - (offset % alignment)) % alignment;
+		if (padding > 0)
+		{
+			buffer.AddRange(new byte[padding]);
+			offset += padding;
+		}
 	}
 
 	public static void DisposeRenderable(IClientRenderable renderable)

@@ -26,6 +26,9 @@ public class MaterialResources
 	public byte[] VertexBytes { get; }
 	public byte[] FragmentBytes { get; }
 
+	internal DeviceBuffer? UniformBuffer { get; set; }
+	internal ResourceSet? ResourceSet { get; set; }
+
 	public MaterialResources(byte[] vertexBytes, byte[] fragmentBytes)
 	{
 		VertexBytes = vertexBytes ?? throw new ArgumentNullException(nameof(vertexBytes));
