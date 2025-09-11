@@ -24,14 +24,9 @@ public static class SceneManager
 		Clear();
 		Current = new Scene();
 
-		// Start all components
+		// Start all entities (this also starts their components)
 		foreach (var entity in Current.AllEntities)
-		{
-			foreach (var component in entity.Components)
-			{
-				component.Start();
-			}
-		}
+			entity.Start();
 	}
 
 	/// <summary> Clears the current Scene. </summary>
@@ -47,13 +42,9 @@ public static class SceneManager
     /// <summary> Runs each frame. </summary>
     public static void Update()
     {
+		// Update all entities (this also updates their components)
 		foreach(var entity in Current.AllEntities)
-		{
-			foreach(var component in entity.Components)
-			{
-				component.Update();
-			}
-		}
+			entity.Update();
     }
 
 	public static void LoadScene(Scene scene)

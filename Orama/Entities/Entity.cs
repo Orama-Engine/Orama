@@ -21,6 +21,22 @@ public class Entity : ISerializationCallbackReceiver
 	[SerializeIgnore] public ReadOnlyCollection<Component> Components => components.AsReadOnly();
 	
 	public Entity() { }
+	public Entity(string name) => Name = name;
+
+
+	/// <summary> Runs when the Entity is created. </summary>
+	public virtual void Start()
+	{
+		foreach (var component in components)
+			component.Start();
+	}
+
+	/// <summary> Runs every game tick. </summary>
+	public virtual void Update()
+	{
+		foreach (var component in components)
+			component.Update();
+	}
 
 	/// <summary> Destroys the Entity and its Components. </summary>
 	public void Destroy()
