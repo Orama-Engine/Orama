@@ -2,6 +2,7 @@
 using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
+using Orama.Physics;
 using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
@@ -26,11 +27,31 @@ class OramaDesktop
 			// Load a test scene
 			Scene test = new();
 			Entity ent = new();
+			Entity floor = new();
 			ent.AddComponent(new MeshRenderer());
+			 // floor.AddComponent(new MeshRenderer()); // Temporarily hidden due to rendering issues for physics testing.
 
-			ent.Transform.Position = new Vector3(0, 2, -5);
+			ent.Transform.Position = new Vector3(0, 5, -5);
+			floor.Transform.Position = new Vector3(0, -15, -5);
+			floor.Transform.Scale = new Vector3(20, 1, 20);
+			
+			Collider floorCollider = new();
+			floorCollider.Type = ColliderType.Box;
+			floor.AddComponent(floorCollider);
+			
+			RigidBody floorRb = new();
+			floorRb.Mass = 0f;
+			floor.AddComponent(floorRb);
+			
+			Collider entCollider = new();
+			entCollider.Type = ColliderType.Box;
+			ent.AddComponent(entCollider);
+			RigidBody entRb = new();
+			ent.AddComponent(entRb);
+			
 			Console.WriteLine(ent.Transform.Matrix);
 			test.Add(ent);
+			test.Add(floor);
 
 			Entity cam = new();
 			cam.AddComponent(new CameraController());

@@ -11,4 +11,24 @@
     <ProjectReference Include="..\..\Orama\Orama.csproj" />
   </ItemGroup>
 
+  <Target Name="CopyBulletNativeLib" AfterTargets="Build">
+    <ItemGroup>
+      <LinuxLib Include="..\..\Orama\bin\Debug\net9.0\libbulletc-linux-x64.so" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(LinuxLib)"
+      DestinationFiles="@(LinuxLib->'$(OutputPath)libbulletc.so')"
+      SkipUnchangedFiles="true"
+      Condition="Exists('%(LinuxLib.Identity)')" />
+
+    <ItemGroup>
+      <WindowsLib Include="..\..\Orama\bin\Debug\net9.0\libbulletc-windows-x64.dll" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(WindowsLib)"
+      DestinationFiles="@(WindowsLib->'$(OutputPath)libbulletc.dll')"
+      SkipUnchangedFiles="true"
+      Condition="Exists('%(WindowsLib.Identity)')" />
+  </Target>  
+
 </Project>

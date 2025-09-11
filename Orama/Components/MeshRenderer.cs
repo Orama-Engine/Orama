@@ -14,7 +14,7 @@ public class MeshRenderer : Component
 
 	public override void Start()
 	{
-		Mesh.Material.SetParameter<Vector4>("Color", new(0f, 0f, 1f, 1f));
+		Mesh.Material.SetParameter<Vector4>("Color", new(1f, 1f, 1f, 1f));
 	}
 
 	public override void Update()
