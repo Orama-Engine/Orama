@@ -51,7 +51,7 @@ public class RigidBody : Component
 		var motionState = new DefaultMotionState(startTransform);
 		var rbInfo = new RigidBodyConstructionInfo(Mass, motionState, Collider.Shape, inertia);
 		_bulletRb = new BulletSharp.RigidBody(rbInfo);
-		PhysicsSystem.Instance.World.AddRigidBody(_bulletRb);
+		PhysicsSystem.World.AddRigidBody(_bulletRb);
 	}
 
 	public override void Update()

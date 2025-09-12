@@ -40,7 +40,7 @@ public static class Application
 	{
 		try
 		{
-			PhysicsSystem.Instance.Step();
+			PhysicsSystem.Step();
 			Update?.Invoke();
 			Render?.Invoke();
 		}

@@ -40,7 +40,7 @@ public static class Renderer
 
 	public static void Clear(Vector4 clearColor) => _commandList?.ClearColorTarget(0, new(clearColor));
 
-	public static void ClearDepth() => _commandList?.ClearDepthStencil(1f);
+	public static void ClearDepth(float clearDepth) => _commandList?.ClearDepthStencil(clearDepth);
 
 	public static void BeginFrame()
 	{

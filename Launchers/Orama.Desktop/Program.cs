@@ -23,6 +23,7 @@ class OramaDesktop
 			Renderer.Initialize();
 			AudioBackend.Initialize();
 			RenderPipelineManager.Current.Initialize();
+			PhysicsSystem.Initialize();
 
 			// Load a test scene
 			Scene test = new();
