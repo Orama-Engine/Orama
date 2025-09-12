@@ -4,7 +4,7 @@ using BulletSharp.Math;
 namespace Orama.Physics;
 
 /// <summary>
-/// Singleton class that manages the Bullet physics world.
+/// Access into the worlds Physics.
 /// </summary>
 public static class PhysicsSystem
 {
