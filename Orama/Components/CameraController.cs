@@ -17,7 +17,7 @@ public class CameraController : Camera
 		// Adjust movement speed using scroll wheel
 		if (Input.ScrollDelta != 0f)
 		{
-			Speed += Input.ScrollDelta * 0.05f;
+			Speed += Input.ScrollDelta * 0.005f;
 
 			// Clamp to prevent negative speed
 			Speed = MathF.Max(Speed, 0.01f);
