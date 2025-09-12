@@ -30,7 +30,7 @@ class OramaDesktop
 			Entity ent = new();
 			Entity floor = new();
 			ent.AddComponent(new MeshRenderer());
-			 // floor.AddComponent(new MeshRenderer()); // Temporarily hidden due to rendering issues for physics testing.
+			 floor.AddComponent(new MeshRenderer()); // Temporarily hidden due to rendering issues for physics testing.
 
 			ent.Transform.Position = new Vector3(0, 5, -5);
 			floor.Transform.Position = new Vector3(0, -15, -5);

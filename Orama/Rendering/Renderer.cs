@@ -140,7 +140,7 @@ public static class Renderer
 		GraphicsPipelineDescription pipelineDesc = new GraphicsPipelineDescription
 		{
 			BlendState = BlendStateDescription.SingleOverrideBlend,
-			DepthStencilState = DepthStencilStateDescription.DepthOnlyLessEqualRead,
+			DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
 			RasterizerState = new RasterizerStateDescription(
 				FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.Clockwise, depthClipEnabled: true, scissorTestEnabled: false),
 			PrimitiveTopology = PrimitiveTopology.TriangleList,
