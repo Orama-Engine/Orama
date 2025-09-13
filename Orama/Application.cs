@@ -14,8 +14,6 @@ public static class Application
 	/// Resource Management.
 	/// </summary>
 	public static IResourceLibrary ResourceLibrary { get; set; } = null!;
-
-	public static ModuleManager ModuleManager { get; private set; } = new();
 	
 	public static event Action? Initialize;
 	public static event Action? Update;

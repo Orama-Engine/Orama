@@ -1,6 +1,7 @@
 ﻿using Orama.Echo;
 using Orama.Modules.Input;
 using System.Numerics;
+using Orama.Modules;
 
 namespace Orama.Components;
 
@@ -9,7 +10,7 @@ public class CameraController : Camera
 	[Serialize] public float Speed { get; set; } = 0.005f;
 	[Serialize] public float RotationSpeed { get; set; } = 0.001f;
 
-	private InputModule inputModule => Application.ModuleManager.GetModule<InputModule>()
+	private InputModule inputModule => ModuleManager.GetModule<InputModule>()
 	                                       ?? throw new InvalidOperationException("InputModule must exist and be initialized.");
 
 	private float yaw = 0f;

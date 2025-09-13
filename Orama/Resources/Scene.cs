@@ -3,6 +3,7 @@ using Orama.Entities;
 using Orama.Resources.ResourceLibrary;
 using Orama.Echo;
 using System.Text;
+using Orama.Modules;
 using Orama.Modules.Scenes;
 
 namespace Orama.Resources;
@@ -12,7 +13,7 @@ namespace Orama.Resources;
 /// </summary>
 public class Scene : IResource<Scene>
 {
-	private SceneModule sceneModule => Application.ModuleManager.GetModule<SceneModule>()
+	private SceneModule sceneModule => ModuleManager.GetModule<SceneModule>()
 	                                   ?? throw new InvalidOperationException("SceneModule must exist and be initialized.");
 	
 	/// <summary> Creates an empty Scene. </summary>

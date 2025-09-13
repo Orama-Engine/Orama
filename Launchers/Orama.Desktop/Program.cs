@@ -2,6 +2,7 @@
 using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
+using Orama.Modules;
 using Orama.Modules.Input;
 using Orama.Modules.Physics;
 using Orama.Modules.Scenes;
@@ -19,11 +20,11 @@ class OramaDesktop
     static void Main(string[] args)
     {
 	    SceneModule Scenes = new();
-	    Application.ModuleManager.RegisterModule(Scenes);
+	    ModuleManager.RegisterModule(Scenes);
 	    InputModule Input = new();
-	    Application.ModuleManager.RegisterModule(Input);
+	    ModuleManager.RegisterModule(Input);
 	    PhysicsModule Physics = new();
-	    Application.ModuleManager.RegisterModule(Physics);
+	    ModuleManager.RegisterModule(Physics);
 	    
 		Application.Initialize += () =>
 		{

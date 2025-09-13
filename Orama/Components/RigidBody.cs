@@ -1,5 +1,6 @@
 using BulletSharp;
 using BulletSharp.Math;
+using Orama.Modules;
 using Orama.Modules.Physics;
 
 namespace Orama.Components;
@@ -19,7 +20,7 @@ public class RigidBody : Component
 	private System.Numerics.Quaternion lastRot;
 	private System.Numerics.Vector3 lastPos;
 
-	private PhysicsModule physicsModule => Application.ModuleManager.GetModule<PhysicsModule>()
+	private PhysicsModule physicsModule => ModuleManager.GetModule<PhysicsModule>()
 	                                   ?? throw new InvalidOperationException("PhysicsModule must exist and be initialized.");
 	
 	/// <summary>
