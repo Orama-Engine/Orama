@@ -16,6 +16,8 @@ public class RigidBody : Component
 	public Collider Collider { get; set; }
 	
 	private BulletSharp.RigidBody _bulletRb;
+	private System.Numerics.Quaternion lastRot;
+	private System.Numerics.Vector3 lastPos;
 	
 	/// <summary>
 	/// Determines the Entity's resistance to acceleration when a force is applied.
@@ -30,7 +32,7 @@ public class RigidBody : Component
 	/// <summary>
 	/// Determines how bouncy the Entity is during collisions.
 	/// </summary>
-	public float Restitution { get; set; } = 0f;
+	public float Restitution { get; set; }
 	
 	public override void Start()
 	{
@@ -56,46 +58,76 @@ public class RigidBody : Component
 
 	public override void Update()
 	{
-		// Sync Entity transform to Bullet's rigidbody transform
-		var btTransform = _bulletRb.MotionState.WorldTransform;
-		Entity.Transform.Position = new System.Numerics.Vector3(btTransform.Origin.X, btTransform.Origin.Y, btTransform.Origin.Z);
-
-		var basis = btTransform.Basis;
-		float trace = basis.M11 + basis.M22 + basis.M33;
-		float w, x, y, z;
-
-		if (trace > 0f)
+		// Check if position changed to sync
+		if (Entity.Transform.Position != lastPos || Entity.Transform.Rotation != lastRot)
 		{
-			float s = MathF.Sqrt(trace + 1f) * 2f;
-			w = 0.25f * s;
-			x = (basis.M23 - basis.M32) / s;
-			y = (basis.M31 - basis.M13) / s;
-			z = (basis.M12 - basis.M21) / s;
-		}
-		else if (basis.M11 > basis.M22 && basis.M11 > basis.M33)
-		{
-			float s = MathF.Sqrt(1f + basis.M11 - basis.M22 - basis.M33) * 2f;
-			w = (basis.M23 - basis.M32) / s;
-			x = 0.25f * s;
-			y = (basis.M12 + basis.M21) / s;
-			z = (basis.M31 + basis.M13) / s;
-		}
-		else if (basis.M22 > basis.M33)
-		{
-			float s = MathF.Sqrt(1f + basis.M22 - basis.M11 - basis.M33) * 2f;
-			w = (basis.M31 - basis.M13) / s;
-			x = (basis.M12 + basis.M21) / s;
-			y = 0.25f * s;
-			z = (basis.M23 + basis.M32) / s;
+			SyncToPhysics();
 		}
 		else
 		{
-			float s = MathF.Sqrt(1f + basis.M33 - basis.M11 - basis.M22) * 2f;
-			w = (basis.M12 - basis.M21) / s;
-			x = (basis.M31 + basis.M13) / s;
-			y = (basis.M23 + basis.M32) / s;
-			z = 0.25f * s;
+			// Sync Entity transform to Bullet's rigidbody transform.
+			var btTransform = _bulletRb.MotionState.WorldTransform;
+			Entity.Transform.Position = new System.Numerics.Vector3(btTransform.Origin.X, btTransform.Origin.Y, btTransform.Origin.Z);
+
+			var basis = btTransform.Basis;
+			// Could probably do this through a helper function to cut down on some lines.
+			float trace = basis.M11 + basis.M22 + basis.M33;
+			float w, x, y, z;
+
+			if (trace > 0f)
+			{
+				float s = MathF.Sqrt(trace + 1f) * 2f;
+				w = 0.25f * s;
+				x = (basis.M23 - basis.M32) / s;
+				y = (basis.M31 - basis.M13) / s;
+				z = (basis.M12 - basis.M21) / s;
+			}
+			else if (basis.M11 > basis.M22 && basis.M11 > basis.M33)
+			{
+				float s = MathF.Sqrt(1f + basis.M11 - basis.M22 - basis.M33) * 2f;
+				w = (basis.M23 - basis.M32) / s;
+				x = 0.25f * s;
+				y = (basis.M12 + basis.M21) / s;
+				z = (basis.M31 + basis.M13) / s;
+			}
+			else if (basis.M22 > basis.M33)
+			{
+				float s = MathF.Sqrt(1f + basis.M22 - basis.M11 - basis.M33) * 2f;
+				w = (basis.M31 - basis.M13) / s;
+				x = (basis.M12 + basis.M21) / s;
+				y = 0.25f * s;
+				z = (basis.M23 + basis.M32) / s;
+			}
+			else
+			{
+				float s = MathF.Sqrt(1f + basis.M33 - basis.M11 - basis.M22) * 2f;
+				w = (basis.M12 - basis.M21) / s;
+				x = (basis.M31 + basis.M13) / s;
+				y = (basis.M23 + basis.M32) / s;
+				z = 0.25f * s;
+			}
+			Entity.Transform.Rotation = new System.Numerics.Quaternion(x, y, z, w);
 		}
-		Entity.Transform.Rotation = new System.Numerics.Quaternion(x, y, z, w);
+		
+		// Store last transforms to check for position changes
+		lastPos = Entity.Transform.Position;
+		lastRot = Entity.Transform.Rotation;
+	}
+	
+	/// <summary>
+	/// Synchronises the Entity's transform with Bullet's RigidBody.
+	/// </summary>
+	public void SyncToPhysics()
+	{
+		var pos = Entity.Transform.Position;
+		var rot = Entity.Transform.Rotation;
+
+		var btTransform = Matrix.RotationQuaternion(new Quaternion(rot.X, rot.Y, rot.Z, rot.W)) *
+		                  Matrix.Translation(new Vector3(pos.X, pos.Y, pos.Z));
+
+		_bulletRb.WorldTransform = btTransform;
+
+		if (_bulletRb.MotionState != null)
+			_bulletRb.MotionState.WorldTransform = btTransform;
 	}
 }
