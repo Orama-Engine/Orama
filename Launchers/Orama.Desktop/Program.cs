@@ -2,11 +2,11 @@
 using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
+using Orama.Modules.Input;
 using Orama.Physics;
 using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
-using Orama.UserInput;
 
 namespace Orama.Desktop;
 
@@ -25,12 +25,15 @@ class OramaDesktop
 			RenderPipelineManager.Current.Initialize();
 			PhysicsSystem.Initialize();
 
+			InputModule Input = new();
+			Application.ModuleManager.RegisterModule(Input);
+
 			// Load a test scene
 			Scene test = new();
 			Entity ent = new();
 			Entity floor = new();
 			ent.AddComponent(new MeshRenderer());
-			 floor.AddComponent(new MeshRenderer()); // Temporarily hidden due to rendering issues for physics testing.
+			floor.AddComponent(new MeshRenderer());
 
 			ent.Transform.Position = new Vector3(0, 5, -5);
 			floor.Transform.Position = new Vector3(0, -15, -5);
@@ -66,7 +69,6 @@ class OramaDesktop
 		Application.Update += () =>
 		{
 			SceneManager.Update();
-			Input.Update();
 		};
 
 		Application.Render += () =>

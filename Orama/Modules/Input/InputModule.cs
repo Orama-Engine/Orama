@@ -3,35 +3,35 @@ using Orama.Rendering;
 using Veldrid.Sdl2;
 using Veldrid;
 
-namespace Orama.UserInput;
+namespace Orama.Modules.Input;
 
 /// <summary>
 /// Access into Input.
 /// </summary>
-public static class Input
+public class InputModule : Module
 {
 	/// <summary> Whether the cursor is visible. </summary>
-	public static bool CursorVisible { get; set; } = true;
+	public bool CursorVisible { get; set; } = true;
 
 	/// <summary> Whether the cursor is locked to the center of the window. </summary>
-	public static bool CursorLocked { get; set; } = false;
+	public bool CursorLocked { get; set; } = false;
 
 	/// <summary> The current position of the mouse. </summary>
-	public static Vector2 MousePosition { get; private set; }
+	public Vector2 MousePosition { get; private set; }
 
 	/// <summary> The change in mouse position since the last frame. </summary>
-	public static Vector2 MouseDelta { get; private set; }
+	public Vector2 MouseDelta { get; private set; }
 	
 	/// <summary> Scroll delta since the last frame. </summary>
-	public static float ScrollDelta { get; private set; }
+	public float ScrollDelta { get; private set; }
 
-	private static HashSet<Key> keysDown = new();
-	private static HashSet<MouseButton> buttonsDown = new();
-	private static Vector2 mousePositionLastFrame = new();
-	private static HashSet<Key> keysDownLastFrame = new();
-	private static HashSet<MouseButton> buttonsDownLastFrame = new();
+	private HashSet<Key> keysDown = new();
+	private HashSet<MouseButton> buttonsDown = new();
+	private Vector2 mousePositionLastFrame = new();
+	private HashSet<Key> keysDownLastFrame = new();
+	private HashSet<MouseButton> buttonsDownLastFrame = new();
 
-	public static void Update()
+	public override void Update()
 	{
 		if (Window.InternalWindow == null)
 			return;
@@ -83,25 +83,25 @@ public static class Input
 	/// Checks if a key is currently pressed.
 	/// </summary>
 	/// <param name="key">Key to check.</param>
-	public static bool IsKeyDown(Key key) => keysDown.Contains(key);
+	public bool IsKeyDown(Key key) => keysDown.Contains(key);
 	
 	/// <summary>
 	/// Checks if a mouse button is currently pressed.
 	/// </summary>
 	/// <param name="button"></param>
 	/// <returns></returns>
-	public static bool IsMouseButtonDown(MouseButton button) => buttonsDown.Contains(button);
+	public bool IsMouseButtonDown(MouseButton button) => buttonsDown.Contains(button);
 
 	/// <summary>
 	/// Checks if a key was pressed this frame.
 	/// </summary>
 	/// <param name="key">Key to check.</param>
-	public static bool KeyPressed(Key key) => keysDown.Contains(key) && !keysDownLastFrame.Contains(key);
+	public bool KeyPressed(Key key) => keysDown.Contains(key) && !keysDownLastFrame.Contains(key);
 	
 	/// <summary>
 	/// Checks if a mouse button was pressed this frame.
 	/// </summary>
 	/// <param name="mouseButton"></param>
 	/// <returns></returns>
-	public static bool MouseButtonPressed(MouseButton mouseButton) => buttonsDown.Contains(mouseButton) && !buttonsDownLastFrame.Contains(mouseButton);
+	public bool MouseButtonPressed(MouseButton mouseButton) => buttonsDown.Contains(mouseButton) && !buttonsDownLastFrame.Contains(mouseButton);
 }

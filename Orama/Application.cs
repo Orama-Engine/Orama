@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Orama.Modules;
 using Orama.Physics;
 using Orama.Rendering;
 using Orama.Rendering.Materials;
@@ -15,6 +16,9 @@ public static class Application
 	/// Resource Management.
 	/// </summary>
 	public static IResourceLibrary ResourceLibrary { get; set; } = null!;
+
+	public static ModuleManager ModuleManager { get; private set; } = new();
+	
 	public static event Action? Initialize;
 	public static event Action? Update;
 	public static event Action? Render;
@@ -33,6 +37,7 @@ public static class Application
 
 	public static void AppInitialize()
 	{
+		ModuleManager.Start();
 		Initialize?.Invoke();
 	}
 
@@ -40,6 +45,7 @@ public static class Application
 	{
 		try
 		{
+			ModuleManager.Update();
 			PhysicsSystem.Step();
 			Update?.Invoke();
 			Render?.Invoke();
