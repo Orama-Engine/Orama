@@ -5,7 +5,6 @@ namespace Orama.Modules;
 /// </summary>
 public class Module
 {
-	public string Name { get; set; } = "Module";
 	public bool Enabled { get; private set; } = true;
 	
 	public virtual void Start() { }
