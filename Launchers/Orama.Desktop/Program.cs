@@ -4,6 +4,7 @@ using Orama.Components;
 using Orama.Entities;
 using Orama.Modules.Input;
 using Orama.Modules.Physics;
+using Orama.Modules.Scenes;
 using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
@@ -17,6 +18,8 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
+	    SceneModule Scenes = new();
+	    Application.ModuleManager.RegisterModule(Scenes);
 	    InputModule Input = new();
 	    Application.ModuleManager.RegisterModule(Input);
 	    PhysicsModule Physics = new();
@@ -24,7 +27,6 @@ class OramaDesktop
 	    
 		Application.Initialize += () =>
 		{
-			SceneManager.Initialize();
 			Renderer.Initialize();
 			AudioBackend.Initialize();
 			RenderPipelineManager.Current.Initialize();
@@ -64,12 +66,12 @@ class OramaDesktop
 
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
-			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
+			Scenes.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
 		};
 
 		Application.Update += () =>
 		{
-			SceneManager.Update();
+			Scenes.Update();
 		};
 
 		Application.Render += () =>
