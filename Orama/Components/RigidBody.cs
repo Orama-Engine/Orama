@@ -1,8 +1,8 @@
 using BulletSharp;
 using BulletSharp.Math;
-using Orama.Components;
+using Orama.Modules.Physics;
 
-namespace Orama.Physics;
+namespace Orama.Components;
 
 /// <summary>
 /// A physics component that allows an Entity to participate in Bullets physics simulation.
@@ -15,9 +15,11 @@ public class RigidBody : Component
 	/// </summary>
 	public Collider Collider { get; set; }
 	
-	private BulletSharp.RigidBody _bulletRb;
+	private BulletSharp.RigidBody bulletRb;
 	private System.Numerics.Quaternion lastRot;
 	private System.Numerics.Vector3 lastPos;
+
+	private PhysicsModule physicsModule;
 	
 	/// <summary>
 	/// Determines the Entity's resistance to acceleration when a force is applied.
@@ -36,6 +38,12 @@ public class RigidBody : Component
 	
 	public override void Start()
 	{
+		physicsModule = Application.ModuleManager.GetModule<PhysicsModule>();
+		if (physicsModule == null || physicsModule.World == null)
+		{
+			throw new InvalidOperationException("RigidBody requires PhysicsModule to exist and be initialised.");
+		}
+		
 		Collider = Entity.GetComponent<Collider>();
 		if (Collider == null)
 			throw new Exception("RigidBody requires a Collider component!");
@@ -52,12 +60,15 @@ public class RigidBody : Component
 		                     * Matrix.RotationQuaternion(new BulletSharp.Math.Quaternion(Entity.Transform.Rotation.X, Entity.Transform.Rotation.Y, Entity.Transform.Rotation.Z, Entity.Transform.Rotation.W));
 		var motionState = new DefaultMotionState(startTransform);
 		var rbInfo = new RigidBodyConstructionInfo(Mass, motionState, Collider.Shape, inertia);
-		_bulletRb = new BulletSharp.RigidBody(rbInfo);
-		PhysicsSystem.World.AddRigidBody(_bulletRb);
+		bulletRb = new BulletSharp.RigidBody(rbInfo);
+		physicsModule.World.AddRigidBody(bulletRb);
 	}
 
 	public override void Update()
 	{
+		if (physicsModule == null)
+			return;
+		
 		// Check if position changed to sync
 		if (Entity.Transform.Position != lastPos || Entity.Transform.Rotation != lastRot)
 		{
@@ -66,7 +77,7 @@ public class RigidBody : Component
 		else
 		{
 			// Sync Entity transform to Bullet's rigidbody transform.
-			var btTransform = _bulletRb.MotionState.WorldTransform;
+			var btTransform = bulletRb.MotionState.WorldTransform;
 			Entity.Transform.Position = new System.Numerics.Vector3(btTransform.Origin.X, btTransform.Origin.Y, btTransform.Origin.Z);
 
 			var basis = btTransform.Basis;
@@ -125,9 +136,9 @@ public class RigidBody : Component
 		var btTransform = Matrix.RotationQuaternion(new Quaternion(rot.X, rot.Y, rot.Z, rot.W)) *
 		                  Matrix.Translation(new Vector3(pos.X, pos.Y, pos.Z));
 
-		_bulletRb.WorldTransform = btTransform;
+		bulletRb.WorldTransform = btTransform;
 
-		if (_bulletRb.MotionState != null)
-			_bulletRb.MotionState.WorldTransform = btTransform;
+		if (bulletRb.MotionState != null)
+			bulletRb.MotionState.WorldTransform = btTransform;
 	}
 }

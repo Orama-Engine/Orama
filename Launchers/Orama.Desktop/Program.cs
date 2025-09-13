@@ -3,7 +3,7 @@ using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
 using Orama.Modules.Input;
-using Orama.Physics;
+using Orama.Modules.Physics;
 using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
@@ -17,16 +17,17 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
+	    InputModule Input = new();
+	    Application.ModuleManager.RegisterModule(Input);
+	    PhysicsModule Physics = new();
+	    Application.ModuleManager.RegisterModule(Physics);
+	    
 		Application.Initialize += () =>
 		{
 			SceneManager.Initialize();
 			Renderer.Initialize();
 			AudioBackend.Initialize();
 			RenderPipelineManager.Current.Initialize();
-			PhysicsSystem.Initialize();
-
-			InputModule Input = new();
-			Application.ModuleManager.RegisterModule(Input);
 
 			// Load a test scene
 			Scene test = new();

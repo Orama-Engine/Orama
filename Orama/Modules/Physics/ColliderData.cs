@@ -1,4 +1,4 @@
-namespace Orama.Physics;
+namespace Orama.Modules.Physics;
 
 /// <summary>
 /// Specifies the type of collision shape used by a <see cref="Collider"/>.

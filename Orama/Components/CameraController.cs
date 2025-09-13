@@ -18,7 +18,7 @@ public class CameraController : Camera
 	{
 		inputModule = Application.ModuleManager.GetModule<InputModule>();
 		if (inputModule == null)
-			Console.WriteLine("CameraController: No input module found.");
+			throw new InvalidOperationException("CameraController requires InputModule to exist and be initialised.");
 	}
 
 	public override void Update()

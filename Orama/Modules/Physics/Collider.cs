@@ -2,7 +2,7 @@ using BulletSharp;
 using BulletSharp.Math;
 using Orama.Components;
 
-namespace Orama.Physics;
+namespace Orama.Modules.Physics;
 
 /// <summary>
 /// A component that defines the physical collision shape of an Entity.

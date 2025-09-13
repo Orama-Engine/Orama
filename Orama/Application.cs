@@ -1,8 +1,6 @@
 ﻿using System.Numerics;
 using Orama.Modules;
-using Orama.Physics;
 using Orama.Rendering;
-using Orama.Rendering.Materials;
 using Orama.Resources.ResourceLibrary;
 
 namespace Orama;
@@ -46,7 +44,6 @@ public static class Application
 		try
 		{
 			ModuleManager.Update();
-			PhysicsSystem.Step();
 			Update?.Invoke();
 			Render?.Invoke();
 		}
