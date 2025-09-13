@@ -19,7 +19,8 @@ public class RigidBody : Component
 	private System.Numerics.Quaternion lastRot;
 	private System.Numerics.Vector3 lastPos;
 
-	private PhysicsModule physicsModule;
+	private PhysicsModule physicsModule => Application.ModuleManager.GetModule<PhysicsModule>()
+	                                   ?? throw new InvalidOperationException("PhysicsModule must exist and be initialized.");
 	
 	/// <summary>
 	/// Determines the Entity's resistance to acceleration when a force is applied.
@@ -38,11 +39,8 @@ public class RigidBody : Component
 	
 	public override void Start()
 	{
-		physicsModule = Application.ModuleManager.GetModule<PhysicsModule>();
-		if (physicsModule == null || physicsModule.World == null)
-		{
-			throw new InvalidOperationException("RigidBody requires PhysicsModule to exist and be initialised.");
-		}
+		if (physicsModule.World == null)
+			throw new InvalidOperationException("PhysicsModule must have its world initialized.");
 		
 		Collider = Entity.GetComponent<Collider>();
 		if (Collider == null)

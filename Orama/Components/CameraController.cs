@@ -9,22 +9,14 @@ public class CameraController : Camera
 	[Serialize] public float Speed { get; set; } = 0.005f;
 	[Serialize] public float RotationSpeed { get; set; } = 0.001f;
 
-	private InputModule inputModule;
+	private InputModule inputModule => Application.ModuleManager.GetModule<InputModule>()
+	                                       ?? throw new InvalidOperationException("InputModule must exist and be initialized.");
 
 	private float yaw = 0f;
 	private float pitch = 0f;
 
-	public override void Start()
-	{
-		inputModule = Application.ModuleManager.GetModule<InputModule>();
-		if (inputModule == null)
-			throw new InvalidOperationException("CameraController requires InputModule to exist and be initialised.");
-	}
-
 	public override void Update()
 	{
-		if (inputModule == null) return;
-		
 		// Adjust movement speed using scroll wheel
 		if (inputModule.ScrollDelta != 0f)
 		{
