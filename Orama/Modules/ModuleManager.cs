@@ -5,7 +5,7 @@ namespace Orama.Modules;
 /// </summary>
 public static class ModuleManager
 {
-	private static Dictionary<Type, Module> modules = new();
+	private static readonly Dictionary<Type, Module> modules = new();
 
 	/// <summary>
 	/// Register a new <see cref="Module"/> of type <typeparamref name="T"/> if it isn't already registered.
