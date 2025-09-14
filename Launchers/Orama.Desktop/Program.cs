@@ -26,7 +26,7 @@ class OramaDesktop
 			RenderPipelineManager.Current.Initialize();
 			PhysicsSystem.Initialize();
 
-			OnGameInitializeAttribute.InvokeAll();
+			InvokableAttribute.InvokeAll<OnGameInitializeAttribute>();
 
 			// Load a test scene
 			Scene test = new();
@@ -81,7 +81,7 @@ class OramaDesktop
 
 		Application.Quitting += () =>
 		{
-			OnGameQuitAttribute.InvokeAll();
+			InvokableAttribute.InvokeAll<OnGameQuitAttribute>();
 
 			RenderPipelineManager.Current.Dispose();
 			AudioBackend.Shutdown();
