@@ -1,17 +1,18 @@
 namespace Orama.Modules;
 
 /// <summary>
-/// Manages all <see cref="Module"/>s
+/// Provides management of all <see cref="Module"/>s.
 /// </summary>
 public static class ModuleManager
 {
 	private static List<Module> modules = new();
 
 	/// <summary>
-	/// Register a <see cref="Module"/>.
+	/// Register a new <see cref="Module"/> of type <typeparamref name="T"/> if it isn't already registered.
+	/// Returns an existing instance if one already exists.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <typeparam name="T">The type of <see cref="Module"/> to register.</typeparam>
+	/// <returns>The registered or existing instance of <typeparamref name="T"/>.</returns>
 	public static T RegisterModule<T>() where T : Module, new()
 	{
 		var existing = modules.OfType<T>().FirstOrDefault();
@@ -24,9 +25,9 @@ public static class ModuleManager
 	}
 	
 	/// <summary>
-	/// Unregister a <see cref="Module"/>.
+	/// Unregister an existing <see cref="Module"/> of type <typeparamref name="T"/>.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T">The type of <see cref="Module"/> to unregister.</typeparam>
 	public static void UnregisterModule<T>() where T : Module
 	{
 		var existing = modules.OfType<T>().FirstOrDefault();
@@ -35,19 +36,25 @@ public static class ModuleManager
 	}
 	
 	/// <summary>
-	/// Get a <see cref="Module"/> by type or name.
+	/// Retrieve a registered <see cref="Module"/> by type.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
 	public static T? GetModule<T>() where T : Module
 		=> modules.OfType<T>().FirstOrDefault();
 	
-	// Run Module events
+	/// <summary>
+	/// Calls <see cref="Module.Start"/> on all enabled modules.
+	/// </summary>
 	public static void Start()
 	{
 		foreach (var module in modules.Where(module => module.Enabled))
 			module.Start();
 	}
+	
+	/// <summary>
+	/// Calls <see cref="Module.Update"/> on all enabled modules.
+	/// </summary>
 	public static void Update()
 	{
 		foreach (var module in modules.Where(module => module.Enabled))
