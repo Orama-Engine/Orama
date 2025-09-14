@@ -20,14 +20,10 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
-	    RendererModule Renderer = new();
-	    ModuleManager.RegisterModule(Renderer);
-	    SceneModule Scenes = new();
-	    ModuleManager.RegisterModule(Scenes);
-	    InputModule Input = new();
-	    ModuleManager.RegisterModule(Input);
-	    PhysicsModule Physics = new();
-	    ModuleManager.RegisterModule(Physics);
+	    RendererModule Renderer = ModuleManager.RegisterModule<RendererModule>();
+	    SceneModule Scenes = ModuleManager.RegisterModule<SceneModule>();
+	    InputModule Input = ModuleManager.RegisterModule<InputModule>();
+	    PhysicsModule Physics = ModuleManager.RegisterModule<PhysicsModule>();
 	    
 		Application.Initialize += () =>
 		{

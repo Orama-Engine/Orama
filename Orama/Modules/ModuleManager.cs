@@ -6,18 +6,33 @@ namespace Orama.Modules;
 public static class ModuleManager
 {
 	private static List<Module> modules = new();
+
+	/// <summary>
+	/// Register a <see cref="Module"/>.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public static T RegisterModule<T>() where T : Module, new()
+	{
+		var existing = modules.OfType<T>().FirstOrDefault();
+		if (existing != null)
+			return existing;
+
+		var created = new T();
+		modules.Add(created);
+		return created;
+	}
 	
 	/// <summary>
-	/// Register a <see cref="Module"/>
+	/// Unregister a <see cref="Module"/>.
 	/// </summary>
-	/// <param name="module"></param>
-	public static void RegisterModule(Module module) => modules.Add(module);
-	
-	/// <summary>
-	/// Deregister a <see cref="Module"/>
-	/// </summary>
-	/// <param name="module"></param>
-	public static void UnregisterModule(Module module) => modules.Remove(module);
+	/// <typeparam name="T"></typeparam>
+	public static void UnregisterModule<T>() where T : Module
+	{
+		var existing = modules.OfType<T>().FirstOrDefault();
+		if (existing != null)
+			modules.Remove(existing);
+	}
 	
 	/// <summary>
 	/// Get a <see cref="Module"/> by type or name.
