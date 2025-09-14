@@ -1,5 +1,5 @@
 ﻿
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 /// <summary>
 /// A single stage in the rendering pipeline.

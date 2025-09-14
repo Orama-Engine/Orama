@@ -3,7 +3,7 @@ using Veldrid;
 using Veldrid.Sdl2;
 using Veldrid.StartupUtilities;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 public static class Window
 {

@@ -1,29 +1,27 @@
 ﻿using System.Numerics;
-using System.Runtime.InteropServices;
 using Orama.Rendering.Materials;
-using Orama.Resources;
 using Veldrid;
 using Veldrid.SPIRV;
 using Veldrid.StartupUtilities;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
-public static class Renderer
+public class RendererModule : Module
 {
-	public static GraphicsBackend GraphicsBackend => _graphicsDevice.BackendType;
+	public GraphicsBackend GraphicsBackend => _graphicsDevice.BackendType;
 
-	private static GraphicsDevice? _graphicsDevice;
-	private static CommandList? _commandList;
+	private GraphicsDevice? _graphicsDevice;
+	private CommandList? _commandList;
 
-	private static readonly Dictionary<IClientRenderable, RenderableResources> _renderableResources = new();
-	private static readonly Dictionary<Material, MaterialResources> _materialResources = new();
-	private static readonly List<IClientRenderable> _renderables = new();
+	private readonly Dictionary<IClientRenderable, RenderableResources> _renderableResources = new();
+	private readonly Dictionary<Material, MaterialResources> _materialResources = new();
+	private readonly List<IClientRenderable> _renderables = new();
 
-	private static Framebuffer? _mainFramebuffer;
-	private static Texture? _colorTarget;
-	private static Texture? _depthTarget;
+	private Framebuffer? _mainFramebuffer;
+	private Texture? _colorTarget;
+	private Texture? _depthTarget;
 
-	public static void Initialize()
+	public override void Start()
 	{
 		var window = Window.InternalWindow ?? throw new Exception("Sdl2Window not initialized");
 
@@ -36,19 +34,20 @@ public static class Renderer
 		_graphicsDevice = VeldridStartup.CreateGraphicsDevice(window, new GraphicsDeviceOptions(), GraphicsBackend.Vulkan);
 		_commandList = _graphicsDevice.ResourceFactory.CreateCommandList();
 		CreateRenderTarget((uint)window.Width, (uint)window.Height);
+		RenderPipelineManager.Current.Initialize();
 	}
 
-	public static void Clear(Vector4 clearColor) => _commandList?.ClearColorTarget(0, new(clearColor));
+	public void Clear(Vector4 clearColor) => _commandList?.ClearColorTarget(0, new(clearColor));
 
-	public static void ClearDepth(float clearDepth) => _commandList?.ClearDepthStencil(clearDepth);
+	public void ClearDepth(float clearDepth) => _commandList?.ClearDepthStencil(clearDepth);
 
-	public static void BeginFrame()
+	public void BeginFrame()
 	{
 		_commandList?.Begin();
 		_commandList?.SetFramebuffer(_mainFramebuffer ?? _graphicsDevice!.SwapchainFramebuffer);
 	}
 
-	public static void EndFrame()
+	public void EndFrame()
 	{
 		if (_mainFramebuffer != null)
 		{
@@ -62,12 +61,12 @@ public static class Renderer
 		_renderables.Clear();
 	}
 
-	public static void AddRenderable(IClientRenderable renderable)
+	public void AddRenderable(IClientRenderable renderable)
 	{
 		_renderables.Add(renderable);
 	}
 
-	public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+	public void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
 	{
 		foreach (var renderable in _renderables)
 		{
@@ -82,7 +81,7 @@ public static class Renderer
 		}
 	}
 
-	private static RenderableResources? InitializeRenderableResources(IClientRenderable renderable)
+	private RenderableResources? InitializeRenderableResources(IClientRenderable renderable)
 	{
 		if (_graphicsDevice == null) return null;
 
@@ -154,7 +153,7 @@ public static class Renderer
 		return new RenderableResources(vertexBuffer, indexBuffer, pipeline, resourceLayout, shaders);
 	}
 
-	private static void Draw(IClientRenderable renderable, RenderableResources res, Matrix4x4 view, Matrix4x4 proj)
+	private void Draw(IClientRenderable renderable, RenderableResources res, Matrix4x4 view, Matrix4x4 proj)
 	{
 		if (_graphicsDevice == null || _commandList == null)
 			return;
@@ -193,11 +192,11 @@ public static class Renderer
 		_commandList.SetGraphicsResourceSet(0, resourceSet);
 		_commandList.DrawIndexed((uint)renderable.Indices.Length, 1, 0, 0, 0);
 
-		cameraBuffer.Dispose();
-		resourceSet.Dispose();
+		// cameraBuffer.Dispose();
+		// resourceSet.Dispose();
 	}
 
-	private static byte[] GetMatrixBytes(Matrix4x4 matrix)
+	private byte[] GetMatrixBytes(Matrix4x4 matrix)
 	{
 		byte[] bytes = new byte[sizeof(float) * 16];
 		Buffer.BlockCopy(BitConverter.GetBytes(matrix.M11), 0, bytes, 0 * 4, 4);
@@ -223,7 +222,7 @@ public static class Renderer
 		return bytes;
 	}
 
-	private static byte[] PackMaterialParameters(IEnumerable<object> parameters)
+	private byte[] PackMaterialParameters(IEnumerable<object> parameters)
 	{
 		List<byte> buffer = new();
 		int offset = 0;
@@ -308,7 +307,7 @@ public static class Renderer
 		return buffer.ToArray();
 	}
 
-	private static void Align(ref List<byte> buffer, ref int offset, int alignment)
+	private void Align(ref List<byte> buffer, ref int offset, int alignment)
 	{
 		int padding = (alignment - (offset % alignment)) % alignment;
 		if (padding > 0)
@@ -318,7 +317,7 @@ public static class Renderer
 		}
 	}
 
-	private static void CreateRenderTarget(uint width, uint height)
+	private void CreateRenderTarget(uint width, uint height)
 	{
 		if (_graphicsDevice == null) 
 			return;
@@ -342,7 +341,7 @@ public static class Renderer
 			_depthTarget, _colorTarget));
 	}
 
-	public static void DisposeRenderable(IClientRenderable renderable)
+	public void DisposeRenderable(IClientRenderable renderable)
 	{
 		if (_renderableResources.TryGetValue(renderable, out var res))
 		{
@@ -357,13 +356,13 @@ public static class Renderer
 		}
 	}
 
-	public static void DisposeMaterial(Material material)
+	public void DisposeMaterial(Material material)
 	{
 		if (_materialResources.ContainsKey(material))
 			_materialResources.Remove(material);
 	}
 
-	private static void DisposeRenderTarget()
+	private void DisposeRenderTarget()
 	{
 		_mainFramebuffer?.Dispose();
 		_mainFramebuffer = null;

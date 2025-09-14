@@ -2,7 +2,7 @@
 using Orama.Rendering.Materials;
 using Orama.Resources;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 public interface IClientRenderable
 {

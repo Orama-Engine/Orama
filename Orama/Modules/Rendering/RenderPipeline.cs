@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 public abstract class RenderPipeline : IDisposable
 {

@@ -1,4 +1,4 @@
-﻿namespace Orama.Rendering.ForwardPipeline;
+﻿namespace Orama.Modules.Rendering.ForwardPipeline;
 
 /// <summary>
 /// The default forward rendering pipeline.

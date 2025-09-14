@@ -2,6 +2,8 @@
 using Orama.Rendering;
 using Orama.Resources;
 using System.Numerics;
+using Orama.Modules;
+using Orama.Modules.Rendering;
 
 namespace Orama.Components;
 
@@ -11,6 +13,9 @@ public class MeshRenderer : Component
 	/// The mesh to render.
 	/// </summary>
 	[SerializeIgnore] public Mesh Mesh { get; set; } = Mesh.Default;
+	
+	private static RendererModule rendererModule => ModuleManager.GetModule<RendererModule>()
+	                                                ?? throw new InvalidOperationException("RendererModule must exist and be initialized.");
 
 	public override void Start()
 	{
@@ -20,6 +25,6 @@ public class MeshRenderer : Component
 	public override void Update()
 	{
 		Mesh.ModelMatrix = Transform.Matrix;
-		Renderer.AddRenderable(Mesh);
+		rendererModule.AddRenderable(Mesh);
 	}
 }

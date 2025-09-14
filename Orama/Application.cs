@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Orama.Modules;
+using Orama.Modules.Rendering;
 using Orama.Rendering;
 using Orama.Resources.ResourceLibrary;
 
