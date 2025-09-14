@@ -9,19 +9,16 @@ public class CameraController : Camera
 {
 	[Serialize] public float Speed { get; set; } = 0.005f;
 	[Serialize] public float RotationSpeed { get; set; } = 0.001f;
-
-	private InputModule inputModule => ModuleManager.GetModule<InputModule>()
-	                                       ?? throw new InvalidOperationException("InputModule must exist and be initialized.");
-
+	
 	private float yaw = 0f;
 	private float pitch = 0f;
 
 	public override void Update()
 	{
 		// Adjust movement speed using scroll wheel
-		if (inputModule.ScrollDelta != 0f)
+		if (ModuleManager.GetModule<InputModule>().ScrollDelta != 0f)
 		{
-			Speed += inputModule.ScrollDelta * 0.005f;
+			Speed += ModuleManager.GetModule<InputModule>().ScrollDelta * 0.005f;
 
 			// Clamp to prevent negative speed
 			Speed = MathF.Max(Speed, 0.01f);
@@ -33,29 +30,29 @@ public class CameraController : Camera
 
 	private void HandleMovement()
 	{
-		if (inputModule.IsKeyDown(Key.A))
+		if (ModuleManager.GetModule<InputModule>().IsKeyDown(Key.A))
 			Transform.Position += -Transform.Right * Speed;
 
-		if (inputModule.IsKeyDown(Key.D))
+		if (ModuleManager.GetModule<InputModule>().IsKeyDown(Key.D))
 			Transform.Position += Transform.Right * Speed;
 
-		if (inputModule.IsKeyDown(Key.W))
+		if (ModuleManager.GetModule<InputModule>().IsKeyDown(Key.W))
 			Transform.Position += Transform.Forward * Speed;
 
-		if (inputModule.IsKeyDown(Key.S))
+		if (ModuleManager.GetModule<InputModule>().IsKeyDown(Key.S))
 			Transform.Position += -Transform.Forward * Speed;
 	}
 
 	private void HandleRotation()
 	{
-		if (inputModule.IsMouseButtonDown(MouseButton.Right))
+		if (ModuleManager.GetModule<InputModule>().IsMouseButtonDown(MouseButton.Right))
 		{
-			inputModule.CursorVisible = false;
-			inputModule.CursorLocked = true;
+			ModuleManager.GetModule<InputModule>().CursorVisible = false;
+			ModuleManager.GetModule<InputModule>().CursorLocked = true;
 
 			// Use mouse delta to update yaw and pitch
-			yaw += -inputModule.MouseDelta.X * RotationSpeed;
-			pitch += -inputModule.MouseDelta.Y * RotationSpeed;
+			yaw += -ModuleManager.GetModule<InputModule>().MouseDelta.X * RotationSpeed;
+			pitch += -ModuleManager.GetModule<InputModule>().MouseDelta.Y * RotationSpeed;
 
 			// Clamp pitch to avoid flipping
 			pitch = Math.Clamp(pitch, -MathF.PI / 2 + 0.01f, MathF.PI / 2 - 0.01f);
@@ -68,8 +65,8 @@ public class CameraController : Camera
 			Transform.Rotation = yawQuat * pitchQuat;
 		} else
 		{
-			inputModule.CursorVisible = true;
-			inputModule.CursorLocked = false;
+			ModuleManager.GetModule<InputModule>().CursorVisible = true;
+			ModuleManager.GetModule<InputModule>().CursorLocked = false;
 		}
 	}
 }

@@ -19,9 +19,6 @@ public class RigidBody : Component
 	private BulletSharp.RigidBody bulletRb;
 	private System.Numerics.Quaternion lastRot;
 	private System.Numerics.Vector3 lastPos;
-
-	private PhysicsModule physicsModule => ModuleManager.GetModule<PhysicsModule>()
-	                                   ?? throw new InvalidOperationException("PhysicsModule must exist and be initialized.");
 	
 	/// <summary>
 	/// Determines the Entity's resistance to acceleration when a force is applied.
@@ -40,7 +37,7 @@ public class RigidBody : Component
 	
 	public override void Start()
 	{
-		if (physicsModule.World == null)
+		if (ModuleManager.GetModule<PhysicsModule>().World == null)
 			throw new InvalidOperationException("PhysicsModule must have its world initialized.");
 		
 		Collider = Entity.GetComponent<Collider>();
@@ -60,12 +57,12 @@ public class RigidBody : Component
 		var motionState = new DefaultMotionState(startTransform);
 		var rbInfo = new RigidBodyConstructionInfo(Mass, motionState, Collider.Shape, inertia);
 		bulletRb = new BulletSharp.RigidBody(rbInfo);
-		physicsModule.World.AddRigidBody(bulletRb);
+		ModuleManager.GetModule<PhysicsModule>().World.AddRigidBody(bulletRb);
 	}
 
 	public override void Update()
 	{
-		if (physicsModule == null)
+		if (ModuleManager.GetModule<PhysicsModule>() == null)
 			return;
 		
 		// Check if position changed to sync

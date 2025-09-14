@@ -12,9 +12,6 @@ public class Audio : IResource<Audio>
 	public int BitsPerSample { get; private set; }
 	public byte[] PcmData { get; private set; }
 	
-	private AudioModule audioModule => ModuleManager.GetModule<AudioModule>()
-	                                   ?? throw new InvalidOperationException("AudioModule must exist and be initialized.");
-
 	// Constructor
 	public Audio() { }
 
@@ -104,15 +101,15 @@ public class Audio : IResource<Audio>
 	{
 		var format = GetFormat();
 
-		var buffer = audioModule.CreateBuffer(
+		var buffer = ModuleManager.GetModule<AudioModule>().CreateBuffer(
 			PcmData,
 			format,
 			PcmData.Length,
 			SampleRate
 		);
 
-	var source = audioModule.GenerateSource();
-	audioModule.AttachBufferToSource(source, buffer);
-	audioModule.PlaySource(source);
+	var source = ModuleManager.GetModule<AudioModule>().GenerateSource();
+	ModuleManager.GetModule<AudioModule>().AttachBufferToSource(source, buffer);
+	ModuleManager.GetModule<AudioModule>().PlaySource(source);
 	}
 }

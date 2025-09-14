@@ -13,9 +13,6 @@ namespace Orama.Resources;
 /// </summary>
 public class Scene : IResource<Scene>
 {
-	private SceneModule sceneModule => ModuleManager.GetModule<SceneModule>()
-	                                   ?? throw new InvalidOperationException("SceneModule must exist and be initialized.");
-	
 	/// <summary> Creates an empty Scene. </summary>
 	public Scene() { }
 

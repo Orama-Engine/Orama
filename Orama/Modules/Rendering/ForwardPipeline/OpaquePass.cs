@@ -7,11 +7,8 @@ public class OpaquePass : RenderPass
 {
 	public OpaquePass() : base("Opaque") { }
 	
-	private RendererModule rendererModule => ModuleManager.GetModule<RendererModule>()
-	                                         ?? throw new InvalidOperationException("RendererModule must exist and be initialized.");
-
 	public override void Execute(RenderContext context)
 	{
-		rendererModule.Render(context.ViewMatrix, context.ProjectionMatrix);
+		ModuleManager.GetModule<RendererModule>().Render(context.ViewMatrix, context.ProjectionMatrix);
 	}
 }

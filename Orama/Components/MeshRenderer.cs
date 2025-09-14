@@ -14,9 +14,6 @@ public class MeshRenderer : Component
 	/// </summary>
 	[SerializeIgnore] public Mesh Mesh { get; set; } = Mesh.Default;
 	
-	private static RendererModule rendererModule => ModuleManager.GetModule<RendererModule>()
-	                                                ?? throw new InvalidOperationException("RendererModule must exist and be initialized.");
-
 	public override void Start()
 	{
 		Mesh.Material.SetParameter<Vector4>("Color", new(1f, 1f, 1f, 1f));
@@ -25,6 +22,6 @@ public class MeshRenderer : Component
 	public override void Update()
 	{
 		Mesh.ModelMatrix = Transform.Matrix;
-		rendererModule.AddRenderable(Mesh);
+		ModuleManager.GetModule<RendererModule>().AddRenderable(Mesh);
 	}
 }
