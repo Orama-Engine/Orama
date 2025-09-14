@@ -5,7 +5,7 @@ namespace Orama.Modules;
 /// </summary>
 public static class ModuleManager
 {
-	private static List<Module> modules = new();
+	private static Dictionary<Type, Module> modules = new();
 
 	/// <summary>
 	/// Register a new <see cref="Module"/> of type <typeparamref name="T"/> if it isn't already registered.
@@ -15,13 +15,13 @@ public static class ModuleManager
 	/// <returns>The registered or existing instance of <typeparamref name="T"/>.</returns>
 	public static T RegisterModule<T>() where T : Module, new()
 	{
-		var existing = modules.OfType<T>().FirstOrDefault();
-		if (existing != null)
-			return existing;
+		var type = typeof(T);
+		if (modules.TryGetValue(type, out var existing))
+			return (T)existing;
 
-		var created = new T();
-		modules.Add(created);
-		return created;
+		var instance = new T();
+		modules[type] = instance;
+		return instance;
 	}
 	
 	/// <summary>
@@ -30,26 +30,28 @@ public static class ModuleManager
 	/// <typeparam name="T">The type of <see cref="Module"/> to unregister.</typeparam>
 	public static void UnregisterModule<T>() where T : Module
 	{
-		var existing = modules.OfType<T>().FirstOrDefault();
-		if (existing != null)
-			modules.Remove(existing);
+		modules.Remove(typeof(T));
 	}
-	
+
 	/// <summary>
 	/// Retrieve a registered <see cref="Module"/> by type.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <typeparam name="T">The type of <see cref="Module"/> to grab.</typeparam>
+	/// <returns>Grabbed <see cref="Module"/>.</returns>
 	public static T? GetModule<T>() where T : Module
-		=> modules.OfType<T>().FirstOrDefault();
+	{
+		modules.TryGetValue(typeof(T), out var module);
+		return (T?)module;
+	}
 	
 	/// <summary>
 	/// Calls <see cref="Module.Start"/> on all enabled modules.
 	/// </summary>
 	public static void Start()
 	{
-		foreach (var module in modules.Where(module => module.Enabled))
-			module.Start();
+		foreach (var module in modules.Values)
+			if (module.Enabled)
+				module.Start();
 	}
 	
 	/// <summary>
@@ -57,7 +59,8 @@ public static class ModuleManager
 	/// </summary>
 	public static void Update()
 	{
-		foreach (var module in modules.Where(module => module.Enabled))
-			module.Update();
+		foreach (var module in modules.Values)
+			if (module.Enabled)
+				module.Update();
 	}
 }
