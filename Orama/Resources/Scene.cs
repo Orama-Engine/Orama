@@ -3,6 +3,8 @@ using Orama.Entities;
 using Orama.Resources.ResourceLibrary;
 using Orama.Echo;
 using System.Text;
+using Orama.Modules;
+using Orama.Modules.Scenes;
 
 namespace Orama.Resources;
 
@@ -11,8 +13,8 @@ namespace Orama.Resources;
 /// </summary>
 public class Scene : IResource<Scene>
 {
-    /// <summary> Creates an empty Scene. </summary>
-    public Scene() { }
+	/// <summary> Creates an empty Scene. </summary>
+	public Scene() { }
 
 	[Serialize]
     private HashSet<Entity> allEntities = new();
@@ -29,15 +31,13 @@ public class Scene : IResource<Scene>
     /// <summary> Registers an Entity to the Scene. </summary> <param name="entity"></param>
     public void Add(Entity entity)
     {
-	    if (SceneManager.Current != null) 
-		    allEntities.Add(entity);
+	    allEntities.Add(entity);
     }
 
     /// <summary> Unregisters an Entity from the Scene. </summary> <param name="entity"></param>
     public void Remove(Entity entity)
     {
-	    if (SceneManager.Current != null)
-		    allEntities.Remove(entity);
+	    allEntities.Remove(entity);
     }
 
     /// <summary> Unregisters all Entities from the Scene. </summary>

@@ -3,7 +3,7 @@
 using Orama.Components;
 using System.Numerics;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 /// <summary>
 /// Provides Context for rendering a frame.

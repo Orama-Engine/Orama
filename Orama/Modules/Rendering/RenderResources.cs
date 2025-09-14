@@ -1,6 +1,6 @@
 ﻿using Veldrid;
 
-namespace Orama.Rendering;
+namespace Orama.Modules.Rendering;
 
 public class RenderableResources
 {

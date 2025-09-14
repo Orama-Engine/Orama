@@ -1,4 +1,5 @@
-using Orama.Audio;
+using Orama.Modules;
+using Orama.Modules.Audio;
 using Orama.Resources.ResourceLibrary;
 using Silk.NET.OpenAL;
 
@@ -10,7 +11,7 @@ public class Audio : IResource<Audio>
 	public int SampleRate { get; private set; }
 	public int BitsPerSample { get; private set; }
 	public byte[] PcmData { get; private set; }
-
+	
 	// Constructor
 	public Audio() { }
 
@@ -100,15 +101,15 @@ public class Audio : IResource<Audio>
 	{
 		var format = GetFormat();
 
-		var buffer = AudioBackend.CreateBuffer(
+		var buffer = ModuleManager.GetModule<AudioModule>().CreateBuffer(
 			PcmData,
 			format,
 			PcmData.Length,
 			SampleRate
 		);
 
-	var source = AudioBackend.GenerateSource();
-	AudioBackend.AttachBufferToSource(source, buffer);
-	AudioBackend.PlaySource(source);
+	var source = ModuleManager.GetModule<AudioModule>().GenerateSource();
+	ModuleManager.GetModule<AudioModule>().AttachBufferToSource(source, buffer);
+	ModuleManager.GetModule<AudioModule>().PlaySource(source);
 	}
 }

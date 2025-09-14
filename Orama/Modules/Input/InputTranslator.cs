@@ -1,4 +1,4 @@
-namespace Orama.UserInput;
+namespace Orama.Modules.Input;
 
 // Currently requires cleanup.
 public static class InputTranslator

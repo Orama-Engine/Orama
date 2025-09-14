@@ -2,12 +2,15 @@
 using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
-using Orama.Physics;
+using Orama.Modules;
+using Orama.Modules.Audio;
+using Orama.Modules.Input;
+using Orama.Modules.Physics;
+using Orama.Modules.Rendering;
+using Orama.Modules.Scenes;
 using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
-using Orama.UserInput;
-using Orama.Utility;
 
 namespace Orama.Desktop;
 
@@ -18,22 +21,20 @@ class OramaDesktop
 {
     static void Main(string[] args)
     {
+	    RendererModule Renderer = ModuleManager.RegisterModule<RendererModule>();
+	    SceneModule Scenes = ModuleManager.RegisterModule<SceneModule>();
+	    InputModule Input = ModuleManager.RegisterModule<InputModule>();
+	    PhysicsModule Physics = ModuleManager.RegisterModule<PhysicsModule>();
+	    AudioModule Audio = ModuleManager.RegisterModule<AudioModule>();
+	    
 		Application.Initialize += () =>
 		{
-			SceneManager.Initialize();
-			Renderer.Initialize();
-			AudioBackend.Initialize();
-			RenderPipelineManager.Current.Initialize();
-			PhysicsSystem.Initialize();
-
-			InvokableAttribute.InvokeAll<OnGameInitializeAttribute>();
-
 			// Load a test scene
 			Scene test = new();
 			Entity ent = new();
 			Entity floor = new();
 			ent.AddComponent(new MeshRenderer());
-			 floor.AddComponent(new MeshRenderer()); // Temporarily hidden due to rendering issues for physics testing.
+			floor.AddComponent(new MeshRenderer());
 
 			ent.Transform.Position = new Vector3(0, 5, -5);
 			floor.Transform.Position = new Vector3(0, -15, -5);
@@ -63,13 +64,12 @@ class OramaDesktop
 
 			Application.ResourceLibrary.SaveResource<Scene>("Assets/testscene.orama", test);
 
-			SceneManager.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
+			Scenes.LoadScene(Application.ResourceLibrary.GetResource<Scene>("Assets/testscene.orama"));
 		};
 
 		Application.Update += () =>
 		{
-			SceneManager.Update();
-			Input.Update();
+			Scenes.Update();
 		};
 
 		Application.Render += () =>
@@ -81,12 +81,9 @@ class OramaDesktop
 
 		Application.Quitting += () =>
 		{
-			InvokableAttribute.InvokeAll<OnGameQuitAttribute>();
-
 			RenderPipelineManager.Current.Dispose();
-			AudioBackend.Shutdown();
 		};
 
-        Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
+        Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
     }
 }

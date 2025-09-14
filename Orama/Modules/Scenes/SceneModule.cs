@@ -2,24 +2,23 @@ using Orama.Components;
 using Orama.Entities;
 using Orama.Resources;
 
-namespace Orama.Resources;
+namespace Orama.Modules.Scenes;
 
 /// <summary>
 /// Manages Scenes and their operations.
 /// </summary>
-public static class SceneManager
+public class SceneModule : Module
 {
 	/// <summary> The currently active Scene. </summary>
-    public static Scene Current { get; private set; } = null!;
-    
-    /// <summary> Initialize the Scene Manager. </summary>
-    public static void Initialize()
+    public Scene Current { get; private set; } = null!;
+	
+    public override void Start()
 	{
 		NewScene();
 	}
 
 	/// <summary> Creates a new Scene. </summary>
-	public static void NewScene()
+	public void NewScene()
 	{
 		Clear();
 		Current = new Scene();
@@ -30,7 +29,7 @@ public static class SceneManager
 	}
 
 	/// <summary> Clears the current Scene. </summary>
-	public static void Clear()
+	public void Clear()
     {
         if (Current != null)
         {
@@ -38,16 +37,15 @@ public static class SceneManager
             Current = new Scene();
         }
     }
-
-    /// <summary> Runs each frame. </summary>
-    public static void Update()
+	
+	public override void Update()
     {
 		// Update all entities (this also updates their components)
 		foreach(var entity in Current.AllEntities)
 			entity.Update();
     }
 
-	public static void LoadScene(Scene scene)
+	public void LoadScene(Scene scene)
 	{
 		Clear();
 		Current = scene;

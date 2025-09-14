@@ -1,4 +1,4 @@
-﻿namespace Orama.Rendering;
+﻿namespace Orama.Modules.Rendering;
 
 /// <summary>
 /// Manages render pipelines.
@@ -7,12 +7,12 @@ public static class RenderPipelineManager
 {
 	/// <summary> The current render pipeline. </summary>
 	public static RenderPipeline Current { get; set; } = new ForwardPipeline.ForwardRenderPipeline();
-
+	
 	/// <summary> Called once per frame to submit rendering tasks. </summary>
 	public static void RenderFrame(RenderContext context)
 	{
-		Renderer.BeginFrame();
+		ModuleManager.GetModule<RendererModule>().BeginFrame();
 		Current.RenderFrame(context);
-		Renderer.EndFrame();
+		ModuleManager.GetModule<RendererModule>().EndFrame();
 	}
 }

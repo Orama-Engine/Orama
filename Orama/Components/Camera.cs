@@ -1,6 +1,7 @@
 ﻿using Orama.Echo;
 using Orama.Rendering;
 using System.Numerics;
+using Orama.Modules.Rendering;
 
 namespace Orama.Components;
 
