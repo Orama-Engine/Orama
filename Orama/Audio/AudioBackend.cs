@@ -8,9 +8,6 @@ namespace Orama.Audio;
 /// </summary>
 public static class AudioBackend
 {
-	// To pass through to the manager
-	internal static IResourceLibrary? resourceLibrary = null;
-	
 	private static ALContext? alContextApi;
 	private static AL? al;
 	
@@ -52,9 +49,6 @@ public static class AudioBackend
 		
 		// Get AL Api instance
 		al = AL.GetApi();
-		
-		// Set resource library
-		resourceLibrary = Application.ResourceLibrary;
 		
 		Console.WriteLine("Audio device initialized successfully.");
 	}
