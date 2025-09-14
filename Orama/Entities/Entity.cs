@@ -48,28 +48,32 @@ public class Entity : ISerializationCallbackReceiver
 			component.Update();
 	}
 
-	/// <summary> Destroys the Entity and its Components. </summary>
+	/// <summary> Destroys the Entity and its <see cref="Component"/>s. </summary>
 	public void Destroy()
 	{
 		foreach (var component in components.ToList())
 			RemoveComponent(component);
 	}
 
-	/// <summary> Adds a Component to the Entity. </summary>
+	/// <summary> Adds a <see cref="Component"/> to the Entity. </summary>
+	/// <typeparam name="T"> The type of Component to add. </typeparam>
+	public void AddComponent<T>() where T : Component => AddComponent((T)Activator.CreateInstance(typeof(T))!);
+
+	/// <summary> Adds a <see cref="Component"/> to the Entity. </summary>
 	public void AddComponent(Component component)
 	{
 		components.Add(component);
 		component.Entity = this;
 	}
 
-	/// <summary> Removes a Component from the Entity. </summary>
+	/// <summary> Removes a <see cref="Component"/> from the Entity. </summary>
 	public void RemoveComponent(Component component)
 	{
 		components.Remove(component);
 		component.Entity = null!;
 	}
 	
-	/// <summary> Returns a target Component. </summary>
+	/// <summary> Returns a target <see cref="Component"/>. </summary>
 	public T GetComponent<T>() where T : Component
 	{
 		return components.OfType<T>().FirstOrDefault();

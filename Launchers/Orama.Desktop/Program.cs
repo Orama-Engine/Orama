@@ -33,8 +33,8 @@ class OramaDesktop
 			Scene test = new();
 			Entity ent = new();
 			Entity floor = new();
-			ent.AddComponent(new MeshRenderer());
-			floor.AddComponent(new MeshRenderer());
+			ent.AddComponent<MeshRenderer>();
+			floor.AddComponent<MeshRenderer>();
 
 			ent.Transform.Position = new Vector3(0, 5, -5);
 			floor.Transform.Position = new Vector3(0, -15, -5);
