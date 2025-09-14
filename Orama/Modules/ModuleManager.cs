@@ -43,7 +43,11 @@ public static class ModuleManager
 		=> modules.OfType<T>().FirstOrDefault();
 	
 	// Run Module events
-	public static void Start() => modules.ForEach(module => module.Start());
+	public static void Start()
+	{
+		foreach (var module in modules.Where(module => module.Enabled))
+			module.Start();
+	}
 	public static void Update()
 	{
 		foreach (var module in modules.Where(module => module.Enabled))
