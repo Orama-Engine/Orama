@@ -7,6 +7,7 @@ using Orama.Rendering;
 using Orama.Resources;
 using Orama.Resources.ResourceLibrary;
 using Orama.UserInput;
+using Orama.Utility;
 
 namespace Orama.Desktop;
 
@@ -24,6 +25,8 @@ class OramaDesktop
 			AudioBackend.Initialize();
 			RenderPipelineManager.Current.Initialize();
 			PhysicsSystem.Initialize();
+
+			OnGameInitializeAttribute.InvokeAll();
 
 			// Load a test scene
 			Scene test = new();
@@ -78,6 +81,8 @@ class OramaDesktop
 
 		Application.Quitting += () =>
 		{
+			OnGameQuitAttribute.InvokeAll();
+
 			RenderPipelineManager.Current.Dispose();
 			AudioBackend.Shutdown();
 		};
