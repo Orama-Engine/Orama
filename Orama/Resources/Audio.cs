@@ -1,4 +1,5 @@
-using Orama.Audio;
+using Orama.Modules;
+using Orama.Modules.Audio;
 using Orama.Resources.ResourceLibrary;
 using Silk.NET.OpenAL;
 
@@ -10,6 +11,9 @@ public class Audio : IResource<Audio>
 	public int SampleRate { get; private set; }
 	public int BitsPerSample { get; private set; }
 	public byte[] PcmData { get; private set; }
+	
+	private AudioModule audioModule => ModuleManager.GetModule<AudioModule>()
+	                                   ?? throw new InvalidOperationException("AudioModule must exist and be initialized.");
 
 	// Constructor
 	public Audio() { }
@@ -100,15 +104,15 @@ public class Audio : IResource<Audio>
 	{
 		var format = GetFormat();
 
-		var buffer = AudioBackend.CreateBuffer(
+		var buffer = audioModule.CreateBuffer(
 			PcmData,
 			format,
 			PcmData.Length,
 			SampleRate
 		);
 
-	var source = AudioBackend.GenerateSource();
-	AudioBackend.AttachBufferToSource(source, buffer);
-	AudioBackend.PlaySource(source);
+	var source = audioModule.GenerateSource();
+	audioModule.AttachBufferToSource(source, buffer);
+	audioModule.PlaySource(source);
 	}
 }

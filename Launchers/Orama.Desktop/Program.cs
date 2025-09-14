@@ -3,6 +3,7 @@ using Orama.Audio;
 using Orama.Components;
 using Orama.Entities;
 using Orama.Modules;
+using Orama.Modules.Audio;
 using Orama.Modules.Input;
 using Orama.Modules.Physics;
 using Orama.Modules.Rendering;
@@ -24,11 +25,10 @@ class OramaDesktop
 	    SceneModule Scenes = ModuleManager.RegisterModule<SceneModule>();
 	    InputModule Input = ModuleManager.RegisterModule<InputModule>();
 	    PhysicsModule Physics = ModuleManager.RegisterModule<PhysicsModule>();
+	    AudioModule Audio = ModuleManager.RegisterModule<AudioModule>();
 	    
 		Application.Initialize += () =>
 		{
-			AudioBackend.Initialize();
-
 			// Load a test scene
 			Scene test = new();
 			Entity ent = new();
@@ -82,9 +82,8 @@ class OramaDesktop
 		Application.Quitting += () =>
 		{
 			RenderPipelineManager.Current.Dispose();
-			AudioBackend.Shutdown();
 		};
 
-        Orama.Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
+        Application.Run("Orama", 1000, 600, new DefaultResourceLibrary());
     }
 }

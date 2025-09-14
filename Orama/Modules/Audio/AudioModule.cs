@@ -1,27 +1,20 @@
-using Orama.Resources.ResourceLibrary;
 using Silk.NET.OpenAL;
 
-namespace Orama.Audio;
+namespace Orama.Modules.Audio;
 
 /// <summary>
 /// Handles low level OpenAL stuff.
 /// </summary>
-public static class AudioBackend
+public class AudioModule : Module, IDisposable
 {
-	// To pass through to the manager
-	internal static IResourceLibrary? resourceLibrary = null;
-	
-	private static ALContext? alContextApi;
-	private static AL? al;
+	private ALContext? alContextApi;
+	private AL? al;
 	
 	// Raw handles
-	private static unsafe Device* device;
-	private static unsafe Context* context;
-
-	/// <summary>
-	/// Initializes the audio device, creates an OpenAL API context.
-	/// </summary>
-	public static unsafe void Initialize()
+	private unsafe Device* device;
+	private unsafe Context* context;
+	
+	public override unsafe void Start()
 	{
 		alContextApi = ALContext.GetApi();
 		
@@ -53,16 +46,10 @@ public static class AudioBackend
 		// Get AL Api instance
 		al = AL.GetApi();
 		
-		// Set resource library
-		resourceLibrary = Application.ResourceLibrary;
-		
 		Console.WriteLine("Audio device initialized successfully.");
 	}
-
-	/// <summary>
-	/// De-initializes the audio device, releases resources.
-	/// </summary>
-	public static unsafe void Shutdown()
+	
+	public unsafe void Dispose()
 	{
 		if (alContextApi != null)
 		{
@@ -91,7 +78,7 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="source"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static void PlaySource(uint source)
+	public void PlaySource(uint source)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -104,7 +91,7 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="source"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static void StopSource(uint source)
+	public void StopSource(uint source)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -121,7 +108,7 @@ public static class AudioBackend
 	/// <param name="sampleRate"></param>
 	/// <returns></returns>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static unsafe uint CreateBuffer(byte[] data, BufferFormat format, int size,int sampleRate)
+	public unsafe uint CreateBuffer(byte[] data, BufferFormat format, int size,int sampleRate)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -139,7 +126,7 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="buffer"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialised.</exception>
-	public static void DeleteBuffer(uint buffer)
+	public void DeleteBuffer(uint buffer)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -152,7 +139,7 @@ public static class AudioBackend
 	/// </summary>
 	/// <returns>Audio Source.</returns>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized, source has the same ID or generation fails.</exception>
-	public static uint GenerateSource()
+	public uint GenerateSource()
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -170,7 +157,7 @@ public static class AudioBackend
 	/// <param name="source"></param>
 	/// <param name="buffer"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized.</exception>
-	public static void AttachBufferToSource(uint source, uint buffer)
+	public void AttachBufferToSource(uint source, uint buffer)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
@@ -183,7 +170,7 @@ public static class AudioBackend
 	/// </summary>
 	/// <param name="source"></param>
 	/// <exception cref="InvalidOperationException">Thrown if the audio system is not initialized or deletion fails.</exception>
-	public static void DeleteSource(uint source)
+	public void DeleteSource(uint source)
 	{
 		if (al == null)
 			throw new InvalidOperationException("Audio not initialized.");
