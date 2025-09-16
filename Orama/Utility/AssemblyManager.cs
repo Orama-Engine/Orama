@@ -3,7 +3,7 @@
 namespace Orama.Utility;
 
 /// <summary>
-/// Manages loading, unloading and hot-reloading .NET assemblies.
+/// Handles working with .NET assemblies.
 /// </summary>
 public static class AssemblyLoader
 {
@@ -46,8 +46,6 @@ public static class AssemblyLoader
 		}
 	}
 
-	#region Reflection Methods
-
 	/// <summary>
 	/// Gets the type with the specified name from loaded assemblies.
 	/// </summary>
@@ -64,7 +62,5 @@ public static class AssemblyLoader
 
 		return null;
 	}
-
-	#endregion
 }
 
