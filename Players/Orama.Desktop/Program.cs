@@ -14,15 +14,19 @@ float4 main(float3 pos : POSITION) : SV_Position
 }";
 
     const string fragHLSL = @"
-float4 main() : SV_Target0
+float Brightness;
+
+float4 main() : SV_Target
 {
-    return float4(1.0, 1.0, 1.0, 1.0);
+    return float4(Brightness, Brightness, Brightness, 1.0);
 }";
 
     static void Main(string[] args)
     {
         GraphicsShader shader = ShaderBaker.HLSLToShader(vertHLSL, fragHLSL);
+        shader.SetFloat("Brightness", 0.3f);
 
+        Console.WriteLine(ShaderUnbaker.SpirVToGLSL(shader.VertexBytes, shader.FragmentBytes));
         GraphicsMesh mesh = new GraphicsMesh()
         {
             Vertices = new Vector3[]

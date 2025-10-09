@@ -34,6 +34,7 @@ internal class OpenGLBackend : IRendererBackend
     #region OpenGL Resources
     private static readonly Dictionary<GraphicsShader, uint> shaderProgramMap = new();
     private readonly Dictionary<GraphicsMesh, (uint vao, uint vbo, uint ebo)> meshBuffers = new();
+    private readonly Dictionary<GraphicsShader, uint> shaderParameterUBOs = new();
     #endregion
 
     /// <inheritdoc/>
@@ -132,7 +133,24 @@ internal class OpenGLBackend : IRendererBackend
             if (!shaderProgramMap.ContainsKey(mesh.Shader))
             {
                 (string vertexSource, string fragmentSource) = ShaderUnbaker.SpirVToGLSL(mesh.Shader.VertexBytes, mesh.Shader.FragmentBytes);
-                shaderProgramMap[mesh.Shader] = CreateShaderProgram(vertexSource, fragmentSource);
+                uint program = CreateShaderProgram(vertexSource, fragmentSource);
+                shaderProgramMap[mesh.Shader] = program;
+
+                // Create UBO for this shader
+                uint paramUbo = gl.GenBuffer();
+                gl.BindBuffer(BufferTargetARB.UniformBuffer, paramUbo);
+
+                unsafe
+                {
+                    int float4Count = Math.Max(1, mesh.Shader.Parameters.Count);
+                    gl.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * float4Count), null, BufferUsageARB.DynamicDraw);
+                }
+
+                // Bind UBO to binding point 0
+                gl.BindBufferBase(GLEnum.UniformBuffer, 0, paramUbo);
+                gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+
+                shaderParameterUBOs[mesh.Shader] = paramUbo;
             }
 
             // Update winding if it changed
@@ -146,6 +164,32 @@ internal class OpenGLBackend : IRendererBackend
             var (vao, vbo, ebo) = meshBuffers[mesh];
             gl.BindVertexArray(vao);
             gl.UseProgram(shaderProgramMap[mesh.Shader]);
+
+            // Upload parameters
+            if (shaderParameterUBOs.TryGetValue(mesh.Shader, out uint ubo))
+            {
+                // std140: each float gets aligned to float4
+                float[] data = new float[4];
+                int i = 0;
+                foreach (var kv in mesh.Shader.Parameters)
+                {
+                    if (kv.Value is float f)
+                    {
+                        data[i] = f;
+                        i++;
+                    }
+                }
+
+                unsafe
+                {
+                    fixed (float* ptr = data)
+                    {
+                        gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
+                        gl.BufferSubData(BufferTargetARB.UniformBuffer, 0, (nuint)(data.Length * sizeof(float)), ptr);
+                        gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+                    }
+                }
+            }
 
             unsafe
             {
