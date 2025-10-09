@@ -30,6 +30,10 @@ internal class OpenGLBackend : IRendererBackend
     };
     #endregion
 
+    #region OpenGL Resources
+    private static readonly Dictionary<GraphicsShader, uint> shaderProgramMap = new();
+    #endregion
+
     /// <inheritdoc/>
     public void Initialize(IWindow window)
     {
@@ -51,6 +55,13 @@ internal class OpenGLBackend : IRendererBackend
         {
             GraphicsMesh mesh = renderQueue.Dequeue();
 
+            // Compile shader
+            if (!shaderProgramMap.ContainsKey(mesh.Shader))
+            {
+                (string vertexSource, string fragmentSource) = ShaderUnbaker.SpirVToGLSL(mesh.Shader.VertexBytes, mesh.Shader.FragmentBytes);
+                shaderProgramMap[mesh.Shader] = CreateShaderProgram(vertexSource, fragmentSource);
+            }
+
             // Only update winding if it changed
             var winding = windingMap[mesh.WindingOrder];
             if (lastWinding != winding)
@@ -58,6 +69,8 @@ internal class OpenGLBackend : IRendererBackend
                 gl.FrontFace(winding);
                 lastWinding = winding;
             }
+
+            gl.UseProgram(shaderProgramMap[mesh.Shader]);
 
             unsafe
             {
@@ -72,5 +85,34 @@ internal class OpenGLBackend : IRendererBackend
                 }
             }
         }
+    }
+
+    private uint CreateShaderProgram(string vertexSource, string fragmentSource)
+    {
+        uint vertexShader = gl.CreateShader(ShaderType.VertexShader);
+        gl.ShaderSource(vertexShader, vertexSource);
+        gl.CompileShader(vertexShader);
+
+        uint fragmentShader = gl.CreateShader(ShaderType.FragmentShader);
+        gl.ShaderSource(fragmentShader, fragmentSource);
+        gl.CompileShader(fragmentShader);
+
+        uint program = gl.CreateProgram();
+        gl.AttachShader(program, vertexShader);
+        gl.AttachShader(program, fragmentShader);
+        gl.LinkProgram(program);
+
+        gl.DeleteShader(vertexShader);
+        gl.DeleteShader(fragmentShader);
+
+        return program;
+    }
+
+    public void Dispose()
+    {
+        foreach (var program in shaderProgramMap.Values)
+            gl.DeleteProgram(program);
+
+        shaderProgramMap.Clear();
     }
 }

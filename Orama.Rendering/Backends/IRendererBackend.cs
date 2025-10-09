@@ -16,4 +16,7 @@ internal interface IRendererBackend
     /// <summary> Renders the scene. </summary>
     /// <param name="renderQueue"> The render queue to render. </param>
     void Render(Queue<GraphicsMesh> renderQueue);
+
+    /// <summary> Cleans up the backend. </summary>
+    void Dispose();
 }

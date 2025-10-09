@@ -22,9 +22,6 @@ float4 main() : SV_Target0
     static void Main(string[] args)
     {
         GraphicsShader shader = ShaderBaker.HLSLToShader(vertHLSL, fragHLSL);
-        (string vert, string frag) = ShaderUnbaker.SpirVToGLSL(shader.VertexBytes, shader.FragmentBytes);
-
-        Console.WriteLine(frag);
 
         GraphicsMesh mesh = new GraphicsMesh()
         {
@@ -52,7 +49,9 @@ float4 main() : SV_Target0
                 new Vector2(0.5f, 1f), // top
                 new Vector2(0f, 0f),   // bottom-left
                 new Vector2(1f, 0f)    // bottom-right
-            }
+            },
+
+            Shader = shader
         };
 
         Application.OnStart += () =>
