@@ -9,6 +9,8 @@ internal class Program
 {
     static void Main(string[] args)
     {
+        GraphicsShader shader = ShaderBaker.GLSLToShader("", "");
+
         GraphicsMesh mesh = new GraphicsMesh()
         {
             Vertices = new Vector3[]

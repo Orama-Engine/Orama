@@ -23,16 +23,23 @@ internal static class ShaderC
     /// <summary> Initializes the imports for the shaderc shared library. </summary>
     public static void InitializeImports()
     {
-        Imports.Add("shaderc_compile_into_spv");
+        Imports.Add("shaderc_compiler_initialize");
     }
 
     /// <summary> Returns the name of the shaderc shared library depending on the OS. </summary>
-    public static string GetLibraryName()
+    private static string GetLibraryName()
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return "shaderc_shared";
 
         return "libshaderc_shared";
+    }
+
+    private delegate IntPtr CompilerInitializeDelegate();
+    public static IntPtr CompilerInitialize()
+    {
+        CompilerInitializeDelegate del = Imports.GetFunction<CompilerInitializeDelegate>("shaderc_compiler_initialize");
+        return del();
     }
 
 }

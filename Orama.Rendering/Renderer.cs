@@ -32,8 +32,6 @@ public static class Renderer
     /// <param name="backend"> The backend to initialize. </param>
     public static void Initialize(IWindow window, RendererBackend backend, RendererOptions options = default)
     {
-        ShaderC.InitializeImports();
-
         Options = options;
         Backend = backend;
         backends[backend].Initialize(window);

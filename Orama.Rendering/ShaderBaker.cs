@@ -1,4 +1,5 @@
 ﻿
+using Orama.Rendering.Native;
 using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
@@ -8,9 +9,21 @@ namespace Orama.Rendering;
 /// </summary>
 public static class ShaderBaker
 {
+    private static IntPtr compilerInstance;
+
+    static ShaderBaker()
+    {
+        ShaderC.InitializeImports();
+        compilerInstance = ShaderC.CompilerInitialize();
+    }
+
     /// <summary> Compiles GLSL source to a <see cref="GraphicsShader"/>. </summary>
-    public static GraphicsShader GLSLToShader(string source) => new();
+    public static GraphicsShader GLSLToShader(string vertex, string fragment)
+    {
+        Console.WriteLine(compilerInstance);
+        return new();
+    }
 
     /// <summary> Compiles HLSL source to a <see cref="GraphicsShader"/>. </summary>
-    public static GraphicsShader HLSLToShader(string source) => new();
+    public static GraphicsShader HLSLToShader(string vertex, string fragment) => new();
 }
