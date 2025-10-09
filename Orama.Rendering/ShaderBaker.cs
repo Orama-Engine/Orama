@@ -1,7 +1,5 @@
-﻿
-using Orama.Rendering.Native;
+﻿using Orama.Rendering.Native;
 using Orama.Rendering.Resources;
-using Silk.NET.Core.Native;
 
 namespace Orama.Rendering;
 
@@ -16,6 +14,7 @@ public static class ShaderBaker
     static ShaderBaker()
     {
         ShaderC.InitializeImports();
+        SpirVCross.InitializeImports();
 
         compilerInstance = ShaderC.CompilerInitialize();
         compilerOptions = ShaderC.CompileOptionsInitialize();
