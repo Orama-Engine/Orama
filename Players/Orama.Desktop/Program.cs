@@ -1,4 +1,5 @@
 ﻿using Orama.Core;
+using Orama.Rendering;
 
 namespace Orama.Desktop;
 
@@ -9,16 +10,22 @@ internal class Program
         Application.OnStart += () =>
         {
             Console.WriteLine("Hello World!");
-        };
-
-        Application.OnUpdate += () =>
-        {
-            Console.WriteLine(Time.Delta);
+            Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL);
         };
 
         Application.OnExit += () =>
         {
 
+        };
+
+        Application.OnUpdate += () =>
+        {
+
+        };
+
+        Application.OnRender += () =>
+        {
+            Renderer.Render();
         };
 
         Application.Initialize();

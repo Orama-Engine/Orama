@@ -8,7 +8,7 @@ namespace Orama.Core;
 public class Window
 {
     /// <summary> The internal Silk.NET window. </summary>
-    internal IWindow InternalWindow { get; }
+    public IWindow InternalWindow { get; }
 
     /// <summary> Initializes a new instance of the <see cref="Window"/> class. </summary>
     public Window()

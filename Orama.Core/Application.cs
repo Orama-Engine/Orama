@@ -17,6 +17,9 @@ public static class Application
     /// <summary> Called when the application updates. </summary>
     public static Action? OnUpdate { get; set; }
 
+    /// <summary> Called when the application renders. </summary>
+    public static Action? OnRender { get; set; }
+
     /// <summary> The main window. </summary>
     public static Window Window { get; private set; } = null!;
 
@@ -24,10 +27,9 @@ public static class Application
     {
         Window = new Window();
 
-        Renderer.Initialize(Window.InternalWindow, RendererBackend.OpenGL);
-
         Window.InternalWindow.Load += () => OnStart?.Invoke();
         Window.InternalWindow.Closing += () => OnExit?.Invoke();
+        Window.InternalWindow.Render += (double delta) => OnRender?.Invoke();
         Window.InternalWindow.Update += (double delta) => 
         {
             Time.Delta = (float)delta;
