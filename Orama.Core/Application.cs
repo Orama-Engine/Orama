@@ -1,4 +1,6 @@
 ﻿
+using Orama.Rendering;
+
 namespace Orama.Core;
 
 /// <summary>
@@ -21,6 +23,8 @@ public static class Application
     public static void Initialize()
     {
         Window = new Window();
+
+        Renderer.Initialize(Window.InternalWindow, RendererBackend.OpenGL);
 
         Window.InternalWindow.Load += () => OnStart?.Invoke();
         Window.InternalWindow.Closing += () => OnExit?.Invoke();

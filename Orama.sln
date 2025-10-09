@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9 d17.14
+VisualStudioVersion = 17.14.36518.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Core", "Orama.Core\Orama.Core.csproj", "{DF58B104-E7F0-4CCE-BEB4-0296293F0CDA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Players", "Players", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Desktop", "Players\Orama.Desktop\Orama.Desktop.csproj", "{D9202E06-5A35-42FF-B005-BD52D9363F83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Orama.Rendering\Orama.Rendering.csproj", "{35D62D7D-7AD6-4312-A76C-B5ACC3900723}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +25,10 @@ Global
 		{D9202E06-5A35-42FF-B005-BD52D9363F83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9202E06-5A35-42FF-B005-BD52D9363F83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9202E06-5A35-42FF-B005-BD52D9363F83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

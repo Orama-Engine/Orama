@@ -13,7 +13,7 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-
+            Console.WriteLine(Time.Delta);
         };
 
         Application.OnExit += () =>
