@@ -6,7 +6,7 @@ namespace Orama.Rendering.Backends;
 
 internal class OpenGLBackend : IRendererBackend
 {
-    private GL gl;
+    private GL gl = null!;
 
     #region OpenGL Mappings
     private static readonly Dictionary<Orama.Rendering.Resources.PrimitiveType, Silk.NET.OpenGL.PrimitiveType> primitiveMap = new()

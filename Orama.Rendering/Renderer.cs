@@ -17,7 +17,7 @@ public static class Renderer
     /// <summary> The renderer backend in use. </summary>
     public static RendererBackend Backend { get; private set; }
 
-    /// <summary> A First In First Out queue of meshes to render. </summary>
+    /// <summary> A First In First Out queue of meshes to render for the next frame. </summary>
     public static Queue<GraphicsMesh> RenderQueue { get; } = new();
 
     private static readonly Dictionary<RendererBackend, IRendererBackend> backends = new()
