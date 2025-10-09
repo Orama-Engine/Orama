@@ -7,21 +7,21 @@ namespace Orama.Desktop;
 
 internal class Program
 {
-    const string vertGLSL = @"
+    const string vertHLSL = @"
 float4 main(float3 pos : POSITION) : SV_Position
 {
     return float4(pos, 1.0);
 }";
 
-    const string fragGLSL = @"
+    const string fragHLSL = @"
 float4 main() : SV_Target0
 {
-    return float4(1.0, 1.0, 1.0, 1.0); // pure white RGBA
+    return float4(1.0, 1.0, 1.0, 1.0);
 }";
 
     static void Main(string[] args)
     {
-        GraphicsShader shader = ShaderBaker.HLSLToShader(vertGLSL, fragGLSL);
+        GraphicsShader shader = ShaderBaker.HLSLToShader(vertHLSL, fragHLSL);
         (string vert, string frag) = ShaderUnbaker.SpirVToGLSL(shader.VertexBytes, shader.FragmentBytes);
 
         Console.WriteLine(frag);
@@ -63,7 +63,7 @@ float4 main() : SV_Target0
 
         Application.OnExit += () =>
         {
-
+            Renderer.Dispose();
         };
 
         Application.OnUpdate += () =>

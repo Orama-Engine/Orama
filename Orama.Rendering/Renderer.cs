@@ -43,4 +43,9 @@ public static class Renderer
     /// <summary> Queues a mesh for rendering. Should be called once per frame for each desired mesh. </summary>
     /// <param name="mesh"> The mesh to queue. </param>
     public static void QueueMesh(GraphicsMesh mesh) => RenderQueue.Enqueue(mesh);
+
+    public static void Dispose()
+    {
+        ShaderUnbaker.Shutdown();
+    }
 }

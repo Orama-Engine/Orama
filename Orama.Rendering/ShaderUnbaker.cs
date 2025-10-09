@@ -22,7 +22,7 @@ public static class ShaderUnbaker
     /// </summary>
     public static (string VertexSource, string FragmentSource) SpirVToGLSL(byte[] vertexSpirV, byte[] fragmentSpirV)
     {
-        return Compile(ToUInt32Array(vertexSpirV), ToUInt32Array(fragmentSpirV), backend: 2); // 2 = GLSL
+        return Compile(ToUInt32Array(vertexSpirV), ToUInt32Array(fragmentSpirV), backend: 1); // 1 = GLSL
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public static class ShaderUnbaker
     /// </summary>
     public static (string VertexSource, string FragmentSource) SpirVToHLSL(byte[] vertexSpirV, byte[] fragmentSpirV, uint shaderModel = 50)
     {
-        return Compile(ToUInt32Array(vertexSpirV), ToUInt32Array(fragmentSpirV), backend: 1, shaderModel); // 1 = HLSL
+        return Compile(ToUInt32Array(vertexSpirV), ToUInt32Array(fragmentSpirV), backend: 2, shaderModel); // 2 = HLSL
     }
 
     private static uint[] ToUInt32Array(byte[] bytes)
