@@ -1,6 +1,8 @@
 ﻿using Orama.Rendering.Backends;
+using Orama.Rendering.Native;
 using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
+using System.Runtime.InteropServices;
 
 namespace Orama.Rendering;
 
@@ -30,6 +32,8 @@ public static class Renderer
     /// <param name="backend"> The backend to initialize. </param>
     public static void Initialize(IWindow window, RendererBackend backend, RendererOptions options = default)
     {
+        ShaderC.InitializeImports();
+
         Options = options;
         Backend = backend;
         backends[backend].Initialize(window);
