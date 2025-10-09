@@ -1,4 +1,5 @@
 ﻿
+using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
 
 namespace Orama.Rendering.Backends;
@@ -13,5 +14,6 @@ internal interface IRendererBackend
     void Initialize(IWindow window);
 
     /// <summary> Renders the scene. </summary>
-    void Render();
+    /// <param name="renderQueue"> The render queue to render. </param>
+    void Render(Queue<GraphicsMesh> renderQueue);
 }
