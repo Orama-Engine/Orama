@@ -30,7 +30,7 @@ public class GraphicsMesh
     public Vector3[] Normals { get; set; } = new Vector3[0];
     public Vector2[] TexCoords { get; set; } = new Vector2[0];
 
-    public GraphicsShader Shader { get; set; }
+    public GraphicsShader Shader { get; set; } = new();
 
     /// <summary> Winding order of the mesh's triangles. </summary>
     public WindingOrder WindingOrder { get; set; } = WindingOrder.CounterClockwise;

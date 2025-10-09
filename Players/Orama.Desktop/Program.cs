@@ -7,9 +7,21 @@ namespace Orama.Desktop;
 
 internal class Program
 {
+    const string vertGLSL = @"
+float4 main(float3 pos : POSITION) : SV_Position
+{
+    return float4(pos, 1.0);
+}";
+
+    const string fragGLSL = @"
+float4 main() : SV_Target0
+{
+    return float4(1.0, 1.0, 1.0, 1.0); // pure white RGBA
+}";
+
     static void Main(string[] args)
     {
-        GraphicsShader shader = ShaderBaker.GLSLToShader("", "");
+        GraphicsShader shader = ShaderBaker.HLSLToShader(vertGLSL, fragGLSL);
 
         GraphicsMesh mesh = new GraphicsMesh()
         {
