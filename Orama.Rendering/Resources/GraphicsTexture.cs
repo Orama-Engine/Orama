@@ -3,7 +3,16 @@ namespace Orama.Rendering.Resources;
 
 public enum TextureDataType
 {
-    RGBA8
+    RGBA8,
+    RGB8,
+    RGBA16F,
+    RGB16F,
+    RGBA32F,
+    RGB32F,
+    R8,
+    R16F,
+    R32F,
+    Depth24Stencil8
 }
 
 /// <summary>

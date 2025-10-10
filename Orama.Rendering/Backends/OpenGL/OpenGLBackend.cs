@@ -29,6 +29,20 @@ internal class OpenGLBackend : IRendererBackend
         { CullingMode.Front, GLEnum.Front },
         { CullingMode.Back, GLEnum.Back }
     };
+
+    private static readonly Dictionary<TextureDataType, InternalFormat> dataTypeMap = new()
+{
+    { TextureDataType.RGBA8, InternalFormat.Rgba8 },
+    { TextureDataType.RGB8, InternalFormat.Rgb8 },
+    { TextureDataType.RGBA16F, InternalFormat.Rgba16f },
+    { TextureDataType.RGB16F, InternalFormat.Rgb16f },
+    { TextureDataType.RGBA32F, InternalFormat.Rgba32f },
+    { TextureDataType.RGB32F, InternalFormat.Rgb32f },
+    { TextureDataType.R8, InternalFormat.R8 },
+    { TextureDataType.R16F, InternalFormat.R16f },
+    { TextureDataType.R32F, InternalFormat.R32f },
+    { TextureDataType.Depth24Stencil8, InternalFormat.Depth24Stencil8 }
+};
     #endregion
 
     #region OpenGL Resources
@@ -256,7 +270,7 @@ internal class OpenGLBackend : IRendererBackend
         {
             fixed (byte* ptr = tex.Data)
             {
-                gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba,
+                gl.TexImage2D(TextureTarget.Texture2D, 0, dataTypeMap[tex.Type],
                               tex.Width, tex.Height, 0,
                               PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
             }
