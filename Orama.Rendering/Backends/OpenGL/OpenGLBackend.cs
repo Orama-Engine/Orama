@@ -35,6 +35,7 @@ internal class OpenGLBackend : IRendererBackend
     private static readonly Dictionary<GraphicsShader, uint> shaderProgramMap = new();
     private readonly Dictionary<GraphicsMesh, (uint vao, uint vbo, uint ebo)> meshBuffers = new();
     private readonly Dictionary<GraphicsShader, uint> shaderParameterUBOs = new();
+    private readonly Dictionary<GraphicsTexture, uint> textureMap = new();
     #endregion
 
     /// <inheritdoc/>
@@ -190,6 +191,23 @@ internal class OpenGLBackend : IRendererBackend
                 }
             }
 
+            // Bind sampler2D uniforms
+            foreach (var kv in mesh.Shader.Parameters)
+            {
+                if (kv.Value is GraphicsTexture tex)
+                {
+                    uint glTex = GetOrCreateGLTexture(tex);
+
+                    // Bind to texture unit 0
+                    gl.ActiveTexture(TextureUnit.Texture0);
+                    gl.BindTexture(TextureTarget.Texture2D, glTex);
+
+                    // Set the uniform to use texture unit 0
+                    int loc = gl.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
+                    gl.Uniform1(loc, 0);
+                }
+            }
+
 
             unsafe
             {
@@ -224,6 +242,34 @@ internal class OpenGLBackend : IRendererBackend
         gl.DeleteShader(fragmentShader);
 
         return program;
+    }
+
+    private uint GetOrCreateGLTexture(GraphicsTexture tex)
+    {
+        if (textureMap.TryGetValue(tex, out uint glTex))
+            return glTex;
+
+        glTex = gl.GenTexture();
+        gl.BindTexture(TextureTarget.Texture2D, glTex);
+
+        unsafe
+        {
+            fixed (byte* ptr = tex.Data)
+            {
+                gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba,
+                              tex.Width, tex.Height, 0,
+                              PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+            }
+        }
+
+        // Set filtering
+        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.Linear);
+        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
+
+        gl.BindTexture(TextureTarget.Texture2D, 0);
+        textureMap[tex] = glTex;
+
+        return glTex;
     }
 
     public void Dispose()

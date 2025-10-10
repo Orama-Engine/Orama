@@ -43,6 +43,7 @@ public static class Renderer
     /// <param name="mesh"> The mesh to queue. </param>
     public static void QueueMesh(GraphicsMesh mesh) => RenderQueue.Enqueue(mesh);
 
+    /// <summary> Cleans up the renderer. </summary>
     public static void Dispose()
     {
         backends[Backend].Dispose();

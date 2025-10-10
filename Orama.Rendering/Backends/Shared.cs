@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Orama.Rendering.Resources;
+using System.Numerics;
 
 namespace Orama.Rendering.Backends;
 
@@ -40,7 +41,8 @@ public static class Shared
                 Buffer.BlockCopy(BitConverter.GetBytes(v.W), 0, bytes, 12, 4);
                 return bytes;
             }
-        }
+        },
+        { typeof(GraphicsTexture), value => Array.Empty<byte>() } // Handled in the backend
     };
 
     /// <summary> Gets the bytes for a shader parameter. </summary>
