@@ -1,4 +1,5 @@
-﻿
+﻿using Orama.Core.Common.Entities;
+
 namespace Orama.Core.Modules.Scenes.Resources;
 
 /// <summary>
@@ -6,5 +7,6 @@ namespace Orama.Core.Modules.Scenes.Resources;
 /// </summary>
 public class Scene
 {
-
+    /// <summary> All Entities in the Scene. </summary>
+    public List<BaseEntity> Entities { get; set; } = new();
 }
