@@ -13,6 +13,5 @@ public class SceneModule : BaseModule
     public override void Initialize()
     {
         CurrentScene = new Scene();
-        Console.WriteLine("Scene module initialized.");
     }
 }

@@ -6,4 +6,5 @@ namespace Orama.Core.Modules.Scenes.Resources;
 /// </summary>
 public class Scene
 {
+
 }

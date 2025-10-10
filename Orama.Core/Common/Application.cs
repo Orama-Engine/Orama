@@ -1,7 +1,6 @@
-﻿
-using Orama.Rendering;
+﻿using Orama.Rendering;
 
-namespace Orama.Core;
+namespace Orama.Core.Common;
 
 /// <summary>
 /// The top-level application.
@@ -29,8 +28,8 @@ public static class Application
 
         Window.InternalWindow.Load += () => OnStart?.Invoke();
         Window.InternalWindow.Closing += () => OnExit?.Invoke();
-        Window.InternalWindow.Render += (double delta) => OnRender?.Invoke();
-        Window.InternalWindow.Update += (double delta) => 
+        Window.InternalWindow.Render += (delta) => OnRender?.Invoke();
+        Window.InternalWindow.Update += (delta) => 
         {
             Time.Delta = (float)delta;
             Time.PreciseDelta = delta;

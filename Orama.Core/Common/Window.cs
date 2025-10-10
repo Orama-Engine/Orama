@@ -1,6 +1,6 @@
 ﻿using Silk.NET.Windowing;
 
-namespace Orama.Core;
+namespace Orama.Core.Common;
 
 /// <summary>
 /// A Platform-agnostic Window.

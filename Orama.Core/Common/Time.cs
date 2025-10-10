@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Core;
+﻿namespace Orama.Core.Common;
 
 /// <summary>
 /// Management of the applications time tracking.
