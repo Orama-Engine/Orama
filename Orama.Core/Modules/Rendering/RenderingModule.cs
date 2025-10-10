@@ -30,7 +30,7 @@ public class RenderingModule : BaseModule
     /// <param name="mesh">The mesh to render.</param>
     public void RenderMesh(Mesh mesh)
     {
-        // TODO: Instantiating a new GraphicsMesh every time is very expensive
+        // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this
         GraphicsMesh graphicsMesh = new GraphicsMesh()
         {
             Vertices = mesh.Vertices,
