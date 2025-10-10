@@ -2,6 +2,7 @@
 using Orama.Rendering.Backends.OpenGL;
 using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
+using System.Numerics;
 
 namespace Orama.Rendering;
 

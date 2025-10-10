@@ -13,12 +13,18 @@ public class Scene
     internal void StartAll()
     {
         foreach (var entity in Entities)
-            entity.Start();
+        {
+            if (entity.Enabled)
+                entity.Start();
+        }
     }
 
     internal void UpdateAll()
     {
         foreach (var entity in Entities)
-            entity.Update();
+        {
+            if (entity.Enabled)
+                entity.Update();
+        }
     }
 }
