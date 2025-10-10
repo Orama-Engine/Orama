@@ -42,7 +42,10 @@ public static class ModuleManager
     public static BaseModule RegisterModule(BaseModule module)
     {
         foreach (var dependency in module.Dependencies)
-            RegisterModule(Activator.CreateInstance(dependency) as BaseModule ?? throw new Exception($"Failed to create dependency module {dependency.Name}"));
+        {
+            if (!registeredModules.ContainsKey(dependency))
+                RegisterModule(Activator.CreateInstance(dependency) as BaseModule ?? throw new ArgumentException($"Could not create dependency module {dependency.Name}"));
+        }
 
         registeredModules.Add(module.GetType(), module);
 
