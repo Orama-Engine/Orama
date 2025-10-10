@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.Extensions.DependencyModel;
+using System.Reflection;
+
 namespace Orama.Core.Modules;
 
 /// <summary>
@@ -31,6 +34,16 @@ public static class ModuleManager
     public static T RegisterModule<T>() where T : BaseModule, new()
     {
         T module = new T();
+        return (T)RegisterModule(module);
+    }
+
+    /// <summary> Registers a module. </summary>
+    /// <param name="module"> The module to register. </param>
+    public static BaseModule RegisterModule(BaseModule module)
+    {
+        foreach (var dependency in module.Dependencies)
+            RegisterModule(Activator.CreateInstance(dependency) as BaseModule ?? throw new Exception($"Failed to create dependency module {dependency.Name}"));
+
         registeredModules.Add(module.GetType(), module);
 
         Application.OnUpdate += module.Update;

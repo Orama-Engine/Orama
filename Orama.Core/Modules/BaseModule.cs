@@ -6,6 +6,9 @@ namespace Orama.Core.Modules;
 /// </summary>
 public class BaseModule
 {
+    /// <summary> The dependencies of the module. </summary>
+    public virtual HashSet<Type> Dependencies => new();
+
     /// <summary> Runs once at the start of the module. </summary>
     public virtual void Initialize() { }
 
