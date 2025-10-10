@@ -31,18 +31,18 @@ internal class OpenGLBackend : IRendererBackend
     };
 
     private static readonly Dictionary<TextureDataType, InternalFormat> dataTypeMap = new()
-{
-    { TextureDataType.RGBA8, InternalFormat.Rgba8 },
-    { TextureDataType.RGB8, InternalFormat.Rgb8 },
-    { TextureDataType.RGBA16F, InternalFormat.Rgba16f },
-    { TextureDataType.RGB16F, InternalFormat.Rgb16f },
-    { TextureDataType.RGBA32F, InternalFormat.Rgba32f },
-    { TextureDataType.RGB32F, InternalFormat.Rgb32f },
-    { TextureDataType.R8, InternalFormat.R8 },
-    { TextureDataType.R16F, InternalFormat.R16f },
-    { TextureDataType.R32F, InternalFormat.R32f },
-    { TextureDataType.Depth24Stencil8, InternalFormat.Depth24Stencil8 }
-};
+    {
+        { TextureDataType.RGBA8, InternalFormat.Rgba8 },
+        { TextureDataType.RGB8, InternalFormat.Rgb8 },
+        { TextureDataType.RGBA16F, InternalFormat.Rgba16f },
+        { TextureDataType.RGB16F, InternalFormat.Rgb16f },
+        { TextureDataType.RGBA32F, InternalFormat.Rgba32f },
+        { TextureDataType.RGB32F, InternalFormat.Rgb32f },
+        { TextureDataType.R8, InternalFormat.R8 },
+        { TextureDataType.R16F, InternalFormat.R16f },
+        { TextureDataType.R32F, InternalFormat.R32f },
+        { TextureDataType.Depth24Stencil8, InternalFormat.Depth24Stencil8 }
+    };
     #endregion
 
     #region OpenGL Resources
