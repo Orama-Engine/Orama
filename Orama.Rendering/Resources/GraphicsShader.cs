@@ -1,4 +1,6 @@
 ﻿
+using System.Numerics;
+
 namespace Orama.Rendering.Resources;
 
 /// <summary>
@@ -17,8 +19,8 @@ public class GraphicsShader
 
     private readonly Dictionary<string, object> parameters = new();
 
-
-    public void SetFloat(string name, float value) => parameters[name] = value;
+    /// <summary> Set's a parameter in the shaders source. </summary>
+    public void SetParameter<T>(string name, T value) => parameters[name] = value ?? throw new ArgumentNullException(nameof(value), $"Shader parameter '{name}' cannot be null.");
 
     public object? GetParameter(string name)
     {
