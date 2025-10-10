@@ -30,18 +30,18 @@ internal class OpenGLBackend : IRendererBackend
         { CullingMode.Back, GLEnum.Back }
     };
 
-    private static readonly Dictionary<TextureDataType, InternalFormat> dataTypeMap = new()
+    private static readonly Dictionary<TextureDataType, PixelFormat> pixelFormatMap = new()
     {
-        { TextureDataType.RGBA8, InternalFormat.Rgba8 },
-        { TextureDataType.RGB8, InternalFormat.Rgb8 },
-        { TextureDataType.RGBA16F, InternalFormat.Rgba16f },
-        { TextureDataType.RGB16F, InternalFormat.Rgb16f },
-        { TextureDataType.RGBA32F, InternalFormat.Rgba32f },
-        { TextureDataType.RGB32F, InternalFormat.Rgb32f },
-        { TextureDataType.R8, InternalFormat.R8 },
-        { TextureDataType.R16F, InternalFormat.R16f },
-        { TextureDataType.R32F, InternalFormat.R32f },
-        { TextureDataType.Depth24Stencil8, InternalFormat.Depth24Stencil8 }
+        { TextureDataType.RGBA8, PixelFormat.Rgba },
+        { TextureDataType.RGB8, PixelFormat.Rgb },
+        { TextureDataType.RGBA16F, PixelFormat.Rgba },
+        { TextureDataType.RGB16F, PixelFormat.Rgb },
+        { TextureDataType.RGBA32F, PixelFormat.Rgba },
+        { TextureDataType.RGB32F, PixelFormat.Rgb },
+        { TextureDataType.R8, PixelFormat.Red },
+        { TextureDataType.R16F, PixelFormat.Red },
+        { TextureDataType.R32F, PixelFormat.Red },
+        { TextureDataType.Depth24Stencil8, PixelFormat.DepthStencil }
     };
     #endregion
 
@@ -270,9 +270,9 @@ internal class OpenGLBackend : IRendererBackend
         {
             fixed (byte* ptr = tex.Data)
             {
-                gl.TexImage2D(TextureTarget.Texture2D, 0, dataTypeMap[tex.Type],
+                gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8,
                               tex.Width, tex.Height, 0,
-                              PixelFormat.Rgba, PixelType.UnsignedByte, ptr);
+                              pixelFormatMap[tex.Type], PixelType.UnsignedByte, ptr);
             }
         }
 
