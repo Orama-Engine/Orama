@@ -1,8 +1,7 @@
 ﻿using Orama.Rendering.Backends;
-using Orama.Rendering.Native;
+using Orama.Rendering.Backends.OpenGL;
 using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
-using System.Runtime.InteropServices;
 
 namespace Orama.Rendering;
 

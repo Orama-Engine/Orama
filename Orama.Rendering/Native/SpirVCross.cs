@@ -32,29 +32,15 @@ internal unsafe static class SpirVCross
         return "libspirv-cross-c-shared";
     }
 
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int ContextCreateDelegate(out IntPtr context);
 
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate void ContextDestroyDelegate(IntPtr context);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int ContextParseSpirvDelegate(IntPtr context, uint[] spirv, UIntPtr wordCount, out IntPtr parsedIr);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int ContextCreateCompilerDelegate(IntPtr context, int backend, IntPtr parsedIr, int capturemode, out IntPtr compiler);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int CompilerCompileDelegate(IntPtr compiler, out IntPtr source);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int CompilerCreateOptionsDelegate(IntPtr compiler, out IntPtr options);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int CompilerOptionsSetUintDelegate(IntPtr options, int option, uint value);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate int CompilerInstallOptionsDelegate(IntPtr compiler, IntPtr options);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ContextCreateDelegate(out IntPtr context);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ContextDestroyDelegate(IntPtr context);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ContextParseSpirvDelegate(IntPtr context, uint[] spirv, UIntPtr wordCount, out IntPtr parsedIr);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ContextCreateCompilerDelegate(IntPtr context, int backend, IntPtr parsedIr, int capturemode, out IntPtr compiler);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CompilerCompileDelegate(IntPtr compiler, out IntPtr source);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CompilerCreateOptionsDelegate(IntPtr compiler, out IntPtr options);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CompilerOptionsSetUintDelegate(IntPtr options, int option, uint value);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int CompilerInstallOptionsDelegate(IntPtr compiler, IntPtr options);
 
     public static void CompilerSetHlslShaderModel(IntPtr compiler, uint shaderModel)
     {

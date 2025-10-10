@@ -3,31 +3,31 @@ using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using System.Numerics;
 
-namespace Orama.Rendering.Backends;
+namespace Orama.Rendering.Backends.OpenGL;
 
 internal class OpenGLBackend : IRendererBackend
 {
     private GL gl = null!;
 
     #region OpenGL Mappings
-    private static readonly Dictionary<Orama.Rendering.Resources.PrimitiveType, Silk.NET.OpenGL.PrimitiveType> primitiveMap = new()
+    private static readonly Dictionary<Resources.PrimitiveType, Silk.NET.OpenGL.PrimitiveType> primitiveMap = new()
     {
-        { Orama.Rendering.Resources.PrimitiveType.TriangleList, Silk.NET.OpenGL.PrimitiveType.Triangles },
-        { Orama.Rendering.Resources.PrimitiveType.TriangleStrip, Silk.NET.OpenGL.PrimitiveType.TriangleStrip },
-        { Orama.Rendering.Resources.PrimitiveType.TriangleFan, Silk.NET.OpenGL.PrimitiveType.TriangleFan }
+        { Resources.PrimitiveType.TriangleList, Silk.NET.OpenGL.PrimitiveType.Triangles },
+        { Resources.PrimitiveType.TriangleStrip, Silk.NET.OpenGL.PrimitiveType.TriangleStrip },
+        { Resources.PrimitiveType.TriangleFan, Silk.NET.OpenGL.PrimitiveType.TriangleFan }
     };
 
-    private static readonly Dictionary<Orama.Rendering.Resources.WindingOrder, Silk.NET.OpenGL.FrontFaceDirection> windingMap = new()
+    private static readonly Dictionary<WindingOrder, FrontFaceDirection> windingMap = new()
     {
-        { Orama.Rendering.Resources.WindingOrder.CounterClockwise, Silk.NET.OpenGL.FrontFaceDirection.Ccw },
-        { Orama.Rendering.Resources.WindingOrder.Clockwise, Silk.NET.OpenGL.FrontFaceDirection.CW }
+        { WindingOrder.CounterClockwise, FrontFaceDirection.Ccw },
+        { WindingOrder.Clockwise, FrontFaceDirection.CW }
     };
 
-    private static readonly Dictionary<Orama.Rendering.CullingMode, Silk.NET.OpenGL.GLEnum> cullMap = new()
+    private static readonly Dictionary<CullingMode, GLEnum> cullMap = new()
     {
-        { Orama.Rendering.CullingMode.None, Silk.NET.OpenGL.GLEnum.None },
-        { Orama.Rendering.CullingMode.Front, Silk.NET.OpenGL.GLEnum.Front },
-        { Orama.Rendering.CullingMode.Back, Silk.NET.OpenGL.GLEnum.Back }
+        { CullingMode.None, GLEnum.None },
+        { CullingMode.Front, GLEnum.Front },
+        { CullingMode.Back, GLEnum.Back }
     };
     #endregion
 
@@ -168,28 +168,28 @@ internal class OpenGLBackend : IRendererBackend
             // Upload parameters
             if (shaderParameterUBOs.TryGetValue(mesh.Shader, out uint ubo))
             {
-                // std140: each float gets aligned to float4
-                float[] data = new float[4];
-                int i = 0;
+                int offset = 0;
+
                 foreach (var kv in mesh.Shader.Parameters)
                 {
-                    if (kv.Value is float f)
-                    {
-                        data[i] = f;
-                        i++;
-                    }
-                }
+                    object value = kv.Value;
+                    byte[] paramBytes = Shared.GetParameterBytes(value);
 
-                unsafe
-                {
-                    fixed (float* ptr = data)
+                    // Bind the UBO and upload
+                    gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
+                    unsafe
                     {
-                        gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
-                        gl.BufferSubData(BufferTargetARB.UniformBuffer, 0, (nuint)(data.Length * sizeof(float)), ptr);
-                        gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+                        fixed (byte* ptr = paramBytes)
+                            gl.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)paramBytes.Length, ptr);
                     }
+
+                    gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+
+                    // Align
+                    offset += paramBytes.Length;
                 }
             }
+
 
             unsafe
             {

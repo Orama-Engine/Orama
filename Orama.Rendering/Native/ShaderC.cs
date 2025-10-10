@@ -49,8 +49,9 @@ internal static class ShaderC
         return "libshaderc_shared";
     }
 
-    private delegate IntPtr CompilerInitializeDelegate();
-    private delegate IntPtr CompileOptionsInitializeDelegate();
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr CompilerInitializeDelegate();
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr CompileOptionsInitializeDelegate();
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private delegate IntPtr CompileIntoSpvDelegate(
         IntPtr compiler,
         string sourceText,
@@ -60,12 +61,12 @@ internal static class ShaderC
         string entryPointName,
         IntPtr options
     );
-    private delegate int ResultGetCompilationStatusDelegate(IntPtr result);
-    private delegate IntPtr ResultGetErrorMessageDelegate(IntPtr result);
-    private delegate IntPtr ResultGetBytesDelegate(IntPtr result);
-    private delegate UIntPtr ResultGetLengthDelegate(IntPtr result);
-    private delegate void ResultReleaseDelegate(IntPtr result);
-    private delegate void CompileOptionsSetSourceLanguageDelegate(IntPtr options, SourceLanguage language);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ResultGetCompilationStatusDelegate(IntPtr result);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr ResultGetErrorMessageDelegate(IntPtr result);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr ResultGetBytesDelegate(IntPtr result);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate UIntPtr ResultGetLengthDelegate(IntPtr result);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ResultReleaseDelegate(IntPtr result);
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void CompileOptionsSetSourceLanguageDelegate(IntPtr options, SourceLanguage language);
 
     public static IntPtr CompilerInitialize()
     {
