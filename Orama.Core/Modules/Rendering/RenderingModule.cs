@@ -26,8 +26,11 @@ public class RenderingModule : BaseModule
         Renderer.Dispose();
     }
 
+    /// <summary> Renders a mesh to the window during the next frame. </summary>
+    /// <param name="mesh">The mesh to render.</param>
     public void RenderMesh(Mesh mesh)
     {
+        // TODO: Instantiating a new GraphicsMesh every time is very expensive
         GraphicsMesh graphicsMesh = new GraphicsMesh()
         {
             Vertices = mesh.Vertices,

@@ -25,10 +25,10 @@ public enum PrimitiveType
 /// </summary>
 public class GraphicsMesh
 {
-    public Vector3[] Vertices { get; set; } = new Vector3[0];
-    public uint[] Indices { get; set; } = new uint[0];
-    public Vector3[] Normals { get; set; } = new Vector3[0];
-    public Vector2[] TexCoords { get; set; } = new Vector2[0];
+    public Vector3[] Vertices { get; set; } = Array.Empty<Vector3>();
+    public uint[] Indices { get; set; } = Array.Empty<uint>();
+    public Vector3[] Normals { get; set; } = Array.Empty<Vector3>();
+    public Vector2[] TexCoords { get; set; } = Array.Empty<Vector2>();
 
     /// <summary> Shader used for rendering the mesh. </summary>
     public GraphicsShader Shader { get; set; } = new();

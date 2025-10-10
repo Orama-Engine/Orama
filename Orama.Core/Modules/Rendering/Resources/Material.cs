@@ -40,11 +40,11 @@ void main()
 
     internal GraphicsShader Shader { get; set; }
 
-    /// <summary> Sets the value of a parameter in the material's shader. </summary>
-    public void SetParameter<T>(string name, T value) => Shader.SetParameter(name, value);
-
     /// <summary>
     /// A default material using a simple texture shader.
     /// </summary>
     public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
+
+    /// <summary> Sets the value of a parameter in the material's shader. </summary>
+    public void SetParameter<T>(string name, T value) => Shader.SetParameter(name, value);
 }
