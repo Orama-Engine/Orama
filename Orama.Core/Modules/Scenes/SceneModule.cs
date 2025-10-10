@@ -13,5 +13,11 @@ public class SceneModule : BaseModule
     public override void Initialize()
     {
         CurrentScene = new Scene();
+        CurrentScene.StartAll();
+    }
+
+    public override void Update()
+    {
+        CurrentScene.UpdateAll();
     }
 }

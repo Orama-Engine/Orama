@@ -9,4 +9,16 @@ public class Scene
 {
     /// <summary> All Entities in the Scene. </summary>
     public List<BaseEntity> Entities { get; set; } = new();
+
+    internal void StartAll()
+    {
+        foreach (var entity in Entities)
+            entity.Start();
+    }
+
+    internal void UpdateAll()
+    {
+        foreach (var entity in Entities)
+            entity.Update();
+    }
 }
