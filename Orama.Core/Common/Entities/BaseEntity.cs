@@ -30,6 +30,7 @@ public class BaseEntity
     public List<BaseComponent> Components { get; set; } = new();
 
     /// <summary> Called when the entity is enabled. </summary>
+    /// <remarks> The base implementation starts all components. </remarks>
     public virtual void Start()
     {
         foreach (var component in Components)
@@ -40,6 +41,7 @@ public class BaseEntity
     }
 
     /// <summary> Called every frame. </summary>
+    /// <remarks> The base implementation updates all components. </remarks>
     public virtual void Update()
     {
         foreach (var component in Components)

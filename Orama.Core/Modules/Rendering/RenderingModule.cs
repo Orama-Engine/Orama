@@ -37,7 +37,7 @@ public class RenderingModule : BaseModule
             Indices = mesh.Indices,
             Normals = mesh.Normals,
             TexCoords = mesh.UVs,
-            Shader = mesh.Material.Shader
+            Shader = mesh.Material.GraphicsShader
         };
 
         Renderer.QueueMesh(graphicsMesh);

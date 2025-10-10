@@ -4,7 +4,7 @@ using Orama.Rendering.Resources;
 namespace Orama.Core.Modules.Rendering.Resources;
 
 /// <summary>
-/// Represents the visual appearance of a mesh by wrapping a <see cref="GraphicsShader"/>
+/// Represents the visual appearance of a mesh by wrapping a <see cref="Orama.Rendering.Resources.GraphicsShader"/>
 /// and its associated parameters, such as textures, colors, and numerical values.
 /// </summary>
 public class Material
@@ -35,10 +35,10 @@ void main()
     public Material(string vertexSource, string fragmentSource)
     {
         GraphicsShader shader = ShaderBaker.GLSLToShader(vertexSource, fragmentSource);
-        Shader = shader;
+        GraphicsShader = shader;
     }
 
-    internal GraphicsShader Shader { get; set; }
+    internal GraphicsShader GraphicsShader { get; set; }
 
     /// <summary>
     /// A default material using a simple texture shader.
@@ -46,5 +46,5 @@ void main()
     public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
 
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
-    public void SetParameter<T>(string name, T value) => Shader.SetParameter(name, value);
+    public void SetParameter<T>(string name, T value) => GraphicsShader.SetParameter(name, value);
 }
