@@ -1,4 +1,6 @@
 ﻿using Orama.Core;
+using Orama.Core.Modules;
+using Orama.Core.Modules.Scenes;
 using Orama.Rendering;
 using Orama.Rendering.Resources;
 using SixLabors.ImageSharp;
@@ -40,6 +42,9 @@ void main()
 
     static void Main(string[] args)
     {
+        // REGISTER MODULES
+        ModuleManager.RegisterModule<SceneModule>();
+
         // Load byte array from PNG
         using Image<Rgba32> image = Image.Load<Rgba32>("Assets/Orama.png");
         image.Mutate(x => x.Flip(FlipMode.Vertical));
