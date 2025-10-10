@@ -1,4 +1,5 @@
-﻿using Orama.Core.Modules.Scenes.Resources;
+﻿using Orama.Core.Common.Entities;
+using Orama.Core.Modules.Scenes.Resources;
 
 namespace Orama.Core.Modules.Scenes;
 
@@ -13,6 +14,10 @@ public class SceneModule : BaseModule
     public override void Initialize()
     {
         CurrentScene = new Scene();
+
+#if DEBUG
+        CurrentScene.Entities.Add(new DebugEntity());
+#endif
         CurrentScene.StartAll();
     }
 
