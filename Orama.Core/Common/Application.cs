@@ -1,5 +1,4 @@
-﻿using Orama.Rendering;
-
+﻿
 namespace Orama.Core.Common;
 
 /// <summary>
