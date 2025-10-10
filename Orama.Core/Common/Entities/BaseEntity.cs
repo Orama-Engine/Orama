@@ -10,17 +10,15 @@ public class BaseEntity
     /// <summary> Is this entity enabled? </summary>
     public bool Enabled
     {
-        get => enabled;
+        get;
         set
         {
-            enabled = value;
+            field = value;
+
             foreach (var component in Components)
-            {
                 component.Enabled = value;
-            }
         }
     }
-    private bool enabled = true;
 
     /// <summary> The name of the entity. </summary>
     public string Name { get; set; } = "Entity";
