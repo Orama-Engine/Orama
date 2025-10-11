@@ -1,4 +1,6 @@
 ﻿
+using Orama.Math;
+
 namespace Orama.Core.Common;
 
 /// <summary>
@@ -18,6 +20,9 @@ public static class Application
     /// <summary> Called when the application renders. </summary>
     public static Action? OnRender { get; set; }
 
+    /// <summary> Called when the application resizes. </summary>
+    public static Action<Vector2>? OnResize { get; set; }
+
     /// <summary> The main window. </summary>
     public static Window Window { get; private set; } = null!;
 
@@ -28,6 +33,7 @@ public static class Application
         Window.InternalWindow.Load += () => OnStart?.Invoke();
         Window.InternalWindow.Closing += () => OnExit?.Invoke();
         Window.InternalWindow.Render += (delta) => OnRender?.Invoke();
+        Window.InternalWindow.Resize += (size) => OnResize?.Invoke(new Vector2(size.X, size.Y));
         Window.InternalWindow.Update += (delta) => 
         {
             Time.Delta = (float)delta;

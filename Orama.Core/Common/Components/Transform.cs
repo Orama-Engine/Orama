@@ -17,7 +17,7 @@ public class Transform : BaseComponent
     /// <summary> The scale of the transform. </summary>
     public Vector3 Scale { get; set; } = Vector3.One;
 
-    /// <summary> The combined matrix of the transform. </summary>
+    /// <summary> The combined <see cref="Matrix4x4"/> of the transform. </summary>
     public Matrix4x4 Matrix
     {
         get
