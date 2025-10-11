@@ -40,6 +40,9 @@ public static class Renderer
     /// <summary> Renders the scene. </summary>
     public static void Render(Matrix4x4 viewMatrix) => backends[Backend].Render(RenderQueue, viewMatrix);
 
+    /// <summary> Resizes the renderer. </summary>
+    public static void Resize(int width, int height) => backends[Backend].Resize(width, height);
+
     /// <summary> Queues a mesh for rendering. Should be called once per frame for each desired mesh. </summary>
     /// <param name="mesh"> The mesh to queue. </param>
     public static void QueueMesh(GraphicsMesh mesh) => RenderQueue.Enqueue(mesh);

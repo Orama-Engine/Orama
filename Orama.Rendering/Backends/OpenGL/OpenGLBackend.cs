@@ -301,4 +301,9 @@ internal class OpenGLBackend : IRendererBackend
         shaderProgramMap.Clear();
         meshBuffers.Clear();
     }
+
+    public void Resize(int width, int height)
+    {
+        gl.Viewport(0, 0, (uint)width, (uint)height);
+    }
 }

@@ -13,6 +13,7 @@ public class RenderingModule : BaseModule
 {
     public override void Initialize()
     {
+        Application.OnResize +=  (size) => OnResize((int)size.X, (int)size.Y);
         Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL);
     }
 
@@ -43,4 +44,6 @@ public class RenderingModule : BaseModule
 
         Renderer.QueueMesh(graphicsMesh);
     }
+
+    public void OnResize(int width, int height) => Renderer.Resize(width, height);
 }
