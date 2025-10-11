@@ -30,8 +30,33 @@ public class Transform : BaseComponent
         }
     }
 
+
     /// <summary> The forward direction of the transform. </summary>
-    public Vector3 Forward => Matrix.Forward;
+    public Vector3 Forward
+    {
+        get
+        {
+            return Vector3.Transform(Vector3.Forward, Rotation);
+        }
+    }
+
+    /// <summary> The right direction of the transform. </summary>
+    public Vector3 Right
+    {
+        get
+        {
+            return Vector3.Transform(-Vector3.Right, Rotation);
+        }
+    }
+
+    /// <summary> The up direction of the transform. </summary>
+    public Vector3 Up
+    {
+        get
+        {
+            return Vector3.Transform(Vector3.Up, Rotation);
+        }
+    }
 
     /// <summary> Creates a new instance of <see cref="Transform"/>. </summary>
     public Transform() { }
