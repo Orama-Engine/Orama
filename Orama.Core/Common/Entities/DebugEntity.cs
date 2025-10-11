@@ -1,5 +1,6 @@
 ﻿#if DEBUG
 using Orama.Core.Modules;
+using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
