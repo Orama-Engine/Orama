@@ -11,6 +11,9 @@ public struct Vector2 : IEquatable<Vector2>
     /// <summary> The Y component of the <see cref="Vector2"/>. </summary>
     public float Y { get; set; }
 
+    /// <summary> The length of the <see cref="Vector2"/>. </summary>
+    public float Length => MathF.Sqrt(X * X + Y * Y);
+
     /// <summary> Creates a new instance of <see cref="Vector2"/> with the specified components. </summary>
     public Vector2(float x, float y)
     {
