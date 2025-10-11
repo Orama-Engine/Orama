@@ -2,7 +2,7 @@
 using Orama.Core.Modules;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Rendering.Resources;
-using System.Numerics;
+using Orama.Math;
 
 namespace Orama.Core.Common.Entities;
 

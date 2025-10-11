@@ -17,4 +17,11 @@ public struct Vector2
         X = x;
         Y = y;
     }
+
+    #region Casts
+
+    public static implicit operator System.Numerics.Vector2(Vector2 v) => new(v.X, v.Y);
+    public static implicit operator Vector2(System.Numerics.Vector2 v) => new(v.X, v.Y);
+
+    #endregion
 }

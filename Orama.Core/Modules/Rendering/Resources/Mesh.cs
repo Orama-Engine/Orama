@@ -1,5 +1,5 @@
 ﻿using Orama.Rendering.Resources;
-using System.Numerics;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Rendering.Resources;
 

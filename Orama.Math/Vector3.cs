@@ -30,4 +30,11 @@ public struct Vector3
 
     /// <summary> A Vector set to the world's up direction. </summary>
     public static Vector3 Up => new Vector3(0, 1, 0);
+
+    #region Casts
+
+    public static implicit operator System.Numerics.Vector3(Vector3 v) => new System.Numerics.Vector3(v.X, v.Y, v.Z);
+    public static implicit operator Vector3(System.Numerics.Vector3 v) => new Vector3(v.X, v.Y, v.Z);
+
+    #endregion
 }

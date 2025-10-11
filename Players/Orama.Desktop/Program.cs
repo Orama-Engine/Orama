@@ -2,12 +2,6 @@
 using Orama.Core.Modules;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
-using Orama.Rendering;
-using Orama.Rendering.Resources;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-using System.Numerics;
 
 namespace Orama.Desktop;
 

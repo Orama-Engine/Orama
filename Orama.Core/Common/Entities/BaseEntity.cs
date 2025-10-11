@@ -18,7 +18,7 @@ public class BaseEntity
             foreach (var component in Components)
                 component.Enabled = value;
         }
-    }
+    } = true;
 
     /// <summary> The name of the entity. </summary>
     public string Name { get; set; } = "Entity";

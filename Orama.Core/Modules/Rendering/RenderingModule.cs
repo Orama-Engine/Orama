@@ -31,12 +31,12 @@ public class RenderingModule : BaseModule
     public void RenderMesh(Mesh mesh)
     {
         // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this
-        GraphicsMesh graphicsMesh = new GraphicsMesh()
+        var graphicsMesh = new GraphicsMesh()
         {
-            Vertices = mesh.Vertices,
+            Vertices = mesh.Vertices.Select(v => (System.Numerics.Vector3)v).ToArray(),
+            Normals = mesh.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
+            TexCoords = mesh.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
             Indices = mesh.Indices,
-            Normals = mesh.Normals,
-            TexCoords = mesh.UVs,
             Shader = mesh.Material.GraphicsShader
         };
 
