@@ -48,6 +48,9 @@ public struct Vector2 : IEquatable<Vector2>
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(X, Y);
 
+    /// <inheritdoc/>
+    public override string ToString() => $"({X}, {Y})";
+
     #region Casts
 
     public static implicit operator System.Numerics.Vector2(Vector2 v) => new(v.X, v.Y);

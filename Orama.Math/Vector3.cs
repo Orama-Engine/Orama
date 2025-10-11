@@ -67,6 +67,9 @@ public struct Vector3 : IEquatable<Vector3>
     /// <inheritdoc/>
     public override int GetHashCode() => HashCode.Combine(X, Y, Z);
 
+    /// <inheritdoc/>
+    override public string ToString() => $"({X}, {Y}, {Z})";
+
     #region Casts
 
     public static implicit operator System.Numerics.Vector3(Vector3 v) => new System.Numerics.Vector3(v.X, v.Y, v.Z);

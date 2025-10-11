@@ -1,5 +1,5 @@
-﻿
-using Orama.Core.Common;
+﻿using Orama.Core.Common;
+using Orama.Math;
 using Silk.NET.Input;
 
 namespace Orama.Core.Modules.Input;
@@ -9,6 +9,9 @@ namespace Orama.Core.Modules.Input;
 /// </summary>
 public class InputModule : BaseModule
 {
+    /// <summary> The current mouse position. </summary>
+    public Vector2 MousePosition => input.Mice[0].Position;
+
     #region Silk Mappings
     private static readonly Dictionary<Key, Silk.NET.Input.Key> KeyMap = new()
     {
@@ -46,11 +49,14 @@ public class InputModule : BaseModule
 
     private IInputContext input = null!;
 
-
     public override void Initialize()
     {
         input = Application.Window.InternalWindow.CreateInput();
     }
+
+    /// <summary> Checks if the specified mouse button is currently pressed. </summary>
+    /// <param name="button"> The mouse button to check. </param>
+    public bool IsMouseButtonDown(int button) => input.Mice[0].IsButtonPressed((MouseButton)button);
 
     /// <summary> Checks if the specified key is currently pressed. </summary>
     /// <param name="key"> The key to check. </param>
