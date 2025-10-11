@@ -17,6 +17,19 @@ public class Transform : BaseComponent
     /// <summary> The scale of the transform. </summary>
     public Vector3 Scale { get; set; } = Vector3.One;
 
+    /// <summary> The combined matrix of the transform. </summary>
+    public Matrix4x4 Matrix
+    {
+        get
+        {
+            Matrix4x4 scaleMatrix = Matrix4x4.CreateScale(Scale);
+            Matrix4x4 rotationMatrix = Matrix4x4.CreateFromQuaternion(Rotation);
+            Matrix4x4 translationMatrix = Matrix4x4.CreateTranslation(Position);
+
+            return scaleMatrix * rotationMatrix * translationMatrix;
+        }
+    }
+
     /// <summary> Creates a new instance of <see cref="Transform"/>. </summary>
     public Transform() { }
 

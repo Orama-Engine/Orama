@@ -114,6 +114,27 @@ public struct Matrix4x4
         return rz * ry * rx;
     }
 
+    /// <summary> Creates a rotation matrix from a <see cref="Quaternion"/>. </summary>
+    public static Matrix4x4 CreateFromQuaternion(Quaternion q)
+    {
+        float xx = q.X * q.X;
+        float yy = q.Y * q.Y;
+        float zz = q.Z * q.Z;
+        float xy = q.X * q.Y;
+        float xz = q.X * q.Z;
+        float yz = q.Y * q.Z;
+        float wx = q.W * q.X;
+        float wy = q.W * q.Y;
+        float wz = q.W * q.Z;
+
+        return new Matrix4x4(
+            1 - 2 * (yy + zz), 2 * (xy + wz), 2 * (xz - wy), 0,
+            2 * (xy - wz), 1 - 2 * (xx + zz), 2 * (yz + wx), 0,
+            2 * (xz + wy), 2 * (yz - wx), 1 - 2 * (xx + yy), 0,
+            0, 0, 0, 1
+        );
+    }
+
     /// <summary> Creates a right-handed LookAt view matrix. </summary>
     public static Matrix4x4 CreateLookAt(Vector3 eye, Vector3 target, Vector3 up)
     {

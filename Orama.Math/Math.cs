@@ -2,7 +2,7 @@
 namespace Orama.Math;
 
 /// <summary>
-/// Contains generic mathematical operations.
+/// Provides common math utility.
 /// </summary>
 public static class Math
 {
