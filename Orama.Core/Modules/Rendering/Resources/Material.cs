@@ -9,6 +9,23 @@ namespace Orama.Core.Modules.Rendering.Resources;
 /// </summary>
 public class Material
 {
+    private const string DEFAULT_VERTEX = @"
+#version 450 core
+
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
+
+layout(row_major, std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+};
+
+void main()
+{
+    gl_Position = u_MVP * vec4(pos, 1.0);
+}
+";
     private const string DEFAULT_FRAGMENT = @"
 #version 450 core
 
@@ -20,17 +37,6 @@ void main()
 }
 ";
 
-    private const string DEFAULT_VERTEX = @"
-#version 450 core
-
-layout(location = 0) in vec3 pos;
-layout(location = 2) in vec2 uv;
-
-void main()
-{
-    gl_Position = vec4(pos, 1.0);
-}
-";
 
     public Material(string vertexSource, string fragmentSource)
     {
@@ -41,7 +47,7 @@ void main()
     internal GraphicsShader GraphicsShader { get; set; }
 
     /// <summary>
-    /// A default material using a simple texture shader.
+    /// A default material using a simple shader.
     /// </summary>
     public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
 

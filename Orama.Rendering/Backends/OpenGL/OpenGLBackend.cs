@@ -157,8 +157,7 @@ internal class OpenGLBackend : IRendererBackend
 
                 unsafe
                 {
-                    int float4Count = Math.Max(1, mesh.Shader.Parameters.Count);
-                    gl.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * float4Count), null, BufferUsageARB.DynamicDraw);
+                    gl.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * sizeof(float)), null, BufferUsageARB.DynamicDraw);
                 }
 
                 // Bind UBO to binding point 0
@@ -180,11 +179,24 @@ internal class OpenGLBackend : IRendererBackend
             gl.BindVertexArray(vao);
             gl.UseProgram(shaderProgramMap[mesh.Shader]);
 
+            Matrix4x4 modelViewProj = mesh.Transform * viewMatrix * projectionMatrix;
+
             // Upload parameters
             if (shaderParameterUBOs.TryGetValue(mesh.Shader, out uint ubo))
             {
                 int offset = 0;
 
+                // MVP first
+                byte[] mvpBytes = Shared.GetParameterBytes(modelViewProj);
+                gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
+                unsafe
+                {
+                    fixed (byte* ptr = mvpBytes)
+                        gl.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)mvpBytes.Length, ptr);
+                }
+                offset += mvpBytes.Length;
+
+                // User parameters
                 foreach (var kv in mesh.Shader.Parameters)
                 {
                     object value = kv.Value;
@@ -202,26 +214,23 @@ internal class OpenGLBackend : IRendererBackend
 
                     // Align
                     offset += paramBytes.Length;
+
+
+                    // Special texture handling
+                    if (kv.Value is GraphicsTexture tex)
+                    {
+                        uint glTex = GetOrCreateGLTexture(tex);
+
+                        // Bind to texture unit 0
+                        gl.ActiveTexture(TextureUnit.Texture0);
+                        gl.BindTexture(TextureTarget.Texture2D, glTex);
+
+                        // Set the uniform to use texture unit 0
+                        int loc = gl.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
+                        gl.Uniform1(loc, 0);
+                    }
                 }
             }
-
-            // Bind sampler2D uniforms
-            foreach (var kv in mesh.Shader.Parameters)
-            {
-                if (kv.Value is GraphicsTexture tex)
-                {
-                    uint glTex = GetOrCreateGLTexture(tex);
-
-                    // Bind to texture unit 0
-                    gl.ActiveTexture(TextureUnit.Texture0);
-                    gl.BindTexture(TextureTarget.Texture2D, glTex);
-
-                    // Set the uniform to use texture unit 0
-                    int loc = gl.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
-                    gl.Uniform1(loc, 0);
-                }
-            }
-
 
             unsafe
             {

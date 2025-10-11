@@ -1,5 +1,7 @@
-﻿using Orama.Core.Common.Entities;
+﻿using Orama.Core.Common.Components;
+using Orama.Core.Common.Entities;
 using Orama.Core.Modules.Scenes.Resources;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Scenes;
 
@@ -16,7 +18,11 @@ public class SceneModule : BaseModule
         CurrentScene = new Scene();
 
 #if DEBUG
+        BaseEntity camera = new BaseEntity();
+        camera.AddComponent<Camera>();
         CurrentScene.Entities.Add(new DebugEntity());
+        CurrentScene.Entities.Add(camera);
+        camera.Transform.Position = new Vector3(0, 0, 1);
 #endif
 
         CurrentScene.StartAll();
