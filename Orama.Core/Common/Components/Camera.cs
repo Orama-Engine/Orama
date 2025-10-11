@@ -17,6 +17,22 @@ public class Camera : BaseComponent
     /// <summary> The far plane. </summary>
     public float ZFar { get; set; } = 1000f;
 
+    /// <summary> The main camera. </summary>
+    public static Camera? Main { get; private set; }
+
+    /// <summary> Gets the view <see cref="Matrix4x4"/> for this Camera. </summary>
+    public Matrix4x4 ViewMatrix
+    {
+        get
+        {
+            return Matrix4x4.LookAt(
+                Entity.Transform.Position,
+                Entity.Transform.Position + Entity.Transform.Forward,
+                Vector3.Up
+            );
+        }
+    }
+
     /// <summary> Gets the projection <see cref="Matrix4x4"/> for this Camera. </summary>
     public Matrix4x4 ProjectionMatrix
     {
@@ -56,5 +72,10 @@ public class Camera : BaseComponent
                 1
             );
         }
+    }
+
+    public Camera()
+    {
+        Main = this;
     }
 }

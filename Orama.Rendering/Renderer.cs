@@ -38,7 +38,7 @@ public static class Renderer
     }
 
     /// <summary> Renders the scene. </summary>
-    public static void Render(Matrix4x4 viewMatrix) => backends[Backend].Render(RenderQueue, viewMatrix);
+    public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix) => backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix);
 
     /// <summary> Resizes the renderer. </summary>
     public static void Resize(int width, int height) => backends[Backend].Resize(width, height);

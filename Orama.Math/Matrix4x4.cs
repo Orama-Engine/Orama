@@ -28,6 +28,9 @@ public struct Matrix4x4
     public float M44 { get; set; }
     #endregion
 
+    /// <summary> Forward vector of the matrix. </summary>
+    public Vector3 Forward => new(M31, M32, M33);
+
     /// <summary> Creates a new instance of <see cref="Matrix4x4"/> with the specified components. </summary>
     public Matrix4x4(
     float m11, float m12, float m13, float m14,
@@ -136,7 +139,7 @@ public struct Matrix4x4
     }
 
     /// <summary> Creates a right-handed LookAt view matrix. </summary>
-    public static Matrix4x4 CreateLookAt(Vector3 eye, Vector3 target, Vector3 up)
+    public static Matrix4x4 LookAt(Vector3 eye, Vector3 target, Vector3 up)
     {
         Vector3 zAxis = Vector3.Normalize(eye - target); // Forward
         Vector3 xAxis = Vector3.Normalize(Vector3.Cross(up, zAxis)); // Right
@@ -177,4 +180,24 @@ public struct Matrix4x4
             a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44
         );
     }
+
+    #region Casts
+
+    public static explicit operator System.Numerics.Matrix4x4(Matrix4x4 m)
+        => new System.Numerics.Matrix4x4(
+            m.M11, m.M12, m.M13, m.M14,
+            m.M21, m.M22, m.M23, m.M24,
+            m.M31, m.M32, m.M33, m.M34,
+            m.M41, m.M42, m.M43, m.M44
+        );
+
+    public static explicit operator Matrix4x4(System.Numerics.Matrix4x4 m)
+        => new Matrix4x4(
+            m.M11, m.M12, m.M13, m.M14,
+            m.M21, m.M22, m.M23, m.M24,
+            m.M31, m.M32, m.M33, m.M34,
+            m.M41, m.M42, m.M43, m.M44
+        );
+
+    #endregion
 }

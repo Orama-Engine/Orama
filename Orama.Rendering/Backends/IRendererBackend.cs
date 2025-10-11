@@ -16,7 +16,7 @@ internal interface IRendererBackend
 
     /// <summary> Renders the scene. </summary>
     /// <param name="renderQueue"> The render queue to render. </param>
-    void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix);
+    void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix);
 
     /// <summary> Resizes the renderer. </summary>
     /// <param name="width"> The new width. </param>

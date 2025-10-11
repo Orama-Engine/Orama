@@ -33,6 +33,9 @@ public class GraphicsMesh
     /// <summary> Shader used for rendering the mesh. </summary>
     public GraphicsShader Shader { get; set; } = new();
 
+    /// <summary> Transform of the mesh. </summary>
+    public Matrix4x4 Transform { get; set; }
+
     /// <summary> Winding order of the mesh's triangles. </summary>
     public WindingOrder WindingOrder { get; set; } = WindingOrder.CounterClockwise;
 

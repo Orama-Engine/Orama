@@ -62,7 +62,7 @@ internal class OpenGLBackend : IRendererBackend
     }
 
     /// <inheritdoc/>
-    public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix)
+    public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
         gl.ClearColor(0f, 0f, 0f, 1f);
         gl.Clear((uint)ClearBufferMask.ColorBufferBit);
