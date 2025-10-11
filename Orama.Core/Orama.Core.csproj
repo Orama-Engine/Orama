@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\Orama.Rendering\Orama.Rendering.csproj" />
   </ItemGroup>
 

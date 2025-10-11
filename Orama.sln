@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Desktop", "Players\Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Orama.Rendering\Orama.Rendering.csproj", "{35D62D7D-7AD6-4312-A76C-B5ACC3900723}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Orama.Math.csproj", "{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
