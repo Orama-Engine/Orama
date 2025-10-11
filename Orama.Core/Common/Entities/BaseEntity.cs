@@ -23,6 +23,9 @@ public class BaseEntity
     /// <summary> The name of the entity. </summary>
     public string Name { get; set; } = "Entity";
 
+    /// <summary> The transform of the entity. </summary>
+    public Transform Transform { get; set; } = new();
+
     /// <summary> The components attached to the entity. </summary>
     public IReadOnlyList<BaseComponent> Components => components;
     private List<BaseComponent> components = new();

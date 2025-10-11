@@ -2,6 +2,7 @@
 using Orama.Core.Modules.Rendering.Resources;
 using Orama.Rendering;
 using Orama.Rendering.Resources;
+using System.Numerics;
 
 namespace Orama.Core.Modules.Rendering;
 
@@ -18,7 +19,7 @@ public class RenderingModule : BaseModule
     public override void Update()
     {
         // TODO: Expose Application.Render to modules?
-        Renderer.Render();
+        Renderer.Render(Matrix4x4.Identity);
     }
 
     public override void Dispose()

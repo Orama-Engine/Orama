@@ -2,7 +2,7 @@
 namespace Orama.Math;
 
 /// <summary>
-/// Represents a four-dimensional point used to represent rotations.
+/// Represents a four-dimensional rotation.
 /// </summary>
 public struct Quaternion
 {
