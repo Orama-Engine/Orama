@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a three-dimensional point.
 /// </summary>
-public struct Vector3
+public struct Vector3 : IEquatable<Vector3>
 {
     /// <summary> The X component of the <see cref="Vector3"/>. </summary>
     public float X { get; set; }
@@ -13,6 +13,9 @@ public struct Vector3
 
     /// <summary> The Z component of the <see cref="Vector3"/>. </summary>
     public float Z { get; set; }
+
+    /// <summary> The length of the <see cref="Vector3"/>. </summary>
+    public float Length => MathF.Sqrt(X * X + Y * Y + Z * Z);
 
     /// <summary> Creates a new instance of <see cref="Vector3"/> with the specified components. </summary>
     public Vector3(float x, float y, float z)
@@ -31,10 +34,69 @@ public struct Vector3
     /// <summary> A Vector set to the world's up direction. </summary>
     public static Vector3 Up => new Vector3(0, 1, 0);
 
+    /// <summary> Returns the dot product of the two vectors. </summary>
+    public static float Dot(Vector3 v1, Vector3 v2) => v1.Dot(v2);
+
+    /// <summary> Returns a normalized version of the <see cref="Vector3"/>. </summary>
+    public static Vector3 Normalize(Vector3 v) => v.Normalize();
+
+    /// <summary> Returns the cross product of the two vectors. </summary>
+    public static Vector3 Cross(Vector3 v1, Vector3 v2) => v1.Cross(v2);
+
+    /// <summary> Returns the dot product of the two vectors. </summary>
+    public float Dot(Vector3 v) => X * v.X + Y * v.Y + Z * v.Z;
+
+    /// <summary> Returns a normalized version of the <see cref="Vector3"/>. </summary>
+    public Vector3 Normalize() => this / Length;
+
+    /// <summary> Returns the cross product of the two vectors. </summary>
+    public Vector3 Cross(Vector3 v) => new Vector3(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is Vector3 other)
+            return Equals(other);
+
+        return false;
+    }
+
+    /// <summary> Compares two <see cref="Vector3"/>s for equality. </summary>
+    public bool Equals(Vector3 other) => X == other.X && Y == other.Y && Z == other.Z;
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(X, Y, Z);
+
     #region Casts
 
     public static implicit operator System.Numerics.Vector3(Vector3 v) => new System.Numerics.Vector3(v.X, v.Y, v.Z);
     public static implicit operator Vector3(System.Numerics.Vector3 v) => new Vector3(v.X, v.Y, v.Z);
 
+    #endregion
+
+    #region Operators
+    public static Vector3 operator +(Vector3 a, Vector3 b)
+        => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+
+    public static Vector3 operator -(Vector3 a, Vector3 b)
+        => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+
+    public static Vector3 operator -(Vector3 v)
+        => new(-v.X, -v.Y, -v.Z);
+
+    public static Vector3 operator *(Vector3 a, float scalar)
+        => new(a.X * scalar, a.Y * scalar, a.Z * scalar);
+
+    public static Vector3 operator *(float scalar, Vector3 a)
+        => new(a.X * scalar, a.Y * scalar, a.Z * scalar);
+
+    public static Vector3 operator /(Vector3 a, float scalar)
+        => new(a.X / scalar, a.Y / scalar, a.Z / scalar);
+
+    public static bool operator ==(Vector3 a, Vector3 b)
+        => a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+
+    public static bool operator !=(Vector3 a, Vector3 b)
+        => !(a == b);
     #endregion
 }

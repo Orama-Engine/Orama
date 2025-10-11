@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a two-dimensional point.
 /// </summary>
-public struct Vector2
+public struct Vector2 : IEquatable<Vector2>
 {
     /// <summary> The X component of the <see cref="Vector2"/>. </summary>
     public float X { get; set; }
@@ -18,10 +18,65 @@ public struct Vector2
         Y = y;
     }
 
+    /// <summary> A Vector with all components set to zero. </summary>
+    public static Vector2 Zero => new(0, 0);
+
+    /// <summary> A Vector with all components set to one. </summary>
+    public static Vector2 One => new(1, 1);
+
+    /// <summary> A Vector representing the right X direction. </summary>
+    public static Vector2 Right => new(1, 0);
+
+    /// <summary> A Vector representing the up Y direction. </summary>
+    public static Vector2 Up => new(0, 1);
+
+    /// <inheritdoc/>
+    public override bool Equals(object? obj)
+    {
+        if (obj is Vector2 other)
+            return Equals(other);
+
+        return false;
+    }
+
+    /// <summary> Compares two <see cref="Vector2"/>s for equality. </summary>
+    public bool Equals(Vector2 other) => X == other.X && Y == other.Y;
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(X, Y);
+
     #region Casts
 
     public static implicit operator System.Numerics.Vector2(Vector2 v) => new(v.X, v.Y);
     public static implicit operator Vector2(System.Numerics.Vector2 v) => new(v.X, v.Y);
+
+    #endregion
+
+    #region Operators
+
+    public static Vector2 operator +(Vector2 a, Vector2 b)
+        => new(a.X + b.X, a.Y + b.Y);
+
+    public static Vector2 operator -(Vector2 a, Vector2 b)
+        => new(a.X - b.X, a.Y - b.Y);
+
+    public static Vector2 operator -(Vector2 v)
+        => new(-v.X, -v.Y);
+
+    public static Vector2 operator *(Vector2 a, float scalar)
+        => new(a.X * scalar, a.Y * scalar);
+
+    public static Vector2 operator *(float scalar, Vector2 a)
+        => new(a.X * scalar, a.Y * scalar);
+
+    public static Vector2 operator /(Vector2 a, float scalar)
+        => new(a.X / scalar, a.Y / scalar);
+
+    public static bool operator ==(Vector2 a, Vector2 b)
+        => a.X == b.X && a.Y == b.Y;
+
+    public static bool operator !=(Vector2 a, Vector2 b)
+        => !(a == b);
 
     #endregion
 }
