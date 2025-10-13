@@ -3,7 +3,7 @@ using Orama.Math;
 
 namespace Orama.Core.Common.Components;
 
-public class Camera : BaseComponent
+public class Camera : Component
 {
     /// <summary> The field of view. </summary>
     public float FOV { get; set; } = MathF.PI / 3f;

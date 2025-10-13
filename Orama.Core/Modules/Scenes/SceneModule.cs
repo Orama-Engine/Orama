@@ -18,7 +18,7 @@ public class SceneModule : BaseModule
         CurrentScene = new Scene();
 
 #if DEBUG
-        BaseEntity camera = new BaseEntity();
+        Entity camera = new Entity();
         camera.AddComponent<Camera>();
         CurrentScene.Entities.Add(new DebugEntity());
         CurrentScene.Entities.Add(camera);

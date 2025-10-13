@@ -28,9 +28,6 @@ public struct Matrix4x4
     public float M44 { get; set; }
     #endregion
 
-    /// <summary> Forward vector of the matrix. </summary>
-    public Vector3 Forward => new(M31, M32, M33);
-
     /// <summary> Creates a new instance of <see cref="Matrix4x4"/> with the specified components. </summary>
     public Matrix4x4(
     float m11, float m12, float m13, float m14,

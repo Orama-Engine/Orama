@@ -6,7 +6,7 @@ namespace Orama.Core.Common.Components;
 /// <summary>
 /// A 3D Position, Rotation and Scale.
 /// </summary>
-public class Transform : BaseComponent
+public class Transform : Component
 {
     /// <summary> The position of the transform. </summary>
     public Vector3 Position { get; set; }

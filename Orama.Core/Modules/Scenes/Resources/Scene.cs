@@ -8,7 +8,7 @@ namespace Orama.Core.Modules.Scenes.Resources;
 public class Scene
 {
     /// <summary> All Entities in the Scene. </summary>
-    public List<BaseEntity> Entities { get; set; } = new();
+    public List<Entity> Entities { get; set; } = new();
 
     internal void StartAll()
     {

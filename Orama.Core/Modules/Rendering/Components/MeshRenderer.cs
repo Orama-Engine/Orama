@@ -4,7 +4,7 @@ using Orama.Math;
 
 namespace Orama.Core.Modules.Rendering.Components;
 
-public class MeshRenderer : BaseComponent, IClientRenderable
+public class MeshRenderer : Component, IClientRenderable
 {
     /// <summary> The <see cref="Resources.Mesh"/> to render. </summary>
     public Mesh? Mesh { get; set; }

@@ -5,7 +5,7 @@ namespace Orama.Core.Common.Entities;
 /// <summary>
 /// A Container for game logic and components.
 /// </summary>
-public class BaseEntity
+public class Entity
 {
     /// <summary> Is this entity enabled? </summary>
     public bool Enabled
@@ -27,8 +27,8 @@ public class BaseEntity
     public Transform Transform { get; set; } = new();
 
     /// <summary> The components attached to the entity. </summary>
-    public IReadOnlyList<BaseComponent> Components => components;
-    private List<BaseComponent> components = new();
+    public IReadOnlyList<Component> Components => components;
+    private List<Component> components = new();
 
     /// <summary> Called when the entity is enabled. </summary>
     /// <remarks> The base implementation starts all components. </remarks>
@@ -54,7 +54,7 @@ public class BaseEntity
 
     #region Component Methods
     /// <summary> Adds a component to the entity. </summary>
-    public BaseComponent AddComponent(BaseComponent component)
+    public Component AddComponent(Component component)
     {
         component.Entity = this;
         components.Add(component);
@@ -63,15 +63,15 @@ public class BaseEntity
     }
 
     /// <summary> Gets a component of type T from the entity. </summary>
-    public T? GetComponent<T>() where T : BaseComponent => (T?)components.Find(c => c is T);
+    public T? GetComponent<T>() where T : Component => (T?)components.Find(c => c is T);
 
     /// <summary> Adds a new component of type T to the entity. </summary>
-    public T AddComponent<T>() where T : BaseComponent, new() => (T)AddComponent(new T());
+    public T AddComponent<T>() where T : Component, new() => (T)AddComponent(new T());
 
     /// <summary> Gets a component of type T from the entity or adds a new one if it doesn't exist. </summary>
-    public T GetOrAddComponent<T>() where T : BaseComponent, new() => GetComponent<T>() ?? AddComponent<T>();
+    public T GetOrAddComponent<T>() where T : Component, new() => GetComponent<T>() ?? AddComponent<T>();
 
     /// <summary> Removes a component from the entity. </summary>
-    public void RemoveComponent(BaseComponent component) => components.Remove(component);
+    public void RemoveComponent(Component component) => components.Remove(component);
     #endregion
 }

@@ -9,7 +9,7 @@ namespace Orama.Core.Common.Entities;
 /// <summary>
 /// Internal entity useful for debugging systems.
 /// </summary>
-internal class DebugEntity : BaseEntity
+internal class DebugEntity : Entity
 {
     private MeshRenderer? renderer;
 
