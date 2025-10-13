@@ -26,14 +26,4 @@ public struct Quaternion
         Z = z;
         W = w;
     }
-
-    /// <summary> Rotates a vector by this quaternion. </summary>
-    public static Vector3 operator *(Quaternion q, Vector3 v)
-    {
-        // t = 2 * cross(q.xyz, v)
-        Vector3 qVec = new Vector3(q.X, q.Y, q.Z);
-        Vector3 t = 2 * Vector3.Cross(qVec, v);
-        // result = v + w * t + cross(q.xyz, t)
-        return v + q.W * t + Vector3.Cross(qVec, t);
-    }
 }

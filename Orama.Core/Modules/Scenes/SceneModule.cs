@@ -18,8 +18,11 @@ public class SceneModule : BaseModule
         CurrentScene = new Scene();
 
 #if DEBUG
+        BaseEntity camera = new BaseEntity();
+        camera.AddComponent<Camera>();
         CurrentScene.Entities.Add(new DebugEntity());
-        CurrentScene.Entities.Add(new FPSController());
+        CurrentScene.Entities.Add(camera);
+        camera.Transform.Position = new Vector3(0, 0, -3);
 #endif
 
         CurrentScene.StartAll();

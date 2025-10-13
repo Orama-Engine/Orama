@@ -12,12 +12,6 @@ namespace Orama.Core.Modules.Rendering;
 /// </summary>
 public class RenderingModule : BaseModule
 {
-    /// <summary> Optional override for view matrix. If null, Camera.Main.ViewMatrix is used. </summary>
-    public Matrix4x4? ViewOverride { get; set; }
-
-    /// <summary> Optional override for projection matrix. If null, Camera.Main.ProjectionMatrix is used. </summary>
-    public Matrix4x4? ProjectionOverride { get; set; }
-
     public override void Initialize()
     {
         Application.OnResize +=  (size) => OnResize((int)size.X, (int)size.Y);
@@ -25,42 +19,8 @@ public class RenderingModule : BaseModule
 
         Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL);
     }
-
-    public void Render()
-    {
-        // Determine which view matrix to use
-        System.Numerics.Matrix4x4 view;
-        if (ViewOverride.HasValue)
-        {
-            view = (System.Numerics.Matrix4x4)ViewOverride.Value;
-        }
-        else if (Camera.Main != null)
-        {
-            view = (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix;
-        }
-        else
-        {
-            view = System.Numerics.Matrix4x4.Identity;
-        }
-
-        // Determine which projection matrix to use
-        System.Numerics.Matrix4x4 proj;
-        if (ProjectionOverride.HasValue)
-        {
-            proj = (System.Numerics.Matrix4x4)ProjectionOverride.Value;
-        }
-        else if (Camera.Main != null)
-        {
-            proj = (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix;
-        }
-        else
-        {
-            proj = System.Numerics.Matrix4x4.Identity;
-        }
-
-        // Render with the chosen matrices
-        Renderer.Render(view, proj);
-    }
+     
+    public void Render() => Renderer.Render(Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix : System.Numerics.Matrix4x4.Identity, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix : System.Numerics.Matrix4x4.Identity);
 
     public override void Dispose() => Renderer.Dispose();
 

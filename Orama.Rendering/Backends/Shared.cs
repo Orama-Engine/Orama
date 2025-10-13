@@ -47,31 +47,22 @@ public static class Shared
             {
                 var m = (Matrix4x4)value;
                 byte[] bytes = new byte[64];
-
-                // Column 0
                 Buffer.BlockCopy(BitConverter.GetBytes(m.M11), 0, bytes, 0, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M21), 0, bytes, 4, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M31), 0, bytes, 8, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M41), 0, bytes, 12, 4);
-
-                // Column 1
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M12), 0, bytes, 16, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M12), 0, bytes, 4, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M13), 0, bytes, 8, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M14), 0, bytes, 12, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M21), 0, bytes, 16, 4);
                 Buffer.BlockCopy(BitConverter.GetBytes(m.M22), 0, bytes, 20, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M32), 0, bytes, 24, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M42), 0, bytes, 28, 4);
-
-                // Column 2
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M13), 0, bytes, 32, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M23), 0, bytes, 36, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M23), 0, bytes, 24, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M24), 0, bytes, 28, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M31), 0, bytes, 32, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M32), 0, bytes, 36, 4);
                 Buffer.BlockCopy(BitConverter.GetBytes(m.M33), 0, bytes, 40, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M43), 0, bytes, 44, 4);
-
-                // Column 3
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M14), 0, bytes, 48, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M24), 0, bytes, 52, 4);
-                Buffer.BlockCopy(BitConverter.GetBytes(m.M34), 0, bytes, 56, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M34), 0, bytes, 44, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M41), 0, bytes, 48, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M42), 0, bytes, 52, 4);
+                Buffer.BlockCopy(BitConverter.GetBytes(m.M43), 0, bytes, 56, 4);
                 Buffer.BlockCopy(BitConverter.GetBytes(m.M44), 0, bytes, 60, 4);
-
                 return bytes;
             }
         },

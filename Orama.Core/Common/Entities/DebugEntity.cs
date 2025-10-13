@@ -1,7 +1,5 @@
 ﻿#if DEBUG
 using Orama.Core.Modules;
-using Orama.Core.Modules.GUI;
-using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Math;
@@ -18,11 +16,6 @@ internal class DebugEntity : BaseEntity
     public override void Start()
     {
         Console.WriteLine("Debug entity started.");
-
-        BaseWidget guiWidget = new();
-        Rect newRect = new Rect(0, 0, (int)Application.Window.Size.X, (int)Application.Window.Size.Y);
-        guiWidget.Rect = newRect;
-        ModuleManager.GetOrRegisterModule<GUIModule>().Widgets.Add(guiWidget);
 
         renderer = AddComponent<MeshRenderer>();
 

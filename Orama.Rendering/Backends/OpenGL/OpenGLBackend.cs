@@ -179,7 +179,7 @@ internal class OpenGLBackend : IRendererBackend
             gl.BindVertexArray(vao);
             gl.UseProgram(shaderProgramMap[mesh.Shader]);
 
-            Matrix4x4 modelViewProj = projectionMatrix * viewMatrix * mesh.Transform;
+            Matrix4x4 modelViewProj = mesh.Transform * viewMatrix * projectionMatrix;
 
             // Upload parameters
             if (shaderParameterUBOs.TryGetValue(mesh.Shader, out uint ubo))

@@ -1,6 +1,5 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Modules;
-using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
@@ -15,7 +14,6 @@ internal class Program
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<InputModule>();
-        ModuleManager.RegisterModule<GUIModule>();
 
         Application.OnStart += () =>
         {
