@@ -31,7 +31,7 @@ public class Transform : Component
     }
 
     /// <summary> The forward direction of the transform. </summary>
-    public Vector3 Forward => Matrix.Forward;
+    public Vector3 Forward => Vector3.Transform(Vector3.Up, Rotation);
 
     /// <summary> Creates a new instance of <see cref="Transform"/>. </summary>
     public Transform() { }

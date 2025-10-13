@@ -34,6 +34,10 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary> A Vector set to the world's up direction. </summary>
     public static Vector3 Up => new Vector3(0, 1, 0);
 
+    public static Vector3 UnitX => new Vector3(1, 0, 0);
+    public static Vector3 UnitY => new Vector3(0, 1, 0);
+    public static Vector3 UnitZ => new Vector3(0, 0, 1);
+
     /// <summary> Returns the dot product of the two vectors. </summary>
     public static float Dot(Vector3 v1, Vector3 v2) => v1.Dot(v2);
 
@@ -42,6 +46,17 @@ public struct Vector3 : IEquatable<Vector3>
 
     /// <summary> Returns the cross product of the two vectors. </summary>
     public static Vector3 Cross(Vector3 v1, Vector3 v2) => v1.Cross(v2);
+
+    /// <summary> Transforms a vector by a quaternion rotation. </summary>
+    public static Vector3 Transform(Vector3 vector, Quaternion rotation)
+    {
+        // Convert to System.Numerics types for reliability
+        System.Numerics.Vector3 sysVec = new(vector.X, vector.Y, vector.Z);
+        System.Numerics.Quaternion sysQuat = new(rotation.X, rotation.Y, rotation.Z, rotation.W);
+
+        var transformed = System.Numerics.Vector3.Transform(sysVec, sysQuat);
+        return new Vector3(transformed.X, transformed.Y, transformed.Z);
+    }
 
     /// <summary> Returns the dot product of the two vectors. </summary>
     public float Dot(Vector3 v) => X * v.X + Y * v.Y + Z * v.Z;
