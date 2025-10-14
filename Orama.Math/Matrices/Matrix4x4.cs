@@ -1,5 +1,6 @@
-﻿
-namespace Orama.Math;
+﻿namespace Orama.Math;
+
+using System;
 
 /// <summary>
 /// Represents a four-dimensional matrix.
@@ -30,10 +31,10 @@ public struct Matrix4x4
 
     /// <summary> Creates a new instance of <see cref="Matrix4x4"/> with the specified components. </summary>
     public Matrix4x4(
-    float m11, float m12, float m13, float m14,
-    float m21, float m22, float m23, float m24,
-    float m31, float m32, float m33, float m34,
-    float m41, float m42, float m43, float m44)
+        float m11, float m12, float m13, float m14,
+        float m21, float m22, float m23, float m24,
+        float m31, float m32, float m33, float m34,
+        float m41, float m42, float m43, float m44)
     {
         M11 = m11; M12 = m12; M13 = m13; M14 = m14;
         M21 = m21; M22 = m22; M23 = m23; M24 = m24;
@@ -42,7 +43,20 @@ public struct Matrix4x4
     }
 
     /// <summary> An identity matrix, this is comparable to <see cref="Vector3.One"/> but for matrices. </summary>
-    public static Matrix4x4 Identity => new(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+    public static Matrix4x4 Identity => new(1, 0, 0, 0,
+                                            0, 1, 0, 0,
+                                            0, 0, 1, 0,
+                                            0, 0, 0, 1);
+
+    /// <summary> Returns whether this matrix is the identity matrix. </summary>
+    public bool IsIdentity =>
+        M11 == 1f && M22 == 1f && M33 == 1f && M44 == 1f &&
+        M12 == 0f && M13 == 0f && M14 == 0f &&
+        M21 == 0f && M23 == 0f && M24 == 0f &&
+        M31 == 0f && M32 == 0f && M34 == 0f &&
+        M41 == 0f && M42 == 0f && M43 == 0f;
+
+    #region Factory Methods
 
     /// <summary> Creates a translation matrix from a <see cref="Vector3"/>. </summary>
     public static Matrix4x4 CreateTranslation(Vector3 pos)
@@ -66,6 +80,7 @@ public struct Matrix4x4
         );
     }
 
+    /// <summary> Creates a rotation matrix around the X axis. </summary>
     public static Matrix4x4 CreateRotationX(float radians)
     {
         float c = MathF.Cos(radians);
@@ -79,6 +94,7 @@ public struct Matrix4x4
         );
     }
 
+    /// <summary> Creates a rotation matrix around the Y axis. </summary>
     public static Matrix4x4 CreateRotationY(float radians)
     {
         float c = MathF.Cos(radians);
@@ -92,6 +108,7 @@ public struct Matrix4x4
         );
     }
 
+    /// <summary> Creates a rotation matrix around the Z axis. </summary>
     public static Matrix4x4 CreateRotationZ(float radians)
     {
         float c = MathF.Cos(radians);
@@ -153,6 +170,53 @@ public struct Matrix4x4
         );
     }
 
+    #endregion
+
+    #region Operations
+
+    /// <summary> Returns the transposed version of this matrix. </summary>
+    public Matrix4x4 Transpose()
+    {
+        return new Matrix4x4(
+            M11, M21, M31, M41,
+            M12, M22, M32, M42,
+            M13, M23, M33, M43,
+            M14, M24, M34, M44
+        );
+    }
+
+    /// <summary> Returns the determinant of this matrix. </summary>
+    public float Determinant()
+    {
+        float a = M11 * (M22 * (M33 * M44 - M34 * M43) - M23 * (M32 * M44 - M34 * M42) + M24 * (M32 * M43 - M33 * M42));
+        float b = M12 * (M21 * (M33 * M44 - M34 * M43) - M23 * (M31 * M44 - M34 * M41) + M24 * (M31 * M43 - M33 * M41));
+        float c = M13 * (M21 * (M32 * M44 - M34 * M42) - M22 * (M31 * M44 - M34 * M41) + M24 * (M31 * M42 - M32 * M41));
+        float d = M14 * (M21 * (M32 * M43 - M33 * M42) - M22 * (M31 * M43 - M33 * M41) + M23 * (M31 * M42 - M32 * M41));
+        return a - b + c - d;
+    }
+
+    /// <summary> Returns the inverse of this matrix if invertible, otherwise the identity matrix. </summary>
+    public Matrix4x4 Invert()
+    {
+        if (!System.Numerics.Matrix4x4.Invert((System.Numerics.Matrix4x4)this, out var inv))
+            return Identity;
+        return (Matrix4x4)inv;
+    }
+
+    /// <summary> Transforms a <see cref="Vector3"/> by this matrix. </summary>
+    public Vector3 Transform(Vector3 v)
+    {
+        return new Vector3(
+            v.X * M11 + v.Y * M21 + v.Z * M31 + M41,
+            v.X * M12 + v.Y * M22 + v.Z * M32 + M42,
+            v.X * M13 + v.Y * M23 + v.Z * M33 + M43
+        );
+    }
+
+    #endregion
+
+    #region Operators
+
     public static Matrix4x4 operator *(Matrix4x4 a, Matrix4x4 b)
     {
         return new Matrix4x4(
@@ -177,6 +241,8 @@ public struct Matrix4x4
             a.M41 * b.M14 + a.M42 * b.M24 + a.M43 * b.M34 + a.M44 * b.M44
         );
     }
+
+    #endregion
 
     #region Casts
 
