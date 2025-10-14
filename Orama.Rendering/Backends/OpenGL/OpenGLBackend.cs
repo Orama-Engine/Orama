@@ -7,7 +7,15 @@ namespace Orama.Rendering.Backends.OpenGL;
 
 internal class OpenGLBackend : IRendererBackend
 {
-    private GL gl = null!;
+    /// <inheritdoc/>
+    public ICommandBuffer CommandBuffer { get; }
+
+    public GL GL { get; private set; } = null!;
+
+    public OpenGLBackend()
+    {
+        CommandBuffer = new OpenGLBuffer(this);
+    }
 
     #region OpenGL Mappings
     private static readonly Dictionary<Resources.PrimitiveType, Silk.NET.OpenGL.PrimitiveType> primitiveMap = new()
@@ -55,18 +63,15 @@ internal class OpenGLBackend : IRendererBackend
     /// <inheritdoc/>
     public void Initialize(IWindow window)
     {
-        gl = window.CreateOpenGL();
+        GL = window.CreateOpenGL();
 
-        gl.Enable(EnableCap.CullFace);
-        gl.CullFace(cullMap[Renderer.Options.Culling]);
+        GL.Enable(EnableCap.CullFace);
+        GL.CullFace(cullMap[Renderer.Options.Culling]);
     }
 
     /// <inheritdoc/>
     public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
-        gl.ClearColor(0f, 0f, 0f, 1f);
-        gl.Clear((uint)ClearBufferMask.ColorBufferBit);
-
         FrontFaceDirection? lastWinding = null;
 
         while (renderQueue.Count > 0)
@@ -76,11 +81,11 @@ internal class OpenGLBackend : IRendererBackend
             // Upload mesh data
             if (!meshBuffers.ContainsKey(mesh))
             {
-                uint compiledVao = gl.GenVertexArray();
-                uint compiledVbo = gl.GenBuffer();
-                uint compiledEbo = gl.GenBuffer();
+                uint compiledVao = GL.GenVertexArray();
+                uint compiledVbo = GL.GenBuffer();
+                uint compiledEbo = GL.GenBuffer();
 
-                gl.BindVertexArray(compiledVao);
+                GL.BindVertexArray(compiledVao);
 
                 // (pos.xyz + normal.xyz + uv.xy)
                 float[] interleaved = new float[mesh.Vertices.Length * 8];
@@ -102,19 +107,19 @@ internal class OpenGLBackend : IRendererBackend
                 }
 
                 // Upload vertex buffer
-                gl.BindBuffer(BufferTargetARB.ArrayBuffer, compiledVbo);
+                GL.BindBuffer(BufferTargetARB.ArrayBuffer, compiledVbo);
                 unsafe
                 {
                     fixed (float* ptr = interleaved)
-                        gl.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(interleaved.Length * sizeof(float)), ptr, BufferUsageARB.StaticDraw);
+                        GL.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(interleaved.Length * sizeof(float)), ptr, BufferUsageARB.StaticDraw);
                 }
 
                 // Upload index buffer
-                gl.BindBuffer(BufferTargetARB.ElementArrayBuffer, compiledEbo);
+                GL.BindBuffer(BufferTargetARB.ElementArrayBuffer, compiledEbo);
                 unsafe
                 {
                     fixed (uint* ptr = mesh.Indices)
-                        gl.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(mesh.Indices.Length * sizeof(uint)), ptr, BufferUsageARB.StaticDraw);
+                        GL.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(mesh.Indices.Length * sizeof(uint)), ptr, BufferUsageARB.StaticDraw);
                 }
 
                 // Set up vertex attributes
@@ -124,22 +129,22 @@ internal class OpenGLBackend : IRendererBackend
                 unsafe
                 {
                     // Position
-                    gl.EnableVertexAttribArray(0);
-                    gl.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
+                    GL.EnableVertexAttribArray(0);
+                    GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
 
                     // Normal
                     offset += 3 * sizeof(float);
-                    gl.EnableVertexAttribArray(1);
-                    gl.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
+                    GL.EnableVertexAttribArray(1);
+                    GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
 
                     // UV
                     offset += 3 * sizeof(float);
-                    gl.EnableVertexAttribArray(2);
-                    gl.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
+                    GL.EnableVertexAttribArray(2);
+                    GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, (uint)stride, (void*)offset);
 
                 }
 
-                gl.BindVertexArray(0);
+                GL.BindVertexArray(0);
 
                 meshBuffers[mesh] = (compiledVao, compiledVbo, compiledEbo);
             }
@@ -152,17 +157,17 @@ internal class OpenGLBackend : IRendererBackend
                 shaderProgramMap[mesh.Shader] = program;
 
                 // Create UBO for this shader
-                uint paramUbo = gl.GenBuffer();
-                gl.BindBuffer(BufferTargetARB.UniformBuffer, paramUbo);
+                uint paramUbo = GL.GenBuffer();
+                GL.BindBuffer(BufferTargetARB.UniformBuffer, paramUbo);
 
                 unsafe
                 {
-                    gl.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * sizeof(float)), null, BufferUsageARB.DynamicDraw);
+                    GL.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * sizeof(float)), null, BufferUsageARB.DynamicDraw);
                 }
 
                 // Bind UBO to binding point 0
-                gl.BindBufferBase(GLEnum.UniformBuffer, 0, paramUbo);
-                gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+                GL.BindBufferBase(GLEnum.UniformBuffer, 0, paramUbo);
+                GL.BindBuffer(BufferTargetARB.UniformBuffer, 0);
 
                 shaderParameterUBOs[mesh.Shader] = paramUbo;
             }
@@ -171,13 +176,13 @@ internal class OpenGLBackend : IRendererBackend
             var winding = windingMap[mesh.WindingOrder];
             if (lastWinding != winding)
             {
-                gl.FrontFace(winding);
+                GL.FrontFace(winding);
                 lastWinding = winding;
             }
 
             var (vao, vbo, ebo) = meshBuffers[mesh];
-            gl.BindVertexArray(vao);
-            gl.UseProgram(shaderProgramMap[mesh.Shader]);
+            GL.BindVertexArray(vao);
+            GL.UseProgram(shaderProgramMap[mesh.Shader]);
 
             Matrix4x4 modelViewProj = mesh.Transform * viewMatrix * projectionMatrix;
 
@@ -188,11 +193,11 @@ internal class OpenGLBackend : IRendererBackend
 
                 // MVP first
                 byte[] mvpBytes = Shared.GetParameterBytes(modelViewProj);
-                gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
+                GL.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
                 unsafe
                 {
                     fixed (byte* ptr = mvpBytes)
-                        gl.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)mvpBytes.Length, ptr);
+                        GL.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)mvpBytes.Length, ptr);
                 }
                 offset += mvpBytes.Length;
 
@@ -203,14 +208,14 @@ internal class OpenGLBackend : IRendererBackend
                     byte[] paramBytes = Shared.GetParameterBytes(value);
 
                     // Bind the UBO and upload
-                    gl.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
+                    GL.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
                     unsafe
                     {
                         fixed (byte* ptr = paramBytes)
-                            gl.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)paramBytes.Length, ptr);
+                            GL.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)paramBytes.Length, ptr);
                     }
 
-                    gl.BindBuffer(BufferTargetARB.UniformBuffer, 0);
+                    GL.BindBuffer(BufferTargetARB.UniformBuffer, 0);
 
                     // Align
                     offset += paramBytes.Length;
@@ -222,19 +227,19 @@ internal class OpenGLBackend : IRendererBackend
                         uint glTex = GetOrCreateGLTexture(tex);
 
                         // Bind to texture unit 0
-                        gl.ActiveTexture(TextureUnit.Texture0);
-                        gl.BindTexture(TextureTarget.Texture2D, glTex);
+                        GL.ActiveTexture(TextureUnit.Texture0);
+                        GL.BindTexture(TextureTarget.Texture2D, glTex);
 
                         // Set the uniform to use texture unit 0
-                        int loc = gl.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
-                        gl.Uniform1(loc, 0);
+                        int loc = GL.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
+                        GL.Uniform1(loc, 0);
                     }
                 }
             }
 
             unsafe
             {
-                gl.DrawElements(
+                GL.DrawElements(
                     primitiveMap[mesh.PrimitiveType],
                     (uint)mesh.Indices.Length,
                     DrawElementsType.UnsignedInt,
@@ -242,27 +247,27 @@ internal class OpenGLBackend : IRendererBackend
                 );
             }
 
-            gl.BindVertexArray(0);
+            GL.BindVertexArray(0);
         }
     }
 
     private uint CreateShaderProgram(string vertexSource, string fragmentSource)
     {
-        uint vertexShader = gl.CreateShader(ShaderType.VertexShader);
-        gl.ShaderSource(vertexShader, vertexSource);
-        gl.CompileShader(vertexShader);
+        uint vertexShader = GL.CreateShader(ShaderType.VertexShader);
+        GL.ShaderSource(vertexShader, vertexSource);
+        GL.CompileShader(vertexShader);
 
-        uint fragmentShader = gl.CreateShader(ShaderType.FragmentShader);
-        gl.ShaderSource(fragmentShader, fragmentSource);
-        gl.CompileShader(fragmentShader);
+        uint fragmentShader = GL.CreateShader(ShaderType.FragmentShader);
+        GL.ShaderSource(fragmentShader, fragmentSource);
+        GL.CompileShader(fragmentShader);
 
-        uint program = gl.CreateProgram();
-        gl.AttachShader(program, vertexShader);
-        gl.AttachShader(program, fragmentShader);
-        gl.LinkProgram(program);
+        uint program = GL.CreateProgram();
+        GL.AttachShader(program, vertexShader);
+        GL.AttachShader(program, fragmentShader);
+        GL.LinkProgram(program);
 
-        gl.DeleteShader(vertexShader);
-        gl.DeleteShader(fragmentShader);
+        GL.DeleteShader(vertexShader);
+        GL.DeleteShader(fragmentShader);
 
         return program;
     }
@@ -272,24 +277,24 @@ internal class OpenGLBackend : IRendererBackend
         if (textureMap.TryGetValue(tex, out uint glTex))
             return glTex;
 
-        glTex = gl.GenTexture();
-        gl.BindTexture(TextureTarget.Texture2D, glTex);
+        glTex = GL.GenTexture();
+        GL.BindTexture(TextureTarget.Texture2D, glTex);
 
         unsafe
         {
             fixed (byte* ptr = tex.Data)
             {
-                gl.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8,
+                GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8,
                               tex.Width, tex.Height, 0,
                               pixelFormatMap[tex.Type], PixelType.UnsignedByte, ptr);
             }
         }
 
         // Set filtering
-        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.Linear);
-        gl.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
 
-        gl.BindTexture(TextureTarget.Texture2D, 0);
+        GL.BindTexture(TextureTarget.Texture2D, 0);
         textureMap[tex] = glTex;
 
         return glTex;
@@ -299,13 +304,13 @@ internal class OpenGLBackend : IRendererBackend
     {
         foreach (var mesh in meshBuffers.Values)
         {
-            gl.DeleteBuffer(mesh.vbo);
-            gl.DeleteBuffer(mesh.ebo);
-            gl.DeleteVertexArray(mesh.vao);
+            GL.DeleteBuffer(mesh.vbo);
+            GL.DeleteBuffer(mesh.ebo);
+            GL.DeleteVertexArray(mesh.vao);
         }
 
         foreach (var program in shaderProgramMap.Values)
-            gl.DeleteProgram(program);
+            GL.DeleteProgram(program);
 
         shaderProgramMap.Clear();
         meshBuffers.Clear();
@@ -313,6 +318,6 @@ internal class OpenGLBackend : IRendererBackend
 
     public void Resize(int width, int height)
     {
-        gl.Viewport(0, 0, (uint)width, (uint)height);
+        GL.Viewport(0, 0, (uint)width, (uint)height);
     }
 }

@@ -19,8 +19,12 @@ public class RenderingModule : BaseModule
 
         Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL);
     }
-     
-    public void Render() => Renderer.Render(Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix : System.Numerics.Matrix4x4.Identity, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix : System.Numerics.Matrix4x4.Identity);
+
+    public void Render() 
+    {
+        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
+        Renderer.Render(Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix : System.Numerics.Matrix4x4.Identity, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix : System.Numerics.Matrix4x4.Identity);
+    }
 
     public override void Dispose() => Renderer.Dispose();
 

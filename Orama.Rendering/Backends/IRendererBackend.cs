@@ -8,8 +8,11 @@ namespace Orama.Rendering.Backends;
 /// <summary>
 /// Represents a graphics backend.
 /// </summary>
-internal interface IRendererBackend
+public interface IRendererBackend
 {
+    /// <summary> The command buffer for this backend. </summary>
+    ICommandBuffer CommandBuffer { get; }
+
     /// <summary> Initializes the backend. </summary>
     /// <param name="window"> The window to initialize the backend for. </param>
     void Initialize(IWindow window);

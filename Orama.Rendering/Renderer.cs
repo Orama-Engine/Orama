@@ -19,6 +19,9 @@ public static class Renderer
     /// <summary> The renderer backend in use. </summary>
     public static RendererBackend Backend { get; private set; }
 
+    /// <summary> The command buffer for the current backend. </summary>
+    public static ICommandBuffer CommandBuffer => backends[Backend].CommandBuffer;
+
     /// <summary> A First In First Out queue of meshes to render for the next frame. </summary>
     public static Queue<GraphicsMesh> RenderQueue { get; } = new();
 
