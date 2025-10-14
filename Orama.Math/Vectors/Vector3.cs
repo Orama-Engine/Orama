@@ -34,8 +34,13 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary> A Vector set to the world's up direction. </summary>
     public static Vector3 Up => new Vector3(0, 1, 0);
 
+    /// <summary> A Vector with X set to one. </summary>
     public static Vector3 UnitX => new Vector3(1, 0, 0);
+
+    /// <summary> A Vector with Y set to one. </summary>
     public static Vector3 UnitY => new Vector3(0, 1, 0);
+
+    /// <summary> A Vector with Z set to one. </summary>
     public static Vector3 UnitZ => new Vector3(0, 0, 1);
 
     /// <summary> Returns the dot product of the two vectors. </summary>
@@ -50,12 +55,23 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary> Transforms a vector by a quaternion rotation. </summary>
     public static Vector3 Transform(Vector3 vector, Quaternion rotation)
     {
-        // Convert to System.Numerics types for reliability
-        System.Numerics.Vector3 sysVec = new(vector.X, vector.Y, vector.Z);
-        System.Numerics.Quaternion sysQuat = new(rotation.X, rotation.Y, rotation.Z, rotation.W);
+        // Extract quaternion components
+        float qx = rotation.X;
+        float qy = rotation.Y;
+        float qz = rotation.Z;
+        float qw = rotation.W;
 
-        var transformed = System.Numerics.Vector3.Transform(sysVec, sysQuat);
-        return new Vector3(transformed.X, transformed.Y, transformed.Z);
+        // t = 2 * cross(q.xyz, v)
+        float tx = 2f * (qy * vector.Z - qz * vector.Y);
+        float ty = 2f * (qz * vector.X - qx * vector.Z);
+        float tz = 2f * (qx * vector.Y - qy * vector.X);
+
+        // v' = v + qw * t + cross(q.xyz, t)
+        float rx = vector.X + qw * tx + (qy * tz - qz * ty);
+        float ry = vector.Y + qw * ty + (qz * tx - qx * tz);
+        float rz = vector.Z + qw * tz + (qx * ty - qy * tx);
+
+        return new Vector3(rx, ry, rz);
     }
 
     /// <summary> Returns the dot product of the two vectors. </summary>
