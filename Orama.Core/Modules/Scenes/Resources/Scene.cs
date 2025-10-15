@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common.Entities;
+using Orama.Core.Common.Utility;
 
 namespace Orama.Core.Modules.Scenes.Resources;
 
@@ -23,7 +24,7 @@ public class Scene
             }
             catch (Exception ex)
             {
-                LogEntityException("Start", entity, ex);
+                EngineOutput.Exception(ex);
             }
         }
     }
@@ -41,21 +42,8 @@ public class Scene
             }
             catch (Exception ex)
             {
-                LogEntityException("Update", entity, ex);
+                EngineOutput.Exception(ex);
             }
         }
-    }
-
-    private static void LogEntityException(string method, Entity entity, Exception ex)
-    {
-        string entityType = entity.GetType().FullName ?? "UnknownEntity";
-        string assemblyName = entity.GetType().Assembly.GetName().Name ?? "UnknownAssembly";
-
-        var prevColor = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Red;
-
-        Console.WriteLine($"[Exception] ({assemblyName}) {entityType}.{method} threw an exception: {ex}");
-
-        Console.ForegroundColor = prevColor;
     }
 }
