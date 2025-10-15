@@ -18,12 +18,23 @@ public static class EngineOutput
     }
 
     /// <summary> Output a message. </summary>
-    public static void WriteLine(string message)
+    public static void Log(string message)
     {
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Cyan;
 
         Console.WriteLine("[Log] " + message);
+
+        Console.ForegroundColor = prevColor;
+    }
+
+    /// <summary> Output a warning. </summary>
+    public static void Warning(string message)
+    {
+        var prevColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Yellow;
+
+        Console.WriteLine("[Warning] " + message);
 
         Console.ForegroundColor = prevColor;
     }

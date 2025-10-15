@@ -20,7 +20,8 @@ internal class Program
 
         Application.OnStart += () =>
         {
-            EngineOutput.WriteLine("Hello World!");
+            EngineOutput.Log("Hello World!");
+            EngineOutput.Warning("This is a warning message.");
         };
 
         Application.OnExit += () =>
