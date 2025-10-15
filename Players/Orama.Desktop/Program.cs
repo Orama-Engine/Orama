@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.Input;
@@ -19,7 +20,7 @@ internal class Program
 
         Application.OnStart += () =>
         {
-            Console.WriteLine("Hello World!");
+            EngineOutput.WriteLine("Hello World!");
         };
 
         Application.OnExit += () =>

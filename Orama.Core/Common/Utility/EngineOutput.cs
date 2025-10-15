@@ -12,7 +12,18 @@ public static class EngineOutput
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Red;
 
-        Console.WriteLine("[Exception] " + ex);
+        Console.Error.WriteLine("[Exception] " + ex);
+
+        Console.ForegroundColor = prevColor;
+    }
+
+    /// <summary> Output a message. </summary>
+    public static void WriteLine(string message)
+    {
+        var prevColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.Cyan;
+
+        Console.WriteLine("[Log] " + message);
 
         Console.ForegroundColor = prevColor;
     }
