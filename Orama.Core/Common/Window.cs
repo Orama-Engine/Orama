@@ -12,10 +12,10 @@ public class Window
     public IWindow InternalWindow { get; }
 
     /// <summary> The size of the window. </summary>
-    public Vector2 Size => new(InternalWindow.Size.X, InternalWindow.Size.Y);
+    public Vector2I Size => new(InternalWindow.Size.X, InternalWindow.Size.Y);
 
     /// <summary> The position of the window. </summary>
-    public Vector2 Position => new(InternalWindow.Position.X, InternalWindow.Position.Y);
+    public Vector2I Position => new(InternalWindow.Position.X, InternalWindow.Position.Y);
 
     /// <summary> The title of the window. </summary>
     public string Title {  get => InternalWindow.Title; set => InternalWindow.Title = value; }
