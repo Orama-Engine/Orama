@@ -54,6 +54,5 @@ public static class Renderer
     public static void Dispose()
     {
         backends[Backend].Dispose();
-        ShaderUnbaker.Shutdown();
     }
 }

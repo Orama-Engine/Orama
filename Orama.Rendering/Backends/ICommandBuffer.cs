@@ -1,8 +1,6 @@
 ﻿
 namespace Orama.Rendering.Backends;
 
-
-
 /// <summary>
 /// Backend-agnostic way of sending commands to the GPU.
 /// </summary>

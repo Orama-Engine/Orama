@@ -1,4 +1,4 @@
-﻿using Orama.Rendering.Native;
+﻿using Vortice.ShaderCompiler;
 using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
@@ -8,48 +8,46 @@ namespace Orama.Rendering;
 /// </summary>
 public static class ShaderBaker
 {
-    private static IntPtr shaderCCompiler;
-    private static IntPtr shaderCCompilerOptions;
+    private static Vortice.ShaderCompiler.Compiler compiler;
 
     static ShaderBaker()
     {
-        ShaderC.InitializeImports();
-
-        shaderCCompiler = ShaderC.CompilerInitialize();
-        shaderCCompilerOptions = ShaderC.CompileOptionsInitialize();
+        compiler = new();
     }
 
     /// <summary> Compiles GLSL source to a <see cref="GraphicsShader"/>. </summary>
     public static GraphicsShader GLSLToShader(string vertex, string fragment)
     {
-        ShaderC.CompileOptionsSetSourceLanguage(shaderCCompilerOptions, SourceLanguage.GLSL);
-        return Compile(vertex, fragment);
+        return Compile(vertex, fragment, SourceLanguage.GLSL);
     }
 
     /// <summary> Compiles HLSL source to a <see cref="GraphicsShader"/>. </summary>
     public static GraphicsShader HLSLToShader(string vertex, string fragment)
     {
-        ShaderC.CompileOptionsSetSourceLanguage(shaderCCompilerOptions, SourceLanguage.HLSL);
-        return Compile(vertex, fragment);
+        return Compile(vertex, fragment, SourceLanguage.HLSL);
     }
 
-    private static GraphicsShader Compile(string vertex, string fragment)
+
+    private static GraphicsShader Compile(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
     {
-        IntPtr vertShader = ShaderC.CompileIntoSpv(shaderCCompiler, vertex, ShaderKind.VertexShader, "vertex.shader", "main", shaderCCompilerOptions);
-        IntPtr fragShader = ShaderC.CompileIntoSpv(shaderCCompiler, fragment, ShaderKind.FragmentShader, "fragment.shader", "main", shaderCCompilerOptions);
+        CompilerOptions options = new();
+        options.SourceLanguage = sourceLang;
+        options.EntryPoint = "main";
 
-        if (ShaderC.ResultGetCompilationStatus(vertShader) != 0 || ShaderC.ResultGetCompilationStatus(fragShader) != 0)
-        {
-            throw new Exception("Compilation failed: " + ShaderC.ResultGetErrorMessage(vertShader) + " " + ShaderC.ResultGetErrorMessage(fragShader));
-        }
-        else
-        {
-            GraphicsShader output = new();
+        options.ShaderStage = ShaderKind.VertexShader;
+        var vertResult = compiler.Compile(vertexSource, "vertex.shader", options);
+        if (vertResult.Status != CompilationStatus.Success)
+            throw new Exception("Vertex shader compilation failed: " + vertResult.ErrorMessage);
 
-            output.VertexBytes = ShaderC.ResultGetBytes(vertShader);
-            output.FragmentBytes = ShaderC.ResultGetBytes(fragShader);
+        options.ShaderStage = ShaderKind.FragmentShader;
+        var fragResult = compiler.Compile(fragmentSource, "fragment.shader", options);
+        if (fragResult.Status != CompilationStatus.Success)
+            throw new Exception("Fragment shader compilation failed: " + fragResult.ErrorMessage);
 
-            return output;
-        }
+        GraphicsShader shader = new();
+        shader.VertexBytes = vertResult.Bytecode;
+        shader.FragmentBytes = fragResult.Bytecode;
+
+        return shader;
     }
 }

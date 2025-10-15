@@ -2,6 +2,7 @@
 using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering.Components;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 
 namespace Orama.Core.Common.Entities;
@@ -72,6 +73,7 @@ internal class DebugEntity : Entity
         mesh.Normals = normals;
         mesh.UVs = uvs;
         mesh.Indices = indices;
+        mesh.Material = Material.Default;
     }
 }
 #endif
