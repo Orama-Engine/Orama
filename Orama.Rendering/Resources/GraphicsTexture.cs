@@ -41,12 +41,12 @@ public class GraphicsTexture
         Type = dataType;
     }
 
-    /// <summary> Createes a new instance of <see cref="GraphicsTexture"/>. </summary>
+    /// <summary> Creates a new instance of <see cref="GraphicsTexture"/>. </summary>
     public GraphicsTexture(uint width, uint height, TextureDataType dataType)
     {
         Width = width;
         Height = height;
         Type = dataType;
-        Data = new byte[0]; // render target has no initial data
+        Data = new byte[0];
     }
 }
