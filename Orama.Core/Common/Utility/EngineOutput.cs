@@ -21,7 +21,7 @@ public static class EngineOutput
     public static void Log(string message)
     {
         var prevColor = Console.ForegroundColor;
-        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.ForegroundColor = ConsoleColor.Gray;
 
         Console.WriteLine("[Log] " + message);
 
