@@ -1,4 +1,5 @@
 ﻿#if DEBUG
+using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering.Components;
@@ -16,7 +17,7 @@ internal class DebugEntity : Entity
 
     public override void Start()
     {
-        Console.WriteLine("Debug entity started.");
+        EngineOutput.Log("Debug entity started.");
 
         renderer = AddComponent<MeshRenderer>();
 
