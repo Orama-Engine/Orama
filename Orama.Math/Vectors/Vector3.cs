@@ -34,6 +34,9 @@ public struct Vector3 : IEquatable<Vector3>
     /// <summary> A Vector set to the world's up direction. </summary>
     public static Vector3 Up => new Vector3(0, 1, 0);
 
+    /// <summary> A Vector set to the world's right direction. </summary>
+    public static Vector3 Right => new Vector3(1, 0, 0);
+
     /// <summary> A Vector with X set to one. </summary>
     public static Vector3 UnitX => new Vector3(1, 0, 0);
 

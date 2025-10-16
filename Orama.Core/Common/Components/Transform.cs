@@ -33,6 +33,12 @@ public class Transform : Component
     /// <summary> The forward direction of the transform. </summary>
     public Vector3 Forward => Vector3.Transform(Vector3.Up, Rotation);
 
+    /// <summary> The right direction of the transform. </summary>
+    public Vector3 Right => Vector3.Transform(Vector3.Right, Rotation);
+
+    /// <summary> The up direction of the transform. </summary>
+    public Vector3 Up => Vector3.Transform(Vector3.Up, Rotation);
+
     /// <summary> Creates a new instance of <see cref="Transform"/>. </summary>
     public Transform() { }
 

@@ -18,11 +18,10 @@ public class SceneModule : BaseModule
         CurrentScene = new Scene();
 
 #if DEBUG
-        Entity camera = new Entity();
-        camera.AddComponent<Camera>();
+        FlyController flyController = new FlyController();
+        flyController.Transform.Position = new Vector3(0, 0, 0);
+        CurrentScene.Entities.Add(flyController);
         CurrentScene.Entities.Add(new DebugEntity());
-        CurrentScene.Entities.Add(camera);
-        camera.Transform.Position = new Vector3(0, 0, -3);
 #endif
 
         CurrentScene.StartAll();
