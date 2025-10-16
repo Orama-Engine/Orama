@@ -12,6 +12,12 @@ public class InputModule : BaseModule
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition => input.Mice[0].Position;
 
+    /// <summary> The change in mouse position since the last update. </summary>
+    public Vector2 MouseDelta { get; private set; }
+    private Vector2 previousMousePosition;
+
+    private IInputContext input = null!;
+
     #region Silk Mappings
     private static readonly Dictionary<Key, Silk.NET.Input.Key> KeyMap = new()
     {
@@ -47,11 +53,17 @@ public class InputModule : BaseModule
     };
     #endregion
 
-    private IInputContext input = null!;
 
     public override void Initialize()
     {
         input = Application.Window.InternalWindow.CreateInput();
+    }
+
+    public override void Update()
+    {
+        var currentMousePosition = MousePosition;
+        MouseDelta = currentMousePosition - previousMousePosition;
+        previousMousePosition = currentMousePosition;
     }
 
     /// <summary> Checks if the specified mouse button is currently pressed. </summary>
