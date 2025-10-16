@@ -10,6 +10,8 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
+        Renderer.CommandBuffer.EnableFeature(Orama.Rendering.Backends.RenderFeature.CullFaces);
+
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
                 ModuleManager.GetModule<RenderingModule>()?.QueueObject(renderable);

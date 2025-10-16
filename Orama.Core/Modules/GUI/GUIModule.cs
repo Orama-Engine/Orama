@@ -18,7 +18,7 @@ public class GUIModule : BaseModule
 
     public void Render()
     {
-        Rect guiRect = new(0, 0, 400, 400);
+        Rect guiRect = new(0, 0, 400, 200);
         Drawer.DrawRect(ref guiRect, new(1, 1, 1, 1));
     }
 }

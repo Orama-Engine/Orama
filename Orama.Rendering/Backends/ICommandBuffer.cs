@@ -11,4 +11,18 @@ public interface ICommandBuffer
 {
     /// <summary> Clears the screen. </summary>
     void Clear(float r, float g, float b, float a);
+
+    /// <summary> Enables a <see cref="RenderFeature"/>. </summary>
+    void EnableFeature(RenderFeature feature);
+
+    /// <summary> Disables a <see cref="RenderFeature"/>. </summary>
+    void DisableFeature(RenderFeature feature);
+}
+
+/// <summary>
+/// A Toggleable feature of the GPU.
+/// </summary>
+public enum RenderFeature
+{
+    CullFaces
 }

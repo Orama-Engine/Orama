@@ -8,6 +8,8 @@ internal class GUIPass : RenderPass
 {
     public override void Render()
     {
+        Renderer.CommandBuffer.DisableFeature(Orama.Rendering.Backends.RenderFeature.CullFaces);
+
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "GUI")
                 ModuleManager.GetModule<RenderingModule>()?.QueueObject(renderable);

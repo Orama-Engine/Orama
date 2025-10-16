@@ -14,7 +14,6 @@ public static class Drawer
     public static void DrawRect(ref Rect rect, Vector4 color)
     {
         GUIDrawable drawable = new(rect);
-        drawable.Material.SetParameter("Color", color);
         ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
     }
 }
