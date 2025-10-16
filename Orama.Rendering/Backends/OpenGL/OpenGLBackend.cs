@@ -306,6 +306,7 @@ internal class OpenGLBackend : IRendererBackend
             if (renderTarget.Data == null || renderTarget.Data.Length != totalSize)
                 renderTarget.Data = new byte[totalSize];
 
+
             unsafe
             {
                 fixed (byte* ptr = renderTarget.Data)
@@ -317,6 +318,23 @@ internal class OpenGLBackend : IRendererBackend
                         PixelType.UnsignedByte,
                         ptr
                     );
+
+                    // Vertical flip
+                    int rowSize = (int)(renderTarget.Width * bytesPerPixel);
+                    byte* tempRow = stackalloc byte[rowSize];
+
+                    for (int y = 0; y < renderTarget.Height / 2; y++)
+                    {
+                        byte* topRow = ptr + y * rowSize;
+                        byte* bottomRow = ptr + (renderTarget.Height - 1 - y) * rowSize;
+
+                        for (int x = 0; x < rowSize; x++)
+                        {
+                            byte tmp = topRow[x];
+                            topRow[x] = bottomRow[x];
+                            bottomRow[x] = tmp;
+                        }
+                    }
                 }
             }
 
