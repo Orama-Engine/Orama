@@ -2,7 +2,9 @@
 using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
+using Orama.Rendering.Resources;
 
 namespace Orama.Core.Common.Entities;
 
@@ -14,6 +16,8 @@ internal class FlyController : Entity
 
     private float pitch;
     private float yaw;
+
+    private Texture? screenshot;
 
     public override void Update()
     {
@@ -41,7 +45,18 @@ internal class FlyController : Entity
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
         Transform.Rotation = yawRot * pitchRot; // order: yaw then pitch
 
+        if (screenshot?.GetData() != null || screenshot?.GetData() != Array.Empty<byte>())
+        {
+            screenshot?.ToPng("screenshot.png");
+            Camera.Target = null;
+            screenshot = null;
+        }
+
+        // Take a screenshot
         if (Input.IsKeyPressed(Key.Space))
-            EngineOutput.Log($"Position: {Transform.Position}, Rotation: {Transform.Rotation}");
+        {
+            screenshot = new Texture(Application.Window.Size.X, Application.Window.Size.Y, TextureDataType.RGBA8);
+            Camera.Target = screenshot;
+        }
     }
 }

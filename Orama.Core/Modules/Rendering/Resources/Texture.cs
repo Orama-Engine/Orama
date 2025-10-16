@@ -1,4 +1,7 @@
-﻿
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Formats.Png;
+
 using Orama.Rendering.Resources;
 
 namespace Orama.Core.Modules.Rendering.Resources;
@@ -20,9 +23,7 @@ public class Texture
     /// <summary> Texture format. </summary>
     public TextureDataType Format => GraphicsTexture.Type;
 
-    /// <summary>
-    /// Creates a new <see cref="Texture"/> with optional pixel data.
-    /// </summary>
+    /// <summary> Creates a new <see cref="Texture"/> with optional pixel data. </summary>
     /// <param name="width">Texture width in pixels.</param>
     /// <param name="height">Texture height in pixels.</param>
     /// <param name="format">Pixel format.</param>
@@ -34,17 +35,13 @@ public class Texture
             : new GraphicsTexture((uint)width, (uint)height, format);
     }
 
-    /// <summary>
-    /// Wraps an existing <see cref="GraphicsTexture"/>.
-    /// </summary>
+    /// <summary> Wraps an existing <see cref="Orama.Rendering.Resources.GraphicsTexture"/>. </summary>
     internal Texture(GraphicsTexture graphicsTexture)
     {
         GraphicsTexture = graphicsTexture ?? throw new ArgumentNullException(nameof(graphicsTexture));
     }
 
-    /// <summary>
-    /// Sets the raw pixel data.
-    /// </summary>
+    /// <summary> Sets the raw pixel data. </summary>
     /// <param name="data">Byte array of pixel data matching texture format.</param>
     public void SetData(byte[] data)
     {
@@ -54,9 +51,7 @@ public class Texture
         GraphicsTexture.Data = data;
     }
 
-    /// <summary>
-    /// Gets a copy of the raw pixel data.
-    /// </summary>
+    /// <summary> Gets a copy of the raw pixel data. </summary>
     public byte[] GetData()
     {
         var copy = new byte[GraphicsTexture.Data.Length];
@@ -64,9 +59,7 @@ public class Texture
         return copy;
     }
 
-    /// <summary>
-    /// Clears the texture to a specific color.
-    /// </summary>
+    /// <summary> Clears the texture to a specific color. </summary>
     public void Clear(byte r, byte g, byte b, byte a = 255)
     {
         int pixelSize = 4; // Assume RGBA8
@@ -77,6 +70,51 @@ public class Texture
             GraphicsTexture.Data[i + 2] = b;
             GraphicsTexture.Data[i + 3] = a;
         }
+    }
+
+    /// <summary> Saves the texture to a PNG file. </summary>
+    /// <param name="path"></param>
+    public void ToPng(string path)
+    {
+        if (GraphicsTexture.Type != TextureDataType.RGBA8 && GraphicsTexture.Type != TextureDataType.RGB8)
+            throw new NotSupportedException("Only RGBA8 or RGB8 textures are supported.");
+
+        using var image = new Image<Rgba32>(Width, Height);
+
+        if (GraphicsTexture.Type == TextureDataType.RGBA8)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int i = (y * Width + x) * 4;
+                    image[x, y] = new Rgba32(
+                        GraphicsTexture.Data[i + 0], // R
+                        GraphicsTexture.Data[i + 1], // G
+                        GraphicsTexture.Data[i + 2], // B
+                        GraphicsTexture.Data[i + 3]  // A
+                    );
+                }
+            }
+        }
+        else if (GraphicsTexture.Type == TextureDataType.RGB8)
+        {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    int i = (y * Width + x) * 3;
+                    image[x, y] = new Rgba32(
+                        GraphicsTexture.Data[i + 0], // R
+                        GraphicsTexture.Data[i + 1], // G
+                        GraphicsTexture.Data[i + 2], // B
+                        255                           // full alpha
+                    );
+                }
+            }
+        }
+
+        image.Save(path, new PngEncoder());
     }
 
     public static explicit operator Texture(GraphicsTexture graphicsTexture) => new Texture(graphicsTexture);

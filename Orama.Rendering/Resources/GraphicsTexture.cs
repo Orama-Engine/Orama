@@ -47,6 +47,6 @@ public class GraphicsTexture
         Width = width;
         Height = height;
         Type = dataType;
-        Data = null!; // render target has no initial data
+        Data = new byte[0]; // render target has no initial data
     }
 }

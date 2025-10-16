@@ -1,4 +1,5 @@
 ﻿
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 
 namespace Orama.Core.Common.Components;
@@ -16,6 +17,9 @@ public class Camera : Component
 
     /// <summary> The far plane. </summary>
     public float ZFar { get; set; } = 1000f;
+
+    /// <summary> The target texture to render to. </summary>
+    public Texture? Target { get; set; }
 
     /// <summary> The main camera. </summary>
     public static Camera? Main { get; private set; }
@@ -74,6 +78,7 @@ public class Camera : Component
         }
     }
 
+    /// <summary> Initializes a new instance of <see cref="Camera"/>. </summary>
     public Camera()
     {
         Main = this;
