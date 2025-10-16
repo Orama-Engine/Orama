@@ -51,8 +51,28 @@ void main()
     public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
 
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
-    public void SetParameter<T>(string name, T value) => GraphicsShader.SetParameter(name, value);
+    public void SetParameter<T>(string name, T value)
+    {
+        if (value is Texture text)
+        {
+            GraphicsShader.SetParameter(name, text.GraphicsTexture);
+            return;
+        }
+
+        GraphicsShader.SetParameter(name, value);
+    }
 
     /// <summary> Gets the value of a parameter from the material's shader. </summary>
-    public T GetParameter<T>(string name) => (T?)GraphicsShader.GetParameter(name) ?? default!;
+    public T GetParameter<T>(string name)
+    {
+        object? value = GraphicsShader.GetParameter(name);
+
+        if (value is GraphicsTexture graphicsTexture && typeof(T) == typeof(Texture))
+            return (T)(object)new Texture(graphicsTexture);
+
+        if (value is T tValue)
+            return tValue;
+
+        throw new InvalidCastException($"Cannot cast parameter '{name}' to type {typeof(T).Name}");
+    }
 }

@@ -23,10 +23,10 @@ public class GraphicsTexture
     /// <summary> Pixel data. </summary>
     public byte[] Data { get; set; }
 
-    /// <summary> Texture width. </summary>
+    /// <summary> Texture width in pixels. </summary>
     public uint Width { get; set; }
 
-    /// <summary> Texture height. </summary>
+    /// <summary> Texture height in pixels. </summary>
     public uint Height { get; set; }
 
     /// <summary> Data type. </summary>
