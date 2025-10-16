@@ -39,16 +39,21 @@ void main()
 ";
 
 
+    /// <summary> The underlying <see cref="Orama.Rendering.Resources.GraphicsShader"/> associated with the material. </summary>
+    internal GraphicsShader GraphicsShader { get; set; }
+
+    /// <summary> The name of the pass to which the material belongs. </summary>
+    public string Pass { get; set; } = "Opaque";
+
+    /// <summary> A default material using a simple shader. </summary>
+    public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
+
+    /// <summary> Initializes a new <see cref="Material"/> from the specified vertex and fragment shaders. </summary>
     public Material(string vertexSource, string fragmentSource)
     {
         GraphicsShader shader = ShaderBaker.GLSLToShader(vertexSource, fragmentSource);
         GraphicsShader = shader;
     }
-
-    internal GraphicsShader GraphicsShader { get; set; }
-
-    /// <summary> A default material using a simple shader. </summary>
-    public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
 
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
     public void SetParameter<T>(string name, T value)

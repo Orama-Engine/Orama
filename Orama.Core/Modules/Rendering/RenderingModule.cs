@@ -38,23 +38,20 @@ public class RenderingModule : BaseModule
     public void RenderObject(IClientRenderable renderable) => Renderables.Add(renderable);
 
     /// <summary> Queues all renderable objects to be rendered during the next frame. </summary>
-    public void QueueRenderables()
+    public void QueueObject(IClientRenderable renderable)
     {
-        foreach (IClientRenderable renderable in Renderables)
+        // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this
+        var graphicsMesh = new GraphicsMesh()
         {
-            // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this
-            var graphicsMesh = new GraphicsMesh()
-            {
-                Vertices = renderable.Vertices.Select(v => (System.Numerics.Vector3)v).ToArray(),
-                Normals = renderable.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
-                TexCoords = renderable.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
-                Indices = renderable.Indices,
-                Shader = renderable.Material.GraphicsShader,
-                Transform = (System.Numerics.Matrix4x4)renderable.Transform
-            };
+            Vertices = renderable.Vertices.Select(v => (System.Numerics.Vector3)v).ToArray(),
+            Normals = renderable.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
+            TexCoords = renderable.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
+            Indices = renderable.Indices,
+            Shader = renderable.Material.GraphicsShader,
+            Transform = (System.Numerics.Matrix4x4)renderable.Transform
+        };
 
-            Renderer.QueueMesh(graphicsMesh);
-        }
+        Renderer.QueueMesh(graphicsMesh);
     }
 
     public void OnResize(int width, int height) => Renderer.Resize(width, height);

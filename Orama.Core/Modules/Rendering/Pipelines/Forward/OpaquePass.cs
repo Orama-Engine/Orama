@@ -9,7 +9,10 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        ModuleManager.GetModule<RenderingModule>()?.QueueRenderables();
+        foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
+            if (renderable.Material.Pass == "Opaque")
+                ModuleManager.GetModule<RenderingModule>()?.QueueObject(renderable);
+
         Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
 
         // TODO: Better camera target handling
