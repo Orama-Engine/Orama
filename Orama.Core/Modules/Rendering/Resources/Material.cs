@@ -13,21 +13,28 @@ public class Material
 #version 450 core
 
 layout(location = 0) in vec3 pos;
+layout(location = 1) in vec2 uv;
+
+layout(location = 0) out vec2 TexCoord;
 
 void main()
 {
     gl_Position = vec4(pos, 1.0);
+    TexCoord = uv;
 }
 ";
 
     private const string DEFAULT_FRAGMENT = @"
 #version 450 core
 
+layout(location = 0) in vec2 TexCoord;
 layout(location = 0) out vec4 FragColor;
+
+layout(binding = 0) uniform sampler2D MainTexture;
 
 void main()
 {
-    FragColor = vec4(1.0, 1.0, 1.0, 1.0); // white color
+    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
 }
 ";
 
@@ -40,11 +47,12 @@ void main()
 
     internal GraphicsShader GraphicsShader { get; set; }
 
-    /// <summary>
-    /// A default material using a simple shader.
-    /// </summary>
+    /// <summary> A default material using a simple shader. </summary>
     public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
 
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
     public void SetParameter<T>(string name, T value) => GraphicsShader.SetParameter(name, value);
+
+    /// <summary> Gets the value of a parameter from the material's shader. </summary>
+    public T GetParameter<T>(string name) => (T?)GraphicsShader.GetParameter(name) ?? default!;
 }

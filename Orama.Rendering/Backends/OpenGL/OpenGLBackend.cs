@@ -70,8 +70,51 @@ internal class OpenGLBackend : IRendererBackend
     }
 
     /// <inheritdoc/>
-    public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+    public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, GraphicsTexture? renderTarget = null)
     {
+        // Setup FBO if render target is provided
+        uint framebuffer = 0;
+        if (renderTarget != null)
+        {
+            framebuffer = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, framebuffer);
+
+
+            uint glTex = GetOrCreateGLTexture(renderTarget);
+
+            // Attach as color output
+            GL.FramebufferTexture2D(
+                FramebufferTarget.Framebuffer,
+                FramebufferAttachment.ColorAttachment0,
+                TextureTarget.Texture2D,
+                glTex,
+                0
+            );
+
+            // Set the draw buffers
+            GLEnum[] drawBuffers = { GLEnum.ColorAttachment0 };
+            unsafe
+            {
+                fixed (GLEnum* ptr = drawBuffers)
+                    GL.DrawBuffers(1, ptr);
+            }
+
+            // Check FBO status
+            var status = GL.CheckFramebufferStatus(FramebufferTarget.Framebuffer);
+            if (status != GLEnum.FramebufferComplete)
+            {
+                Console.WriteLine($"[OpenGLBackend] Framebuffer incomplete: {status}");
+            }
+
+            // Set viewport to texture size
+            GL.Viewport(0, 0, renderTarget.Width, renderTarget.Height);
+        }
+        else
+        {
+            // Default framebuffer (onscreen)
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+        }
+
         FrontFaceDirection? lastWinding = null;
 
         while (renderQueue.Count > 0)
@@ -220,7 +263,6 @@ internal class OpenGLBackend : IRendererBackend
                     // Align
                     offset += paramBytes.Length;
 
-
                     // Special texture handling
                     if (kv.Value is GraphicsTexture tex)
                     {
@@ -249,6 +291,40 @@ internal class OpenGLBackend : IRendererBackend
 
             GL.BindVertexArray(0);
         }
+
+        if (renderTarget != null)
+        {
+            // Upload target data to CPU
+            int bytesPerPixel = renderTarget.Type switch
+            {
+                TextureDataType.RGBA8 => 4,
+                TextureDataType.RGB8 => 3,
+                _ => 4 // fallback
+            };
+
+            int totalSize = (int)(renderTarget.Width * renderTarget.Height * bytesPerPixel);
+            if (renderTarget.Data == null || renderTarget.Data.Length != totalSize)
+                renderTarget.Data = new byte[totalSize];
+
+            unsafe
+            {
+                fixed (byte* ptr = renderTarget.Data)
+                {
+                    GL.ReadPixels(
+                        0, 0,
+                        renderTarget.Width, renderTarget.Height,
+                        pixelFormatMap[renderTarget.Type],
+                        PixelType.UnsignedByte,
+                        ptr
+                    );
+                }
+            }
+
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            GL.DeleteFramebuffer(framebuffer);
+        }
+
+        Dispose();
     }
 
     private uint CreateShaderProgram(string vertexSource, string fragmentSource)
@@ -280,19 +356,48 @@ internal class OpenGLBackend : IRendererBackend
         glTex = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, glTex);
 
+        // Pick an appropriate internal format
+        InternalFormat internalFormat = tex.Type switch
+        {
+            TextureDataType.RGBA8 => InternalFormat.Rgba8,
+            TextureDataType.RGB8 => InternalFormat.Rgb8,
+            TextureDataType.RGBA16F => InternalFormat.Rgba16f,
+            TextureDataType.RGB16F => InternalFormat.Rgb16f,
+            TextureDataType.RGBA32F => InternalFormat.Rgba32f,
+            TextureDataType.RGB32F => InternalFormat.Rgb32f,
+            TextureDataType.R8 => InternalFormat.R8,
+            TextureDataType.R16F => InternalFormat.R16f,
+            TextureDataType.R32F => InternalFormat.R32f,
+            TextureDataType.Depth24Stencil8 => InternalFormat.Depth24Stencil8,
+            _ => InternalFormat.Rgba8
+        };
+
+        PixelFormat pixelFormat = pixelFormatMap[tex.Type];
+
         unsafe
         {
             fixed (byte* ptr = tex.Data)
             {
-                GL.TexImage2D(TextureTarget.Texture2D, 0, InternalFormat.Rgba8,
-                              tex.Width, tex.Height, 0,
-                              pixelFormatMap[tex.Type], PixelType.UnsignedByte, ptr);
+                // If data is null, allocate empty texture storage
+                void* dataPtr = tex.Data?.Length > 0 ? ptr : null;
+
+                GL.TexImage2D(TextureTarget.Texture2D,
+                              0,
+                              internalFormat,
+                              tex.Width,
+                              tex.Height,
+                              0,
+                              pixelFormat,
+                              PixelType.UnsignedByte,
+                              dataPtr);
             }
         }
 
-        // Set filtering
+        // Set basic filtering and wrapping
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)GLEnum.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)GLEnum.Linear);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)GLEnum.ClampToEdge);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)GLEnum.ClampToEdge);
 
         GL.BindTexture(TextureTarget.Texture2D, 0);
         textureMap[tex] = glTex;
@@ -308,6 +413,16 @@ internal class OpenGLBackend : IRendererBackend
             GL.DeleteBuffer(mesh.ebo);
             GL.DeleteVertexArray(mesh.vao);
         }
+
+        foreach (var ubo in shaderParameterUBOs.Values)
+            GL.DeleteBuffer(ubo);
+
+        shaderParameterUBOs.Clear();
+
+        foreach (var tex in textureMap.Values)
+            GL.DeleteTexture(tex);
+
+        textureMap.Clear();
 
         foreach (var program in shaderProgramMap.Values)
             GL.DeleteProgram(program);
