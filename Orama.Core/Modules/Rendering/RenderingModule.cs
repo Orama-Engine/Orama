@@ -38,6 +38,11 @@ public class RenderingModule : BaseModule
     public void RenderObject(IClientRenderable renderable) => Renderables.Add(renderable);
 
     /// <summary> Queues all renderable objects to be rendered during the next frame. </summary>
+    /// <remarks>
+    /// ⚠️ <b>WARNING:</b> This method is intended to be used <b>only by render passes</b>.
+    /// For rendering objects outside a render pass, use
+    /// <see cref="RenderObject(IClientRenderable)"/> instead.
+    /// </remarks>
     public void QueueObject(IClientRenderable renderable)
     {
         // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this

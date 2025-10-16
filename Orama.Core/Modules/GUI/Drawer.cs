@@ -15,6 +15,6 @@ public static class Drawer
     {
         GUIDrawable drawable = new(rect);
         drawable.Material.SetParameter("Color", color);
-        ModuleManager.GetModule<RenderingModule>()?.QueueObject(drawable);
+        ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
     }
 }
