@@ -69,6 +69,17 @@ public struct Matrix4x4
         );
     }
 
+    /// <summary> Creates a translation matrix from the specified components. </summary>
+    public static Matrix4x4 CreateTranslation(float x, float y, float z)
+    {
+        return new Matrix4x4(
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            x, y, z, 1
+        );
+    }
+
     /// <summary> Creates a scaling matrix from a <see cref="Vector3"/>. </summary>
     public static Matrix4x4 CreateScale(Vector3 scale)
     {
@@ -76,6 +87,17 @@ public struct Matrix4x4
             scale.X, 0, 0, 0,
             0, scale.Y, 0, 0,
             0, 0, scale.Z, 0,
+            0, 0, 0, 1
+        );
+    }
+
+    /// <summary> Creates a scaling matrix from the specified components. </summary>
+    public static Matrix4x4 CreateScale(float x, float y, float z)
+    {
+        return new Matrix4x4(
+            x, 0, 0, 0,
+            0, y, 0, 0,
+            0, 0, z, 0,
             0, 0, 0, 1
         );
     }

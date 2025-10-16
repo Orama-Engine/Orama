@@ -41,10 +41,18 @@ public static class Renderer
     }
 
     /// <summary> Renders the scene. </summary>
-    public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix) => backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix);
+    public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+    {
+        backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix);
+        RenderQueue.Clear();
+    }
 
     /// <summary> Renders the scene offscreen to the provided <see cref="GraphicsTexture"/>. </summary>
-    public static void RenderToTarget(GraphicsTexture renderTarget, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix) => backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix, renderTarget);
+    public static void RenderToTarget(GraphicsTexture renderTarget, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+    {
+        backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix, renderTarget);
+        RenderQueue.Clear();
+    }
 
     /// <summary> Resizes the renderer. </summary>
     public static void Resize(int width, int height) => backends[Backend].Resize(width, height);
