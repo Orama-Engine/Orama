@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common.Components;
+using System.Reflection;
 
 namespace Orama.Core.Common.Entities;
 
@@ -31,9 +32,42 @@ public class Entity
     private List<Component> components = new();
 
     /// <summary> Called when the entity is enabled. </summary>
-    /// <remarks> The base implementation starts all components. </remarks>
+    /// <remarks> The base implementation adds all implicit components and starts all components. </remarks>
     public virtual void Start()
     {
+        foreach (var field in GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+        {
+            if (field.FieldType.IsAssignableTo(typeof(Component)) &&
+                field.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0)
+            {
+                var component = (Component?)field.GetValue(this);
+                if (component == null)
+                {
+                    component = (Component)Activator.CreateInstance(field.FieldType)!;
+                    field.SetValue(this, component);
+                }
+
+                AddComponent(component);
+            }
+        }
+
+        foreach (var property in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
+        {
+            if (property.PropertyType.IsAssignableTo(typeof(Component)) &&
+                property.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0 &&
+                property.CanWrite)
+            {
+                var component = (Component?)property.GetValue(this);
+                if (component == null)
+                {
+                    component = (Component)Activator.CreateInstance(property.PropertyType)!;
+                    property.SetValue(this, component);
+                }
+
+                AddComponent(component);
+            }
+        }
+
         foreach (var component in Components)
         {
             if (component.Enabled)

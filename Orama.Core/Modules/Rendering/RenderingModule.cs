@@ -3,7 +3,6 @@ using Orama.Core.Modules.Rendering.Pipelines;
 using Orama.Core.Modules.Rendering.Pipelines.Forward;
 using Orama.Rendering;
 using Orama.Rendering.Resources;
-using SixLabors.ImageSharp;
 
 namespace Orama.Core.Modules.Rendering;
 

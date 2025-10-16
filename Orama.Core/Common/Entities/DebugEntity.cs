@@ -1,7 +1,5 @@
 ﻿#if DEBUG
 using Orama.Core.Common.Utility;
-using Orama.Core.Modules;
-using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
@@ -13,13 +11,13 @@ namespace Orama.Core.Common.Entities;
 /// </summary>
 internal class DebugEntity : Entity
 {
-    private MeshRenderer? renderer;
+    [ImplicitComponent] private MeshRenderer renderer = null!;
 
     public override void Start()
     {
-        EngineOutput.Log("Debug entity started.");
+        base.Start();
 
-        renderer = AddComponent<MeshRenderer>();
+        EngineOutput.Log("Debug entity started.");
 
         renderer.Mesh = new();
         var mesh = renderer.Mesh;
