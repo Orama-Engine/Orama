@@ -1,6 +1,6 @@
-﻿using Orama.Core.Common.Components;
+﻿
+using Orama.Core.Common.Components;
 using Orama.Rendering;
-using Orama.Rendering.Resources;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
@@ -9,9 +9,7 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        foreach (var mesh in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<GraphicsMesh>())
-            Renderer.QueueMesh(mesh);
-
+        ModuleManager.GetModule<RenderingModule>()?.QueueRenderables();
         Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
 
         // TODO: Better camera target handling
