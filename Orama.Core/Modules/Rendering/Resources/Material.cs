@@ -13,24 +13,24 @@ public class Material
 #version 450 core
 
 layout(location = 0) in vec3 pos;
-layout(location = 1) in vec2 uv;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
 
-layout(location = 0) out vec2 TexCoord;
+layout(std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+};
 
 void main()
 {
-    gl_Position = vec4(pos, 1.0);
-    TexCoord = uv;
+    gl_Position = u_MVP * vec4(pos, 1.0);
 }
 ";
 
     private const string DEFAULT_FRAGMENT = @"
 #version 450 core
 
-layout(location = 0) in vec2 TexCoord;
 layout(location = 0) out vec4 FragColor;
-
-layout(binding = 0) uniform sampler2D MainTexture;
 
 void main()
 {

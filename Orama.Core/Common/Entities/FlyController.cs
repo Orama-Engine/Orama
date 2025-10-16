@@ -10,7 +10,10 @@ internal class FlyController : Entity
 {
     [ImplicitComponent] public Camera Camera { get; set; } = null!;
 
-    private float mouseSensitivity = 0.1f;
+    private float mouseSensitivity = 0.25f;
+
+    private float pitch;
+    private float yaw;
 
     public override void Update()
     {
@@ -29,17 +32,13 @@ internal class FlyController : Entity
         // Mouse look
         Vector2 delta = Input.MouseDelta;
 
-        // Yaw (rotation around up axis)
-        Transform.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitZ, -delta.X * mouseSensitivity);
+        // Update cumulative yaw/pitch
+        yaw += -delta.X * mouseSensitivity * Time.Delta;
+        pitch += -delta.Y * mouseSensitivity * Time.Delta;
 
-        // Pitch (rotation around right axis)
-        Transform.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, -delta.Y * mouseSensitivity);
-
-        // Clamp pitch to avoid flipping
-        Vector3 euler = Transform.Rotation.ToEulerAngles();
-        euler.X = MathFEx.Clamp(euler.X, -MathF.PI / 2f, MathF.PI / 2f);
-        Transform.Rotation = Quaternion.FromEulerAngles(euler);
-
-        EngineOutput.Log($"Position: {Transform.Position}, Rotation: {Transform.Rotation}");
+        // Build rotation from cumulative angles
+        Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
+        Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
+        Transform.Rotation = yawRot * pitchRot; // order: yaw then pitch
     }
 }
