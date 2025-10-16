@@ -12,7 +12,7 @@ namespace Orama.Core.Modules.Rendering;
 public class RenderingModule : BaseModule
 {
     /// <summary> The renderable objects to render next frame. </summary>
-    internal List<IClientRenderable> Renderables { get; set; } = new();
+    internal List<GraphicsMesh> Renderables { get; set; } = new();
 
     /// <summary> The rendering pipeline in use. </summary>
     public RenderPipeline Pipeline { get; set; } = new ForwardRenderPipeline();
@@ -35,26 +35,17 @@ public class RenderingModule : BaseModule
 
     /// <summary> Renders a client renderable to the window during the next frame. </summary>
     /// <param name="renderable">The object to render.</param>
-    public void RenderObject(IClientRenderable renderable) => Renderables.Add(renderable);
-
-    /// <summary> Queues all renderable objects to be rendered during the next frame. </summary>
-    public void QueueRenderables()
+    public void RenderObject(IClientRenderable renderable)
     {
-        foreach (IClientRenderable renderable in Renderables)
+        Renderables.Add(new GraphicsMesh()
         {
-            // TODO: Instantiating a new GraphicsMesh multiple times every frame is very expensive, don't do this
-            var graphicsMesh = new GraphicsMesh()
-            {
-                Vertices = renderable.Vertices.Select(v => (System.Numerics.Vector3)v).ToArray(),
-                Normals = renderable.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
-                TexCoords = renderable.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
-                Indices = renderable.Indices,
-                Shader = renderable.Material.GraphicsShader,
-                Transform = (System.Numerics.Matrix4x4)renderable.Transform
-            };
-
-            Renderer.QueueMesh(graphicsMesh);
-        }
+            Vertices = renderable.Vertices.Select(v => (System.Numerics.Vector3)v).ToArray(),
+            Normals = renderable.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
+            TexCoords = renderable.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
+            Indices = renderable.Indices,
+            Shader = renderable.Material.GraphicsShader,
+            Transform = (System.Numerics.Matrix4x4)renderable.Transform
+        });
     }
 
     public void OnResize(int width, int height) => Renderer.Resize(width, height);
