@@ -18,6 +18,8 @@ public class InputModule : BaseModule
 
     private IInputContext input = null!;
 
+    private Dictionary<Silk.NET.Input.Key, bool> previousKeys = new();
+
     #region Silk Mappings
     private static readonly Dictionary<Key, Silk.NET.Input.Key> KeyMap = new()
     {
@@ -57,13 +59,22 @@ public class InputModule : BaseModule
     public override void Initialize()
     {
         input = Application.Window.InternalWindow.CreateInput();
+
+        foreach (var key in KeyMap.Values)
+            previousKeys[key] = false;
     }
 
     public override void Update()
     {
+        // Update previous key states for all keyboards
+        foreach (var kb in input.Keyboards)
+            foreach (var key in KeyMap.Values)
+                previousKeys[key] = kb.IsKeyPressed(key);
+
         var currentMousePosition = MousePosition;
         MouseDelta = currentMousePosition - previousMousePosition;
         previousMousePosition = currentMousePosition;
+
     }
 
     /// <summary> Checks if the specified mouse button is currently pressed. </summary>
@@ -73,4 +84,23 @@ public class InputModule : BaseModule
     /// <summary> Checks if the specified key is currently pressed. </summary>
     /// <param name="key"> The key to check. </param>
     public bool IsKeyDown(Key key) => input.Keyboards.Any(kb => kb.IsKeyPressed(KeyMap[key]));
+
+
+    /// <summary> Checks if the specified key was pressed this frame. </summary>
+    /// <param name="key"> The key to check. </param>
+    public bool IsKeyPressed(Key key)
+    {
+        Silk.NET.Input.Key mappedKey = KeyMap[key];
+
+        foreach (var kb in input.Keyboards)
+        {
+            bool isDown = kb.IsKeyPressed(mappedKey);
+            bool wasDown = previousKeys[mappedKey];
+
+            if (isDown && !wasDown)
+                return true;
+        }
+
+        return false;
+    }
 }

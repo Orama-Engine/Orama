@@ -40,5 +40,8 @@ internal class FlyController : Entity
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
         Transform.Rotation = yawRot * pitchRot; // order: yaw then pitch
+
+        if (Input.IsKeyPressed(Key.Space))
+            EngineOutput.Log($"Position: {Transform.Position}, Rotation: {Transform.Rotation}");
     }
 }
