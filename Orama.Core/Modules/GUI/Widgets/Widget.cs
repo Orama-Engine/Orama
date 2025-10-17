@@ -17,7 +17,7 @@ public class Widget
     private List<Widget> children = new();
 
     /// <summary> Adds a child widget of type <typeparamref name="T"/>. </summary>
-    public void AddChild<T>(T child) where T : Widget => AddChild(child);
+    public void AddChild<T>() where T : Widget, new() => AddChild(new T());
 
     /// <summary> Adds a child widget. </summary>
     public void AddChild(Widget child)
