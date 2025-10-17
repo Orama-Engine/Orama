@@ -42,12 +42,6 @@ public static class ModuleManager
     /// <param name="module"> The module to register. </param>
     public static BaseModule RegisterModule(BaseModule module)
     {
-        foreach (var dependency in module.Dependencies)
-        {
-            if (!registeredModules.ContainsKey(dependency))
-                RegisterModule(Activator.CreateInstance(dependency) as BaseModule ?? throw new ArgumentException($"Could not create dependency module {dependency.Name}"));
-        }
-
         registeredModules.Add(module.GetType(), module);
 
         Application.OnUpdate += module.Update;

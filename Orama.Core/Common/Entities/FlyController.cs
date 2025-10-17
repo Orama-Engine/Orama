@@ -23,7 +23,9 @@ internal class FlyController : Entity
     {
         base.Update();
 
-        var Input = ModuleManager.GetOrRegisterModule<InputModule>();
+        var Input = ModuleManager.GetModule<InputModule>();
+        if (Input == null)
+            return;
 
         // Movement
         if (Input.IsKeyDown(Key.W)) Transform.Position += Transform.Forward * 0.1f;

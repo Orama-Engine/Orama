@@ -12,8 +12,6 @@ namespace Orama.Core.Modules.GUI;
 /// </summary>
 public class GUIModule : BaseModule
 {
-    public override HashSet<Type> Dependencies { get; } = new() { typeof(RenderingModule) };
-
     /// <summary> List of all widgets currently active. </summary>
     public List<Widget> Widgets { get; } = new();
 
@@ -29,6 +27,7 @@ public class GUIModule : BaseModule
         myWidget.Clicked += () => EngineOutput.Log("Clicked!");
         myWidget.PointerEntered += () => EngineOutput.Log("Hovered!");
         myWidget.PointerExited += () => EngineOutput.Log("Unhovered!");
+
         Widgets.Add(myWidget);
     }
 

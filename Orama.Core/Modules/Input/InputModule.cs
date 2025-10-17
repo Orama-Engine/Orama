@@ -114,7 +114,6 @@ public class InputModule : BaseModule
     /// <param name="key"> The key to check. </param>
     public bool IsKeyDown(Key key) => input.Keyboards.Any(kb => kb.IsKeyPressed(keyMap[key]));
 
-
     /// <summary> Checks if the specified key was pressed this frame. </summary>
     /// <param name="key"> The key to check. </param>
     public bool IsKeyPressed(Key key)
