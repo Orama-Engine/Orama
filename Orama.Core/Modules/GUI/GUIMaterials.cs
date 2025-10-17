@@ -17,6 +17,7 @@ layout(location = 2) in vec2 uv;
 layout(std140, binding = 0) uniform ShaderParams
 {
     mat4 u_MVP;
+    vec4 u_Color;
 };
 
 void main()
@@ -30,9 +31,15 @@ void main()
 
 layout(location = 0) out vec4 FragColor;
 
+layout(std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+    vec4 u_Color;
+};
+
 void main()
 {
-    FragColor = vec4(0.0, 1.0, 0.5, 1.0);
+    FragColor = u_Color;
 }
 ";
     /// <summary> Default Material used by GUI Rectangles. </summary>

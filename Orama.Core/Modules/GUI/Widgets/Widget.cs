@@ -1,4 +1,6 @@
 ﻿
+using Orama.Core.Modules.GUI.Styling;
+
 namespace Orama.Core.Modules.GUI.Widgets;
 
 /// <summary>
@@ -9,10 +11,13 @@ public class Widget
     /// <summary> The position and size of the widget. </summary>
     public Rect Rect { get; set; }
 
+    /// <summary> The styling of the widget. </summary>
+    public Style Style { get; set; } = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[typeof(Widget)] ?? new();
+
     /// <summary> The parent widget (if any). </summary>
     public Widget? Parent { get; set; }
 
-    /// <summary> The child widgets (if any). </summary>
+    /// <summary> The child widgets. </summary>
     public IReadOnlyList<Widget> Children => children;
 
     /// <summary> Whether the widget is currently hovered. </summary>
@@ -29,7 +34,8 @@ public class Widget
 
     private List<Widget> children = new();
 
-    /// <summary> Adds a child widget of type <typeparamref name="T"/>. </summary>
+    /// <summary> Adds a new child widget of type <typeparamref name="T"/>. </summary>
+    /// <typeparam name="T"> The type of the child widget to add. </typeparam>
     public void AddChild<T>() where T : Widget, new() => AddChild(new T());
 
     /// <summary> Adds a child widget. </summary>
@@ -43,7 +49,7 @@ public class Widget
     public virtual void Draw()
     {
         Rect refRect = Rect;
-        PaintEngine.DrawRect(ref refRect, new(1.0f, 1.0f, 1.0f, 1.0f));
+        PaintEngine.DrawRect(ref refRect, Style.BackgroundColor);
     }
 
     /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>

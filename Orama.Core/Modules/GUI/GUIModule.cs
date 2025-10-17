@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Common.Utility;
+using Orama.Core.Modules.GUI.Styling;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering;
@@ -15,6 +16,9 @@ public class GUIModule : BaseModule
     /// <summary> List of all widgets currently active. </summary>
     public List<Widget> Widgets { get; } = new();
 
+    /// <summary> The current GUI theme. </summary>
+    public Theme Theme { get; set; } = new DefaultTheme();
+
     public override void Initialize()
     {
         Application.OnRender += Render;
@@ -25,8 +29,8 @@ public class GUIModule : BaseModule
         Widget myWidget = new();
         myWidget.Rect = new(0, 0, 100, 100);
         myWidget.Clicked += () => EngineOutput.Log("Clicked!");
-        myWidget.PointerEntered += () => EngineOutput.Log("Hovered!");
-        myWidget.PointerExited += () => EngineOutput.Log("Unhovered!");
+        myWidget.PointerEntered += () => myWidget.Style = new Style() { BackgroundColor = new Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+        myWidget.PointerExited += () => myWidget.Style = new Style() { BackgroundColor = new Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
 
         Widgets.Add(myWidget);
     }

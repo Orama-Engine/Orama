@@ -14,7 +14,7 @@ public static class PaintEngine
     public static void DrawRect(ref Rect rect, Vector4 color)
     {
         GUIRenderable drawable = new(rect);
-        // drawable.Material.SetParameter("Color", (System.Numerics.Vector4)color);
+        drawable.Material.SetParameter("u_Color", (System.Numerics.Vector4)color);
         ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
     }
 }

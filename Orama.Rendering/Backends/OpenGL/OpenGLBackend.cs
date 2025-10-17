@@ -199,13 +199,33 @@ internal class OpenGLBackend : IRendererBackend
                 uint program = CreateShaderProgram(vertexSource, fragmentSource);
                 shaderProgramMap[mesh.Shader] = program;
 
+                int uboSize = 64;
+
+                foreach (var param in mesh.Shader.Parameters)
+                {
+                    int alignment = GetStd140Alignment(param.Value.GetType());
+                    uboSize = AlignOffset(uboSize, alignment);
+
+                    int paramSize = param.Value.GetType() switch
+                    {
+                        var t when t == typeof(float) => 4,
+                        var t when t == typeof(Vector2) => 8,
+                        var t when t == typeof(Vector3) => 16,
+                        var t when t == typeof(Vector4) => 16,
+                        var t when t == typeof(Matrix4x4) => 64,
+                        _ => 0
+                    };
+
+                    uboSize += paramSize;
+                }
+
                 // Create UBO for this shader
                 uint paramUbo = GL.GenBuffer();
                 GL.BindBuffer(BufferTargetARB.UniformBuffer, paramUbo);
 
                 unsafe
                 {
-                    GL.BufferData(BufferTargetARB.UniformBuffer, (nuint)(16 * sizeof(float)), null, BufferUsageARB.DynamicDraw);
+                    GL.BufferData(BufferTargetARB.UniformBuffer, (nuint)uboSize, null, BufferUsageARB.DynamicDraw);
                 }
 
                 // Bind UBO to binding point 0
@@ -242,6 +262,7 @@ internal class OpenGLBackend : IRendererBackend
                     fixed (byte* ptr = mvpBytes)
                         GL.BufferSubData(BufferTargetARB.UniformBuffer, (nint)offset, (nuint)mvpBytes.Length, ptr);
                 }
+
                 offset += mvpBytes.Length;
 
                 // User parameters
@@ -249,6 +270,9 @@ internal class OpenGLBackend : IRendererBackend
                 {
                     object value = kv.Value;
                     byte[] paramBytes = Shared.GetParameterBytes(value);
+
+                    int alignment = GetStd140Alignment(value.GetType());
+                    offset = AlignOffset(offset, alignment);
 
                     // Bind the UBO and upload
                     GL.BindBuffer(BufferTargetARB.UniformBuffer, ubo);
@@ -260,7 +284,6 @@ internal class OpenGLBackend : IRendererBackend
 
                     GL.BindBuffer(BufferTargetARB.UniformBuffer, 0);
 
-                    // Align
                     offset += paramBytes.Length;
 
                     // Special texture handling
@@ -363,6 +386,11 @@ internal class OpenGLBackend : IRendererBackend
         GL.DeleteShader(vertexShader);
         GL.DeleteShader(fragmentShader);
 
+        CheckProgramLink(program);
+
+        CheckShaderCompile(vertexShader);
+        CheckShaderCompile(fragmentShader);
+
         return program;
     }
 
@@ -452,5 +480,42 @@ internal class OpenGLBackend : IRendererBackend
     public void Resize(int width, int height)
     {
         GL.Viewport(0, 0, (uint)width, (uint)height);
+    }
+
+    private void CheckShaderCompile(uint shader)
+    {
+        GL.GetShader(shader, ShaderParameterName.CompileStatus, out int success);
+        if (success == 0)
+        {
+            string infoLog = GL.GetShaderInfoLog(shader);
+            Console.WriteLine($"Shader compile error: {infoLog}");
+        }
+    }
+
+    private void CheckProgramLink(uint program)
+    {
+        GL.GetProgram(program, ProgramPropertyARB.LinkStatus, out int success);
+        if (success == 0)
+        {
+            string infoLog = GL.GetProgramInfoLog(program);
+            Console.WriteLine($"Program link error: {infoLog}");
+        }
+    }
+
+    private static int GetStd140Alignment(Type type)
+    {
+        if (type == typeof(float)) return 4;
+        if (type == typeof(Vector2)) return 8;
+        if (type == typeof(Vector3)) return 16;
+        if (type == typeof(Vector4)) return 16;
+        if (type == typeof(Matrix4x4)) return 16;
+        throw new NotSupportedException($"Unsupported type {type}");
+    }
+
+    private static int AlignOffset(int offset, int alignment)
+    {
+        int remainder = offset % alignment;
+        if (remainder == 0) return offset;
+        return offset + (alignment - remainder);
     }
 }
