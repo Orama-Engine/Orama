@@ -14,7 +14,7 @@ public class OpaquePass : RenderPass
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
-                ModuleManager.GetModule<RenderingModule>()?.QueueObject(renderable);
+                QueueObject(renderable);
 
         Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
 

@@ -12,7 +12,7 @@ internal class GUIPass : RenderPass
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "GUI")
-                ModuleManager.GetModule<RenderingModule>()?.QueueObject(renderable);
+                QueueObject(renderable);
 
         Matrix4x4 ortho = Matrix4x4.CreateOrthographicOffCenter(
             0, Application.Window.Size.X,
