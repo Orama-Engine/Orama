@@ -21,11 +21,14 @@ public class GUIModule : BaseModule
     {
         Application.OnRender += Render;
 
-        ModuleManager.GetModule<InputModule>()?.MouseClicked += Click;
+        ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
+        ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
         Widget myWidget = new();
         myWidget.Rect = new(0, 0, 100, 100);
         myWidget.Clicked += () => EngineOutput.Log("Clicked!");
+        myWidget.PointerEntered += () => EngineOutput.Log("Hovered!");
+        myWidget.PointerExited += () => EngineOutput.Log("Unhovered!");
         Widgets.Add(myWidget);
     }
 
@@ -41,7 +44,7 @@ public class GUIModule : BaseModule
     }
 
     /// <summary> Register a GUI click. </summary>
-    public void Click(MouseButton button, Vector2 position)
+    public void CursorClick(MouseButton button, Vector2 position)
     {
         if (button != MouseButton.Left)
             return;
@@ -50,6 +53,20 @@ public class GUIModule : BaseModule
         {
             if (widget.Rect.Contains(position))
                 widget.OnClick();
+        }
+    }
+
+    /// <summary> Sets the cursor position for GUI logic. </summary>
+    public void UpdateCursorPosition(Vector2 position)
+    {
+        foreach (var widget in Widgets)
+        {
+            bool contains = widget.Rect.Contains(position);
+            if (contains && !widget.IsHovered)
+                widget.OnPointerEnter();
+
+            if (!contains && widget.IsHovered)
+                widget.OnPointerExit();
         }
     }
 }

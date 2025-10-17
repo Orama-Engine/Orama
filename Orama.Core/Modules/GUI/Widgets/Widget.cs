@@ -15,11 +15,17 @@ public class Widget
     /// <summary> The child widgets (if any). </summary>
     public IReadOnlyList<Widget> Children => children;
 
+    /// <summary> Whether the widget is currently hovered. </summary>
+    public bool IsHovered { get; private set; } = false;
+
     /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
     public event Action? Clicked;
 
-    /// <summary> Invoked when the <see cref="Rect"/> is hovered. </summary>
-    public event Action? Hovered;
+    /// <summary> Invoked when the <see cref="Rect"/> is first hovered. </summary>
+    public event Action? PointerEntered;
+
+    /// <summary> Invoked when the <see cref="Rect"/> is no longer hovered. </summary>
+    public event Action? PointerExited;
 
     private List<Widget> children = new();
 
@@ -44,7 +50,19 @@ public class Widget
     /// <remarks> The default implementation invokes the <see cref="Clicked"/> event. </remarks>
     public virtual void OnClick() => Clicked?.Invoke();
 
-    /// <summary> Invoked when the <see cref="Rect"/> is hovered. </summary>
-    /// <remarks> The default implementation invokes the <see cref="Hovered"/> event. </remarks>
-    public virtual void OnHover() => Hovered?.Invoke();
+    /// <summary> Invoked when the <see cref="Rect"/> is first hovered. </summary>
+    /// <remarks> The default implementation invokes the <see cref="PointerEntered"/> event. </remarks>
+    public virtual void OnPointerEnter()
+    {
+        PointerEntered?.Invoke();
+        IsHovered = true;
+    }
+
+    /// <summary> Invoked when the <see cref="Rect"/> is no longer hovered. </summary>
+    /// <remarks> The default implementation invokes the <see cref="PointerExited"/> event. </remarks>
+    public virtual void OnPointerExit()
+    {
+        PointerExited?.Invoke();
+        IsHovered = false;
+    }
 }
