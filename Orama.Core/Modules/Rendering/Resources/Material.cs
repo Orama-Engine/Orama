@@ -55,6 +55,25 @@ void main()
         GraphicsShader = shader;
     }
 
+    /// <summary> Initializes a new <see cref="Material"/> from the specified <see cref="Orama.Rendering.Resources.GraphicsShader"/>. </summary>
+    internal Material(GraphicsShader shader)
+    {
+        GraphicsShader = shader;
+    }
+
+    /// <summary> Creates a clone of the material. </summary>
+    /// <remarks> The cloned material shares the same underlying <see cref="Orama.Rendering.Resources.GraphicsShader"/> but do not share parameters. </remarks>
+    public Material Clone()
+    {
+        GraphicsShader newShader = new GraphicsShader
+        {
+            VertexBytes = (byte[])GraphicsShader.VertexBytes.Clone(),
+            FragmentBytes = (byte[])GraphicsShader.FragmentBytes.Clone()
+        };
+
+        return new Material(newShader) { Pass = Pass };
+    }
+
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
     public void SetParameter<T>(string name, T value)
     {

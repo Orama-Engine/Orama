@@ -27,14 +27,23 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
-        Button button = new();
-        button.Rect = new Rect(300, 300, 100, 50);
-        button.Clicked += () =>
+        Button downButton = new();
+        downButton.Rect = new Rect(300, 300, 100, 50);
+        downButton.Clicked += () =>
         {
-            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position = Vector3.Zero;
+            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position -= new Vector3(0, 1, 0);
         };
 
-        Widgets.Add(button);
+        Widgets.Add(downButton);
+
+        Button upButton = new();
+        upButton.Rect = new Rect(300, 200, 100, 50);
+        upButton.Clicked += () =>
+        {
+            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
+        };
+
+        Widgets.Add(upButton);
     }
 
     public override void Dispose()
