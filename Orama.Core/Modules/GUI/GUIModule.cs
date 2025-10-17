@@ -4,6 +4,7 @@ using Orama.Core.Modules.GUI.Styling;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering;
+using Orama.Core.Modules.Scenes;
 using Orama.Math;
 
 namespace Orama.Core.Modules.GUI;
@@ -30,10 +31,19 @@ public class GUIModule : BaseModule
         button.Rect = new Rect(300, 300, 100, 50);
         button.Clicked += () =>
         {
-            EngineOutput.Log("Button clicked!");
+            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position = Vector3.Zero;
         };
 
         Widgets.Add(button);
+    }
+
+    public override void Dispose()
+    {
+        Application.OnRender -= Render;
+        ModuleManager.GetModule<InputModule>()?.MouseClicked -= CursorClick;
+        ModuleManager.GetModule<InputModule>()?.MouseMoved -= UpdateCursorPosition;
+
+        Widgets.Clear();
     }
 
     public void Render()

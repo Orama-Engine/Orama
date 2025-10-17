@@ -31,7 +31,13 @@ public class RenderingModule : BaseModule
         Renderables.Clear();
     }
 
-    public override void Dispose() => Renderer.Dispose();
+    public override void Dispose()
+    {
+        Renderer.Dispose();
+
+        Application.OnResize -= (size) => OnResize((int)size.X, (int)size.Y);
+        Application.OnRender -= Render;
+    }
 
     /// <summary> Renders a client renderable to the window during the next frame. </summary>
     /// <param name="renderable">The object to render.</param>
