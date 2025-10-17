@@ -10,5 +10,5 @@ namespace Orama.Core.Modules.GUI.Styling;
 public struct Style
 {
     /// <summary> The background color. </summary>
-    public Vector4 BackgroundColor { get; set; }
+    public Color BackgroundColor { get; set; }
 }

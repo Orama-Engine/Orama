@@ -2,6 +2,8 @@
 using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
 using System.Numerics;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace Orama.Rendering.Backends.OpenGL;
 
@@ -206,16 +208,7 @@ internal class OpenGLBackend : IRendererBackend
                     int alignment = GetStd140Alignment(param.Value.GetType());
                     uboSize = AlignOffset(uboSize, alignment);
 
-                    int paramSize = param.Value.GetType() switch
-                    {
-                        var t when t == typeof(float) => 4,
-                        var t when t == typeof(Vector2) => 8,
-                        var t when t == typeof(Vector3) => 16,
-                        var t when t == typeof(Vector4) => 16,
-                        var t when t == typeof(Matrix4x4) => 64,
-                        _ => 0
-                    };
-
+                    int paramSize = Marshal.SizeOf(param.Value);
                     uboSize += paramSize;
                 }
 
@@ -506,11 +499,48 @@ internal class OpenGLBackend : IRendererBackend
     {
         if (type == typeof(float)) return 4;
         if (type == typeof(Vector2)) return 8;
-        if (type == typeof(Vector3)) return 16;
-        if (type == typeof(Vector4)) return 16;
+        if (type == typeof(Vector3) || type == typeof(Vector4)) return 16;
         if (type == typeof(Matrix4x4)) return 16;
+
+        // If it's an array
+        if (type.IsArray)
+        {
+            var elementType = type.GetElementType();
+            int elementAlignment = GetStd140Alignment(elementType);
+            return AlignTo16(elementAlignment);
+        }
+
+        // If it's a struct
+        if (type.IsValueType)
+        {
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            // Check if all properties are floats
+            if (properties.All(p => p.PropertyType == typeof(float)))
+            {
+                return properties.Length switch
+                {
+                    1 => 4,
+                    2 => 8,
+                    3 or 4 => 16,
+                    _ => AlignTo16(properties.Length * 4) // For larger float arrays
+                };
+            }
+
+            // Get max alignment
+            int maxAlignment = 0;
+            foreach (var prop in properties)
+            {
+                int alignment = GetStd140Alignment(prop.PropertyType);
+                maxAlignment = Math.Max(maxAlignment, alignment);
+            }
+            return maxAlignment;
+        }
+
         throw new NotSupportedException($"Unsupported type {type}");
     }
+
+    private static int AlignTo16(int n) => ((n + 15) / 16) * 16;
 
     private static int AlignOffset(int offset, int alignment)
     {

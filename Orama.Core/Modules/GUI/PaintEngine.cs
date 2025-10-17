@@ -11,10 +11,10 @@ namespace Orama.Core.Modules.GUI;
 public static class PaintEngine
 {
     /// <summary> Draws a rectangle. </summary>
-    public static void DrawRect(ref Rect rect, Vector4 color)
+    public static void DrawRect(ref Rect rect, Color color)
     {
         GUIRenderable drawable = new(rect);
-        drawable.Material.SetParameter("u_Color", (System.Numerics.Vector4)color);
+        drawable.Material.SetParameter("u_Color", color);
         ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
     }
 }
