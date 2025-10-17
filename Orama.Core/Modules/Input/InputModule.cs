@@ -20,6 +20,9 @@ public class InputModule : BaseModule
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition => input.Mice[0].Position;
 
+    /// <summary> Whether the cursor is locked to the window. </summary>
+    public bool CursorLocked { get { return input.Mice[0].Cursor.CursorMode == CursorMode.Raw && input.Mice[0].Cursor.IsConfined; } set { input.Mice[0].Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal; input.Mice[0].Cursor.IsConfined = value; } }
+
     /// <summary> The change in mouse position since the last update. </summary>
     public Vector2 MouseDelta { get; private set; }
     private Vector2 previousMousePosition;
@@ -59,7 +62,8 @@ public class InputModule : BaseModule
         { Key.Z, Silk.NET.Input.Key.Z },
         { Key.Space, Silk.NET.Input.Key.Space },
         { Key.Enter, Silk.NET.Input.Key.Enter },
-        { Key.Backspace, Silk.NET.Input.Key.Backspace }
+        { Key.Backspace, Silk.NET.Input.Key.Backspace },
+        { Key.Escape, Silk.NET.Input.Key.Escape }
     };
 
     private static readonly Dictionary<MouseButton, Silk.NET.Input.MouseButton> mouseButtonMap = new()

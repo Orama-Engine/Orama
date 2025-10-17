@@ -19,6 +19,8 @@ internal class FlyController : Entity
 
     private Texture? screenshot;
 
+    bool cursorLocked = false;
+
     public override void Update()
     {
         base.Update();
@@ -27,6 +29,12 @@ internal class FlyController : Entity
         if (Input == null)
             return;
 
+        if (Input.IsKeyPressed(Key.Escape))
+        {
+            cursorLocked = !cursorLocked;
+            Input.CursorLocked = cursorLocked;
+        }
+
         // Movement
         if (Input.IsKeyDown(Key.W)) Transform.Position += Transform.Forward * 0.1f;
         if (Input.IsKeyDown(Key.S)) Transform.Position -= Transform.Forward * 0.1f;
@@ -34,6 +42,9 @@ internal class FlyController : Entity
         if (Input.IsKeyDown(Key.D)) Transform.Position += Transform.Right * 0.1f;
         if (Input.IsKeyDown(Key.Q)) Transform.Position -= Transform.Up * 0.1f;
         if (Input.IsKeyDown(Key.E)) Transform.Position += Transform.Up * 0.1f;
+
+        if (!cursorLocked)
+            return;
 
         // Mouse look
         Vector2 delta = Input.MouseDelta;
@@ -45,7 +56,7 @@ internal class FlyController : Entity
         // Build rotation from cumulative angles
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
-        Transform.Rotation = yawRot * pitchRot; // order: yaw then pitch
+        Transform.Rotation = yawRot * pitchRot;
 
         if (screenshot?.GetData() != null || screenshot?.GetData() != Array.Empty<byte>())
         {
