@@ -31,7 +31,7 @@ public class Transform : Component
     }
 
     /// <summary> The forward direction of the transform. </summary>
-    public Vector3 Forward => Vector3.Transform(Vector3.Forward, Rotation);
+    public Vector3 Forward => Vector3.Transform(-Vector3.Forward, Rotation);
 
     /// <summary> The right direction of the transform. </summary>
     public Vector3 Right => Vector3.Transform(Vector3.Right, Rotation);
