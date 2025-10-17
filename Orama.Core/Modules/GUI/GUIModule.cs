@@ -29,8 +29,8 @@ public class GUIModule : BaseModule
         Widget myWidget = new();
         myWidget.Rect = new(0, 0, 100, 100);
         myWidget.Clicked += () => EngineOutput.Log("Clicked!");
-        myWidget.PointerEntered += () => myWidget.Style = new Style() { BackgroundColor = new Color(1.0f, 0.0f, 0.0f, 1.0f) };
-        myWidget.PointerExited += () => myWidget.Style = new Style() { BackgroundColor = new Color(1.0f, 1.0f, 1.0f, 1.0f) };
+        myWidget.PointerEntered += () => myWidget.Style = new Style() { BackgroundColor = Color.Red };
+        myWidget.PointerExited += () => myWidget.Style = new Style() { BackgroundColor = Color.White };
 
         Widgets.Add(myWidget);
     }
