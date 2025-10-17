@@ -12,7 +12,7 @@ namespace Orama.Core.Modules.Input;
 public class InputModule : BaseModule
 {
     /// <summary> Invoked when a mouse button is pressed. </summary>
-    public Action<MouseButton, Vector2>? OnMouseClick { get; set; }
+    public event Action<MouseButton, Vector2>? MouseClicked;
 
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition => input.Mice[0].Position;
@@ -78,7 +78,7 @@ public class InputModule : BaseModule
         input.Mice[0].MouseDown += (mouse, button) =>
         {
             if (mouseButtonMapInverse.TryGetValue(button, out var localButton))
-                OnMouseClick?.Invoke(localButton, mouse.Position);
+                MouseClicked?.Invoke(localButton, mouse.Position);
         };
 
         foreach (var key in keyMap.Values)

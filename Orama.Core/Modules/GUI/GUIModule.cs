@@ -21,7 +21,7 @@ public class GUIModule : BaseModule
     {
         Application.OnRender += Render;
 
-        ModuleManager.GetModule<InputModule>()?.OnMouseClick += Click;
+        ModuleManager.GetModule<InputModule>()?.MouseClicked += Click;
 
         Widget myWidget = new();
         myWidget.Rect = new(0, 0, 100, 100);
