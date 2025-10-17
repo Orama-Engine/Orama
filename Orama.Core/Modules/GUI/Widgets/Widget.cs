@@ -1,5 +1,6 @@
 ﻿
 using Orama.Core.Modules.GUI.Styling;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Orama.Core.Modules.GUI.Widgets;
 
@@ -12,7 +13,7 @@ public class Widget
     public Rect Rect { get; set; }
 
     /// <summary> The styling of the widget. </summary>
-    public Style Style { get; set; } = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[typeof(Widget)] ?? new();
+    public Style Style { get; set; }
 
     /// <summary> The parent widget (if any). </summary>
     public Widget? Parent { get; set; }
@@ -34,6 +35,17 @@ public class Widget
 
     private List<Widget> children = new();
 
+    /// <summary> Initializes a new instance of the <see cref="Widget"/> class. </summary>
+    public Widget() => Style = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[GetType()] ?? new Style();
+
+    /// <summary> Initializes a new instance of the <see cref="Widget"/> class. </summary>
+    /// <param name="rect"> The position and size of the widget. </param>
+    public Widget(Rect rect) : this()
+    {
+        Rect = rect;
+        Style = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[GetType()] ?? new Style();
+    }
+
     /// <summary> Adds a new child widget of type <typeparamref name="T"/>. </summary>
     /// <typeparam name="T"> The type of the child widget to add. </typeparam>
     public void AddChild<T>() where T : Widget, new() => AddChild(new T());
@@ -45,18 +57,24 @@ public class Widget
         child.Parent = this;
     }
 
-    /// <summary> Draws the widget using <see cref="PaintEngine"/>. </summary>
+    /// <summary> Draws the widget using the <see cref="PaintEngine"/>. </summary>
     public virtual void Draw()
     {
         Rect refRect = Rect;
+        if (IsHovered)
+        {
+            PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor);
+            return;
+        }
+
         PaintEngine.DrawRect(ref refRect, Style.BackgroundColor);
     }
 
-    /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
+    /// <summary> Runs when the <see cref="Rect"/> is clicked. </summary>
     /// <remarks> The default implementation invokes the <see cref="Clicked"/> event. </remarks>
     public virtual void OnClick() => Clicked?.Invoke();
 
-    /// <summary> Invoked when the <see cref="Rect"/> is first hovered. </summary>
+    /// <summary> Runs when the <see cref="Rect"/> is first hovered. </summary>
     /// <remarks> The default implementation invokes the <see cref="PointerEntered"/> event. </remarks>
     public virtual void OnPointerEnter()
     {
@@ -64,7 +82,7 @@ public class Widget
         IsHovered = true;
     }
 
-    /// <summary> Invoked when the <see cref="Rect"/> is no longer hovered. </summary>
+    /// <summary> Runs when the <see cref="Rect"/> is no longer hovered. </summary>
     /// <remarks> The default implementation invokes the <see cref="PointerExited"/> event. </remarks>
     public virtual void OnPointerExit()
     {

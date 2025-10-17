@@ -26,13 +26,14 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
-        Widget myWidget = new();
-        myWidget.Rect = new(0, 0, 100, 100);
-        myWidget.Clicked += () => EngineOutput.Log("Clicked!");
-        myWidget.PointerEntered += () => myWidget.Style = new Style() { BackgroundColor = Color.White * 0.5f };
-        myWidget.PointerExited += () => myWidget.Style = new Style() { BackgroundColor = Color.White };
+        Button button = new();
+        button.Rect = new Rect(300, 300, 100, 50);
+        button.Clicked += () =>
+        {
+            EngineOutput.Log("Button clicked!");
+        };
 
-        Widgets.Add(myWidget);
+        Widgets.Add(button);
     }
 
     public void Render()

@@ -27,8 +27,8 @@ internal class GUIRenderable : IClientRenderable
     public GUIRenderable(Rect rect)
     {
         // Create a transform matrix for the GUI element
-        Transform = Matrix4x4.CreateTranslation(rect.X, rect.Y, 0f) *
-                    Matrix4x4.CreateScale(rect.Width, rect.Height, 1f);
+        Transform = Matrix4x4.CreateScale(rect.Width, rect.Height, 1f) *
+                    Matrix4x4.CreateTranslation(rect.X, rect.Y, 0f);
 
         // Quad vertices (unit quad 0..1)
         Vertices = new Vector3[]

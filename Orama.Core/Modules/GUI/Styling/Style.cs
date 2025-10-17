@@ -11,4 +11,7 @@ public struct Style
 {
     /// <summary> The background color. </summary>
     public Color BackgroundColor { get; set; }
+
+    /// <summary> The color of the background on cursor hover. </summary>
+    public Color HoverBackgroundColor { get; set; }
 }
