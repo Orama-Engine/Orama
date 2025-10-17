@@ -7,11 +7,11 @@ namespace Orama.Core.Modules.GUI.Styling;
 /// <summary>
 /// A Collection of style properties.
 /// </summary>
-public struct Style
+public class Style
 {
     /// <summary> The background color. </summary>
     public Color BackgroundColor { get; set; }
 
     /// <summary> The color of the background on cursor hover. </summary>
-    public Color HoverBackgroundColor { get; set; }
+    public Color? HoverBackgroundColor { get; set; } = null;
 }

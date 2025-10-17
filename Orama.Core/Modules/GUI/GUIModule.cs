@@ -27,14 +27,17 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
+        Widget background = new();
+        background.Rect = new Rect(290, 190, 120, 130);
+        background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+
         Button downButton = new();
-        downButton.Rect = new Rect(300, 300, 100, 50);
+        downButton.Rect = new Rect(300, 260, 100, 50);
         downButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position -= new Vector3(0, 1, 0);
         };
 
-        Widgets.Add(downButton);
 
         Button upButton = new();
         upButton.Rect = new Rect(300, 200, 100, 50);
@@ -43,7 +46,10 @@ public class GUIModule : BaseModule
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
         };
 
-        Widgets.Add(upButton);
+        background.AddChild(downButton);
+        background.AddChild(upButton);
+
+        Widgets.Add(background);
     }
 
     public override void Dispose()
@@ -57,12 +63,9 @@ public class GUIModule : BaseModule
 
     public void Render()
     {
-        foreach (var widget in Widgets)
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
             widget.Draw();
-
-            foreach (var child in widget.Children)
-                child.Draw();
         }
     }
 
@@ -72,7 +75,7 @@ public class GUIModule : BaseModule
         if (button != MouseButton.Left)
             return;
 
-        foreach (var widget in Widgets)
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
             if (widget.Rect.Contains(position))
                 widget.OnClick();
@@ -82,7 +85,7 @@ public class GUIModule : BaseModule
     /// <summary> Sets the cursor position for GUI logic. </summary>
     public void UpdateCursorPosition(Vector2 position)
     {
-        foreach (var widget in Widgets)
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
             bool contains = widget.Rect.Contains(position);
             if (contains && !widget.IsHovered)

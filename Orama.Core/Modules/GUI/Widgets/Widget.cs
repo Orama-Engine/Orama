@@ -1,5 +1,6 @@
 ﻿
 using Orama.Core.Modules.GUI.Styling;
+using Orama.Math;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace Orama.Core.Modules.GUI.Widgets;
@@ -63,7 +64,7 @@ public class Widget
         Rect refRect = Rect;
         if (IsHovered)
         {
-            PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor);
+            PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor ?? Style.BackgroundColor);
             return;
         }
 
