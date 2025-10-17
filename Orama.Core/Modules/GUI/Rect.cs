@@ -1,4 +1,6 @@
 ﻿
+using Orama.Math;
+
 namespace Orama.Core.Modules.GUI;
 
 /// <summary>
@@ -26,6 +28,12 @@ public struct Rect
         Width = width;
         Height = height;
     }
+
+    /// <summary> Checks if the specified coordinates are inside the rect. </summary>
+    public bool Contains(Vector2 position) => Contains(position.X, position.Y);
+
+    /// <summary> Checks if the specified coordinates are inside the rect. </summary>
+    public bool Contains(float x, float y) => x >= X && x <= X + Width && y >= Y && y <= Y + Height;
 
     /// <inheritdoc/>
     override public string ToString() => $"X: {X}, Y: {Y}, Width: {Width}, Height: {Height}";

@@ -1,6 +1,8 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 using Orama.Math;
 using Silk.NET.Input;
+using System.Diagnostics;
 
 namespace Orama.Core.Modules.Input;
 
@@ -9,6 +11,9 @@ namespace Orama.Core.Modules.Input;
 /// </summary>
 public class InputModule : BaseModule
 {
+    /// <summary> Invoked when a mouse button is pressed. </summary>
+    public Action<MouseButton, Vector2>? OnMouseClick { get; set; }
+
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition => input.Mice[0].Position;
 
@@ -21,7 +26,7 @@ public class InputModule : BaseModule
     private Dictionary<Silk.NET.Input.Key, bool> previousKeys = new();
 
     #region Silk Mappings
-    private static readonly Dictionary<Key, Silk.NET.Input.Key> KeyMap = new()
+    private static readonly Dictionary<Key, Silk.NET.Input.Key> keyMap = new()
     {
         { Key.A, Silk.NET.Input.Key.A },
         { Key.B, Silk.NET.Input.Key.B },
@@ -53,6 +58,15 @@ public class InputModule : BaseModule
         { Key.Enter, Silk.NET.Input.Key.Enter },
         { Key.Backspace, Silk.NET.Input.Key.Backspace }
     };
+
+    private static readonly Dictionary<MouseButton, Silk.NET.Input.MouseButton> mouseButtonMap = new()
+    {
+        { MouseButton.Left, Silk.NET.Input.MouseButton.Left },
+        { MouseButton.Right, Silk.NET.Input.MouseButton.Right },
+        { MouseButton.Middle, Silk.NET.Input.MouseButton.Middle }
+    };
+
+    private static readonly Dictionary<Silk.NET.Input.MouseButton, MouseButton> mouseButtonMapInverse = mouseButtonMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
     #endregion
 
 
@@ -60,7 +74,14 @@ public class InputModule : BaseModule
     {
         input = Application.Window.InternalWindow.CreateInput();
 
-        foreach (var key in KeyMap.Values)
+        // Bind Events
+        input.Mice[0].MouseDown += (mouse, button) =>
+        {
+            if (mouseButtonMapInverse.TryGetValue(button, out var localButton))
+                OnMouseClick?.Invoke(localButton, mouse.Position);
+        };
+
+        foreach (var key in keyMap.Values)
             previousKeys[key] = false;
     }
 
@@ -68,7 +89,7 @@ public class InputModule : BaseModule
     {
         // Update previous key states for all keyboards
         foreach (var kb in input.Keyboards)
-            foreach (var key in KeyMap.Values)
+            foreach (var key in keyMap.Values)
                 previousKeys[key] = kb.IsKeyPressed(key);
 
         var currentMousePosition = MousePosition;
@@ -79,18 +100,18 @@ public class InputModule : BaseModule
 
     /// <summary> Checks if the specified mouse button is currently pressed. </summary>
     /// <param name="button"> The mouse button to check. </param>
-    public bool IsMouseButtonDown(int button) => input.Mice[0].IsButtonPressed((MouseButton)button);
+    public bool IsMouseButtonDown(MouseButton button) => input.Mice[0].IsButtonPressed(mouseButtonMap[button]);
 
     /// <summary> Checks if the specified key is currently pressed. </summary>
     /// <param name="key"> The key to check. </param>
-    public bool IsKeyDown(Key key) => input.Keyboards.Any(kb => kb.IsKeyPressed(KeyMap[key]));
+    public bool IsKeyDown(Key key) => input.Keyboards.Any(kb => kb.IsKeyPressed(keyMap[key]));
 
 
     /// <summary> Checks if the specified key was pressed this frame. </summary>
     /// <param name="key"> The key to check. </param>
     public bool IsKeyPressed(Key key)
     {
-        Silk.NET.Input.Key mappedKey = KeyMap[key];
+        Silk.NET.Input.Key mappedKey = keyMap[key];
 
         foreach (var kb in input.Keyboards)
         {

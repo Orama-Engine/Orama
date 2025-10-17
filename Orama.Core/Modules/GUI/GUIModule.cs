@@ -1,6 +1,9 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 using Orama.Core.Modules.GUI.Widgets;
+using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Rendering;
+using Orama.Math;
 
 namespace Orama.Core.Modules.GUI;
 
@@ -18,8 +21,11 @@ public class GUIModule : BaseModule
     {
         Application.OnRender += Render;
 
+        ModuleManager.GetModule<InputModule>()?.OnMouseClick += Click;
+
         Widget myWidget = new();
         myWidget.Rect = new(0, 0, 100, 100);
+        myWidget.Clicked += () => EngineOutput.Log("Clicked!");
         Widgets.Add(myWidget);
     }
 
@@ -31,6 +37,19 @@ public class GUIModule : BaseModule
 
             foreach (var child in widget.Children)
                 child.Draw();
+        }
+    }
+
+    /// <summary> Register a GUI click. </summary>
+    public void Click(MouseButton button, Vector2 position)
+    {
+        if (button != MouseButton.Left)
+            return;
+
+        foreach (var widget in Widgets)
+        {
+            if (widget.Rect.Contains(position))
+                widget.OnClick();
         }
     }
 }

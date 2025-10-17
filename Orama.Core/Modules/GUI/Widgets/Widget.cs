@@ -14,6 +14,13 @@ public class Widget
 
     /// <summary> The child widgets (if any). </summary>
     public IReadOnlyList<Widget> Children => children;
+
+    /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
+    public event Action? Clicked;
+
+    /// <summary> Invoked when the <see cref="Rect"/> is hovered. </summary>
+    public event Action? Hovered;
+
     private List<Widget> children = new();
 
     /// <summary> Adds a child widget of type <typeparamref name="T"/>. </summary>
@@ -32,4 +39,12 @@ public class Widget
         Rect refRect = Rect;
         PaintEngine.DrawRect(ref refRect, new(1.0f, 1.0f, 1.0f, 1.0f));
     }
+
+    /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
+    /// <remarks> The default implementation invokes the <see cref="Clicked"/> event. </remarks>
+    public virtual void OnClick() => Clicked?.Invoke();
+
+    /// <summary> Invoked when the <see cref="Rect"/> is hovered. </summary>
+    /// <remarks> The default implementation invokes the <see cref="Hovered"/> event. </remarks>
+    public virtual void OnHover() => Hovered?.Invoke();
 }
