@@ -13,7 +13,18 @@ public class Widget
     public Widget? Parent { get; set; }
 
     /// <summary> The child widgets (if any). </summary>
-    public List<Widget> Children { get; set; } = new();
+    public IReadOnlyList<Widget> Children => children;
+    private List<Widget> children = new();
+
+    /// <summary> Adds a child widget of type <typeparamref name="T"/>. </summary>
+    public void AddChild<T>(T child) where T : Widget => AddChild(child);
+
+    /// <summary> Adds a child widget. </summary>
+    public void AddChild(Widget child)
+    {
+        children.Add(child);
+        child.Parent = this;
+    }
 
     /// <summary> Draws the widget using <see cref="PaintEngine"/>. </summary>
     public virtual void Draw()
