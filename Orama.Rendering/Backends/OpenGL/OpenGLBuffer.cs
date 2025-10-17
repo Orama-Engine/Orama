@@ -15,6 +15,7 @@ internal class OpenGLBuffer : ICommandBuffer
     private static readonly Dictionary<RenderFeature, EnableCap> featureMap = new()
     {
         { RenderFeature.CullFaces, EnableCap.CullFace },
+        { RenderFeature.Blending, EnableCap.Blend }
     };
     #endregion
 

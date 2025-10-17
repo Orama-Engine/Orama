@@ -69,6 +69,8 @@ internal class OpenGLBackend : IRendererBackend
 
         GL.Enable(EnableCap.CullFace);
         GL.CullFace(cullMap[Renderer.Options.Culling]);
+
+        GL.BlendFunc(GLEnum.SrcAlpha, GLEnum.OneMinusSrcAlpha);
     }
 
     /// <inheritdoc/>

@@ -24,5 +24,6 @@ public interface ICommandBuffer
 /// </summary>
 public enum RenderFeature
 {
-    CullFaces
+    CullFaces,
+    Blending
 }
