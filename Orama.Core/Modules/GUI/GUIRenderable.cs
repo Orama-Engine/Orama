@@ -9,7 +9,7 @@ namespace Orama.Core.Modules.GUI;
 /// <summary>
 /// A Drawable/Renderable GUI Component.
 /// </summary>
-internal class GUIDrawable : IClientRenderable
+internal class GUIRenderable : IClientRenderable
 {
     public Matrix4x4 Transform { get; }
 
@@ -23,8 +23,8 @@ internal class GUIDrawable : IClientRenderable
 
     public Material Material { get; } = GUIMaterials.Rect;
 
-    /// <summary> Initializes a new instance of the <see cref="GUIDrawable"/> class from a Rect. </summary>
-    public GUIDrawable(Rect rect)
+    /// <summary> Initializes a new instance of the <see cref="GUIRenderable"/> class from a Rect. </summary>
+    public GUIRenderable(Rect rect)
     {
         // Create a transform matrix for the GUI element
         Transform = Matrix4x4.CreateTranslation(rect.X, rect.Y, 0f) *
