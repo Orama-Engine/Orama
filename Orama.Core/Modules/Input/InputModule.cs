@@ -14,6 +14,9 @@ public class InputModule : BaseModule
     /// <summary> Invoked when a mouse button is pressed. </summary>
     public event Action<MouseButton, Vector2>? MouseClicked;
 
+    /// <summary> Invoked when a mouse button is released. </summary>
+    public event Action<MouseButton, Vector2>? MouseReleased;
+
     /// <summary> Invoked when the mouse moves. </summary>
     public event Action<Vector2>? MouseMoved;
 
@@ -86,6 +89,12 @@ public class InputModule : BaseModule
         {
             if (mouseButtonMapInverse.TryGetValue(button, out var localButton))
                 MouseClicked?.Invoke(localButton, mouse.Position);
+        };
+
+        input.Mice[0].MouseUp += (mouse, button) =>
+        {
+            if (mouseButtonMapInverse.TryGetValue(button, out var localButton))
+                MouseReleased?.Invoke(localButton, mouse.Position);
         };
 
         input.Mice[0].MouseMove += (mouse, position) =>

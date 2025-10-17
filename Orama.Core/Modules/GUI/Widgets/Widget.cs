@@ -13,6 +13,24 @@ public class Widget
     /// <summary> The position and size of the widget. </summary>
     public Rect Rect { get; set; }
 
+    /// <summary> The position and size of the widget in world space. </summary>
+    public Rect WorldRect
+    {
+        get
+        {
+            Vector2 worldPos = new Vector2(Rect.X, Rect.Y);
+            Widget? current = Parent;
+
+            while (current != null)
+            {
+                worldPos += new Vector2(current.Rect.X, current.Rect.Y);
+                current = current.Parent;
+            }
+
+            return new Rect(worldPos.X, worldPos.Y, Rect.Width, Rect.Height);
+        }
+    }
+
     /// <summary> The styling of the widget. </summary>
     public Style Style { get; set; }
 
@@ -27,6 +45,9 @@ public class Widget
 
     /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
     public event Action? Clicked;
+
+    /// <summary> Invoked when the <see cref="Rect"/> is released. </summary>
+    public event Action? Released;
 
     /// <summary> Invoked when the <see cref="Rect"/> is first hovered. </summary>
     public event Action? PointerEntered;
@@ -61,7 +82,7 @@ public class Widget
     /// <summary> Draws the widget using the <see cref="PaintEngine"/>. </summary>
     public virtual void Draw()
     {
-        Rect refRect = Rect;
+        Rect refRect = WorldRect;
         if (IsHovered)
         {
             PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor ?? Style.BackgroundColor);
@@ -74,6 +95,10 @@ public class Widget
     /// <summary> Runs when the <see cref="Rect"/> is clicked. </summary>
     /// <remarks> The default implementation invokes the <see cref="Clicked"/> event. </remarks>
     public virtual void OnClick() => Clicked?.Invoke();
+
+    /// <summary> Runs when the <see cref="Rect"/> is released. </summary>
+    /// <remarks> The default implementation invokes the <see cref="Released"/> event. </remarks>
+    public virtual void OnRelease() => Released?.Invoke();
 
     /// <summary> Runs when the <see cref="Rect"/> is first hovered. </summary>
     /// <remarks> The default implementation invokes the <see cref="PointerEntered"/> event. </remarks>

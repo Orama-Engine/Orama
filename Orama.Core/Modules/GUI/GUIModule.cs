@@ -20,19 +20,31 @@ public class GUIModule : BaseModule
     /// <summary> The current GUI theme. </summary>
     public Theme Theme { get; set; } = new DefaultTheme();
 
+    bool isDragging = false;
+
     public override void Initialize()
     {
         Application.OnRender += Render;
 
         ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
+        ModuleManager.GetModule<InputModule>()?.MouseReleased += CursorRelease;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
         Widget background = new();
         background.Rect = new Rect(290, 190, 120, 130);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+        background.Clicked += () =>
+        {
+            isDragging = true;
+        };
+
+        background.Released += () =>
+        {
+            isDragging = false;
+        };
 
         Button downButton = new();
-        downButton.Rect = new Rect(300, 260, 100, 50);
+        downButton.Rect = new Rect(10, 70, 100, 50);
         downButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position -= new Vector3(0, 1, 0);
@@ -40,7 +52,7 @@ public class GUIModule : BaseModule
 
 
         Button upButton = new();
-        upButton.Rect = new Rect(300, 200, 100, 50);
+        upButton.Rect = new Rect(10, 10, 100, 50);
         upButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
@@ -50,6 +62,14 @@ public class GUIModule : BaseModule
         background.AddChild(upButton);
 
         Widgets.Add(background);
+    }
+
+    public override void Update()
+    {
+        if (isDragging)
+        {
+            Widgets.First().Rect = new Rect(ModuleManager.GetModule<InputModule>()?.MousePosition.X ?? 290, ModuleManager.GetModule<InputModule>()?.MousePosition.Y ?? 190, 120, 130);
+        }
     }
 
     public override void Dispose()
@@ -64,9 +84,7 @@ public class GUIModule : BaseModule
     public void Render()
     {
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
-        {
             widget.Draw();
-        }
     }
 
     /// <summary> Register a GUI click. </summary>
@@ -77,8 +95,21 @@ public class GUIModule : BaseModule
 
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
-            if (widget.Rect.Contains(position))
+            if (widget.WorldRect.Contains(position))
                 widget.OnClick();
+        }
+    }
+
+    /// <summary> Register a GUI release. </summary>
+    public void CursorRelease (MouseButton button, Vector2 position)
+    {
+        if (button != MouseButton.Left)
+            return;
+
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
+        {
+            if (widget.WorldRect.Contains(position))
+                widget.OnRelease();
         }
     }
 
@@ -87,7 +118,7 @@ public class GUIModule : BaseModule
     {
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
-            bool contains = widget.Rect.Contains(position);
+            bool contains = widget.WorldRect.Contains(position);
             if (contains && !widget.IsHovered)
                 widget.OnPointerEnter();
 
