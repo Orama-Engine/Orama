@@ -63,8 +63,7 @@ public class Font
                 return field;
 
             // Try to pick a common font
-            FontFamily? family = SystemFonts.Families
-                .FirstOrDefault(f => f.Name == "Segoe UI" || f.Name == "Arial" || f.Name == "DejaVu Sans");
+            FontFamily? family = SystemFonts.Families.FirstOrDefault(f => f.Name == "Segoe UI" || f.Name == "Arial" || f.Name == "DejaVu Sans");
 
             // Fallback to first available font if none matched
             if (family is null)
@@ -152,5 +151,20 @@ public class Font
         Atlas = new Texture(atlasImage.Width, atlasImage.Height, Orama.Rendering.Resources.TextureDataType.RGBA8, pixelData);
 
         atlasImage.Dispose();
+    }
+
+    /// <summary> Measures the size of the given text. </summary>
+    public Orama.Math.Vector2 MeasureText(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return new Orama.Math.Vector2(0, 0);
+
+        var size = TextMeasurer.MeasureSize(text, new TextOptions(font)
+        {
+            VerticalAlignment = VerticalAlignment.Top,
+            HorizontalAlignment = HorizontalAlignment.Left
+        });
+
+        return new Orama.Math.Vector2((float)size.Width, (float)size.Height);
     }
 }
