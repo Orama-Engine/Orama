@@ -1,10 +1,11 @@
 ﻿using Jitter2.Collision.Shapes;
 using Jitter2.DataStructures;
 using Jitter2.LinearMath;
+using Orama.Core.Common.Components;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Physics;
 
-namespace Orama.Core.Common.Components;
+namespace Orama.Core.Modules.Physics.Components;
 
 /// <summary>
 /// Represents a physics rigid body that enables simulation of physical interactions for an entity.
@@ -12,7 +13,7 @@ namespace Orama.Core.Common.Components;
 public class RigidBody : Component
 {
     Jitter2.Dynamics.RigidBody? body;
-    public bool IsStatic /// <summary> Gets or sets whether the rigid body is static or dynamic. </summary>
+    public bool IsStatic /// <summary> Whether the rigid body is static or dynamic. </summary>
     {
         get => body?.IsStatic ?? false;
         set
@@ -23,7 +24,7 @@ public class RigidBody : Component
             }
         }
     }
-    public float Mass /// <summary> Gets or sets the mass of the rigid body. </summary>
+    public float Mass /// <summary> Mass of the rigid body. </summary>
     {
         get => body != null ? body.Mass : 0f;
         set
@@ -35,7 +36,7 @@ public class RigidBody : Component
             }
         }
     }
-    public float Friction /// <summary> Gets or sets the friction of the rigid body. </summary>
+    public float Friction /// <summary> Friction of the rigid body. </summary>
     {
         get => body != null ? body.Friction : 0f;
         set
@@ -46,7 +47,7 @@ public class RigidBody : Component
             }
         }
     }
-    public bool AffectedByGravity /// <summary> Gets or sets whether the rigid body is affected by gravity. </summary>
+    public bool AffectedByGravity /// <summary> Whether the rigid body is affected by gravity. </summary>
     {
         get => body?.AffectedByGravity ?? false;
         set
@@ -57,7 +58,7 @@ public class RigidBody : Component
             }
         }
     }
-    public float Restitution /// <summary> Gets or sets the restitution of the rigid body. </summary>
+    public float Restitution /// <summary> Restitution of the rigid body. </summary>
     {
         get => body != null ? body.Restitution : 0f;
         set
@@ -68,7 +69,7 @@ public class RigidBody : Component
             }
         }
     }
-    public float AngularVelocity /// <summary> Gets or sets the angular velocity of the rigid body. </summary>
+    public float AngularVelocity /// <summary> Angular velocity of the rigid body. </summary>
     {
         get => body != null ? body.AngularVelocity.Length() : 0f;
         set
@@ -87,7 +88,7 @@ public class RigidBody : Component
             }
         }
     }
-    public Math.Vector2 Damping /// <summary> Gets or sets the linear and angular damping of the rigid body. </summary>
+    public Math.Vector2 Damping /// <summary> Linear and angular damping of the rigid body. </summary>
     {
         get => body != null ? new Math.Vector2(body.Damping.linear, body.Damping.angular) : Math.Vector2.Zero;
         set

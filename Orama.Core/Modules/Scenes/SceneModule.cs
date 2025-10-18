@@ -1,8 +1,8 @@
 ﻿using Jitter2.Collision.Shapes;
 using Jitter2.LinearMath;
-using Orama.Core.Common.Components;
 using Orama.Core.Common.Entities;
 using Orama.Core.Common.Utility;
+using Orama.Core.Modules.Physics.Components;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
 
