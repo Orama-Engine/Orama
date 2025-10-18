@@ -27,8 +27,12 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
         Widget background = new();
-        background.Rect = new Rect(290, 190, 120, 130);
+        background.Rect = new Rect(290, 190, 200, 130);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+
+        Label label = new("CONTROL PANEL");
+        label.Rect = new Rect(10, 10, 0, 0);
+
 
         Button downButton = new();
         downButton.Text = "MOVE DOWN";
@@ -41,12 +45,13 @@ public class GUIModule : BaseModule
 
         Button upButton = new();
         upButton.Text = "MOVE UP";
-        upButton.Rect = new Rect(10, 10, 100, 50);
+        upButton.Rect = new Rect(10, 40, 100, 50);
         upButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
         };
 
+        background.AddChild(label);
         background.AddChild(downButton);
         background.AddChild(upButton);
 
