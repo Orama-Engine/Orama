@@ -21,6 +21,9 @@ public class Font
     /// <summary> The size of the font. </summary>
     public int Size { get; }
 
+    /// <summary> Whether the font is smooth (anti-aliased) or not. </summary>
+    public bool Smooth { get; set; } = true;
+
     /// <summary> The font's atlas. </summary>
     /// <remarks> An atlas is a texture that contains all the characters in the font. </remarks>
     public Texture? Atlas { get; set; }
@@ -98,7 +101,17 @@ public class Font
             img.Mutate(ctx =>
             {
                 ctx.Clear(SixLabors.ImageSharp.Color.Transparent);
-                ctx.DrawText(c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, baselineOffset));
+
+
+                var graphicsOptions = new DrawingOptions
+                {
+                    GraphicsOptions = new GraphicsOptions
+                    {
+                        Antialias = Smooth
+                    }
+                };
+
+                ctx.DrawText(graphicsOptions, c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, baselineOffset));
             });
 
             glyphImages[c] = img;
