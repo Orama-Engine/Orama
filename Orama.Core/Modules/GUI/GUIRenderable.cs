@@ -17,11 +17,11 @@ internal class GUIRenderable : IClientRenderable
 
     public Vector3[] Normals { get; }
 
-    public Vector2[] UVs { get; }
+    public Vector2[] UVs { get; set; }
 
     public uint[] Indices { get; }
 
-    public Material Material { get; } = GUIMaterials.Rect.Clone();
+    public Material Material { get; set; } = GUIMaterials.Rect.Clone();
 
     /// <summary> Initializes a new instance of the <see cref="GUIRenderable"/> class from a Rect. </summary>
     public GUIRenderable(Rect rect)

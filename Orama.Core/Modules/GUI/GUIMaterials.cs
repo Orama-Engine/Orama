@@ -7,7 +7,7 @@ namespace Orama.Core.Modules.GUI;
 /// </summary>
 public static class GUIMaterials
 {
-    public const string RECT_VERT = @"
+    private const string RECT_VERT = @"
 #version 450 core
 
 layout(location = 0) in vec3 pos;
@@ -26,7 +26,7 @@ void main()
 }
 ";
 
-    public const string RECT_FRAG = @"
+    private const string RECT_FRAG = @"
 #version 450 core
 
 layout(location = 0) out vec4 FragColor;
@@ -44,4 +44,52 @@ void main()
 ";
     /// <summary> Default Material used by GUI Rectangles. </summary>
     public static Material Rect { get; } = new Material(RECT_VERT, RECT_FRAG) { Pass = "GUI" };
+
+    private const string TEXT_VERT = @"
+#version 450 core
+
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
+
+layout(std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+    vec4 u_Color;
+};
+
+layout(location = 0) out vec2 v_UV;
+
+void main()
+{
+    gl_Position = u_MVP * vec4(pos, 1.0);
+    v_UV = uv; // Pass UV to fragment shader
+}
+";
+
+    private const string TEXT_FRAG = @"
+#version 450 core
+
+layout(location = 0) out vec4 FragColor;
+
+layout(std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+    vec4 u_Color;
+};
+
+layout(binding = 0) uniform sampler2D u_FontAtlas;
+
+layout(location = 0) in vec2 v_UV;
+
+void main()
+{
+    // Sample the font atlas at the UV
+    float alpha = texture(u_FontAtlas, v_UV).r;
+    FragColor = vec4(u_Color.rgb, u_Color.a * alpha);
+}
+";
+
+    /// <summary> Material for rendering text from a font atlas. </summary>
+    public static Material Text { get; } = new Material(TEXT_VERT, TEXT_FRAG) { Pass = "GUI" };
 }

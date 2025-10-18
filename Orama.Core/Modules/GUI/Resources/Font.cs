@@ -110,10 +110,12 @@ public class Font
                 {
                     var pixel = rowSpan[x];
                     int offset = (y * accessor.Width + x) * 4;
-                    pixelData[offset + 0] = pixel.R;
-                    pixelData[offset + 1] = pixel.G;
-                    pixelData[offset + 2] = pixel.B;
-                    pixelData[offset + 3] = pixel.A;
+
+                    // Store alpha in red channel, other channels can be 0 or 255
+                    pixelData[offset + 0] = pixel.A; // R = alpha
+                    pixelData[offset + 1] = 0;       // G
+                    pixelData[offset + 2] = 0;       // B
+                    pixelData[offset + 3] = 255;     // A = opaque
                 }
             }
         });

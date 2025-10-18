@@ -207,6 +207,9 @@ internal class OpenGLBackend : IRendererBackend
 
                 foreach (var param in mesh.Shader.Parameters)
                 {
+                    if (param.Value is GraphicsTexture)
+                        continue;
+
                     int alignment = GetStd140Alignment(param.Value.GetType());
                     uboSize = AlignOffset(uboSize, alignment);
 
@@ -264,6 +267,23 @@ internal class OpenGLBackend : IRendererBackend
                 foreach (var kv in mesh.Shader.Parameters)
                 {
                     object value = kv.Value;
+
+                    // Special case for textures
+                    if (value is GraphicsTexture tex)
+                    {
+                        uint glTex = GetOrCreateGLTexture(tex);
+
+                        // Bind to a texture unit
+                        GL.ActiveTexture(TextureUnit.Texture0);
+                        GL.BindTexture(TextureTarget.Texture2D, glTex);
+
+                        // Set uniform to use texture unit 0
+                        int loc = GL.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
+                        GL.Uniform1(loc, 0);
+
+                        continue;
+                    }
+
                     byte[] paramBytes = Shared.GetParameterBytes(value);
 
                     int alignment = GetStd140Alignment(value.GetType());
@@ -280,20 +300,6 @@ internal class OpenGLBackend : IRendererBackend
                     GL.BindBuffer(BufferTargetARB.UniformBuffer, 0);
 
                     offset += paramBytes.Length;
-
-                    // Special texture handling
-                    if (kv.Value is GraphicsTexture tex)
-                    {
-                        uint glTex = GetOrCreateGLTexture(tex);
-
-                        // Bind to texture unit 0
-                        GL.ActiveTexture(TextureUnit.Texture0);
-                        GL.BindTexture(TextureTarget.Texture2D, glTex);
-
-                        // Set the uniform to use texture unit 0
-                        int loc = GL.GetUniformLocation(shaderProgramMap[mesh.Shader], kv.Key);
-                        GL.Uniform1(loc, 0);
-                    }
                 }
             }
 
@@ -508,7 +514,7 @@ internal class OpenGLBackend : IRendererBackend
         if (type.IsArray)
         {
             var elementType = type.GetElementType();
-            int elementAlignment = GetStd140Alignment(elementType);
+            int elementAlignment = GetStd140Alignment(elementType ?? typeof(float));
             return AlignTo16(elementAlignment);
         }
 

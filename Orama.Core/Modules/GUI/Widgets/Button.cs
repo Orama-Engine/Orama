@@ -16,10 +16,6 @@ public class Button : Widget
     {
         base.Draw();
 
-        if (Font.Default.Atlas == null)
-            Font.Default.RenderAtlas();
-
         PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);
-        Font.Default.Atlas?.ToPng("font.png");
     }
 }
