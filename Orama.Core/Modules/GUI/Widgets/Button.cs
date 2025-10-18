@@ -12,6 +12,9 @@ public class Button : Widget
     /// <summary> The text displayed on the button. </summary>
     public string Text { get; set; } = "Button";
 
+    /// <inheritdoc/>
+    public override Vector2 SizeHint => Font.Default.MeasureText(Text);
+
     public override void Draw()
     {
         base.Draw();

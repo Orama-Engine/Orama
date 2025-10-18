@@ -165,6 +165,9 @@ public class Font
             HorizontalAlignment = HorizontalAlignment.Left
         });
 
-        return new Orama.Math.Vector2((float)size.Width, (float)size.Height);
+        return new Orama.Math.Vector2(
+            (float)size.Width + 15 * 2,
+            (float)size.Height + 4 * 2
+        );
     }
 }

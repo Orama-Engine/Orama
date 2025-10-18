@@ -31,6 +31,9 @@ public class Widget
         }
     }
 
+    /// <summary> The desired size of the widget. </summary>
+    public virtual Vector2 SizeHint => new Vector2(Rect.Width, Rect.Height);
+
     /// <summary> The styling of the widget. </summary>
     public Style Style { get; set; }
 

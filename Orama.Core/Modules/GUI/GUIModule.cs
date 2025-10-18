@@ -62,6 +62,11 @@ public class GUIModule : BaseModule
         Widgets.Clear();
     }
 
+    public override void Update()
+    {
+        LayoutEngine.LayoutWidgets(Widgets);
+    }
+
     public void Render()
     {
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
