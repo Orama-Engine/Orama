@@ -4,6 +4,7 @@ using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.Input;
+using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 
@@ -19,6 +20,7 @@ internal class Program
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
+        ModuleManager.RegisterModule<PhysicsModule>();
 
         Application.OnStart += () =>
         {
