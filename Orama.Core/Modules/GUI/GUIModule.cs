@@ -20,8 +20,6 @@ public class GUIModule : BaseModule
     /// <summary> The current GUI theme. </summary>
     public Theme Theme { get; set; } = new DefaultTheme();
 
-    bool isDragging = false;
-
     public override void Initialize()
     {
         Application.OnRender += Render;
@@ -33,17 +31,9 @@ public class GUIModule : BaseModule
         Widget background = new();
         background.Rect = new Rect(290, 190, 120, 130);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
-        background.Clicked += () =>
-        {
-            isDragging = true;
-        };
-
-        background.Released += () =>
-        {
-            isDragging = false;
-        };
 
         Button downButton = new();
+        downButton.Text = "MOVE DOWN";
         downButton.Rect = new Rect(10, 70, 100, 50);
         downButton.Clicked += () =>
         {
@@ -52,6 +42,7 @@ public class GUIModule : BaseModule
 
 
         Button upButton = new();
+        upButton.Text = "MOVE UP";
         upButton.Rect = new Rect(10, 10, 100, 50);
         upButton.Clicked += () =>
         {
@@ -62,14 +53,6 @@ public class GUIModule : BaseModule
         background.AddChild(upButton);
 
         Widgets.Add(background);
-    }
-
-    public override void Update()
-    {
-        if (isDragging)
-        {
-            Widgets.First().Rect = new Rect(ModuleManager.GetModule<InputModule>()?.MousePosition.X ?? 290, ModuleManager.GetModule<InputModule>()?.MousePosition.Y ?? 190, 120, 130);
-        }
     }
 
     public override void Dispose()

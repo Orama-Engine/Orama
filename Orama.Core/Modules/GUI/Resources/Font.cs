@@ -1,5 +1,4 @@
 ﻿using Orama.Core.Modules.Rendering.Resources;
-using Orama.Math;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
@@ -14,13 +13,10 @@ namespace Orama.Core.Modules.GUI.Resources;
 public class Font
 {
     /// <summary> The name of the font. </summary>
-    public string Name { get; set; } = string.Empty;
+    public string Name => font.Name;
 
-    /// <summary> Map of each character to its rectangle in the atlas. </summary>
-    public Dictionary<char, Rect> GlyphMap { get; } = new();
-
-    /// <summary> The set of characters to include in the atlas. </summary>
-    private const string DefaultCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:'\",.<>?/ ";
+    /// <summary> The family name of the font. </summary>
+    public string FamilyName => font.Family.Name;
 
     /// <summary> The size of the font. </summary>
     public int Size { get; }
@@ -29,8 +25,14 @@ public class Font
     /// <remarks> An atlas is a texture that contains all the characters in the font. </remarks>
     public Texture? Atlas { get; set; }
 
-    /// <summary> internal font. </summary>
-    private SixLabors.Fonts.Font? font;
+    /// <summary> Map of each character to its rectangle in the atlas. </summary>
+    public Dictionary<char, Rect> GlyphMap { get; } = new();
+
+    // internal font.
+    private SixLabors.Fonts.Font font;
+
+    // The set of characters to include in the atlas.
+    private const string DefaultCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()-_=+[]{}|;:'\",.<>?/ ";
 
     /// <summary> Initializes a new instance of the <see cref="Font"/> class from a .ttf path. </summary>
     public Font(string path, int size)
@@ -38,16 +40,42 @@ public class Font
         if (!File.Exists(path))
             throw new FileNotFoundException("Font file not found", path);
 
-        Name = Path.GetFileName(path);
-        Size = size;
-
         var collection = new FontCollection();
         var fontFamily = collection.Add(path);
         font = fontFamily.CreateFont(size);
+
+        Size = size;
     }
 
-    /// <summary> The default font. </summary>
-    public static Font Default = new("default.ttf", 16);
+    /// <summary> Initializes a new instance of the <see cref="Font"/> class from an existing SixLabors.Fonts.Font. </summary>
+    public Font(SixLabors.Fonts.Font existingFont, int size)
+    {
+        font = existingFont;
+        Size = size;
+    }
+
+    /// <summary> The default system font. </summary>
+    public static Font Default
+    {
+        get
+        {
+            if (field is not null)
+                return field;
+
+            // Try to pick a common font
+            FontFamily? family = SystemFonts.Families
+                .FirstOrDefault(f => f.Name == "Segoe UI" || f.Name == "Arial" || f.Name == "DejaVu Sans");
+
+            // Fallback to first available font if none matched
+            if (family is null)
+                family = SystemFonts.Families.First();
+
+            var systemFont = family?.CreateFont(16);
+
+            field = new Font(systemFont ?? throw new Exception("Failed to create system font"), 16);
+            return field;
+        }
+    }
 
     /// <summary> Renders the font atlas. </summary>
     public void RenderAtlas(int padding = 2)
@@ -55,22 +83,23 @@ public class Font
         if (font is null)
             return;
 
-        // First, measure all glyphs and calculate atlas size (simple horizontal layout)
         var glyphImages = new Dictionary<char, Image<Rgba32>>();
         int totalWidth = 0;
         int maxHeight = 0;
 
         foreach (char c in DefaultCharacters)
         {
-            var glyphRect = TextMeasurer.MeasureSize(c.ToString(), new TextOptions(font));
+            var glyphRect = TextMeasurer.MeasureSize(c.ToString(), new TextOptions(font) { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left });
             int glyphWidth = (int)System.Math.Ceiling(glyphRect.Width) + padding * 2;
             int glyphHeight = (int)System.Math.Ceiling(glyphRect.Height) + padding * 2;
+            
 
             var img = new Image<Rgba32>(glyphWidth, glyphHeight);
+            float baselineOffset = padding;
             img.Mutate(ctx =>
             {
                 ctx.Clear(SixLabors.ImageSharp.Color.Transparent);
-                ctx.DrawText(c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, padding));
+                ctx.DrawText(c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, baselineOffset));
             });
 
             glyphImages[c] = img;
@@ -111,11 +140,11 @@ public class Font
                     var pixel = rowSpan[x];
                     int offset = (y * accessor.Width + x) * 4;
 
-                    // Store alpha in red channel, other channels can be 0 or 255
-                    pixelData[offset + 0] = pixel.A; // R = alpha
-                    pixelData[offset + 1] = 0;       // G
-                    pixelData[offset + 2] = 0;       // B
-                    pixelData[offset + 3] = 255;     // A = opaque
+                    // Store alpha in red channel
+                    pixelData[offset + 0] = pixel.A;
+                    pixelData[offset + 1] = 0;
+                    pixelData[offset + 2] = 0;
+                    pixelData[offset + 3] = 255;
                 }
             }
         });
