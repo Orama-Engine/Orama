@@ -1,4 +1,7 @@
 ﻿
+using Orama.Core.Modules.GUI.Resources;
+using Orama.Math;
+
 namespace Orama.Core.Modules.GUI.Widgets;
 
 /// <summary>
@@ -8,4 +11,15 @@ public class Button : Widget
 {
     /// <summary> The text displayed on the button. </summary>
     public string Text { get; set; } = "Button";
+
+    public override void Draw()
+    {
+        base.Draw();
+
+        if (Font.Default.Atlas == null)
+            Font.Default.RenderAtlas();
+
+        PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);
+        Font.Default.Atlas?.ToPng("font.png");
+    }
 }
