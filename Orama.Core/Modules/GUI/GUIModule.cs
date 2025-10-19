@@ -27,8 +27,9 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
         Widget background = new();
-        background.Rect = new Rect(290, 190, 200, 130);
+        background.Rect = new Rect(0, 450, 0, 300);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+        background.HorizontalSizePolicy = SizePolicy.Expand;
 
         Label label = new("Control Panel");
         label.Rect = new Rect(10, 10, 0, 0);
@@ -36,7 +37,8 @@ public class GUIModule : BaseModule
 
         Button downButton = new();
         downButton.Text = "Move Down";
-        downButton.Rect = new Rect(10, 70, 100, 50);
+        downButton.Rect = new Rect(0, 70, 100, 50);
+        downButton.HorizontalSizePolicy = SizePolicy.Expand;
         downButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position -= new Vector3(0, 1, 0);
@@ -45,7 +47,8 @@ public class GUIModule : BaseModule
 
         Button upButton = new();
         upButton.Text = "Move Up";
-        upButton.Rect = new Rect(10, 40, 100, 50);
+        upButton.Rect = new Rect(0, 40, 100, 50);
+        upButton.HorizontalSizePolicy = SizePolicy.Expand;
         upButton.Clicked += () =>
         {
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
@@ -74,7 +77,7 @@ public class GUIModule : BaseModule
 
     public void Render()
     {
-        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
             widget.Draw();
     }
 
@@ -84,7 +87,7 @@ public class GUIModule : BaseModule
         if (button != MouseButton.Left)
             return;
 
-        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
         {
             if (widget.WorldRect.Contains(position))
                 widget.OnClick();
@@ -97,7 +100,7 @@ public class GUIModule : BaseModule
         if (button != MouseButton.Left)
             return;
 
-        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
         {
             if (widget.WorldRect.Contains(position))
                 widget.OnRelease();
@@ -107,7 +110,7 @@ public class GUIModule : BaseModule
     /// <summary> Sets the cursor position for GUI logic. </summary>
     public void UpdateCursorPosition(Vector2 position)
     {
-        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
         {
             bool contains = widget.WorldRect.Contains(position);
             if (contains && widget.State != WidgetState.Hovered)

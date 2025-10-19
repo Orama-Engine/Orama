@@ -15,6 +15,12 @@ public class Widget
     /// <summary> The state of the widget. </summary>
     public WidgetState State { get; set; }
 
+    /// <summary> Determines how the widget sizes vertically. </summary>
+    public SizePolicy VerticalSizePolicy { get; set; } = SizePolicy.Fixed;
+
+    /// <summary> Determines how the widget sizes horizontally. </summary>
+    public SizePolicy HorizontalSizePolicy { get; set; } = SizePolicy.Fixed;
+
     /// <summary> The position and size of the widget in world space. </summary>
     public Rect WorldRect
     {
@@ -70,6 +76,18 @@ public class Widget
         Style = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[GetType()] ?? new Style();
     }
 
+    /// <summary> Returns all child widgets and the widget itself. </summary>
+    public IEnumerable<Widget> DescendantsAndSelf()
+    {
+        yield return this;
+
+        foreach (Widget child in children)
+        {
+            foreach (var descendant in child.DescendantsAndSelf())
+                yield return descendant;
+        }
+    }
+
     /// <summary> Adds a new child widget of type <typeparamref name="T"/>. </summary>
     /// <typeparam name="T"> The type of the child widget to add. </typeparam>
     public void AddChild<T>() where T : Widget, new() => AddChild(new T());
@@ -123,4 +141,14 @@ public enum WidgetState
 {
     Normal,
     Hovered
+}
+
+/// <summary> Determines the size policy of a widget. </summary>
+public enum SizePolicy
+{
+    /// <summary> The size of the widget does not change. </summary>
+    Fixed,
+
+    /// <summary> The size of the widget is expanded to fill available space. </summary>
+    Expand
 }
