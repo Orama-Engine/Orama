@@ -81,7 +81,7 @@ public class Font
     }
 
     /// <summary> Renders the font atlas. </summary>
-    public void RenderAtlas(int padding = 2)
+    public void RenderAtlas(int padding = 0)
     {
         if (font is null)
             return;
