@@ -89,15 +89,23 @@ public class Font
         int totalWidth = 0;
         int maxHeight = 0;
 
+        var metrics = font.FontMetrics.VerticalMetrics;
+
+        // All these are stored in Font Units
+        short descender = metrics.Descender;
+        short ascender = metrics.Ascender;
+        short lineGap = metrics.LineGap;
+
+        int lineHeight = (int)System.Math.Ceiling((ascender - descender + lineGap) * font.Size / font.FontMetrics.UnitsPerEm) + padding * 2;
+
         foreach (char c in DefaultCharacters)
         {
             var glyphRect = TextMeasurer.MeasureSize(c.ToString(), new TextOptions(font) { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left });
             int glyphWidth = (int)System.Math.Ceiling(glyphRect.Width) + padding * 2;
-            int glyphHeight = (int)System.Math.Ceiling(glyphRect.Height) + padding * 2;
-            
 
-            var img = new Image<Rgba32>(glyphWidth, glyphHeight);
-            float baselineOffset = padding;
+
+            var img = new Image<Rgba32>(glyphWidth, lineHeight);
+            int baselineOffset = (int)System.Math.Ceiling(ascender * font.Size / font.FontMetrics.UnitsPerEm) + padding;
             img.Mutate(ctx =>
             {
                 ctx.Clear(SixLabors.ImageSharp.Color.Transparent);
@@ -111,12 +119,12 @@ public class Font
                     }
                 };
 
-                ctx.DrawText(graphicsOptions, c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, baselineOffset));
+                ctx.DrawText(graphicsOptions, c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, padding));
             });
 
             glyphImages[c] = img;
             totalWidth += glyphWidth;
-            maxHeight = System.Math.Max(maxHeight, glyphHeight);
+            maxHeight = lineHeight;
         }
 
         // Create the final atlas image

@@ -1,5 +1,4 @@
-﻿
-using Orama.Core.Modules.GUI.Resources;
+﻿using Orama.Core.Modules.GUI.Resources;
 using Orama.Math;
 
 namespace Orama.Core.Modules.GUI.Widgets;

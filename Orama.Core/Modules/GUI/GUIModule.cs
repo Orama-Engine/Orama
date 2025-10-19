@@ -30,12 +30,12 @@ public class GUIModule : BaseModule
         background.Rect = new Rect(290, 190, 200, 130);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
 
-        Label label = new("CONTROL PANEL");
+        Label label = new("Control Panel");
         label.Rect = new Rect(10, 10, 0, 0);
 
 
         Button downButton = new();
-        downButton.Text = "MOVE DOWN";
+        downButton.Text = "Move Down";
         downButton.Rect = new Rect(10, 70, 100, 50);
         downButton.Clicked += () =>
         {
@@ -44,7 +44,7 @@ public class GUIModule : BaseModule
 
 
         Button upButton = new();
-        upButton.Text = "MOVE UP";
+        upButton.Text = "Move Up";
         upButton.Rect = new Rect(10, 40, 100, 50);
         upButton.Clicked += () =>
         {
@@ -92,7 +92,7 @@ public class GUIModule : BaseModule
     }
 
     /// <summary> Register a GUI release. </summary>
-    public void CursorRelease (MouseButton button, Vector2 position)
+    public void CursorRelease(MouseButton button, Vector2 position)
     {
         if (button != MouseButton.Left)
             return;
