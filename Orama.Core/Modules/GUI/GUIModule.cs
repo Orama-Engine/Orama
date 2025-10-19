@@ -29,7 +29,7 @@ public class GUIModule : BaseModule
 
         Widget background = new();
         background.Rect = new Rect(0, 450, 0, 300);
-        background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+        background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
         background.HorizontalSizePolicy = SizePolicy.Expand;
         background.VerticalSizePolicy = SizePolicy.Expand;
         background.Layout = new VBoxLayout();
@@ -79,7 +79,13 @@ public class GUIModule : BaseModule
     public void Render()
     {
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
-            widget.Draw();
+        {
+            if (widget.State == WidgetState.Normal)
+                widget.Draw(widget.StyleNormal);
+
+            if (widget.State == WidgetState.Hovered)
+                widget.Draw(widget.StyleHover);
+        }
     }
 
     /// <summary> Register a GUI click. </summary>

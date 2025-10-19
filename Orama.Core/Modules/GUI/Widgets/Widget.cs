@@ -54,8 +54,11 @@ public class Widget
     /// <summary> The desired size of the widget. </summary>
     public virtual Vector2 SizeHint => new Vector2(Rect.Width, Rect.Height);
 
-    /// <summary> The styling of the widget. </summary>
-    public Style Style { get; set; }
+    /// <summary> The styling of the widget in it's default state. </summary>
+    public Style StyleNormal { get; set; }
+
+    /// <summary> The styling of the widget in it's hovered state. </summary>
+    public Style StyleHover { get; set; }
 
     /// <summary> The parent widget (if any). </summary>
     public Widget? Parent { get; set; }
@@ -78,14 +81,20 @@ public class Widget
     private List<Widget> children = new();
 
     /// <summary> Initializes a new instance of the <see cref="Widget"/> class. </summary>
-    public Widget() => Style = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[GetType()] ?? new Style();
+    public Widget()
+    {
+        StyleNormal = ModuleManager.GetModule<GUIModule>()?.Theme.NormalStyles.GetValueOrDefault(GetType()) ?? new Style();
+        StyleHover = ModuleManager.GetModule<GUIModule>()?.Theme.HoverStyles.GetValueOrDefault(GetType()) ?? StyleNormal;
+    }
 
     /// <summary> Initializes a new instance of the <see cref="Widget"/> class. </summary>
     /// <param name="rect"> The position and size of the widget. </param>
     public Widget(Rect rect) : this()
     {
         Rect = rect;
-        Style = ModuleManager.GetModule<GUIModule>()?.Theme.Styles[GetType()] ?? new Style();
+
+        StyleNormal = ModuleManager.GetModule<GUIModule>()?.Theme.NormalStyles.GetValueOrDefault(GetType()) ?? new Style();
+        StyleHover = ModuleManager.GetModule<GUIModule>()?.Theme.HoverStyles.GetValueOrDefault(GetType()) ?? StyleNormal;
     }
 
     /// <summary> Returns all child widgets and the widget itself. </summary>
@@ -112,16 +121,11 @@ public class Widget
     }
 
     /// <summary> Draws the widget using the <see cref="PaintEngine"/>. </summary>
-    public virtual void Draw()
+    /// <param name="style"> The style to use. </param>
+    public virtual void Draw(Style style)
     {
         Rect refRect = WorldRect;
-        if (State == WidgetState.Hovered)
-        {
-            PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor ?? Style.BackgroundColor);
-            return;
-        }
-
-        PaintEngine.DrawRect(ref refRect, Style.BackgroundColor);
+        PaintEngine.DrawRect(ref refRect, style.BackgroundColor);
     }
 
     /// <summary> Runs when the <see cref="Rect"/> is clicked. </summary>

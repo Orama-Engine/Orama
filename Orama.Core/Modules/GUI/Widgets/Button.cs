@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Modules.GUI.Resources;
+using Orama.Core.Modules.GUI.Styling;
 using Orama.Math;
 
 namespace Orama.Core.Modules.GUI.Widgets;
@@ -14,9 +15,9 @@ public class Button : Widget
     /// <inheritdoc/>
     public override Vector2 SizeHint => Font.Default.MeasureText(Text);
 
-    public override void Draw()
+    public override void Draw(Style style)
     {
-        base.Draw();
+        base.Draw(style);
 
         PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);
     }
