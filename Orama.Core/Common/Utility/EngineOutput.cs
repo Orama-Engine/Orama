@@ -30,7 +30,7 @@ public static class EngineOutput
         Console.ForegroundColor = ConsoleColor.Gray;
 
         string output = "[Log] " + message;
-        Console.WriteLine(message);
+        Console.WriteLine(output);
 
         Console.ForegroundColor = prevColor;
 
