@@ -6,8 +6,8 @@ namespace Orama.Core.Common.Utility;
 /// </summary>
 public static class EngineOutput
 {
-    /// <summary> The current output. </summary>
-    public static List<string> Output = new();
+    /// <summary> The current console output. </summary>
+    public static List<string> Output { get; set; } = new();
 
     /// <summary> Output an exception. </summary>
     public static void Exception(Exception ex)
