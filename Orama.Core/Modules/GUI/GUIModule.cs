@@ -110,10 +110,10 @@ public class GUIModule : BaseModule
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.Children)))
         {
             bool contains = widget.WorldRect.Contains(position);
-            if (contains && !widget.IsHovered)
+            if (contains && widget.State != WidgetState.Hovered)
                 widget.OnPointerEnter();
 
-            if (!contains && widget.IsHovered)
+            if (!contains && widget.State == WidgetState.Hovered)
                 widget.OnPointerExit();
         }
     }

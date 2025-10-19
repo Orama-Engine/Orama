@@ -1,7 +1,6 @@
-﻿
-using Orama.Core.Modules.GUI.Styling;
+﻿using Orama.Core.Modules.GUI.Styling;
 using Orama.Math;
-using System.Runtime.InteropServices.JavaScript;
+
 
 namespace Orama.Core.Modules.GUI.Widgets;
 
@@ -12,6 +11,9 @@ public class Widget
 {
     /// <summary> The position and size of the widget. </summary>
     public Rect Rect { get; set; }
+
+    /// <summary> The state of the widget. </summary>
+    public WidgetState State { get; set; }
 
     /// <summary> The position and size of the widget in world space. </summary>
     public Rect WorldRect
@@ -42,9 +44,6 @@ public class Widget
 
     /// <summary> The child widgets. </summary>
     public IReadOnlyList<Widget> Children => children;
-
-    /// <summary> Whether the widget is currently hovered. </summary>
-    public bool IsHovered { get; private set; } = false;
 
     /// <summary> Invoked when the <see cref="Rect"/> is clicked. </summary>
     public event Action? Clicked;
@@ -86,7 +85,7 @@ public class Widget
     public virtual void Draw()
     {
         Rect refRect = WorldRect;
-        if (IsHovered)
+        if (State == WidgetState.Hovered)
         {
             PaintEngine.DrawRect(ref refRect, Style.HoverBackgroundColor ?? Style.BackgroundColor);
             return;
@@ -108,7 +107,7 @@ public class Widget
     public virtual void OnPointerEnter()
     {
         PointerEntered?.Invoke();
-        IsHovered = true;
+        State = WidgetState.Hovered;
     }
 
     /// <summary> Runs when the <see cref="Rect"/> is no longer hovered. </summary>
@@ -116,6 +115,12 @@ public class Widget
     public virtual void OnPointerExit()
     {
         PointerExited?.Invoke();
-        IsHovered = false;
+        State = WidgetState.Normal;
     }
+}
+
+public enum WidgetState
+{
+    Normal,
+    Hovered
 }
