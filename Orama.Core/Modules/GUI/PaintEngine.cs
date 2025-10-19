@@ -32,12 +32,12 @@ public static class PaintEngine
         {
             if (!font.GlyphMap.TryGetValue(c, out Rect glyphRect))
             {
-                // Skip unknown characters or treat as space
+                // Skip unknown characters
                 cursor.X += font.Size * 0.5f;
                 continue;
             }
 
-            // Create quad rect in screen space
+            // Create quad rect
             Rect charRect = new(cursor.X, cursor.Y, glyphRect.Width, glyphRect.Height);
             GUIRenderable charDrawable = new(charRect);
             charDrawable.Material = GUIMaterials.Text.Clone();

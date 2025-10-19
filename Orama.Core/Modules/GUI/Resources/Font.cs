@@ -1,9 +1,10 @@
 ﻿using Orama.Core.Modules.Rendering.Resources;
 using SixLabors.Fonts;
+using SixLabors.Fonts.Unicode;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-using SixLabors.ImageSharp.Drawing.Processing;
 
 namespace Orama.Core.Modules.GUI.Resources;
 
@@ -100,12 +101,18 @@ public class Font
 
         foreach (char c in DefaultCharacters)
         {
-            var glyphRect = TextMeasurer.MeasureSize(c.ToString(), new TextOptions(font) { VerticalAlignment = VerticalAlignment.Top, HorizontalAlignment = HorizontalAlignment.Left });
-            int glyphWidth = (int)System.Math.Ceiling(glyphRect.Width) + padding * 2;
+            if (!font.TryGetGlyphs(new CodePoint(c), out var glyphs) || glyphs == null || glyphs.Count == 0)
+                continue;
 
+            var glyphMetrics = glyphs[0].GlyphMetrics;
 
-            var img = new Image<Rgba32>(glyphWidth, lineHeight);
-            int baselineOffset = (int)System.Math.Ceiling(ascender * font.Size / font.FontMetrics.UnitsPerEm) + padding;
+            // Convert from font units to pixels
+            float scale = font.Size / font.FontMetrics.UnitsPerEm;
+            int glyphWidth = (int)System.Math.Ceiling(glyphMetrics.AdvanceWidth * scale) + padding;
+            int glyphHeight = lineHeight;
+
+            var img = new Image<Rgba32>(glyphWidth, glyphHeight);
+            int baselineOffset = (int)System.Math.Ceiling(ascender * scale) + padding;
             img.Mutate(ctx =>
             {
                 ctx.Clear(SixLabors.ImageSharp.Color.Transparent);
@@ -180,15 +187,23 @@ public class Font
         if (string.IsNullOrEmpty(text))
             return new Orama.Math.Vector2(0, 0);
 
-        var size = TextMeasurer.MeasureSize(text, new TextOptions(font)
-        {
-            VerticalAlignment = VerticalAlignment.Top,
-            HorizontalAlignment = HorizontalAlignment.Left
-        });
+        float minX = float.MaxValue, maxX = 0;
+        float minY = float.MaxValue, maxY = 0;
+        float cursorX = 0;
 
-        return new Orama.Math.Vector2(
-            (float)size.Width + 15 * 2,
-            (float)size.Height + 4 * 2
-        );
+        foreach (char c in text)
+        {
+            if (!GlyphMap.TryGetValue(c, out var glyphRect))
+                continue;
+
+            minX = System.Math.Min(minX, cursorX);
+            maxX = System.Math.Max(maxX, cursorX + glyphRect.Width);
+            minY = System.Math.Min(minY, 0);
+            maxY = System.Math.Max(maxY, glyphRect.Height);
+
+            cursorX += glyphRect.Width;
+        }
+
+        return new Orama.Math.Vector2(maxX - minX, maxY - minY);
     }
 }
