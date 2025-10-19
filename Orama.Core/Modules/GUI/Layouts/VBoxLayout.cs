@@ -7,8 +7,6 @@ namespace Orama.Core.Modules.GUI.Layouts;
 /// </summary>
 public class VBoxLayout : Layout
 {
-    /// <summary> Number of columns. </summary>
-    public int Columns { get; set; } = 3;
 
     public override void LayoutChildren()
     {

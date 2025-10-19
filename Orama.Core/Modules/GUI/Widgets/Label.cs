@@ -23,6 +23,8 @@ public class Label : Widget
 
     public override void Draw(Style style)
     {
+        base.Draw(style);
+
         PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);
     }
 }

@@ -11,4 +11,7 @@ public class Style
 {
     /// <summary> The background color. </summary>
     public Color BackgroundColor { get; set; }
+
+    /// <summary> The color of text. </summary>
+    public Color TextColor { get; set; }
 }

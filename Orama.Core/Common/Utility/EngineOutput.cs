@@ -6,15 +6,21 @@ namespace Orama.Core.Common.Utility;
 /// </summary>
 public static class EngineOutput
 {
+    /// <summary> The current output. </summary>
+    public static List<string> Output = new();
+
     /// <summary> Output an exception. </summary>
     public static void Exception(Exception ex)
     {
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Red;
 
-        Console.Error.WriteLine("[Exception] " + ex);
+        string output = "[Exception] " + ex;
+        Console.Error.WriteLine(output);
 
         Console.ForegroundColor = prevColor;
+
+        Output.Add(output);
     }
 
     /// <summary> Output a message. </summary>
@@ -23,9 +29,12 @@ public static class EngineOutput
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Gray;
 
-        Console.WriteLine("[Log] " + message);
+        string output = "[Log] " + message;
+        Console.WriteLine(message);
 
         Console.ForegroundColor = prevColor;
+
+        Output.Add(output);
     }
 
     /// <summary> Output a warning. </summary>
@@ -34,8 +43,11 @@ public static class EngineOutput
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Yellow;
 
-        Console.WriteLine("[Warning] " + message);
+        string output = "[Warning] " + message;
+        Console.WriteLine(output);
 
         Console.ForegroundColor = prevColor;
+
+        Output.Add(output);
     }
 }

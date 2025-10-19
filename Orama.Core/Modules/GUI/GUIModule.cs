@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 using Orama.Core.Modules.GUI.Layouts;
 using Orama.Core.Modules.GUI.Styling;
 using Orama.Core.Modules.GUI.Widgets;
@@ -28,36 +29,21 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
 
         Widget background = new();
-        background.Rect = new Rect(0, 450, 0, 300);
+        background.Rect = new Rect(200, 200, 300, 200);
         background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
-        background.HorizontalSizePolicy = SizePolicy.Expand;
-        background.VerticalSizePolicy = SizePolicy.Expand;
         background.Layout = new VBoxLayout();
+        background.Layout.Spacing = 2;
 
-        Label label = new("Control Panel");
-        label.Rect = new Rect(10, 10, 0, 0);
-
-
-        Button downButton = new();
-        downButton.Text = "Move Down";
-        downButton.HorizontalSizePolicy = SizePolicy.Expand;
-        downButton.Clicked += () =>
-        {
-            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position -= new Vector3(0, 1, 0);
-        };
-
-
-        Button upButton = new();
-        upButton.Text = "Move Up";
-        upButton.HorizontalSizePolicy = SizePolicy.Expand;
-        upButton.Clicked += () =>
-        {
-            ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.First().Transform.Position += new Vector3(0, 1, 0);
-        };
-
+        Label label = new("Console");
         background.AddChild(label);
-        background.AddChild(upButton);
-        background.AddChild(downButton);
+
+        string outputText = string.Join("\n", EngineOutput.Output);
+
+        Label output = new(outputText);
+        output.VerticalSizePolicy = SizePolicy.Expand;
+        output.HorizontalSizePolicy = SizePolicy.Expand;
+        output.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+        background.AddChild(output);
 
         Widgets.Add(background);
     }

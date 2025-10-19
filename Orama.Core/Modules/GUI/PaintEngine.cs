@@ -30,6 +30,13 @@ public static class PaintEngine
 
         foreach (char c in text)
         {
+            if (c == '\n')
+            {
+                cursor.X = position.X;
+                cursor.Y += font.Size;
+                continue;
+            }
+
             if (!font.GlyphMap.TryGetValue(c, out Rect glyphRect))
             {
                 // Skip unknown characters
