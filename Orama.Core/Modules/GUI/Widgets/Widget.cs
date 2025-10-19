@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Modules.GUI.Layouts;
 using Orama.Core.Modules.GUI.Styling;
+using Orama.Core.Modules.Input;
 using Orama.Math;
 
 
@@ -15,6 +16,9 @@ public class Widget
 
     /// <summary> The state of the widget. </summary>
     public WidgetState State { get; set; }
+
+    /// <summary> Whether the widget is currently focused. </summary>
+    public bool IsFocused { get; set; }
 
     /// <summary> Determines how the widget sizes vertically. </summary>
     public SizePolicy VerticalSizePolicy { get; set; } = SizePolicy.Fixed;
@@ -151,6 +155,9 @@ public class Widget
         PointerExited?.Invoke();
         State = WidgetState.Normal;
     }
+
+    /// <summary> Runs when a key is pressed whilst the widget is focused. </summary>
+    public virtual void OnKeyPress(Key key) { }
 }
 
 public enum WidgetState

@@ -27,6 +27,7 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseClicked += CursorClick;
         ModuleManager.GetModule<InputModule>()?.MouseReleased += CursorRelease;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
+        ModuleManager.GetModule<InputModule>()?.KeyPressed += KeyPress;
 
         Widget background = new();
         background.Rect = new Rect(200, 200, 300, 200);
@@ -44,6 +45,13 @@ public class GUIModule : BaseModule
         output.HorizontalSizePolicy = SizePolicy.Expand;
         output.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
         background.AddChild(output);
+
+        LineEdit input = new();
+        input.Text = "> ";
+        input.HorizontalSizePolicy = SizePolicy.Expand;
+        input.Rect = new Rect(0, 0, 0, 20);
+        input.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+        background.AddChild(input);
 
         Widgets.Add(background);
     }
@@ -82,7 +90,9 @@ public class GUIModule : BaseModule
 
         foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
         {
-            if (widget.WorldRect.Contains(position))
+            bool contains = widget.WorldRect.Contains(position);
+            widget.IsFocused = contains;
+            if (contains)
                 widget.OnClick();
         }
     }
@@ -111,6 +121,16 @@ public class GUIModule : BaseModule
 
             if (!contains && widget.State == WidgetState.Hovered)
                 widget.OnPointerExit();
+        }
+    }
+
+    /// <summary> Register a key press. </summary>
+    public void KeyPress(Key key)
+    {
+        foreach (var widget in Widgets.Concat(Widgets.SelectMany(w => w.DescendantsAndSelf())))
+        {
+            if (widget.IsFocused)
+                widget.OnKeyPress(key);
         }
     }
 }

@@ -19,6 +19,9 @@ public class InputModule : BaseModule
 
     /// <summary> Invoked when the mouse moves. </summary>
     public event Action<Vector2>? MouseMoved;
+    
+    /// <summary> Invoked when a key is pressed. </summary>
+    public event Action<Key>? KeyPressed;
 
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition { get { return input.Mice[0].Position; } set { input.Mice[0].Position = value; } }
@@ -69,6 +72,8 @@ public class InputModule : BaseModule
         { Key.Escape, Silk.NET.Input.Key.Escape }
     };
 
+    private static readonly Dictionary<Silk.NET.Input.Key, Key> keyMapInverse = keyMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+
     private static readonly Dictionary<MouseButton, Silk.NET.Input.MouseButton> mouseButtonMap = new()
     {
         { MouseButton.Left, Silk.NET.Input.MouseButton.Left },
@@ -100,6 +105,12 @@ public class InputModule : BaseModule
         input.Mice[0].MouseMove += (mouse, position) =>
         {
             MouseMoved?.Invoke(position);
+        };
+
+        input.Keyboards[0].KeyDown += (kb, key, i) =>
+        {
+            if (keyMapInverse.TryGetValue(key, out var localKey))
+                KeyPressed?.Invoke(localKey);
         };
 
         foreach (var key in keyMap.Values)
