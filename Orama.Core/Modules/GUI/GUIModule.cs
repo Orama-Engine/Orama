@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Modules.GUI.Layouts;
 using Orama.Core.Modules.GUI.Styling;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
@@ -30,6 +31,8 @@ public class GUIModule : BaseModule
         background.Rect = new Rect(0, 450, 0, 300);
         background.Style.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
         background.HorizontalSizePolicy = SizePolicy.Expand;
+        background.VerticalSizePolicy = SizePolicy.Expand;
+        background.Layout = new VBoxLayout();
 
         Label label = new("Control Panel");
         label.Rect = new Rect(10, 10, 0, 0);
@@ -37,7 +40,6 @@ public class GUIModule : BaseModule
 
         Button downButton = new();
         downButton.Text = "Move Down";
-        downButton.Rect = new Rect(0, 70, 100, 50);
         downButton.HorizontalSizePolicy = SizePolicy.Expand;
         downButton.Clicked += () =>
         {
@@ -47,7 +49,6 @@ public class GUIModule : BaseModule
 
         Button upButton = new();
         upButton.Text = "Move Up";
-        upButton.Rect = new Rect(0, 40, 100, 50);
         upButton.HorizontalSizePolicy = SizePolicy.Expand;
         upButton.Clicked += () =>
         {
@@ -55,8 +56,8 @@ public class GUIModule : BaseModule
         };
 
         background.AddChild(label);
-        background.AddChild(downButton);
         background.AddChild(upButton);
+        background.AddChild(downButton);
 
         Widgets.Add(background);
     }

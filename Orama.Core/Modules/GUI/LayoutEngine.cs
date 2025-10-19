@@ -43,6 +43,7 @@ public static class LayoutEngine
                 break;
         }
 
+        widget.Layout?.LayoutChildren();
         widget.Rect = new Rect(widget.Rect.X, widget.Rect.Y, width, height);
     }
 }

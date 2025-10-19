@@ -17,6 +17,8 @@ public class Label : Widget
     /// <summary> Initializes a new instance of the <see cref="Label"/> class with the specified text. </summary>
     public Label(string text) => Text = text;
 
+    public override Vector2 SizeHint => Font.Default.MeasureText(Text);
+
     public override void Draw()
     {
         PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);

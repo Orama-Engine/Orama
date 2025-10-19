@@ -1,4 +1,5 @@
-﻿using Orama.Core.Modules.GUI.Styling;
+﻿using Orama.Core.Modules.GUI.Layouts;
+using Orama.Core.Modules.GUI.Styling;
 using Orama.Math;
 
 
@@ -20,6 +21,17 @@ public class Widget
 
     /// <summary> Determines how the widget sizes horizontally. </summary>
     public SizePolicy HorizontalSizePolicy { get; set; } = SizePolicy.Fixed;
+
+    /// <summary> The layout of the widget. </summary>
+    public Layout? Layout
+    {
+        get;
+        set
+        {
+            field = value;
+            value?.Parent = this;
+        }
+    }
 
     /// <summary> The position and size of the widget in world space. </summary>
     public Rect WorldRect
