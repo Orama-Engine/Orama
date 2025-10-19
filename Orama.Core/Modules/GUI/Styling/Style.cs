@@ -13,5 +13,5 @@ public class Style
     public Color BackgroundColor { get; set; }
 
     /// <summary> The color of text. </summary>
-    public Color TextColor { get; set; }
+    public Color TextColor { get; set; } = Color.White;
 }

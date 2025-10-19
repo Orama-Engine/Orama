@@ -25,6 +25,6 @@ public class Label : Widget
     {
         base.Draw(style);
 
-        PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), Color.White, Font.Default);
+        PaintEngine.DrawText(Text, new Vector2(WorldRect.X, WorldRect.Y), style.TextColor, Font.Default);
     }
 }
