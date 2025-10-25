@@ -29,6 +29,9 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
         ModuleManager.GetModule<InputModule>()?.KeyPressed += KeyPress;
 
+        Label FPS = new("FPS: 0");
+        Application.OnUpdate += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
+
         Widget background = new();
         background.Rect = new Rect(200, 200, 300, 200);
         background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
@@ -49,6 +52,7 @@ public class GUIModule : BaseModule
         background.AddChild(button);
 
         Widgets.Add(background);
+        Widgets.Add(FPS);
     }
 
     public override void Dispose()

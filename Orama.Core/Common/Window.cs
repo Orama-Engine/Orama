@@ -17,6 +17,9 @@ public class Window
     /// <summary> The position of the window. </summary>
     public Vector2I Position => new(InternalWindow.Position.X, InternalWindow.Position.Y);
 
+    /// <summary> The current frame rate of the window. </summary>
+    public int FramesPerSecond => Time.Delta > 0 ? (int)(1 / Time.Delta) : 0;
+
     /// <summary> The title of the window. </summary>
     public string Title {  get => InternalWindow.Title; set => InternalWindow.Title = value; }
 
