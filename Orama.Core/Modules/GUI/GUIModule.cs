@@ -32,26 +32,21 @@ public class GUIModule : BaseModule
         Widget background = new();
         background.Rect = new Rect(200, 200, 300, 200);
         background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+        background.StyleNormal.Padding = 8;
         background.Layout = new VBoxLayout();
-        background.Layout.Spacing = 2;
+        background.Layout.Spacing = 4;
 
-        Label label = new("Console");
+        Label label = new("Test Label");
         background.AddChild(label);
 
-        string outputText = string.Join("\n", EngineOutput.Output);
+        Button button = new();
+        button.Text = "Test Button";
+        button.Clicked += () =>
+        {
+            EngineOutput.Log("Button clicked!");
+        };
 
-        Label output = new(outputText);
-        output.VerticalSizePolicy = SizePolicy.Expand;
-        output.HorizontalSizePolicy = SizePolicy.Expand;
-        output.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
-        background.AddChild(output);
-
-        LineEdit input = new();
-        input.Text = "> ";
-        input.HorizontalSizePolicy = SizePolicy.Expand;
-        input.Rect = new Rect(0, 0, 0, 20);
-        input.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
-        background.AddChild(input);
+        background.AddChild(button);
 
         Widgets.Add(background);
     }

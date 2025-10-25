@@ -7,33 +7,26 @@ namespace Orama.Core.Modules.GUI.Layouts;
 /// </summary>
 public class VBoxLayout : Layout
 {
-
+    /// <inheritdoc/>
     public override void LayoutChildren()
     {
         if (Parent == null)
             return;
 
-        float currentY = 0;
+        float currentY = Parent.StyleNormal.Padding;
 
 
         foreach (var widget in Parent.Children)
         {
-            // Determine width
             float width = widget.SizeHint.X;
             if (widget.HorizontalSizePolicy == SizePolicy.Expand)
-            {
-                width = Parent.Rect.Width;
-            }
+                width = Parent.Rect.Width - 2 * Parent.StyleNormal.Padding;
 
-            // Determine height
             float height = widget.SizeHint.Y;
             if (widget.VerticalSizePolicy == SizePolicy.Expand)
-            {
-                height = (Parent.Rect.Height - Spacing * (Parent.Children.Count - 1)) / Parent.Children.Count;  // Equally distribute space
-            }
+                height = (Parent.Rect.Height - 2 * Parent.StyleNormal.Padding - Spacing * (Parent.Children.Count - 1)) / Parent.Children.Count;
 
-
-            widget.Rect = new Rect(0, currentY, width, height);
+            widget.Rect = new Rect(Parent.StyleNormal.Padding, currentY, width, height);
 
             currentY += height + Spacing;
         }

@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Extensions.DependencyModel;
-using Orama.Core.Common;
-using System.Reflection;
+﻿using Orama.Core.Common;
 
 namespace Orama.Core.Modules;
 
