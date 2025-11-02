@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36518.9
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11123.170 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Core", "Orama.Core\Orama.Core.csproj", "{DF58B104-E7F0-4CCE-BEB4-0296293F0CDA}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Orama.Rendering\Orama.Rendering.csproj", "{35D62D7D-7AD6-4312-A76C-B5ACC3900723}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Orama.Math.csproj", "{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Editor", "Orama.Editor\Orama.Editor.csproj", "{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,32 +28,6 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseReleased += CursorRelease;
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
         ModuleManager.GetModule<InputModule>()?.KeyPressed += KeyPress;
-
-        Label FPS = new("FPS: N/A");
-        FPS.Rect = new Rect(5, 5, 0, 0);
-        Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
-
-        Widget background = new();
-        background.Rect = new Rect(200, 200, 300, 200);
-        background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
-        background.StyleNormal.Padding = 8;
-        background.Layout = new VBoxLayout();
-        background.Layout.Spacing = 4;
-
-        Label label = new("Test Label");
-        background.AddChild(label);
-
-        Button button = new();
-        button.Text = "Test Button";
-        button.Clicked += () =>
-        {
-            EngineOutput.Log("Button clicked!");
-        };
-
-        background.AddChild(button);
-
-        Widgets.Add(background);
-        Widgets.Add(FPS);
     }
 
     public override void Dispose()
