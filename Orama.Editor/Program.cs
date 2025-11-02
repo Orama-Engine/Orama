@@ -37,10 +37,16 @@ internal class Program
             FPS.Rect = new Rect(5, 5, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
-            HierarchyWindow window = new HierarchyWindow();
+            HierarchyWindow hierarchy = new HierarchyWindow();
+            hierarchy.Rect = new Rect(200, 200, 300, 200);
+
+            InspectorWindow inspector = new InspectorWindow();
+            inspector.Rect = new Rect(500, 200, 300, 200);
+            hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
 
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(window);
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);
         };
 
         Application.OnExit += () =>

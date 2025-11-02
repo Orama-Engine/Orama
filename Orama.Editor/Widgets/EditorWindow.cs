@@ -1,7 +1,9 @@
 ﻿using Orama.Core.Modules;
 using Orama.Core.Modules.GUI;
+using Orama.Core.Modules.GUI.Layouts;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
+using Orama.Math;
 
 namespace Orama.Editor.Widgets;
 
@@ -19,6 +21,11 @@ public class EditorWindow : Widget
 
     public EditorWindow()
     {
+        StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
+        StyleNormal.Padding = 8;
+        Layout = new VBoxLayout();
+        Layout.Spacing = 4;
+
         Label title = new Label(Title);
         AddChild(title);
     }
