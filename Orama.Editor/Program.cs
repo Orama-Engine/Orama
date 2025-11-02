@@ -37,30 +37,10 @@ internal class Program
             FPS.Rect = new Rect(5, 5, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
-            EditorWindow background = new();
-            background.Rect = new Rect(200, 200, 300, 200);
-            background.StyleNormal.BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.25f);
-            background.StyleNormal.Padding = 8;
-            background.Layout = new VBoxLayout();
-            background.Layout.Spacing = 4;
+            HierarchyWindow window = new HierarchyWindow();
 
-            Label inspectorLabel = new("Inspector");
-            background.AddChild(inspectorLabel);
-
-            foreach (var entity in ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities ?? Enumerable.Empty<Entity>())
-            {
-                Button button = new();
-                button.Text = entity.Name;
-                button.Clicked += () =>
-                {
-                    EngineOutput.Log($"{entity.Name} clicked!");
-                };
-
-                background.AddChild(button);
-            }
-
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(background);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(window);
         };
 
         Application.OnExit += () =>

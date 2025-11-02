@@ -2,7 +2,6 @@
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
-using Orama.Math;
 
 namespace Orama.Editor.Widgets;
 
@@ -11,9 +10,18 @@ namespace Orama.Editor.Widgets;
 /// </summary>
 public class EditorWindow : Widget
 {
+    /// <summary> The title of the window. </summary>
+    public virtual string Title { get; set; } = "Editor Window";
+
     private bool _dragging;
     private float _dragOffsetX;
     private float _dragOffsetY;
+
+    public EditorWindow()
+    {
+        Label title = new Label(Title);
+        AddChild(title);
+    }
 
     /// <inheritdoc/>
     public override void OnClick()
