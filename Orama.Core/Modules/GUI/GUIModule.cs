@@ -29,8 +29,9 @@ public class GUIModule : BaseModule
         ModuleManager.GetModule<InputModule>()?.MouseMoved += UpdateCursorPosition;
         ModuleManager.GetModule<InputModule>()?.KeyPressed += KeyPress;
 
-        Label FPS = new("FPS: 0");
-        Application.OnUpdate += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
+        Label FPS = new("FPS: N/A");
+        FPS.Rect = new Rect(5, 5, 0, 0);
+        Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
         Widget background = new();
         background.Rect = new Rect(200, 200, 300, 200);
