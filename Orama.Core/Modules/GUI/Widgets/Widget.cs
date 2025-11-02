@@ -82,6 +82,9 @@ public class Widget
     /// <summary> Invoked when the <see cref="Rect"/> is no longer hovered. </summary>
     public event Action? PointerExited;
 
+    /// <summary> Invoked when the cursor is moved in the <see cref="Rect"/>. </summary>
+    public event Action? PointerMoved;
+
     private List<Widget> children = new();
 
     /// <summary> Initializes a new instance of the <see cref="Widget"/> class. </summary>
@@ -155,6 +158,10 @@ public class Widget
         PointerExited?.Invoke();
         State = WidgetState.Normal;
     }
+
+    /// <summary> Runs when the cursor is moved in the <see cref="Rect"/>. </summary>
+    /// <remarks> The default implementation invokes the <see cref="PointerMoved"/> event. </remarks>
+    public virtual void OnPointerMove() => PointerMoved?.Invoke();
 
     /// <summary> Runs when a key is pressed whilst the widget is focused. </summary>
     public virtual void OnKeyPress(Key key) { }

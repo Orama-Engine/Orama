@@ -93,6 +93,9 @@ public class GUIModule : BaseModule
             if (contains && widget.State != WidgetState.Hovered)
                 widget.OnPointerEnter();
 
+            if (contains)
+                widget.OnPointerMove();
+
             if (!contains && widget.State == WidgetState.Hovered)
                 widget.OnPointerExit();
         }

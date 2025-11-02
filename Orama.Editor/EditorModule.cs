@@ -1,6 +1,6 @@
 ﻿using Orama.Core.Modules;
 
-namespace Orama.Editor.Modules.Editor;
+namespace Orama.Editor;
 
 /// <summary>
 /// Module responsible for editor-specific functionality.
