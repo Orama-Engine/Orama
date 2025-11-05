@@ -1,6 +1,8 @@
 ﻿using Orama.Core.Modules;
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.GUI.Layouts;
+using Orama.Core.Modules.GUI.Resources;
+using Orama.Core.Modules.GUI.Styling;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Math;
@@ -15,9 +17,9 @@ public class EditorWindow : Widget
     /// <summary> The title of the window. </summary>
     public virtual string Title { get; set; } = "Editor Window";
 
-    private bool _dragging;
-    private float _dragOffsetX;
-    private float _dragOffsetY;
+    private bool dragging;
+    private float dragOffsetX;
+    private float dragOffsetY;
 
     public EditorWindow()
     {
@@ -31,6 +33,16 @@ public class EditorWindow : Widget
     }
 
     /// <inheritdoc/>
+    public override void Draw(Style style)
+    {
+        base.Draw(style);
+
+        // Draw another rect behind the title
+        Rect titleRect = new Rect(Rect.X, Rect.Y, Rect.Width, Font.Default.MeasureText(Title).Y + style.Padding);
+        PaintEngine.DrawRect(ref titleRect, style.BackgroundColor);
+    }
+
+    /// <inheritdoc/>
     public override void OnClick()
     {
         base.OnClick();
@@ -39,10 +51,10 @@ public class EditorWindow : Widget
         var input = ModuleManager.GetModule<InputModule>();
         if (input == null) return;
 
-        _dragging = true;
+        dragging = true;
 
-        _dragOffsetX = input.MousePosition.X - Rect.X;
-        _dragOffsetY = input.MousePosition.Y - Rect.Y;
+        dragOffsetX = input.MousePosition.X - Rect.X;
+        dragOffsetY = input.MousePosition.Y - Rect.Y;
     }
 
     /// <inheritdoc/>
@@ -50,7 +62,7 @@ public class EditorWindow : Widget
     {
         base.OnRelease();
 
-        _dragging = false;
+        dragging = false;
     }
 
     /// <inheritdoc/>
@@ -58,15 +70,15 @@ public class EditorWindow : Widget
     {
         base.OnPointerMove();
 
-        if (!_dragging)
+        if (!dragging)
             return;
 
         var input = ModuleManager.GetModule<InputModule>();
         if (input == null) return;
 
         Rect = new Rect(
-            input.MousePosition.X - _dragOffsetX,
-            input.MousePosition.Y - _dragOffsetY,
+            input.MousePosition.X - dragOffsetX,
+            input.MousePosition.Y - dragOffsetY,
             Rect.Width,
             Rect.Height
         );
