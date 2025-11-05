@@ -10,14 +10,15 @@ namespace Orama.Core.Modules.Physics;
 public class PhysicsModule : BaseModule
 {
     /// <summary> Gets the physics simulation world. </summary>
-    public World World { get; private set; } = new World();
+    public World? World { get; private set; }
 
     public override void Initialize()
     {
+        World = new World();
         World.SubstepCount = 4; // Default substep count
     }
     public override void Update()
     {
-        World.Step((float)Time.PreciseDelta, true);
+        World?.Step((float)Time.PreciseDelta, true);
     }
 }

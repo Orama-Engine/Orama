@@ -122,8 +122,8 @@ public class RigidBody : Component
         var physics = ModuleManager.GetModule<PhysicsModule>();
         if (physics != null)
         {
-            body = physics.World.CreateRigidBody();
-            body.IsStatic = IsStatic;
+            body = physics.World?.CreateRigidBody();
+            body?.IsStatic = IsStatic;
             AddShape(shape); // Attach initial shape
         }
     }
