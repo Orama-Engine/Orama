@@ -10,19 +10,19 @@ namespace Orama.Core.Common;
 public static class Application
 {
     /// <summary> Called when the application starts. </summary>
-    public static Action? OnStart { get; set; }
+    public static event Action? OnStart;
 
     /// <summary> Called when the application exits. </summary>
-    public static Action? OnExit { get; set; }
+    public static event Action? OnExit;
 
     /// <summary> Called when the application updates. </summary>
-    public static Action? OnUpdate { get; set; }
+    public static event Action? OnUpdate;
 
     /// <summary> Called when the application renders. </summary>
-    public static Action? OnRender { get; set; }
+    public static event Action? OnRender;
 
     /// <summary> Called when the application resizes. </summary>
-    public static Action<Vector2>? OnResize { get; set; }
+    public static event Action<Vector2>? OnResize;
 
     /// <summary> The resource provider. </summary>
     public static IResourceProvider ResourceProvider { get; set; } = null!;
