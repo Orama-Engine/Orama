@@ -11,4 +11,10 @@
     <ProjectReference Include="..\Orama.Core\Orama.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Assets\TranslateGizmo.fbx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

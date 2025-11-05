@@ -63,7 +63,7 @@ layout(location = 0) out vec2 v_UV;
 void main()
 {
     gl_Position = u_MVP * vec4(pos, 1.0);
-    v_UV = uv; // Pass UV to fragment shader
+    v_UV = uv;
 }
 ";
 

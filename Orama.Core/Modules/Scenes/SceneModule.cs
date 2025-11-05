@@ -24,7 +24,6 @@ public class SceneModule : BaseModule
         FlyController flyController = new FlyController();
         flyController.Name = "Camera";
         flyController.Transform.Position = new Vector3(0, 0, 0);
-        CurrentScene.Entities.Add(flyController);
 
         var floor = new DebugEntity();
         floor.Name = "Floor";
@@ -33,7 +32,6 @@ public class SceneModule : BaseModule
         JVector entSize = new JVector(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
         BoxShape entShape = new BoxShape(entSize);
         floor.AddComponent(new RigidBody(entShape, true));
-        CurrentScene.Entities.Add(floor);
 
         var cube = new DebugEntity();
         cube.Name = "Cube";
@@ -42,7 +40,6 @@ public class SceneModule : BaseModule
         BoxShape cubeShape = new BoxShape(cubeSize);
         cube.AddComponent(new RigidBody(cubeShape, false));
         cube.GetComponent<RigidBody>()?.AffectedByGravity = true;
-        CurrentScene.Entities.Add(cube);
 #endif
 
         CurrentScene.StartAll();

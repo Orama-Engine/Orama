@@ -1,4 +1,6 @@
 ﻿using Orama.Core.Common.Components;
+using Orama.Core.Modules;
+using Orama.Core.Modules.Scenes;
 using System.Reflection;
 
 namespace Orama.Core.Common.Entities;
@@ -30,6 +32,12 @@ public class Entity
     /// <summary> The components attached to the entity. </summary>
     public IReadOnlyList<Component> Components => components;
     private List<Component> components = new();
+
+    public Entity()
+    {
+        Transform.Entity = this;
+        ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.Add(this);
+    }
 
     /// <summary> Called when the entity is enabled. </summary>
     /// <remarks> The base implementation adds all implicit components and starts all components. </remarks>
