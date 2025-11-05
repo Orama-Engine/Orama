@@ -9,6 +9,7 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
@@ -32,6 +33,9 @@ internal class Program
         Application.OnStart += () =>
         {
             EngineOutput.Log("Hello World!");
+
+            Texture? cat = Application.ResourceProvider.GetResource<Texture>("cat.png");
+            EngineOutput.Log(cat?.Width.ToString() ?? "null");
 
             Label FPS = new("FPS: N/A");
             FPS.Rect = new Rect(5, 5, 0, 0);

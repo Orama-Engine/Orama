@@ -1,4 +1,5 @@
-﻿
+﻿using Orama.Core.Common.Resources;
+using Orama.Core.Common.Resources.Default;
 using Orama.Math;
 
 namespace Orama.Core.Common;
@@ -23,11 +24,19 @@ public static class Application
     /// <summary> Called when the application resizes. </summary>
     public static Action<Vector2>? OnResize { get; set; }
 
+    /// <summary> The resource provider. </summary>
+    public static IResourceProvider ResourceProvider { get; set; } = null!;
+
     /// <summary> The main window. </summary>
     public static Window Window { get; private set; } = null!;
 
-    public static void Initialize()
+    public static void Initialize(IResourceProvider? resourceProvider = null)
     {
+        if (resourceProvider == null)
+            resourceProvider = new DefaultResourceProvider();
+
+        ResourceProvider = resourceProvider;
+
         Window = new Window();
 
         Window.InternalWindow.Load += () => OnStart?.Invoke();
