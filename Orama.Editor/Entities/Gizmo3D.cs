@@ -18,6 +18,35 @@ internal class Gizmo3D : Entity
     [ImplicitComponent]
     private MeshRenderer meshRenderer = null!;
 
+    const string GIZMO_VERTEX = @"
+#version 450 core
+
+layout(location = 0) in vec3 pos;
+layout(location = 1) in vec3 normal;
+layout(location = 2) in vec2 uv;
+
+layout(std140, binding = 0) uniform ShaderParams
+{
+    mat4 u_MVP;
+};
+
+void main()
+{
+    gl_Position = u_MVP * vec4(pos, 1.0);
+}
+";
+
+    const string GIZMO_FRAGMENT = @"
+#version 450 core
+
+layout(location = 0) out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+}
+";
+
     public override void Start()
     {
         base.Start();
@@ -28,7 +57,10 @@ internal class Gizmo3D : Entity
             _ => throw new NotImplementedException()
         };
 
+        Material gizmoMaterial = new(GIZMO_VERTEX, GIZMO_FRAGMENT);
+
         meshRenderer.Mesh = Application.ResourceProvider.GetResource<Mesh>(gizmoMeshName);
+        meshRenderer.Mesh?.Material = gizmoMaterial;
     }
 }
 

@@ -6,7 +6,6 @@ using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
-using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 
 namespace Orama.Desktop;
