@@ -15,7 +15,8 @@ internal class OpenGLBuffer : ICommandBuffer
     private static readonly Dictionary<RenderFeature, EnableCap> featureMap = new()
     {
         { RenderFeature.CullFaces, EnableCap.CullFace },
-        { RenderFeature.Blending, EnableCap.Blend }
+        { RenderFeature.Blending, EnableCap.Blend },
+        {RenderFeature.DepthTest, EnableCap.DepthTest }
     };
     #endregion
 
@@ -23,7 +24,7 @@ internal class OpenGLBuffer : ICommandBuffer
     public void Clear(float r, float g, float b, float a)
     {
         Backend.GL.ClearColor(r, g, b, a);
-        Backend.GL.Clear((uint)ClearBufferMask.ColorBufferBit);
+        Backend.GL.Clear((uint)ClearBufferMask.ColorBufferBit | (uint)ClearBufferMask.DepthBufferBit);
     }
 
     /// <inheritdoc/>
@@ -31,4 +32,7 @@ internal class OpenGLBuffer : ICommandBuffer
 
     /// <inheritdoc/>
     public void DisableFeature(RenderFeature feature) => Backend.GL.Disable(featureMap[feature]);
+
+    /// <inheritdoc/>
+    public void SetDepthMask(bool flag) => Backend.GL.DepthMask(flag);
 }

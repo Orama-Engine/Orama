@@ -1,9 +1,10 @@
-﻿
-using Orama.Core.Common;
+﻿using Orama.Core.Common;
 using Orama.Core.Common.Entities;
 using Orama.Core.Common.Utility;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
+using Orama.Rendering;
+using Silk.NET.OpenGL;
 
 namespace Orama.Editor.Entities;
 

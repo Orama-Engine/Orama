@@ -17,6 +17,9 @@ public interface ICommandBuffer
 
     /// <summary> Disables a <see cref="RenderFeature"/>. </summary>
     void DisableFeature(RenderFeature feature);
+
+    /// <summary> Enables or disables writing to the depth buffer during rendering. </summary>
+    void SetDepthMask(bool flag);
 }
 
 /// <summary>
@@ -25,5 +28,6 @@ public interface ICommandBuffer
 public enum RenderFeature
 {
     CullFaces,
-    Blending
+    Blending,
+    DepthTest
 }

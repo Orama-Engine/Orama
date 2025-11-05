@@ -2,6 +2,7 @@
 using Orama.Core.Common.Components;
 using Orama.Core.Common.Utility;
 using Orama.Rendering;
+using Orama.Rendering.Backends;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
@@ -10,14 +11,17 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        Renderer.CommandBuffer.DisableFeature(Orama.Rendering.Backends.RenderFeature.Blending);
-        Renderer.CommandBuffer.EnableFeature(Orama.Rendering.Backends.RenderFeature.CullFaces);
+        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
+
+        Renderer.CommandBuffer.EnableFeature(RenderFeature.DepthTest);
+        Renderer.CommandBuffer.SetDepthMask(true);
+
+        Renderer.CommandBuffer.DisableFeature(RenderFeature.Blending);
+        Renderer.CommandBuffer.EnableFeature(RenderFeature.CullFaces);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
                 QueueObject(renderable);
-
-        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
 
         // TODO: Better camera target handling
         if (Camera.Main?.Target != null)
