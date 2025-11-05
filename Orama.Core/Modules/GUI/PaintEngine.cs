@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Modules.GUI.Resources;
 using Orama.Core.Modules.Rendering;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 
 namespace Orama.Core.Modules.GUI;
@@ -14,6 +15,16 @@ public static class PaintEngine
     {
         GUIRenderable drawable = new(rect);
         drawable.Material.SetParameter("u_Color", color);
+        ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
+    }
+
+    /// <summary> Draws a texture. </summary>
+    public static void DrawTexture(ref Rect rect, Texture texture)
+    {
+        GUIRenderable drawable = new(rect);
+        drawable.Material = GUIMaterials.TexturedRect.Clone();
+        drawable.Material.SetParameter("u_Texture", texture);
+        drawable.Material.SetParameter("u_Color", Color.White);
         ModuleManager.GetModule<RenderingModule>()?.RenderObject(drawable);
     }
 
@@ -66,7 +77,7 @@ public static class PaintEngine
 
             ModuleManager.GetModule<RenderingModule>()?.RenderObject(charDrawable);
 
-            cursor.X += glyphRect.Width; // advance cursor
+            cursor.X += glyphRect.Width;
         }
     }
 }

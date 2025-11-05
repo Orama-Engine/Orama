@@ -9,6 +9,7 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
@@ -44,9 +45,14 @@ internal class Program
             inspector.Rect = new Rect(500, 200, 300, 200);
             hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
 
+            Display textWidget = new();
+            textWidget.Texture = Application.ResourceProvider.GetResource<Texture>("Assets/Orama.png");
+            textWidget.Rect = new Rect(0, 0, 250, 250);
+
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(textWidget);
         };
 
         Application.OnExit += () =>
