@@ -1,6 +1,7 @@
 ﻿
 using Jitter2;
 using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 
 namespace Orama.Core.Modules.Physics;
 
@@ -17,6 +18,7 @@ public class PhysicsModule : BaseModule
         World = new World();
         World.SubstepCount = 4; // Default substep count
     }
+
     public override void Update()
     {
         World?.Step((float)Time.PreciseDelta, true);

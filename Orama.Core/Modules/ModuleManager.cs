@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Utility;
 
 namespace Orama.Core.Modules;
 
@@ -34,6 +35,8 @@ public static class ModuleManager
         Application.OnStart += module.Initialize;
         Application.OnExit += module.Dispose;
 
+        var name = module.GetType().Name.ToString();
+        EngineOutput.Log($"[ModuleManager] Registered module: {name}");
         return module;
     }
 
