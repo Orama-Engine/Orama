@@ -17,8 +17,6 @@ public class FlyController : Entity
     private float pitch;
     private float yaw;
 
-    private Texture? screenshot;
-
     bool cursorLocked = false;
 
     public override void Update()
@@ -57,19 +55,5 @@ public class FlyController : Entity
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
         Transform.Rotation = yawRot * pitchRot;
-
-        if (screenshot?.GetData() != null || screenshot?.GetData() != Array.Empty<byte>())
-        {
-            screenshot?.ToPng("screenshot.png");
-            Camera.Target = null;
-            screenshot = null;
-        }
-
-        // Take a screenshot
-        if (Input.IsKeyPressed(Key.Space))
-        {
-            screenshot = new Texture(Application.Window.Size.X, Application.Window.Size.Y, TextureDataType.RGBA8);
-            Camera.Target = screenshot;
-        }
     }
 }
