@@ -8,10 +8,9 @@ internal class GUIPass : RenderPass
 {
     public override void Render()
     {
+        Renderer.CommandBuffer.DisableFeature(Orama.Rendering.Backends.RenderFeature.DepthTest);
         Renderer.CommandBuffer.DisableFeature(Orama.Rendering.Backends.RenderFeature.CullFaces);
         Renderer.CommandBuffer.EnableFeature(Orama.Rendering.Backends.RenderFeature.Blending);
-        Renderer.CommandBuffer.EnableFeature(Orama.Rendering.Backends.RenderFeature.DepthTest);
-        Renderer.CommandBuffer.SetDepthMask(true);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "GUI")

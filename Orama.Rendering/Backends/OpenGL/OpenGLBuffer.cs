@@ -16,7 +16,7 @@ internal class OpenGLBuffer : ICommandBuffer
     {
         { RenderFeature.CullFaces, EnableCap.CullFace },
         { RenderFeature.Blending, EnableCap.Blend },
-        {RenderFeature.DepthTest, EnableCap.DepthTest }
+        { RenderFeature.DepthTest, EnableCap.DepthTest }
     };
     #endregion
 

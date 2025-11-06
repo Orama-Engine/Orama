@@ -11,10 +11,10 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
-
         Renderer.CommandBuffer.EnableFeature(RenderFeature.DepthTest);
         Renderer.CommandBuffer.SetDepthMask(true);
+
+        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
 
         Renderer.CommandBuffer.DisableFeature(RenderFeature.Blending);
         Renderer.CommandBuffer.EnableFeature(RenderFeature.CullFaces);

@@ -22,7 +22,10 @@ public class RenderingModule : BaseModule
         Application.OnResize +=  (size) => OnResize((int)size.X, (int)size.Y);
         Application.OnRender += Render;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL);
+        RendererOptions options = new();
+        options.Culling = CullingMode.Back;
+
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL, options);
     }
 
     public void Render() 
