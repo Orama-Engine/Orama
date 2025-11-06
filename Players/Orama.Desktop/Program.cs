@@ -39,7 +39,6 @@ internal class Program
         {
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
 
-            EngineOutput.Log("Orama!");
             FlyController flyController = new();
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 0, 0);

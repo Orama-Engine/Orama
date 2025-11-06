@@ -24,12 +24,12 @@ public static class EngineOutput
     }
 
     /// <summary> Output a message. </summary>
-    public static void Log(string message)
+    public static void Log(string message, string origin = "Log")
     {
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Gray;
 
-        string output = "[Log] " + message;
+        string output = $"[{origin}] {message}";
         Console.WriteLine(output);
 
         Console.ForegroundColor = prevColor;
