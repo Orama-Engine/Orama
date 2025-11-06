@@ -11,7 +11,7 @@ public class Scene
     /// <summary> All Entities in the Scene. </summary>
     public List<Entity> Entities { get; set; } = new();
 
-    internal void StartAll()
+    public void StartAll()
     {
         foreach (var entity in Entities)
         {

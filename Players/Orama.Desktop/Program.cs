@@ -1,12 +1,19 @@
-﻿using Orama.Core.Common;
+﻿using Jitter2.Collision.Shapes;
+using Jitter2.LinearMath;
+using Orama.Core.Common;
+using Orama.Core.Common.Entities;
 using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.GUI;
+using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
+using Orama.Core.Modules.Physics.Components;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
+using Orama.Core.Modules.Scenes.Resources;
+using Orama.Math;
 
 namespace Orama.Desktop;
 
@@ -16,15 +23,42 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
-        ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
 
+        var debugScene = new Scene();
+        ModuleManager.GetModule<SceneModule>()?.CurrentScene = debugScene;
+
+        var FPS = new Label("FPS: N/A");
+        FPS.Rect = new Rect(5, 5, 0, 0);
+
         Application.OnStart += () =>
         {
-            EngineOutput.Log("Hello World!");
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
+
+            EngineOutput.Log("Orama!");
+            FlyController flyController = new();
+            flyController.Name = "Camera";
+            flyController.Transform.Position = new Vector3(0, 0, 0);
+
+            var floor = new DebugEntity();
+            floor.Name = "Floor";
+            floor.Transform.Scale = new Vector3(10, 1, 10);
+            floor.Transform.Position = new Vector3(0, 0, 0);
+            JVector entSize = new JVector(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
+            BoxShape entShape = new BoxShape(entSize);
+            floor.AddComponent(new RigidBody(entShape, true));
+
+            var cube = new DebugEntity();
+            cube.Name = "Cube";
+            cube.Transform.Position = new Vector3(0, 100, 0);
+            JVector cubeSize = new JVector(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            BoxShape cubeShape = new BoxShape(cubeSize);
+            cube.AddComponent(new RigidBody(cubeShape, false));
+
+            ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };
 
         Application.OnExit += () =>
@@ -34,7 +68,7 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-
+            FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
         };
 
         Application.OnRender += () =>

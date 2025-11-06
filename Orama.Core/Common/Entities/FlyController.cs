@@ -8,7 +8,7 @@ using Orama.Rendering.Resources;
 
 namespace Orama.Core.Common.Entities;
 
-internal class FlyController : Entity
+public class FlyController : Entity
 {
     [ImplicitComponent] public Camera Camera { get; set; } = null!;
 
