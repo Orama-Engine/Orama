@@ -23,6 +23,7 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
+        ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
