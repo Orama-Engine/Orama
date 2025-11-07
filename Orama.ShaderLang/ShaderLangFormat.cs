@@ -10,47 +10,9 @@ public class ShaderLangFormat
     /// <summary> Parse a shader from a string. </summary>
     public static ShaderLangFormat FromSource(string source)
     {
-        var shader = new ShaderLangFormat();
-
         var lexer = new Lexer(source);
-        var tokens = lexer.Tokenize();
-
-        for (int i = 0; i < tokens.Count; i++)
-        {
-            var token = tokens[i];
-
-            if (token.Type == TokenType.Identifier && token.Value.Equals("pass", StringComparison.OrdinalIgnoreCase))
-            {
-                int valueIndex = i + 1;
-                if (valueIndex < tokens.Count && tokens[valueIndex].Type == TokenType.Equals)
-                    valueIndex++;
-
-                if (valueIndex < tokens.Count && (tokens[valueIndex].Type == TokenType.String || tokens[valueIndex].Type == TokenType.Identifier))
-                {
-                    shader.Pass = tokens[valueIndex].Value;
-                    i = valueIndex;
-                }
-            }
-
-            if (token.Type == TokenType.Hash)
-            {
-                int valueIndex = i + 1;
-                if (valueIndex < tokens.Count && tokens[valueIndex].Type == TokenType.Identifier)
-                {
-                    var key = tokens[valueIndex].Value;
-
-                    valueIndex++;
-                    if (valueIndex < tokens.Count && (tokens[valueIndex].Type == TokenType.String || tokens[valueIndex].Type == TokenType.Identifier))
-                    {
-                        var value = tokens[valueIndex].Value;
-                        shader.MetaData.Add(key, value);
-                        i = valueIndex;
-                    }
-                }
-            }
-        }
-
-        return shader;
+        var parser = new Parser.Parser(lexer.Tokenize());
+        return parser.Parse();
     }
 
     /// <summary> The pass this shader belongs to. </summary>

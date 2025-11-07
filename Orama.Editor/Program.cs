@@ -18,8 +18,9 @@ namespace Orama.Editor;
 internal class Program
 {
     const string SHADER_LANG_SOURCE = @"
-Pass = ""Test""
 #meta TestMetaData
+
+Pass = ""Test""
 ";
     static void Main(string[] args)
     {
