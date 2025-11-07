@@ -6,7 +6,6 @@ using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 using Orama.Rendering;
 
-
 namespace Orama.Editor.Entities;
 
 /// <summary>

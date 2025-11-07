@@ -1,7 +1,7 @@
 #vertex VertexEntryPoint
 #fragment FragmentEntryPoint
 
-Name = "Default/White"
+Name = "Default/Gizmo"
 Pass = "Opaque"
 
 Properties
@@ -10,7 +10,7 @@ Properties
 }
 
 Source
-{
+{   
     struct VSInput
     {
         float3 pos : POSITION;
