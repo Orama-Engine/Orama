@@ -18,10 +18,21 @@ namespace Orama.Editor;
 internal class Program
 {
     const string SHADER_LANG_SOURCE = @"
-#meta TestMetaData
+#vertex VertexEntryPoint
+#fragment FragmentEntryPoint
 
 Name = ""Default/Test""
 Pass = ""Opaque""
+
+Properties
+{
+    HLSL Properties Source Body
+}
+
+Source
+{
+    HLSL Source Body
+}
 ";
     static void Main(string[] args)
     {
@@ -39,9 +50,15 @@ Pass = ""Opaque""
             EngineOutput.Log("Hello World!");
 
             ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
+
+            foreach (var meta in format.MetaData)
+                EngineOutput.Log($"{meta.Key}: {meta.Value}");
+
             EngineOutput.Log(format.Name ?? "Name Not Found!");
             EngineOutput.Log(format.Pass ?? "Pass Not Found!");
-            EngineOutput.Log(format.MetaData["meta"] ?? "MetaData Not Found!");
+            EngineOutput.Log(format.Properties?.Body ?? "Body Not Found!");
+            EngineOutput.Log(format.Source?.Body ?? "Body Not Found!");
+
 
             FlyController flyController = new();
             flyController.Name = "Camera";

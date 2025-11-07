@@ -24,4 +24,27 @@ public class ShaderLangFormat
     /// <summary> The pass this shader belongs to. </summary>
     public string? Pass { get; set; }
 
+    /// <summary> The properties of the shader. </summary>
+    public ShaderLangProperties? Properties { get; set; }
+
+    /// <summary> The HLSL source code of the shader. </summary>
+    public ShaderLangSource? Source { get; set; }
+}
+
+/// <summary>
+/// Data representation of a shader property block.
+/// </summary>
+public class ShaderLangProperties
+{
+    /// <summary> The body of the property block. </summary>
+    public string? Body { get; set; }
+}
+
+/// <summary>
+/// Data representation of a shader source block.
+/// </summary>
+public class ShaderLangSource
+{
+    /// <summary> The body of the source block. </summary>
+    public string? Body { get; set; }
 }

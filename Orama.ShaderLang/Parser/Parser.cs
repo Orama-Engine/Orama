@@ -24,7 +24,7 @@ internal class Parser
 
             if (token.Type == TokenType.Identifier)
             {
-                ParseProperty(shader, token.Value);
+                ParseIdentifierOrBlock(shader);
             }
             else if (token.Type == TokenType.Hash)
             {
@@ -36,21 +36,48 @@ internal class Parser
         return shader;
     }
 
-    private void ParseProperty(ShaderLangFormat shader, string key)
+    private void ParseIdentifierOrBlock(ShaderLangFormat shader)
     {
-        Advance();
+        string key = Advance().Value;
 
+        // key = "value"
         if (Check(TokenType.Equals))
-            Advance();
-
-        if (Check(TokenType.String) || Check(TokenType.Identifier))
         {
-            string value = Advance().Value;
+            Advance();
+            if (Check(TokenType.String) || Check(TokenType.Identifier))
+            {
+                string value = Advance().Value;
+
+                var prop = typeof(ShaderLangFormat).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+                if (prop != null && prop.CanWrite && prop.PropertyType == typeof(string))
+                    prop.SetValue(shader, value);
+                else
+                    shader.MetaData[key] = value;
+            }
+        }
+        // Block {  }
+        else if (Check(TokenType.LeftBrace))
+        {
+            Advance();
+            string body = ParseBlockBody();
 
             var prop = typeof(ShaderLangFormat).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
-            if (prop != null && prop.CanWrite && prop.PropertyType == typeof(string))
-                prop.SetValue(shader, value);
+
+            if (prop != null)
+            {
+                object? instance = prop.GetValue(shader);
+                if (instance == null)
+                {
+                    instance = Activator.CreateInstance(prop.PropertyType);
+                    prop.SetValue(shader, instance);
+                }
+
+                var bodyProp = prop.PropertyType.GetProperty("Body", BindingFlags.Public | BindingFlags.Instance);
+                if (bodyProp != null && bodyProp.CanWrite && bodyProp.PropertyType == typeof(string))
+                    bodyProp.SetValue(instance, body);
+            }
         }
     }
 
@@ -72,6 +99,23 @@ internal class Parser
             string value = Advance().Value;
             shader.MetaData[key] = value;
         }
+    }
+
+
+    private string ParseBlockBody()
+    {
+        int start = pos;
+        int braceCount = 1;
+
+        while (!IsAtEnd() && braceCount > 0)
+        {
+            var token = Advance();
+            if (token.Type == TokenType.LeftBrace) braceCount++;
+            else if (token.Type == TokenType.RightBrace) braceCount--;
+        }
+
+        var bodyTokens = tokens.GetRange(start, pos - start - 1);
+        return string.Join(" ", bodyTokens.ConvertAll(t => t.Value));
     }
 
     private Token Peek() => tokens[pos];
