@@ -151,10 +151,8 @@ public class RigidBody : Component
 
     public override void Start()
     {
-        // TODO: Set initial position and rotation
+        // Synchronize body's position with entity's position
         body?.Position = new JVector(Entity.Transform.Position.X, Entity.Transform.Position.Y, Entity.Transform.Position.Z);
-        // Setting initial rotation currently breaks things, commented out temporarily.
-        // body?.Orientation = new JQuaternion(Entity.Transform.Rotation.X, Entity.Transform.Rotation.Y, Entity.Transform.Rotation.Z, Entity.Transform.Rotation.W);
     }
 
     /// <summary> Adds a shape to the rigid body, enabling collision detection and physical interactions for the specified shape. </summary>
@@ -162,6 +160,14 @@ public class RigidBody : Component
     public void AddShape(RigidBodyShape shape)
     {
         body?.AddShape(shape);
+
+        // Synchronize static body's orientation with entity's rotation
+        // This has to be done after adding a shape due to the current backend's limitations.
+        // Dynamic bodies dissapear if their initial orientation is set for some reason.
+        if (body?.IsStatic == true)
+        {
+            body.Orientation = new JQuaternion(Entity.Transform.Rotation.X, Entity.Transform.Rotation.Y, Entity.Transform.Rotation.Z, Entity.Transform.Rotation.W);
+        }
     }
 
     /// <summary> Removes the specified shape from the rigid body, detaching it from physics calculations. </summary>
