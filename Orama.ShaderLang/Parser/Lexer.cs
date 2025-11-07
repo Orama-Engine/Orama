@@ -66,7 +66,8 @@ internal class Lexer
             {
                 tokens.Add(ReadNumber());
                 continue;
-            } else
+            } 
+            else
             {
                 tokens.Add(ReadIdentifier());
                 continue;

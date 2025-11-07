@@ -31,6 +31,23 @@ public class ShaderLangFormat
                     i = valueIndex;
                 }
             }
+
+            if (token.Type == TokenType.Hash)
+            {
+                int valueIndex = i + 1;
+                if (valueIndex < tokens.Count && tokens[valueIndex].Type == TokenType.Identifier)
+                {
+                    var key = tokens[valueIndex].Value;
+
+                    valueIndex++;
+                    if (valueIndex < tokens.Count && (tokens[valueIndex].Type == TokenType.String || tokens[valueIndex].Type == TokenType.Identifier))
+                    {
+                        var value = tokens[valueIndex].Value;
+                        shader.MetaData.Add(key, value);
+                        i = valueIndex;
+                    }
+                }
+            }
         }
 
         return shader;
@@ -38,4 +55,7 @@ public class ShaderLangFormat
 
     /// <summary> The pass this shader belongs to. </summary>
     public string? Pass { get; set; }
+
+    /// <summary> Metadata defined in the shader. </summary>
+    public Dictionary<string, string> MetaData { get; set; } = new Dictionary<string, string>();
 }

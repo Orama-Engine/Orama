@@ -19,6 +19,7 @@ internal class Program
 {
     const string SHADER_LANG_SOURCE = @"
 Pass = ""Test""
+#meta TestMetaData
 ";
     static void Main(string[] args)
     {
@@ -37,6 +38,7 @@ Pass = ""Test""
 
             ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
             EngineOutput.Log(format.Pass ?? "N/A");
+            EngineOutput.Log(format.MetaData["meta"] ?? "N/A");
 
             FlyController flyController = new();
             flyController.Name = "Camera";
