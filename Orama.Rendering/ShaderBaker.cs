@@ -1,5 +1,6 @@
 ﻿using Vortice.ShaderCompiler;
 using Orama.Rendering.Resources;
+using System.Collections.Concurrent;
 
 namespace Orama.Rendering;
 
@@ -8,7 +9,8 @@ namespace Orama.Rendering;
 /// </summary>
 public static class ShaderBaker
 {
-    private static Vortice.ShaderCompiler.Compiler compiler;
+    private static readonly Compiler compiler = new();
+    private static readonly ConcurrentDictionary<ulong, GraphicsShader> cache = new();
 
     static ShaderBaker()
     {
@@ -16,38 +18,66 @@ public static class ShaderBaker
     }
 
     /// <summary> Compiles GLSL source to a <see cref="GraphicsShader"/>. </summary>
-    public static GraphicsShader GLSLToShader(string vertex, string fragment)
-    {
-        return Compile(vertex, fragment, SourceLanguage.GLSL);
-    }
+    public static GraphicsShader GLSLToShader(string vertex, string fragment) => CompileCached(vertex, fragment, SourceLanguage.GLSL);
 
     /// <summary> Compiles HLSL source to a <see cref="GraphicsShader"/>. </summary>
-    public static GraphicsShader HLSLToShader(string vertex, string fragment)
+    public static GraphicsShader HLSLToShader(string vertex, string fragment) => CompileCached(vertex, fragment, SourceLanguage.HLSL);
+
+    private static GraphicsShader CompileCached(string vert, string frag, SourceLanguage lang)
     {
-        return Compile(vertex, fragment, SourceLanguage.HLSL);
+        ulong key = ComputeKey(vert, frag, lang);
+
+        if (cache.TryGetValue(key, out var existing))
+            return existing;
+
+        var shader = CompileFresh(vert, frag, lang);
+        cache[key] = shader;
+        return shader;
     }
 
-
-    private static GraphicsShader Compile(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
+    private static GraphicsShader CompileFresh(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
     {
-        CompilerOptions options = new();
-        options.SourceLanguage = sourceLang;
-        options.EntryPoint = "main";
+        CompilerOptions opts = new()
+        {
+            SourceLanguage = sourceLang,
+            EntryPoint = "main"
+        };
 
-        options.ShaderStage = ShaderKind.VertexShader;
-        var vertResult = compiler.Compile(vertexSource, "vertex.shader", options);
-        if (vertResult.Status != CompilationStatus.Success)
-            throw new Exception("Vertex shader compilation failed: " + vertResult.ErrorMessage);
+        opts.ShaderStage = ShaderKind.VertexShader;
+        var vert = compiler.Compile(vertexSource, "vertex.shader", opts);
+        if (vert.Status != CompilationStatus.Success)
+            throw new Exception("Vertex shader compilation failed: " + vert.ErrorMessage);
 
-        options.ShaderStage = ShaderKind.FragmentShader;
-        var fragResult = compiler.Compile(fragmentSource, "fragment.shader", options);
-        if (fragResult.Status != CompilationStatus.Success)
-            throw new Exception("Fragment shader compilation failed: " + fragResult.ErrorMessage);
+        opts.ShaderStage = ShaderKind.FragmentShader;
+        var frag = compiler.Compile(fragmentSource, "fragment.shader", opts);
+        if (frag.Status != CompilationStatus.Success)
+            throw new Exception("Fragment shader compilation failed: " + frag.ErrorMessage);
 
-        GraphicsShader shader = new();
-        shader.VertexBytes = vertResult.Bytecode;
-        shader.FragmentBytes = fragResult.Bytecode;
+        return new GraphicsShader
+        {
+            VertexBytes = vert.Bytecode,
+            FragmentBytes = frag.Bytecode
+        };
+    }
 
-        return shader;
+    private static ulong ComputeKey(string vert, string frag, SourceLanguage lang)
+    {
+        ulong hash = 1469598103934665603ul;
+
+        void HashString(string s)
+        {
+            foreach (var c in s)
+                hash = (hash ^ (byte)c) * 1099511628211ul;
+        }
+
+        HashString(vert);
+        HashString(frag);
+
+        unchecked
+        {
+            hash ^= (ulong)lang << 32;
+        }
+
+        return hash;
     }
 }

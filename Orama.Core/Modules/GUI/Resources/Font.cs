@@ -5,6 +5,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.Buffers;
 
 namespace Orama.Core.Modules.GUI.Resources;
 
@@ -109,12 +110,23 @@ public class Font
 
         int lineHeight = (int)System.Math.Ceiling((ascender - descender + lineGap) * font.Size / font.FontMetrics.UnitsPerEm) + padding * 2;
 
+        var graphicsOptions = new DrawingOptions
+        {
+            GraphicsOptions = new GraphicsOptions
+            {
+                Antialias = Smooth
+            }
+        };
+
         foreach (char c in DefaultCharacters)
         {
             if (!font.TryGetGlyphs(new CodePoint(c), out var glyphs) || glyphs == null || glyphs.Count == 0)
                 continue;
 
             var glyphMetrics = glyphs[0].GlyphMetrics;
+
+            if (glyphMetrics.AdvanceWidth == 0)
+                continue;
 
             // Convert from font units to pixels
             float scale = font.Size / font.FontMetrics.UnitsPerEm;
@@ -126,16 +138,6 @@ public class Font
             img.Mutate(ctx =>
             {
                 ctx.Clear(SixLabors.ImageSharp.Color.Transparent);
-
-
-                var graphicsOptions = new DrawingOptions
-                {
-                    GraphicsOptions = new GraphicsOptions
-                    {
-                        Antialias = Smooth
-                    }
-                };
-
                 ctx.DrawText(graphicsOptions, c.ToString(), font, SixLabors.ImageSharp.Color.White, new PointF(padding, padding));
             });
 
@@ -166,25 +168,34 @@ public class Font
         }
 
         // Save atlas
-        byte[] pixelData = new byte[atlasImage.Width * atlasImage.Height * 4]; // RGBA8
-        atlasImage.ProcessPixelRows(accessor =>
-        {
-            for (int y = 0; y < accessor.Height; y++)
-            {
-                var rowSpan = accessor.GetRowSpan(y);
-                for (int x = 0; x < accessor.Width; x++)
-                {
-                    var pixel = rowSpan[x];
-                    int offset = (y * accessor.Width + x) * 4;
+        byte[] pixelData = ArrayPool<byte>.Shared.Rent(atlasImage.Width * atlasImage.Height * 4);
 
-                    // Store alpha in red channel
-                    pixelData[offset + 0] = pixel.A;
-                    pixelData[offset + 1] = 0;
-                    pixelData[offset + 2] = 0;
-                    pixelData[offset + 3] = 255;
+        try
+        {
+            atlasImage.ProcessPixelRows(accessor =>
+            {
+                for (int y = 0; y < accessor.Height; y++)
+                {
+                    var rowSpan = accessor.GetRowSpan(y);
+                    for (int x = 0; x < accessor.Width; x++)
+                    {
+                        var pixel = rowSpan[x];
+                        int offset = (y * accessor.Width + x) * 4;
+
+                        // Store alpha in red channel
+                        pixelData[offset + 0] = pixel.A;
+                        pixelData[offset + 1] = 0;
+                        pixelData[offset + 2] = 0;
+                        pixelData[offset + 3] = 255;
+                    }
                 }
-            }
-        });
+            });
+        } 
+        finally 
+        {
+            ArrayPool<byte>.Shared.Return(pixelData);
+        }
+
 
         Atlas = new Texture(atlasImage.Width, atlasImage.Height, Orama.Rendering.Resources.TextureDataType.RGBA8, pixelData);
 
