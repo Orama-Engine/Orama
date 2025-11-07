@@ -24,17 +24,13 @@ internal class Parser
 
             if (token.Type == TokenType.Identifier)
             {
-                Advance();
                 ParseProperty(shader, token.Value);
             }
             else if (token.Type == TokenType.Hash)
             {
-                Advance();
                 ParseMetaData(shader);
                 continue;
             }
-
-            Advance();
         }
 
         return shader;
@@ -42,6 +38,8 @@ internal class Parser
 
     private void ParseProperty(ShaderLangFormat shader, string key)
     {
+        Advance();
+
         if (Check(TokenType.Equals))
             Advance();
 
@@ -59,6 +57,8 @@ internal class Parser
 
     private void ParseMetaData(ShaderLangFormat shader)
     {
+        Advance();
+
         if (!Check(TokenType.Identifier))
             return;
 

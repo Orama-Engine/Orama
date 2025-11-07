@@ -20,7 +20,8 @@ internal class Program
     const string SHADER_LANG_SOURCE = @"
 #meta TestMetaData
 
-Pass = ""Test""
+Name = ""Default/Test""
+Pass = ""Opaque""
 ";
     static void Main(string[] args)
     {
@@ -38,8 +39,9 @@ Pass = ""Test""
             EngineOutput.Log("Hello World!");
 
             ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
-            EngineOutput.Log(format.Pass ?? "N/A");
-            EngineOutput.Log(format.MetaData["meta"] ?? "N/A");
+            EngineOutput.Log(format.Name ?? "Name Not Found!");
+            EngineOutput.Log(format.Pass ?? "Pass Not Found!");
+            EngineOutput.Log(format.MetaData["meta"] ?? "MetaData Not Found!");
 
             FlyController flyController = new();
             flyController.Name = "Camera";

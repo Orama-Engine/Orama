@@ -15,9 +15,13 @@ public class ShaderLangFormat
         return parser.Parse();
     }
 
+    /// <summary> Metadata defined in the shader. </summary>
+    public Dictionary<string, string> MetaData { get; set; } = new Dictionary<string, string>();
+    
+    /// <summary> The name of the shader. </summary>
+    public string? Name { get; set; }
+
     /// <summary> The pass this shader belongs to. </summary>
     public string? Pass { get; set; }
 
-    /// <summary> Metadata defined in the shader. </summary>
-    public Dictionary<string, string> MetaData { get; set; } = new Dictionary<string, string>();
 }
