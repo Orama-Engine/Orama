@@ -1,4 +1,6 @@
 ﻿
+using System.Reflection;
+
 namespace Orama.ShaderLang.Parser;
 
 internal class Parser
@@ -22,12 +24,8 @@ internal class Parser
 
             if (token.Type == TokenType.Identifier)
             {
-                if (token.Value.Equals("pass", StringComparison.OrdinalIgnoreCase))
-                {
-                    Advance();
-                    ParsePass(shader);
-                    continue;
-                }
+                Advance();
+                ParseProperty(shader, token.Value);
             }
             else if (token.Type == TokenType.Hash)
             {
@@ -42,14 +40,19 @@ internal class Parser
         return shader;
     }
 
-    private void ParsePass(ShaderLangFormat shader)
+    private void ParseProperty(ShaderLangFormat shader, string key)
     {
         if (Check(TokenType.Equals))
             Advance();
 
         if (Check(TokenType.String) || Check(TokenType.Identifier))
         {
-            shader.Pass = Advance().Value;
+            string value = Advance().Value;
+
+            var prop = typeof(ShaderLangFormat).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+
+            if (prop != null && prop.CanWrite && prop.PropertyType == typeof(string))
+                prop.SetValue(shader, value);
         }
     }
 
