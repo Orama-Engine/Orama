@@ -49,7 +49,7 @@ internal class Program
             flyController.Start();
 
             Label FPS = new("FPS: N/A");
-            FPS.Rect = new Rect(5, 5, 0, 0);
+            FPS.Rect = new Rect(5, 25, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
             HierarchyWindow hierarchy = new HierarchyWindow();
@@ -59,9 +59,12 @@ internal class Program
             inspector.Rect = new Rect(500, 200, 300, 200);
             hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
 
+            MenuBar menuBar = new MenuBar();
+
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);
+            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(menuBar);
         };
 
         Application.OnExit += () =>

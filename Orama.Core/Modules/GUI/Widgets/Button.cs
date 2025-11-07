@@ -15,6 +15,12 @@ public class Button : Widget
     /// <inheritdoc/>
     public override Vector2 SizeHint => Font.Default.MeasureText(Text);
 
+    /// <summary> Initializes a new instance of the <see cref="Button"/> class with the specified text. </summary>
+    public Button(string text) : base() => Text = text;
+
+    /// <summary> Initializes a new instance of the <see cref="Button"/> class. </summary>
+    public Button() : base() { }
+
     public override void Draw(Style style)
     {
         base.Draw(style);
