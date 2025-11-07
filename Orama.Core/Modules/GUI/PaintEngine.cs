@@ -31,9 +31,6 @@ public static class PaintEngine
     /// <summary> Draws text. </summary>
     public static void DrawText(string text, Vector2 position, Color color, Font font)
     {
-        if (font.Atlas == null || font.GlyphMap.Count == 0)
-            font.RenderAtlas();
-
         if (string.IsNullOrEmpty(text) || font.Atlas == null || font.GlyphMap.Count == 0)
             return;
 

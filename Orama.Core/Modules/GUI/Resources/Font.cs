@@ -27,7 +27,17 @@ public class Font
 
     /// <summary> The font's atlas. </summary>
     /// <remarks> An atlas is a texture that contains all the characters in the font. </remarks>
-    public Texture? Atlas { get; set; }
+    public Texture? Atlas
+    {
+        get
+        {
+            if (field == null)
+                RenderAtlas();
+
+            return field;
+        }
+        private set => field = value;
+    }
 
     /// <summary> Map of each character to its rectangle in the atlas. </summary>
     public Dictionary<char, Rect> GlyphMap { get; } = new();
