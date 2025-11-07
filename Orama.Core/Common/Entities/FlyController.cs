@@ -13,6 +13,7 @@ public class FlyController : Entity
     [ImplicitComponent] public Camera Camera { get; set; } = null!;
 
     private float mouseSensitivity = 0.25f;
+    private float moveSpeed = 8.0f;
 
     private float pitch;
     private float yaw;
@@ -34,12 +35,12 @@ public class FlyController : Entity
         }
 
         // Movement
-        if (Input.IsKeyDown(Key.W)) Transform.Position += Transform.Forward * 0.1f;
-        if (Input.IsKeyDown(Key.S)) Transform.Position -= Transform.Forward * 0.1f;
-        if (Input.IsKeyDown(Key.A)) Transform.Position -= Transform.Right * 0.1f;
-        if (Input.IsKeyDown(Key.D)) Transform.Position += Transform.Right * 0.1f;
-        if (Input.IsKeyDown(Key.Q)) Transform.Position -= Transform.Up * 0.1f;
-        if (Input.IsKeyDown(Key.E)) Transform.Position += Transform.Up * 0.1f;
+        if (Input.IsKeyDown(Key.W)) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(Key.S)) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(Key.A)) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(Key.D)) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(Key.Q)) Transform.Position -= Transform.Up * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(Key.E)) Transform.Position += Transform.Up * moveSpeed * Time.Delta;
 
         if (!cursorLocked)
             return;

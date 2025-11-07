@@ -7,6 +7,7 @@ Pass = "Opaque"
 Properties
 {
     float4x4 u_MVP;
+    float4 Color;
 }
 
 Source
@@ -30,6 +31,6 @@ Source
 
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return float4(1.0, 1.0, 1.0, 1.0);
+        return Color;
     }
 }
