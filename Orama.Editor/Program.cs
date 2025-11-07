@@ -83,6 +83,10 @@ internal class Program
             hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
 
             MenuBar menuBar = new MenuBar();
+            MenuItem fileMenu = new MenuItem("File");
+            fileMenu.OnClick += () => { EngineOutput.Log("File Menu Clicked"); };
+
+            menuBar.AddMenuItem(fileMenu);
 
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
