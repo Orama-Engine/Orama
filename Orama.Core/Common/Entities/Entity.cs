@@ -94,6 +94,26 @@ public class Entity
         }
     }
 
+    /// <summary>
+    /// Destroys the specified entity and releases any associated resources.
+    /// </summary>
+    public void Destroy()
+    {
+        Enabled = false;
+
+        foreach (var component in Components.ToList())
+        {
+            component.Enabled = false;
+            component.Destroy();
+        }
+
+        var scene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
+        scene?.Entities.Remove(this);
+
+        components.Clear();
+        Transform = null!;
+    }
+
     #region Component Methods
     /// <summary> Adds a component to the entity. </summary>
     public Component AddComponent(Component component)

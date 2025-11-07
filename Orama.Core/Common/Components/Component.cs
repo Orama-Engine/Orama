@@ -19,4 +19,12 @@ public class Component
 
     /// <summary> Called every frame. </summary>
     public virtual void Update() { }
+
+    /// <summary> Called when the component is destroyed. </summary>
+    public virtual void Destroy()
+    {
+        Enabled = false;
+        Entity.RemoveComponent(this);
+        Entity = null!;
+    }
 }
