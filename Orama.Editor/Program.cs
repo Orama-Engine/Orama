@@ -33,6 +33,11 @@ internal class Program
         {
             EngineOutput.Log("Hello World!");
 
+            FlyController flyController = new();
+            flyController.Name = "Camera";
+            flyController.Transform.Position = new Vector3(0, 0, 0);
+            flyController.Start();
+
             Label FPS = new("FPS: N/A");
             FPS.Rect = new Rect(5, 5, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
