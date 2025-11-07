@@ -127,6 +127,28 @@ public class Widget
         child.Parent = this;
     }
 
+    /// <summary> Removes a child widget of type <typeparamref name="T"/>. </summary>
+    /// <typeparam name="T"> The type of the child widget to remove. </typeparam>
+    public void RemoveChild<T>() where T : Widget
+    {
+        var child = children.OfType<T>().FirstOrDefault();
+        if (child != null)
+        {
+            children.Remove(child);
+            child.Parent = null;
+        }
+    }
+
+    /// <summary> Removes a child widget. </summary>
+    public void RemoveChild(Widget child)
+    {
+        if (children.Contains(child))
+        {
+            children.Remove(child);
+            child.Parent = null;
+        }
+    }
+
     /// <summary> Draws the widget using the <see cref="PaintEngine"/>. </summary>
     /// <param name="style"> The style to use. </param>
     public virtual void Draw(Style style)
