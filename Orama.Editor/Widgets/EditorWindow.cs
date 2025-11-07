@@ -17,6 +17,9 @@ public class EditorWindow : Widget
     /// <summary> The title of the window. </summary>
     public virtual string Title { get; set; } = "Editor Window";
 
+    /// <summary> The rect of the window title bar. </summary>
+    public Rect TitleRect => new Rect(Rect.X, Rect.Y, Rect.Width, Font.Default.MeasureText(Title).Y);
+
     private bool dragging;
     private float dragOffsetX;
     private float dragOffsetY;
@@ -49,7 +52,11 @@ public class EditorWindow : Widget
 
         // Drag Window
         var input = ModuleManager.GetModule<InputModule>();
-        if (input == null) return;
+        if (input == null)
+            return;
+
+        if (!TitleRect.Contains(input.MousePosition))
+            return;
 
         dragging = true;
 
@@ -74,7 +81,8 @@ public class EditorWindow : Widget
             return;
 
         var input = ModuleManager.GetModule<InputModule>();
-        if (input == null) return;
+        if (input == null)
+            return;
 
         Rect = new Rect(
             input.MousePosition.X - dragOffsetX,
