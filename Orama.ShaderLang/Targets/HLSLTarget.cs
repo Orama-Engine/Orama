@@ -24,6 +24,7 @@ cbuffer ShaderParams : register(b0)
 
         string sourceBody = format.Source?.Body ?? "";
 
+
         string vertex = "";
         string fragment = "";
 
@@ -33,7 +34,7 @@ cbuffer ShaderParams : register(b0)
             vertex = $@"
 {properties}
 
-{sourceBody}
+{sourceBody.Replace(vertexEntry, "main")}
 ";
         }
 
@@ -43,7 +44,7 @@ cbuffer ShaderParams : register(b0)
             fragment = $@"
 {properties}
 
-{sourceBody}
+{sourceBody.Replace(fragmentEntry, "main")}
 ";
         }
 

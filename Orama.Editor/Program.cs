@@ -8,6 +8,8 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
+using Orama.Core.Modules.Rendering.Components;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
@@ -29,15 +31,32 @@ Pass = ""Opaque""
 
 Properties
 {
-    float3 pos;
-    float3 normal;
-    float2 uv;
     float4x4 u_MVP;
 }
 
 Source
 {
+    struct VSInput
+    {
+        float3 pos : POSITION;
+    };
 
+    struct VSOutput
+    {
+        float4 pos : SV_POSITION;
+    };
+
+    VSOutput VertexEntryPoint(VSInput input)
+    {
+        VSOutput output;
+        output.pos = mul(u_MVP, float4(input.pos, 1.0));
+        return output;
+    }
+
+    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
+    {
+        return float4(1.0, 1.0, 1.0, 1.0);
+    }
 }
 ";
     static void Main(string[] args)
@@ -56,6 +75,10 @@ Source
             EngineOutput.Log("Hello World!");
 
             ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
+            (string, string) hlsl = HLSLTarget.Compile(format);
+
+            EngineOutput.Log(hlsl.Item1);
+            EngineOutput.Log(hlsl.Item2);
 
             foreach (var meta in format.MetaData)
                 EngineOutput.Log($"{meta.Key}: {meta.Value}");
@@ -63,16 +86,15 @@ Source
             EngineOutput.Log(format.Name ?? "Name Not Found!");
             EngineOutput.Log(format.Pass ?? "Pass Not Found!");
 
-            (string, string) compiled = HLSLTarget.Compile(format);
-            EngineOutput.Log(compiled.Item1);
-            EngineOutput.Log(compiled.Item2);
-            GraphicsShader shader = ShaderBaker.HLSLToShader(compiled.Item1, compiled.Item2);
-            (string, string) glsl = ShaderUnbaker.SpirVToGLSL(shader.VertexBytes, shader.FragmentBytes);
+            
+            Shader shader = new(SHADER_LANG_SOURCE);
 
-            EngineOutput.Log(glsl.Item1);
-            EngineOutput.Log(glsl.Item2);
-
-
+            Entity testMesh = new();
+            MeshRenderer meshRenderer = new();
+            testMesh.AddComponent(meshRenderer);
+            meshRenderer.Mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+            meshRenderer.Mesh?.Material = new(shader);
+            testMesh.Start();
 
             FlyController flyController = new();
             flyController.Name = "Camera";

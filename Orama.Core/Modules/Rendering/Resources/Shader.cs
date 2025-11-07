@@ -1,5 +1,7 @@
 ﻿using Orama.Rendering;
 using Orama.Rendering.Resources;
+using Orama.ShaderLang;
+using Orama.ShaderLang.Targets;
 
 namespace Orama.Core.Modules.Rendering.Resources;
 
@@ -14,4 +16,12 @@ public class Shader
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified vertex and fragment shaders. </summary>
     public Shader(string vertexSource, string fragmentSource) => GraphicsShader = ShaderBaker.GLSLToShader(vertexSource, fragmentSource);
+
+    /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
+    public Shader(string shaderLangSource)
+    {
+        ShaderLangFormat format = ShaderLangFormat.FromSource(shaderLangSource);
+        (string, string) hlsl = HLSLTarget.Compile(format);
+        GraphicsShader = ShaderBaker.HLSLToShader(hlsl.Item1, hlsl.Item2);
+    }
 }
