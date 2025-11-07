@@ -40,6 +40,7 @@ internal class Program
             testMesh.AddComponent(meshRenderer);
             meshRenderer.Mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
             meshRenderer.Mesh?.Material = new(shader);
+            meshRenderer.Mesh?.Material.SetParameter("Color", new Vector4(1, 0, 0, 1));
             testMesh.Start();
 
             FlyController flyController = new();
