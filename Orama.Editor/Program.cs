@@ -85,8 +85,23 @@ internal class Program
             MenuBar menuBar = new MenuBar();
             MenuItem fileMenu = new MenuItem("File");
             fileMenu.OnClick += () => { EngineOutput.Log("File Menu Clicked"); };
-
             menuBar.AddMenuItem(fileMenu);
+
+            MenuItem editMenu = new MenuItem("Edit");
+            editMenu.OnClick += () => { EngineOutput.Log("Edit Menu Clicked"); };
+            menuBar.AddMenuItem(editMenu);
+
+            MenuItem viewMenu = new MenuItem("View");
+            viewMenu.OnClick += () => { EngineOutput.Log("View Menu Clicked"); };
+            menuBar.AddMenuItem(viewMenu);
+
+            MenuItem settingsMenu = new MenuItem("Settings");
+            settingsMenu.OnClick += () => { EngineOutput.Log("Settings Menu Clicked"); };
+            menuBar.AddMenuItem(settingsMenu);
+
+            MenuItem helpMenu = new MenuItem("Help");
+            helpMenu.OnClick += () => { EngineOutput.Log("Help Menu Clicked"); };
+            menuBar.AddMenuItem(helpMenu);
 
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
