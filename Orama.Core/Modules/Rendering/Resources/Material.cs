@@ -47,7 +47,7 @@ void main()
     /// <summary> A default material using a simple shader. </summary>
     public static Material Default { get; } = new Material(new Shader(DEFAULT_VERTEX, DEFAULT_FRAGMENT));
 
-    /// <summary> Initializes a new <see cref="Material"/> from the specified <see cref="Orama.Rendering.Resources.GraphicsShader"/>. </summary>
+    /// <summary> Initializes a new <see cref="Material"/> from the specified <see cref="Resources.GraphicsShader"/>. </summary>
     public Material(Shader shader)
     {
         Shader = shader;

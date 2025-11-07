@@ -9,8 +9,7 @@ internal enum TokenType
     Identifier,
     Number,
     String,
-    LeftBrace,
-    RightBrace,
+    Block,
     Hash,
     Equals,
     EndOfFile

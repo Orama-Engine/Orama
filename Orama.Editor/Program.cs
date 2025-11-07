@@ -11,7 +11,10 @@ using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
+using Orama.Rendering;
+using Orama.Rendering.Resources;
 using Orama.ShaderLang;
+using Orama.ShaderLang.Targets;
 
 namespace Orama.Editor;
 
@@ -21,17 +24,20 @@ internal class Program
 #vertex VertexEntryPoint
 #fragment FragmentEntryPoint
 
-Name = ""Default/Test""
+Name = ""Default/White""
 Pass = ""Opaque""
 
 Properties
 {
-    HLSL Properties Source Body
+    float3 pos;
+    float3 normal;
+    float2 uv;
+    float4x4 u_MVP;
 }
 
 Source
 {
-    HLSL Source Body
+
 }
 ";
     static void Main(string[] args)
@@ -56,8 +62,16 @@ Source
 
             EngineOutput.Log(format.Name ?? "Name Not Found!");
             EngineOutput.Log(format.Pass ?? "Pass Not Found!");
-            EngineOutput.Log(format.Properties?.Body ?? "Body Not Found!");
-            EngineOutput.Log(format.Source?.Body ?? "Body Not Found!");
+
+            (string, string) compiled = HLSLTarget.Compile(format);
+            EngineOutput.Log(compiled.Item1);
+            EngineOutput.Log(compiled.Item2);
+            GraphicsShader shader = ShaderBaker.HLSLToShader(compiled.Item1, compiled.Item2);
+            (string, string) glsl = ShaderUnbaker.SpirVToGLSL(shader.VertexBytes, shader.FragmentBytes);
+
+            EngineOutput.Log(glsl.Item1);
+            EngineOutput.Log(glsl.Item2);
+
 
 
             FlyController flyController = new();

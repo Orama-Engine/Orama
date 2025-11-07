@@ -57,13 +57,12 @@ internal class Parser
             }
         }
         // Block {  }
-        else if (Check(TokenType.LeftBrace))
+        else if (Check(TokenType.Block))
         {
-            Advance();
-            string body = ParseBlockBody();
+            string body = Advance().Value;
 
-            var prop = typeof(ShaderLangFormat).GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
+            var prop = typeof(ShaderLangFormat)
+                .GetProperty(key, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
 
             if (prop != null)
             {
@@ -99,23 +98,6 @@ internal class Parser
             string value = Advance().Value;
             shader.MetaData[key] = value;
         }
-    }
-
-
-    private string ParseBlockBody()
-    {
-        int start = pos;
-        int braceCount = 1;
-
-        while (!IsAtEnd() && braceCount > 0)
-        {
-            var token = Advance();
-            if (token.Type == TokenType.LeftBrace) braceCount++;
-            else if (token.Type == TokenType.RightBrace) braceCount--;
-        }
-
-        var bodyTokens = tokens.GetRange(start, pos - start - 1);
-        return string.Join(" ", bodyTokens.ConvertAll(t => t.Value));
     }
 
     private Token Peek() => tokens[pos];

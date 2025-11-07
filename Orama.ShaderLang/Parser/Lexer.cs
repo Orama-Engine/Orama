@@ -31,15 +31,7 @@ internal class Lexer
 
             if (c == '{')
             {
-                tokens.Add(new Token(TokenType.LeftBrace, "{"));
-                Advance();
-                continue;
-            }
-
-            if (c == '}')
-            {
-                tokens.Add(new Token(TokenType.RightBrace, "}"));
-                Advance();
+                tokens.Add(ReadBlock());
                 continue;
             }
 
@@ -72,10 +64,43 @@ internal class Lexer
                 tokens.Add(ReadIdentifier());
                 continue;
             }
+
+            throw new Exception($"Unexpected character '{c}'");
         }
 
         tokens.Add(new Token(TokenType.EndOfFile, ""));
         return tokens;
+    }
+
+    private Token ReadBlock()
+    {
+        Advance();
+
+        StringBuilder sb = new StringBuilder();
+        int braceCount = 1;
+
+        while (!IsAtEnd() && braceCount > 0)
+        {
+            char c = Advance();
+
+            if (c == '{')
+            {
+                braceCount++;
+                sb.Append(c);
+            }
+            else if (c == '}')
+            {
+                braceCount--;
+                if (braceCount > 0)
+                    sb.Append(c);
+            }
+            else
+            {
+                sb.Append(c);
+            }
+        }
+
+        return new Token(TokenType.Block, sb.ToString());
     }
 
     private Token ReadString()

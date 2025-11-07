@@ -7,14 +7,6 @@ namespace Orama.ShaderLang;
 /// </summary>
 public class ShaderLangFormat
 {
-    /// <summary> Parse a shader from a string. </summary>
-    public static ShaderLangFormat FromSource(string source)
-    {
-        var lexer = new Lexer(source);
-        var parser = new Parser.Parser(lexer.Tokenize());
-        return parser.Parse();
-    }
-
     /// <summary> Metadata defined in the shader. </summary>
     public Dictionary<string, string> MetaData { get; set; } = new Dictionary<string, string>();
     
@@ -29,6 +21,15 @@ public class ShaderLangFormat
 
     /// <summary> The HLSL source code of the shader. </summary>
     public ShaderLangSource? Source { get; set; }
+
+    /// <summary> Parse a shader from a string. </summary>
+    public static ShaderLangFormat FromSource(string source)
+    {
+        var lexer = new Lexer(source);
+        var parser = new Parser.Parser(lexer.Tokenize());
+        return parser.Parse();
+    }
+
 }
 
 /// <summary>
