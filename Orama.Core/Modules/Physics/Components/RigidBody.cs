@@ -1,5 +1,6 @@
 ﻿using Jitter2.Collision.Shapes;
 using Jitter2.DataStructures;
+using Jitter2.Dynamics;
 using Jitter2.LinearMath;
 using Orama.Core.Common.Components;
 using Orama.Core.Modules;
@@ -13,7 +14,9 @@ namespace Orama.Core.Modules.Physics.Components;
 public class RigidBody : Component
 {
     Jitter2.Dynamics.RigidBody? body;
-    public bool IsStatic /// <summary> Whether the rigid body is static or dynamic. </summary>
+
+    /// <summary> Whether the rigid body is static or dynamic. </summary>
+    public bool IsStatic
     {
         get => body?.IsStatic ?? false;
         set
@@ -24,7 +27,9 @@ public class RigidBody : Component
             }
         }
     }
-    public float Mass /// <summary> Mass of the rigid body. </summary>
+
+    /// <summary> Mass of the rigid body. </summary>
+    public float Mass
     {
         get => body != null ? body.Mass : 0f;
         set
@@ -36,7 +41,9 @@ public class RigidBody : Component
             }
         }
     }
-    public float Friction /// <summary> Friction of the rigid body. </summary>
+
+    /// <summary> Friction of the rigid body. </summary>
+    public float Friction
     {
         get => body != null ? body.Friction : 0f;
         set
@@ -47,7 +54,9 @@ public class RigidBody : Component
             }
         }
     }
-    public bool AffectedByGravity /// <summary> Whether the rigid body is affected by gravity. </summary>
+
+    /// <summary> Whether the rigid body is affected by gravity. </summary>
+    public bool AffectedByGravity
     {
         get => body?.AffectedByGravity ?? false;
         set
@@ -58,7 +67,9 @@ public class RigidBody : Component
             }
         }
     }
-    public float Restitution /// <summary> Restitution of the rigid body. </summary>
+
+    /// <summary> Restitution of the rigid body. </summary>
+    public float Restitution
     {
         get => body != null ? body.Restitution : 0f;
         set
@@ -69,7 +80,9 @@ public class RigidBody : Component
             }
         }
     }
-    public float AngularVelocity /// <summary> Angular velocity of the rigid body. </summary>
+
+    /// <summary> Angular velocity of the rigid body. </summary>
+    public float AngularVelocity
     {
         get => body != null ? body.AngularVelocity.Length() : 0f;
         set
@@ -88,7 +101,9 @@ public class RigidBody : Component
             }
         }
     }
-    public Math.Vector2 Damping /// <summary> Linear and angular damping of the rigid body. </summary>
+
+    /// <summary> Linear and angular damping of the rigid body. </summary>
+    public Math.Vector2 Damping
     {
         get => body != null ? new Math.Vector2(body.Damping.linear, body.Damping.angular) : Math.Vector2.Zero;
         set
@@ -99,6 +114,8 @@ public class RigidBody : Component
             }
         }
     }
+
+    /// <summary> The velocity of the rigid body. </summary>
     public Math.Vector3 Velocity
     {
         get => body != null ? new Math.Vector3(body.Velocity.X, body.Velocity.Y, body.Velocity.Z) : Math.Vector3.Zero;
@@ -110,21 +127,25 @@ public class RigidBody : Component
             }
         }
     }
-    
 
-    public ReadOnlyList<RigidBodyShape> Shapes /// <summary> Gets the list of shapes attached to the rigid body. </summary>
+    /// <summary> The list of shapes attached to the rigid body. </summary>
+    public ReadOnlyList<RigidBodyShape> Shapes
     {
         get => (ReadOnlyList<RigidBodyShape>)(body?.Shapes ?? null!);
     }
 
-    public RigidBody(RigidBodyShape shape, bool IsStatic)
+    /// <summary> The set of contact points involving the rigid body. </summary>
+    public ReadOnlyHashSet<Arbiter> Contacts
+    {
+        get => (ReadOnlyHashSet<Arbiter>)(body?.Contacts ?? null!);
+    }
+
+    public RigidBody()
     {
         var physics = ModuleManager.GetModule<PhysicsModule>();
         if (physics != null)
         {
             body = physics.World?.CreateRigidBody();
-            body?.IsStatic = IsStatic;
-            AddShape(shape); // Attach initial shape
         }
     }
 
@@ -137,14 +158,14 @@ public class RigidBody : Component
     }
 
     /// <summary> Adds a shape to the rigid body, enabling collision detection and physical interactions for the specified shape. </summary>
-    /// <param name="shape">The shape to add to the rigid body. Cannot be null.</param>
+    /// <param name="shape">The shape to add to the rigid body.</param>
     public void AddShape(RigidBodyShape shape)
     {
         body?.AddShape(shape);
     }
 
     /// <summary> Removes the specified shape from the rigid body, detaching it from physics calculations. </summary>
-    /// <param name="shape">The shape to remove from the rigid body. Cannot be null.</param>
+    /// <param name="shape">The shape to remove from the rigid body.</param>
 
     public void RemoveShape(RigidBodyShape shape)
     {

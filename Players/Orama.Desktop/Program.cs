@@ -47,16 +47,15 @@ internal class Program
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
-            JVector entSize = new JVector(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
-            BoxShape entShape = new BoxShape(entSize);
-            floor.AddComponent(new RigidBody(entShape, true));
+
 
             var cube = new DebugEntity();
             cube.Name = "Cube";
             cube.Transform.Position = new Vector3(0, 100, 0);
-            JVector cubeSize = new JVector(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
-            BoxShape cubeShape = new BoxShape(cubeSize);
-            cube.AddComponent(new RigidBody(cubeShape, false));
+            var cubeRb = new RigidBody();
+            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            cube.AddComponent(cubeRb);
+            cube.AddComponent(cubeCollider);
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };
