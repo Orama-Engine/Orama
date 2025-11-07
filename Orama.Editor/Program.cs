@@ -13,52 +13,11 @@ using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
-using Orama.Rendering;
-using Orama.Rendering.Resources;
-using Orama.ShaderLang;
-using Orama.ShaderLang.Targets;
 
 namespace Orama.Editor;
 
 internal class Program
 {
-    const string SHADER_LANG_SOURCE = @"
-#vertex VertexEntryPoint
-#fragment FragmentEntryPoint
-
-Name = ""Default/White""
-Pass = ""Opaque""
-
-Properties
-{
-    float4x4 u_MVP;
-}
-
-Source
-{
-    struct VSInput
-    {
-        float3 pos : POSITION;
-    };
-
-    struct VSOutput
-    {
-        float4 pos : SV_POSITION;
-    };
-
-    VSOutput VertexEntryPoint(VSInput input)
-    {
-        VSOutput output;
-        output.pos = mul(u_MVP, float4(input.pos, 1.0));
-        return output;
-    }
-
-    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
-    {
-        return float4(1.0, 1.0, 1.0, 1.0);
-    }
-}
-";
     static void Main(string[] args)
     {
         // REGISTER MODULES
@@ -74,7 +33,7 @@ Source
         {
             EngineOutput.Log("Hello World!");
 
-            Shader shader = new(SHADER_LANG_SOURCE);
+            Shader shader = Application.ResourceProvider.GetResource<Shader>("Assets/UnlitGeneric.shader") ?? throw new Exception("Failed to load UnlitGeneric shader!");
 
             Entity testMesh = new();
             MeshRenderer meshRenderer = new();
