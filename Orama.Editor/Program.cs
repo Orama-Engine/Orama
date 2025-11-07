@@ -7,6 +7,7 @@ using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
+using Orama.Core.Modules.Physics.Components;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
@@ -35,18 +36,40 @@ internal class Program
 
             Shader shader = Application.ResourceProvider.GetResource<Shader>("Assets/UnlitGeneric.shader") ?? throw new Exception("Failed to load UnlitGeneric shader!");
 
-            Entity testMesh = new();
-            MeshRenderer meshRenderer = new();
-            testMesh.AddComponent(meshRenderer);
-            meshRenderer.Mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
-            meshRenderer.Mesh?.Material = new(shader);
-            meshRenderer.Mesh?.Material.SetParameter("Color", Color.White);
-            testMesh.Start();
-
             FlyController flyController = new();
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 0, 0);
             flyController.Start();
+
+            Entity floor = new();
+            MeshRenderer floorMR = new();
+            floor.AddComponent(floorMR);
+            floorMR.Mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+            floorMR.Mesh?.Material = new(shader);
+            floorMR.Mesh?.Material.SetParameter("Color", Color.White);
+            floor.Name = "Floor";
+            floor.Transform.Scale = new Vector3(10, 1, 10);
+            floor.Transform.Position = new Vector3(0, 0, 0);
+            var floorRb = new RigidBody();
+            floorRb.IsStatic = true;
+            var floorCollider = new BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
+            floor.AddComponent(floorRb);
+            floor.AddComponent(floorCollider);
+            floor.Start();
+
+            Entity cube = new();
+            MeshRenderer cubeMR = new();
+            cube.AddComponent(cubeMR);
+            cubeMR.Mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+            cubeMR.Mesh?.Material = new(shader);
+            cubeMR.Mesh?.Material.SetParameter("Color", Color.White);
+            cube.Name = "Cube";
+            cube.Transform.Position = new Vector3(0, 100, 0);
+            var cubeRb = new RigidBody();
+            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            cube.AddComponent(cubeRb);
+            cube.AddComponent(cubeCollider);
+            cube.Start();
 
             Label FPS = new("FPS: N/A");
             FPS.Rect = new Rect(5, 25, 0, 0);
