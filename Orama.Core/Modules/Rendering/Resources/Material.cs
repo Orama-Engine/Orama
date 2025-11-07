@@ -51,6 +51,7 @@ void main()
     public Material(Shader shader)
     {
         Shader = shader;
+        Pass = Shader.Pass;
     }
 
     /// <summary> Creates a clone of the material. </summary>

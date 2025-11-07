@@ -74,19 +74,6 @@ Source
         {
             EngineOutput.Log("Hello World!");
 
-            ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
-            (string, string) hlsl = HLSLTarget.Compile(format);
-
-            EngineOutput.Log(hlsl.Item1);
-            EngineOutput.Log(hlsl.Item2);
-
-            foreach (var meta in format.MetaData)
-                EngineOutput.Log($"{meta.Key}: {meta.Value}");
-
-            EngineOutput.Log(format.Name ?? "Name Not Found!");
-            EngineOutput.Log(format.Pass ?? "Pass Not Found!");
-
-            
             Shader shader = new(SHADER_LANG_SOURCE);
 
             Entity testMesh = new();
