@@ -21,7 +21,7 @@ public abstract class RenderPass
             Normals = renderable.Normals.Select(n => (System.Numerics.Vector3)n).ToArray(),
             TexCoords = renderable.UVs.Select(uv => (System.Numerics.Vector2)uv).ToArray(),
             Indices = renderable.Indices,
-            Shader = renderable.Material.GraphicsShader,
+            Shader = renderable.Material.Shader.GraphicsShader,
             Transform = (System.Numerics.Matrix4x4)renderable.Transform
         };
 

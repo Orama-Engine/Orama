@@ -43,7 +43,7 @@ void main()
 }
 ";
     /// <summary> Default Material used by GUI Rectangles. </summary>
-    public static Material Rect { get; } = new Material(RECT_VERT, RECT_FRAG) { Pass = "GUI" };
+    public static Material Rect { get; } = new Material(new Shader(RECT_VERT, RECT_FRAG)) { Pass = "GUI" };
 
     private const string TEXT_VERT = @"
 #version 450 core
@@ -91,7 +91,7 @@ void main()
 ";
 
     /// <summary> Material for rendering text from a font atlas. </summary>
-    public static Material Text { get; } = new Material(TEXT_VERT, TEXT_FRAG) { Pass = "GUI" };
+    public static Material Text { get; } = new Material(new Shader(TEXT_VERT, TEXT_FRAG)) { Pass = "GUI" };
 
     private const string TEX_RECT_VERT = @"
 #version 450 core
@@ -138,5 +138,5 @@ void main()
 ";
 
     /// <summary> Material for rendering textured rectangles. </summary>
-    public static Material TexturedRect { get; } = new Material(TEX_RECT_VERT, TEX_RECT_FRAG) { Pass = "GUI" };
+    public static Material TexturedRect { get; } = new Material(new Shader(TEX_RECT_VERT, TEX_RECT_FRAG)) { Pass = "GUI" };
 }

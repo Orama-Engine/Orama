@@ -4,7 +4,7 @@ using Orama.Rendering.Resources;
 namespace Orama.Core.Modules.Rendering.Resources;
 
 /// <summary>
-/// Represents the visual appearance of a mesh by wrapping a <see cref="Orama.Rendering.Resources.GraphicsShader"/>
+/// Represents the visual appearance of a mesh by using a <see cref="Resources.Shader"/>
 /// and its associated parameters, such as textures, colors, and numerical values.
 /// </summary>
 public class Material
@@ -38,27 +38,19 @@ void main()
 }
 ";
 
-
-    /// <summary> The underlying <see cref="Orama.Rendering.Resources.GraphicsShader"/> associated with the material. </summary>
-    internal GraphicsShader GraphicsShader { get; set; }
+    /// <summary> The GPU <see cref="Resources.Shader"/> used by the material. </summary>
+    public Shader Shader { get; set; }
 
     /// <summary> The name of the pass to which the material belongs. </summary>
     public string Pass { get; set; } = "Opaque";
 
     /// <summary> A default material using a simple shader. </summary>
-    public static Material Default { get; } = new Material(DEFAULT_VERTEX, DEFAULT_FRAGMENT);
-
-    /// <summary> Initializes a new <see cref="Material"/> from the specified vertex and fragment shaders. </summary>
-    public Material(string vertexSource, string fragmentSource)
-    {
-        GraphicsShader shader = ShaderBaker.GLSLToShader(vertexSource, fragmentSource);
-        GraphicsShader = shader;
-    }
+    public static Material Default { get; } = new Material(new Shader(DEFAULT_VERTEX, DEFAULT_FRAGMENT));
 
     /// <summary> Initializes a new <see cref="Material"/> from the specified <see cref="Orama.Rendering.Resources.GraphicsShader"/>. </summary>
-    internal Material(GraphicsShader shader)
+    public Material(Shader shader)
     {
-        GraphicsShader = shader;
+        Shader = shader;
     }
 
     /// <summary> Creates a clone of the material. </summary>
@@ -67,11 +59,11 @@ void main()
     {
         GraphicsShader newShader = new GraphicsShader
         {
-            VertexBytes = (byte[])GraphicsShader.VertexBytes.Clone(),
-            FragmentBytes = (byte[])GraphicsShader.FragmentBytes.Clone()
+            VertexBytes = (byte[])Shader.GraphicsShader.VertexBytes.Clone(),
+            FragmentBytes = (byte[])Shader.GraphicsShader.FragmentBytes.Clone()
         };
 
-        return new Material(newShader) { Pass = Pass };
+        return new Material(new Shader(newShader)) { Pass = Pass };
     }
 
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
@@ -79,17 +71,17 @@ void main()
     {
         if (value is Texture text)
         {
-            GraphicsShader.SetParameter(name, text.GraphicsTexture);
+            Shader.GraphicsShader.SetParameter(name, text.GraphicsTexture);
             return;
         }
 
-        GraphicsShader.SetParameter(name, value);
+        Shader.GraphicsShader.SetParameter(name, value);
     }
 
     /// <summary> Gets the value of a parameter from the material's shader. </summary>
     public T GetParameter<T>(string name)
     {
-        object? value = GraphicsShader.GetParameter(name);
+        object? value = Shader.GraphicsShader.GetParameter(name);
 
         if (value is GraphicsTexture graphicsTexture && typeof(T) == typeof(Texture))
             return (T)(object)new Texture(graphicsTexture);

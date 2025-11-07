@@ -58,7 +58,7 @@ void main()
             _ => throw new NotImplementedException()
         };
 
-        Material gizmoMaterial = new(GIZMO_VERTEX, GIZMO_FRAGMENT);
+        Material gizmoMaterial = new(new Core.Modules.Rendering.Resources.Shader(GIZMO_VERTEX, GIZMO_FRAGMENT));
 
         meshRenderer.Mesh = Application.ResourceProvider.GetResource<Mesh>(gizmoMeshName);
         meshRenderer.Mesh?.Material = gizmoMaterial;
