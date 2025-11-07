@@ -4,20 +4,22 @@ using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.GUI;
-using Orama.Core.Modules.GUI.Layouts;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
-using Orama.Core.Modules.Rendering.Resources;
 using Orama.Core.Modules.Scenes;
 using Orama.Editor.Widgets;
 using Orama.Math;
+using Orama.ShaderLang;
 
 namespace Orama.Editor;
 
 internal class Program
 {
+    const string SHADER_LANG_SOURCE = @"
+Pass = ""Test""
+";
     static void Main(string[] args)
     {
         // REGISTER MODULES
@@ -32,6 +34,9 @@ internal class Program
         Application.OnStart += () =>
         {
             EngineOutput.Log("Hello World!");
+
+            ShaderLangFormat format = ShaderLangFormat.FromSource(SHADER_LANG_SOURCE);
+            EngineOutput.Log(format.Pass ?? "N/A");
 
             FlyController flyController = new();
             flyController.Name = "Camera";

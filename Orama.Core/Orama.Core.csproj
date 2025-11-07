@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\Orama.Rendering\Orama.Rendering.csproj" />
+    <ProjectReference Include="..\Orama.ShaderLang\Orama.ShaderLang.csproj" />
   </ItemGroup>
 
 </Project>
