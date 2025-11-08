@@ -7,43 +7,47 @@ namespace Orama.Core.Modules.GUI;
 /// </summary>
 public static class GUIMaterials
 {
-    private const string RECT_VERT = @"
-#version 450 core
+    private const string RECT_SHADER = @"
+#vertex VertexEntryPoint
+#fragment FragmentEntryPoint
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 normal;
-layout(location = 2) in vec2 uv;
+Name = ""GUI/Rect""
+Pass = ""GUI""
 
-layout(std140, binding = 0) uniform ShaderParams
+Properties
 {
-    mat4 u_MVP;
-    vec4 u_Color;
-};
+    float4x4 u_MVP;
+    float4  u_Color;
+}
 
-void main()
+Source
 {
-    gl_Position = u_MVP * vec4(pos, 1.0);
+    struct VSInput
+    {
+        float3 pos : POSITION;
+    };
+
+    struct VSOutput
+    {
+        float4 pos : SV_POSITION;
+    };
+
+    VSOutput VertexEntryPoint(VSInput input)
+    {
+        VSOutput o;
+        o.pos = mul(u_MVP, float4(input.pos, 1.0));
+        return o;
+    }
+
+    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
+    {
+        return u_Color;
+    }
 }
 ";
 
-    private const string RECT_FRAG = @"
-#version 450 core
-
-layout(location = 0) out vec4 FragColor;
-
-layout(std140, binding = 0) uniform ShaderParams
-{
-    mat4 u_MVP;
-    vec4 u_Color;
-};
-
-void main()
-{
-    FragColor = u_Color;
-}
-";
     /// <summary> Default Material used by GUI Rectangles. </summary>
-    public static Material Rect { get; } = new Material(new Shader(RECT_VERT, RECT_FRAG)) { Pass = "GUI" };
+    public static Material Rect { get; } = new Material(new Shader(RECT_SHADER));
 
     private const string TEXT_VERT = @"
 #version 450 core
