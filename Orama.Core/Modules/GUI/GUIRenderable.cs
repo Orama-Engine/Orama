@@ -11,7 +11,7 @@ namespace Orama.Core.Modules.GUI;
 /// </summary>
 internal class GUIRenderable : IClientRenderable
 {
-    public Matrix4x4 Transform { get; }
+    public Matrix4x4 Transform { get; private set; }
 
     public Vector3[] Vertices { get; }
 
@@ -26,9 +26,7 @@ internal class GUIRenderable : IClientRenderable
     /// <summary> Initializes a new instance of the <see cref="GUIRenderable"/> class from a Rect. </summary>
     public GUIRenderable(Rect rect)
     {
-        // Create a transform matrix for the GUI element
-        Transform = Matrix4x4.CreateScale(rect.Width, rect.Height, 1f) *
-                    Matrix4x4.CreateTranslation(rect.X, rect.Y, 0f);
+        SetRect(rect);
 
         // Quad vertices (unit quad 0..1)
         Vertices = new Vector3[]
@@ -63,5 +61,23 @@ internal class GUIRenderable : IClientRenderable
             0, 1, 2,
             0, 2, 3
         };
+    }
+
+    /// <summary> Initializes a new instance of the <see cref="GUIRenderable"/> class. </summary>
+    public GUIRenderable(Vector3 translation, Vector3[] vertices, Vector3[] normals, uint[] indices)
+    {
+        Vertices = vertices;
+        Normals = normals;
+        Indices = indices;
+
+        UVs = new Vector2[vertices.Length];
+
+        Transform = Matrix4x4.CreateTranslation(translation);
+    }
+
+    /// <summary> Sets the Rect of the GUIRenderable. </summary>
+    public void SetRect(Rect rect)
+    {
+        Transform = Matrix4x4.CreateScale(rect.Width, rect.Height, 1f) * Matrix4x4.CreateTranslation(rect.X, rect.Y, 0f);
     }
 }
