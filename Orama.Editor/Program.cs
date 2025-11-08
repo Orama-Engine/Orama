@@ -104,6 +104,13 @@ internal class Program
             helpMenu.OnClick += () => { EngineOutput.Log("Help Menu Clicked"); };
             menuBar.AddMenuItem(helpMenu);
 
+            for (int i = 0; i < 1000; i++)
+            {
+                Widget widget = new();
+                widget.Rect = new Rect(0, 100, 100, 100);
+                ModuleManager.GetModule<GUIModule>()?.Widgets.Add(widget);
+            }
+
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);

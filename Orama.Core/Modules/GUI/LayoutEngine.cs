@@ -9,41 +9,46 @@ namespace Orama.Core.Modules.GUI;
 public static class LayoutEngine
 {
     /// <summary> Lays out a collection of widgets. </summary>
-    public static void LayoutWidgets(IEnumerable<Widget> widgets)
+    public static void LayoutWidgets(IEnumerable<Widget> roots)
     {
-        widgets.SelectMany(w => w.DescendantsAndSelf())
-               .ToList()
-               .ForEach(LayoutEngine.LayoutWidget);
+        foreach (var root in roots)
+            LayoutSubtree(root);
     }
 
-    /// <summary> Lays out a single widget. </summary>
-    public static void LayoutWidget(Widget widget)
+    /// <summary> Layout a widget and all of its descendants. </summary>
+    private static void LayoutSubtree(Widget widget)
     {
-        // Determine width
-        float width = widget.SizeHint.X;
-        switch (widget.HorizontalSizePolicy)
-        {
-            case SizePolicy.Fixed:
-                width = widget.SizeHint.X;
-                break;
-            case SizePolicy.Expand:
-                width = widget.Parent != null ? widget.Parent.Rect.Width : Application.Window.Size.X;
-                break;
-        }
-
-        // Determine height
-        float height = widget.SizeHint.Y;
-        switch (widget.VerticalSizePolicy)
-        {
-            case SizePolicy.Fixed:
-                height = widget.SizeHint.Y;
-                break;
-            case SizePolicy.Expand:
-                height = widget.Parent != null ? widget.Parent.Rect.Height : Application.Window.Size.Y;
-                break;
-        }
+        ComputeSize(widget);
 
         widget.Layout?.LayoutChildren();
-        widget.Rect = new Rect(widget.Rect.X, widget.Rect.Y, width, height);
+
+        foreach (var child in widget.Children)
+            LayoutSubtree(child);
+    }
+
+
+    /// <summary> Compute absolute size of a widget. </summary>
+    private static void ComputeSize(Widget w)
+    {
+        float parentWidth = w.Parent?.Rect.Width ?? Application.Window.Size.X;
+        float parentHeight = w.Parent?.Rect.Height ?? Application.Window.Size.Y;
+
+        // Horizontal
+        float width = w.HorizontalSizePolicy switch
+        {
+            SizePolicy.Fixed => w.SizeHint.X,
+            SizePolicy.Expand => parentWidth,
+            _ => w.SizeHint.X
+        };
+
+        // Vertical
+        float height = w.VerticalSizePolicy switch
+        {
+            SizePolicy.Fixed => w.SizeHint.Y,
+            SizePolicy.Expand => parentHeight,
+            _ => w.SizeHint.Y
+        };
+
+        w.Rect = new Rect(w.Rect.X, w.Rect.Y, width, height);
     }
 }
