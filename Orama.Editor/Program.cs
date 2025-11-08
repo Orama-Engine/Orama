@@ -50,7 +50,6 @@ internal class Program
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
-            floor.Transform.Rotation = Quaternion.FromEulerAngles(new Vector3(35f, 0f, 0f));
             var floorRb = new RigidBody();
             floorRb.IsStatic = true;
             var floorCollider = new BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);

@@ -12,7 +12,7 @@ public class Transform : Component
     public Vector3 Position { get; set; }
 
     /// <summary> The rotation of the transform. </summary>
-    public Quaternion Rotation { get; set; }
+    public Quaternion Rotation { get; set; } = Quaternion.FromEulerAngles(new Vector3(0f, 0f, 0f));
 
     /// <summary> The scale of the transform. </summary>
     public Vector3 Scale { get; set; } = Vector3.One;
