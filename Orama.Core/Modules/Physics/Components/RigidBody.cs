@@ -1,199 +1,127 @@
-﻿using Jitter2.Collision.Shapes;
-using Jitter2.DataStructures;
-using Jitter2.Dynamics;
-using Jitter2.LinearMath;
-using Orama.Core.Common.Components;
-using Orama.Core.Modules;
-using Orama.Core.Modules.Physics;
+﻿using Orama.Core.Common.Components;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Physics.Components;
 
 /// <summary>
 /// Represents a physics rigid body that enables simulation of physical interactions for an entity.
 /// </summary>
-public class RigidBody : Component
+public class RigidBody : Component, IPhysicsBody
 {
-    Jitter2.Dynamics.RigidBody? body;
-
-    /// <summary> Whether the rigid body is static or dynamic. </summary>
-    public bool IsStatic
-    {
-        get => body?.IsStatic ?? false;
-        set
-        {
-            if (body != null)
-            {
-                body.IsStatic = value;
-            }
-        }
-    }
-
-    /// <summary> Mass of the rigid body. </summary>
-    public float Mass
-    {
-        get => body != null ? body.Mass : 0f;
-        set
-        {
-            if (body != null)
-            {
-                if (body.IsStatic != true)
-                    body.SetMassInertia(value);
-            }
-        }
-    }
-
-    /// <summary> Friction of the rigid body. </summary>
-    public float Friction
-    {
-        get => body != null ? body.Friction : 0f;
-        set
-        {
-            if (body != null)
-            {
-                body.Friction = value;
-            }
-        }
-    }
-
-    /// <summary> Whether the rigid body is affected by gravity. </summary>
-    public bool AffectedByGravity
-    {
-        get => body?.AffectedByGravity ?? false;
-        set
-        {
-            if (body != null)
-            {
-                body.AffectedByGravity = value;
-            }
-        }
-    }
-
-    /// <summary> Restitution of the rigid body. </summary>
-    public float Restitution
-    {
-        get => body != null ? body.Restitution : 0f;
-        set
-        {
-            if (body != null)
-            {
-                body.Restitution = value;
-            }
-        }
-    }
-
-    /// <summary> Angular velocity of the rigid body. </summary>
-    public float AngularVelocity
-    {
-        get => body != null ? body.AngularVelocity.Length() : 0f;
-        set
-        {
-            if (body != null)
-            {
-                if (body.AngularVelocity.LengthSquared() > 0)
-                {
-                    var normalized = JVector.Normalize(body.AngularVelocity);
-                    body.AngularVelocity = JVector.Multiply(normalized, value);
-                }
-                else
-                {
-                    body.AngularVelocity = new JVector(value, 0, 0);
-                }
-            }
-        }
-    }
-
-    /// <summary> Linear and angular damping of the rigid body. </summary>
-    public Math.Vector2 Damping
-    {
-        get => body != null ? new Math.Vector2(body.Damping.linear, body.Damping.angular) : Math.Vector2.Zero;
-        set
-        {
-            if (body != null)
-            {
-                body.Damping = (value.X, value.Y);
-            }
-        }
-    }
-
-    /// <summary> The velocity of the rigid body. </summary>
-    public Math.Vector3 Velocity
-    {
-        get => body != null ? new Math.Vector3(body.Velocity.X, body.Velocity.Y, body.Velocity.Z) : Math.Vector3.Zero;
-        set
-        {
-            if (body != null)
-            {
-                body.Velocity = new JVector(value.X, value.Y, value.Z);
-            }
-        }
-    }
-
-    /// <summary> The list of shapes attached to the rigid body. </summary>
-    public ReadOnlyList<RigidBodyShape> Shapes
-    {
-        get => (ReadOnlyList<RigidBodyShape>)(body?.Shapes ?? null!);
-    }
-
-    /// <summary> The set of contact points involving the rigid body. </summary>
-    public ReadOnlyHashSet<Arbiter> Contacts
-    {
-        get => (ReadOnlyHashSet<Arbiter>)(body?.Contacts ?? null!);
-    }
+    private IPhysicsBody? body;
 
     public RigidBody()
     {
         var physics = ModuleManager.GetModule<PhysicsModule>();
-        if (physics != null)
-        {
-            body = physics.World?.CreateRigidBody();
-        }
+        body = physics?.World?.CreateBody();
+    }
+
+    /// <inheritdoc/>
+    public bool IsStatic
+    {
+        get => body?.IsStatic ?? false;
+        set { if (body != null) body.IsStatic = value; }
+    }
+
+    /// <inheritdoc/>
+    public bool AffectedByGravity
+    {
+        get => body?.AffectedByGravity ?? false;
+        set { if (body != null) body.AffectedByGravity = value; }
+    }
+
+    /// <inheritdoc/>
+    public float Mass
+    {
+        get => body?.Mass ?? 0f;
+        set { if (body != null) body.Mass = value; }
+    }
+
+    /// <inheritdoc/>
+    public float Friction
+    {
+        get => body?.Friction ?? 0f;
+        set { if (body != null) body.Friction = value; }
+    }
+
+    /// <inheritdoc/>
+    public float Restitution
+    {
+        get => body?.Restitution ?? 0f;
+        set { if (body != null) body.Restitution = value; }
+    }
+
+    /// <inheritdoc/>
+    public Vector3 Position
+    {
+        get => body?.Position ?? Vector3.Zero;
+        set { if (body != null) body.Position = value; }
+    }
+
+    /// <inheritdoc/>
+    public Quaternion Orientation
+    {
+        get => body?.Orientation ?? new Quaternion(0, 0, 0, 1);
+        set { if (body != null) body.Orientation = value; }
+    }
+
+    /// <inheritdoc/>
+    public Vector3 Velocity
+    {
+        get => body?.Velocity ?? Vector3.Zero;
+        set { if (body != null) body.Velocity = value; }
+    }
+
+    /// <inheritdoc/>
+    public Vector3 AngularVelocity
+    {
+        get => body?.AngularVelocity ?? Vector3.Zero;
+        set { if (body != null) body.AngularVelocity = value; }
+    }
+
+    /// <inheritdoc/>
+    public Vector2 Damping
+    {
+        get => body?.Damping ?? Vector2.Zero;
+        set { if (body != null) body.Damping = value; }
     }
 
     public override void Start()
     {
-        // Synchronize body's position with entity's position
-        body?.Position = new JVector(Entity.Transform.Position.X, Entity.Transform.Position.Y, Entity.Transform.Position.Z);
-    }
-
-    /// <summary> Adds a shape to the rigid body, enabling collision detection and physical interactions for the specified shape. </summary>
-    /// <param name="shape">The shape to add to the rigid body.</param>
-    public void AddShape(RigidBodyShape shape)
-    {
-        body?.AddShape(shape);
-
-        // Synchronize static body's orientation with entity's rotation
-        // This has to be done after adding a shape due to the current backend's limitations.
-        // Dynamic bodies dissapear if their initial orientation is set for some reason.
-        if (body?.IsStatic == true)
-        {
-            body.Orientation = new JQuaternion(Entity.Transform.Rotation.X, Entity.Transform.Rotation.Y, Entity.Transform.Rotation.Z, Entity.Transform.Rotation.W);
-        }
-    }
-
-    /// <summary> Removes the specified shape from the rigid body, detaching it from physics calculations. </summary>
-    /// <param name="shape">The shape to remove from the rigid body.</param>
-
-    public void RemoveShape(RigidBodyShape shape)
-    {
-        body?.RemoveShape(shape);
-    }
-
-    /// <summary> Applies a force vector to the physics body, affecting its motion according to the force applied. </summary>
-    /// <param name="force">The force to apply to the physics body.</param>
-    public void AddForce(Math.Vector3 force)
-    {
         if (body != null)
-        {
-            body.AddForce(new JVector(force.X, force.Y, force.Z));
-        }
+            body.Position = Entity.Transform.Position;
     }
 
     public override void Update()
     {
         if (body != null)
         {
-            Entity.Transform.Position = new Math.Vector3(body.Position.X, body.Position.Y, body.Position.Z);
-            Entity.Transform.Rotation = new Math.Quaternion(body.Orientation.X, body.Orientation.Y, body.Orientation.Z, body.Orientation.W);
+            Entity.Transform.Position = body.Position;
+            Entity.Transform.Rotation = body.Orientation;
         }
     }
+
+    public override void Destroy()
+    {
+        base.Destroy();
+        var physics = ModuleManager.GetModule<PhysicsModule>();
+        if (body != null) physics?.World?.DestroyBody(body);
+    }
+
+    /// <summary> Adds a collision shape to the physics body.</summary>
+    /// <param name="shape"> The collision shape to attach to the body. </param>
+    public void AddShape(ICollisionShape shape)
+    {
+        body?.AddShape(shape);
+        if (IsStatic)
+            Orientation = Entity.Transform.Rotation;
+    }
+
+    /// <summary> Removes a collision shape from the physics body.</summary>
+    /// <param name="shape"> The collision shape to detach from the body. </param>
+    public void RemoveShape(ICollisionShape shape) => body?.RemoveShape(shape);
+
+    /// <summary> Applies a force to the physics body.</summary>
+    /// <param name="force">The force to apply to the body.</param>
+    public void AddForce(Vector3 force) => body?.AddForce(force);
 }

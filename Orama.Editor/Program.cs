@@ -8,6 +8,7 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Physics.Components;
+using Orama.Core.Modules.Physics.Engines.Jitter2.Colliders;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
@@ -51,8 +52,8 @@ internal class Program
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
             var floorRb = new RigidBody();
-            floorRb.IsStatic = true;
-            var floorCollider = new BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
+            floorRb?.IsStatic = true;
+            var floorCollider = new Jitter2BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
             floor.AddComponent(floorRb);
             floor.AddComponent(floorCollider);
             floor.Start();
@@ -66,7 +67,7 @@ internal class Program
             cube.Name = "Cube";
             cube.Transform.Position = new Vector3(0, 100, 0);
             var cubeRb = new RigidBody();
-            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            var cubeCollider = new Jitter2BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
             cube.AddComponent(cubeRb);
             cube.AddComponent(cubeCollider);
             cube.Start();
@@ -75,38 +76,7 @@ internal class Program
             FPS.Rect = new Rect(5, 25, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
-            HierarchyWindow hierarchy = new HierarchyWindow();
-            hierarchy.Rect = new Rect(200, 200, 300, 200);
-
-            InspectorWindow inspector = new InspectorWindow();
-            inspector.Rect = new Rect(500, 200, 300, 200);
-            hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
-
-            MenuBar menuBar = new MenuBar();
-            MenuItem fileMenu = new MenuItem("File");
-            fileMenu.OnClick += () => { EngineOutput.Log("File Menu Clicked"); };
-            menuBar.AddMenuItem(fileMenu);
-
-            MenuItem editMenu = new MenuItem("Edit");
-            editMenu.OnClick += () => { EngineOutput.Log("Edit Menu Clicked"); };
-            menuBar.AddMenuItem(editMenu);
-
-            MenuItem viewMenu = new MenuItem("View");
-            viewMenu.OnClick += () => { EngineOutput.Log("View Menu Clicked"); };
-            menuBar.AddMenuItem(viewMenu);
-
-            MenuItem settingsMenu = new MenuItem("Settings");
-            settingsMenu.OnClick += () => { EngineOutput.Log("Settings Menu Clicked"); };
-            menuBar.AddMenuItem(settingsMenu);
-
-            MenuItem helpMenu = new MenuItem("Help");
-            helpMenu.OnClick += () => { EngineOutput.Log("Help Menu Clicked"); };
-            menuBar.AddMenuItem(helpMenu);
-
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(menuBar);
         };
 
         Application.OnExit += () =>

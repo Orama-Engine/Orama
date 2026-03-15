@@ -10,6 +10,8 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Physics.Components;
+using Orama.Core.Modules.Physics.Engines.Jitter2;
+using Orama.Core.Modules.Physics.Engines.Jitter2.Colliders;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Core.Modules.Scenes.Resources;
@@ -23,7 +25,7 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
-        ModuleManager.RegisterModule<PhysicsModule>();
+        ModuleManager.RegisterModule(new PhysicsModule(new Jitter2World()));
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
@@ -41,7 +43,7 @@ internal class Program
 
             FlyController flyController = new();
             flyController.Name = "Camera";
-            flyController.Transform.Position = new Vector3(0, 0, 0);
+            flyController.Transform.Position = new Vector3(0, 10, 0);
 
             var floor = new DebugEntity();
             floor.Name = "Floor";
@@ -53,7 +55,7 @@ internal class Program
             cube.Name = "Cube";
             cube.Transform.Position = new Vector3(0, 100, 0);
             var cubeRb = new RigidBody();
-            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            var cubeCollider = new Jitter2BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
             cube.AddComponent(cubeRb);
             cube.AddComponent(cubeCollider);
 
