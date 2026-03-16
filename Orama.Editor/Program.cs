@@ -3,6 +3,8 @@ using Orama.Core.Common.Entities;
 using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
+using Orama.Core.Modules.Audio;
+using Orama.Core.Modules.Audio.Resources;
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
@@ -29,6 +31,7 @@ internal class Program
         ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<EditorModule>();
+        ModuleManager.RegisterModule<AudioModule>();
 
         Application.OnStart += () =>
         {
@@ -38,7 +41,7 @@ internal class Program
 
             FlyController flyController = new();
             flyController.Name = "Camera";
-            flyController.Transform.Position = new Vector3(0, 0, 0);
+            flyController.Transform.Position = new Vector3(0, 2, 15);
             flyController.Start();
 
             Entity floor = new();
@@ -70,6 +73,12 @@ internal class Program
             cube.AddComponent(cubeRb);
             cube.AddComponent(cubeCollider);
             cube.Start();
+
+            AudioClip test = Application.ResourceProvider.GetResource<AudioClip>("Assets/test.wav");
+            IAudioSource source = ModuleManager.GetModule<AudioModule>().CreateSource();
+            source.SetClip(test);
+            source.Volume = 0.5f;
+            source.Play();
 
             Label FPS = new("FPS: N/A");
             FPS.Rect = new Rect(5, 25, 0, 0);

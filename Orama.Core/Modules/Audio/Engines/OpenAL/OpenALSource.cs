@@ -1,4 +1,5 @@
-﻿using Silk.NET.OpenAL;
+﻿using Orama.Core.Modules.Audio.Resources;
+using Silk.NET.OpenAL;
 
 namespace Orama.Core.Modules.Audio.Engines.OpenAL;
 
@@ -58,6 +59,18 @@ public class OpenALSource : IAudioSource
             al.GetSourceProperty(source, GetSourceInteger.SourceState, out value);
             return value == (int)SourceState.Playing;
         }
+    }
+
+    /// <inheritdoc/>
+    public void SetClip(AudioClip clip)
+    {
+        var buffer = al.GenBuffer();
+        var format = clip.Channels == 1
+            ? clip.BitsPerSample == 8 ? BufferFormat.Mono8 : BufferFormat.Mono16
+            : clip.BitsPerSample == 8 ? BufferFormat.Stereo8 : BufferFormat.Stereo16;
+
+        al.BufferData(buffer, format, clip.Data, clip.SampleRate);
+        al.SetSourceProperty(source, SourceInteger.Buffer, buffer);
     }
 
     /// <inheritdoc/>

@@ -1,5 +1,5 @@
 ﻿
-using Silk.NET.OpenAL;
+using Orama.Core.Modules.Audio.Resources;
 
 namespace Orama.Core.Modules.Audio;
 
@@ -20,6 +20,9 @@ public interface IAudioSource
     /// <summary> Whether the audio source is currently playing. </summary>
     bool IsPlaying { get; }
 
+    /// <summary> Sets the audio clip to be used for playback. </summary>
+    /// <param name="clip"> The audio clip to assign. </param>
+    void SetClip(AudioClip clip);
 
     /// <summary> Plays the audio source. </summary>
     void Play();
