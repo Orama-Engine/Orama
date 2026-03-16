@@ -8,7 +8,7 @@ using Orama.Core.Modules.GUI.Widgets;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Physics.Components;
-using Orama.Core.Modules.Physics.Engines.Jitter2.Colliders;
+using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
@@ -53,7 +53,7 @@ internal class Program
             floor.Transform.Position = new Vector3(0, 0, 0);
             var floorRb = new RigidBody();
             floorRb?.IsStatic = true;
-            var floorCollider = new Jitter2BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
+            var floorCollider = new BoxCollider(floor.Transform.Scale.X, floor.Transform.Scale.Y, floor.Transform.Scale.Z);
             floor.AddComponent(floorRb);
             floor.AddComponent(floorCollider);
             floor.Start();
@@ -67,7 +67,7 @@ internal class Program
             cube.Name = "Cube";
             cube.Transform.Position = new Vector3(0, 100, 0);
             var cubeRb = new RigidBody();
-            var cubeCollider = new Jitter2BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
+            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
             cube.AddComponent(cubeRb);
             cube.AddComponent(cubeCollider);
             cube.Start();

@@ -2,7 +2,7 @@
 
 namespace Orama.Core.Modules.Physics.Components.Colliders;
 
-public abstract class Collider : Component
+public class Collider : Component
 {
     public override void Start()
     {
@@ -10,5 +10,8 @@ public abstract class Collider : Component
         if (rb != null) rb.AddShape(CreateShape());
     }
 
-    protected abstract ICollisionShape CreateShape();
+    protected virtual ICollisionShape CreateShape()
+    {
+        throw new NotImplementedException();
+    }
 }

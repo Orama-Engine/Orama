@@ -1,5 +1,7 @@
-﻿using Jitter2.Dynamics;
+﻿using Jitter2.Collision.Shapes;
+using Jitter2.Dynamics;
 using Jitter2.LinearMath;
+using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Math;
 
 namespace Orama.Core.Modules.Physics.Engines.Jitter2;
@@ -94,13 +96,12 @@ public class Jitter2Body : IPhysicsBody
     /// <inheritdoc/>
     public void AddShape(ICollisionShape shape)
     {
-        if (body != null && shape is Jitter2CollisionShape s)
-        {
-            body.AddShape(s.Shape);
+        if (body == null) return;
 
-            if (body.IsStatic)
-                body.Orientation = new JQuaternion(body.Orientation.X, body.Orientation.Y, body.Orientation.Z, body.Orientation.W);
-        }
+        if (shape is BoxCollider b)
+            body.AddShape(new BoxShape(new JVector(b.Width * 2, b.Height * 2, b.Depth * 2)));
+        else if (shape is SphereCollider s)
+            body.AddShape(new SphereShape(s.Radius));
     }
 
     /// <inheritdoc/>
