@@ -32,6 +32,4 @@ internal abstract class ResourceLoader<T> where T : class
 /// Marks a class as a resource loader.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-internal class ResourceLoaderAttribute : Attribute
-{
-}
+internal class ResourceLoaderAttribute : Attribute { }

@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Orama.Core\Orama.Core.csproj" />
+    <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>
 
   <ItemGroup>

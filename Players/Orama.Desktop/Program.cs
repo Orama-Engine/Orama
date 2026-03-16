@@ -14,8 +14,16 @@ using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
+using Orama.Serialization;
+using System.Text;
 
 namespace Orama.Desktop;
+
+internal class TestSerialization
+{
+    public int A;
+    public int B;
+}
 
 internal class Program
 {
@@ -38,6 +46,14 @@ internal class Program
         Application.OnStart += () =>
         {
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
+
+            TestSerialization test = new() { A = 1, B = 2 };
+            byte[] serialized = Serialization.Serialization.Serialize(test);
+            Console.WriteLine(Encoding.UTF8.GetString(serialized));
+
+            TestSerialization deserialized = Serialization.Serialization.Deserialize<TestSerialization>(serialized);
+            Console.WriteLine(deserialized.A);
+            Console.WriteLine(deserialized.B);
 
             FlyController flyController = new();
             flyController.Name = "Camera";
