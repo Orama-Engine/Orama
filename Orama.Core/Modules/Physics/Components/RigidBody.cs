@@ -108,18 +108,29 @@ public class RigidBody : Component, IPhysicsBody
         if (body != null) physics?.World?.DestroyBody(body);
     }
 
-    /// <summary> Adds a collision shape to the physics body.</summary>
-    /// <param name="shape"> The collision shape to attach to the body. </param>
-    public void AddShape(ICollisionShape shape)
+    /// <summary> Adds a box collider to the physics body.</summary>
+    public int AddBoxCollider(float width, float height, float depth)
     {
-        body?.AddShape(shape);
-        if (IsStatic)
-            Orientation = Entity.Transform.Rotation;
+        if (body == null) return 0;
+
+        var id = body.AddBoxCollider(width, height, depth);
+        if (IsStatic) Orientation = Entity.Transform.Rotation;
+        return id;
+    }
+
+    /// <summary> Adds a sphere collider to the physics body.</summary>
+    public int AddSphereCollider(float radius)
+    {
+        if (body == null) return 0;
+
+        var id = body.AddSphereCollider(radius);
+        if (IsStatic) Orientation = Entity.Transform.Rotation;
+        return id;
     }
 
     /// <summary> Removes a collision shape from the physics body.</summary>
     /// <param name="shape"> The collision shape to detach from the body. </param>
-    public void RemoveShape(ICollisionShape shape) => body?.RemoveShape(shape);
+    public void RemoveCollider(int id) => body?.RemoveCollider(id);
 
     /// <summary> Applies a force to the physics body.</summary>
     /// <param name="force">The force to apply to the body.</param>

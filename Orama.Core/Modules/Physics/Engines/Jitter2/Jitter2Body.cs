@@ -13,6 +13,9 @@ public class Jitter2Body : IPhysicsBody
 {
     internal readonly RigidBody? body;
 
+    private readonly Dictionary<int, RigidBodyShape> shapes = new();
+    private int nextId = 0;
+
     internal Jitter2Body(RigidBody body)
     {
         this.body = body;
@@ -94,21 +97,35 @@ public class Jitter2Body : IPhysicsBody
     }
 
     /// <inheritdoc/>
-    public void AddShape(ICollisionShape shape)
+    public int AddBoxCollider(float width, float height, float depth)
     {
-        if (body == null) return;
+        if (body == null) return -1;
 
-        if (shape is BoxCollider b)
-            body.AddShape(new BoxShape(new JVector(b.Width * 2, b.Height * 2, b.Depth * 2)));
-        else if (shape is SphereCollider s)
-            body.AddShape(new SphereShape(s.Radius));
+        RigidBodyShape shape = new BoxShape(width * 2, height * 2, depth * 2);
+        body.AddShape(shape);
+        shapes[nextId] = shape;
+        return nextId++;
     }
 
     /// <inheritdoc/>
-    public void RemoveShape(ICollisionShape shape)
+    public int AddSphereCollider(float radius)
     {
-        if (body != null && shape is Jitter2CollisionShape s)
-            body.RemoveShape(s.Shape);
+        if (body == null) return -1;
+
+        RigidBodyShape shape = new SphereShape(radius);
+        body.AddShape(shape);
+        shapes[nextId] = shape;
+        return nextId++;
+    }
+
+    /// <inheritdoc/>
+    public void RemoveCollider(int id)
+    {
+        if (body != null && shapes.TryGetValue(id, out var shape))
+        {
+            body.RemoveShape(shape);
+            shapes.Remove(id);
+        }
     }
 
     /// <inheritdoc/>

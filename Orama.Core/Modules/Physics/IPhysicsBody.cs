@@ -1,11 +1,7 @@
-﻿using Orama.Math;
+﻿using Orama.Core.Modules.Physics.Components.Colliders;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Physics;
-
-/// <summary>
-/// Represents a collision shape attached to a physics body.
-/// </summary>
-public interface ICollisionShape { }
 
 /// <summary>
 /// Represents a physics body within the simulation.
@@ -42,13 +38,15 @@ public interface IPhysicsBody
     /// <summary> Linear (X) and angular (Y) damping of the physics body. </summary>
     Vector2 Damping { get; set; }
 
-    /// <summary> Adds a collision shape to the physics body.</summary>
-    /// <param name="shape"> The collision shape to attach to the body. </param>
-    void AddShape(ICollisionShape shape);
+    /// <summary> Adds a box collider to the physics body.</summary>
+    public int AddBoxCollider(float width, float height, float depth);
 
-    /// <summary> Removes a collision shape from the physics body.</summary>
-    /// <param name="shape"> The collision shape to detach from the body. </param>
-    void RemoveShape(ICollisionShape shape);
+    /// <summary> Adds a sphere collider to the physics body.</summary>
+    public int AddSphereCollider(float radius);
+
+    /// <summary> Removes a collider from the physics body.</summary>
+    /// <param name="id"> The id linked to the collider to detach from the body. </param>
+    void RemoveCollider(int id);
 
     /// <summary> Applies a force to the physics body.</summary>
     /// <param name="force">The force to apply to the body.</param>

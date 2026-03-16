@@ -4,14 +4,11 @@ namespace Orama.Core.Modules.Physics.Components.Colliders;
 
 public class Collider : Component
 {
-    public override void Start()
+    protected int shapeId = -1;
+
+    public override void Destroy()
     {
         var rb = Entity.GetComponent<RigidBody>();
-        if (rb != null) rb.AddShape(CreateShape());
-    }
-
-    protected virtual ICollisionShape CreateShape()
-    {
-        throw new NotImplementedException();
+        if (rb != null && shapeId != -1) rb.RemoveCollider(shapeId);
     }
 }
