@@ -1,4 +1,6 @@
 ﻿
+using Silk.NET.OpenAL;
+
 namespace Orama.Core.Modules.Audio;
 
 /// <summary>
@@ -24,4 +26,7 @@ public interface IAudioSource
 
     /// <summary> Stops the audio source. </summary>
     void Stop();
+
+    /// <summary> Destroys the audio source. </summary>
+    void Destroy();
 }
