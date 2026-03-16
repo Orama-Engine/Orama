@@ -1,7 +1,7 @@
 ﻿
 namespace Orama.Core.Modules.Physics.Components.Colliders;
 
-public abstract class SphereCollider : Collider, ICollisionShape
+public class SphereCollider : Collider, ICollisionShape
 {
     public float Radius { get; set; }
 
