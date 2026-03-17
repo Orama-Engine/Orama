@@ -34,16 +34,13 @@ internal static class DataConstructor
 
             try
             {
-                var converterType = typeof(StringConverter<>).MakeGenericType(prop.PropertyType);
-                var getMethod = converterType.GetMethod("Get", BindingFlags.Public | BindingFlags.Static)!;
-                var converter = getMethod.Invoke(null, null)!;
-
-                var convertMethod = converter.GetType().GetMethod("ConvertFromString")!;
-                value = convertMethod.Invoke(converter, new object[] { field.Value });
+                var converter = StringConverterAttribute.GetConverter(prop.PropertyType);
+                var method = converter.GetType().GetMethod("ConvertFromString")!;
+                value = method.Invoke(converter, new object[] { field.Value });
             }
             catch
             {
-                value = Convert.ChangeType(field.Value, prop.PropertyType);
+                throw new Exception($"No string converter found for type {prop.PropertyType}.");
             }
 
             prop.SetValue(instance, value);
@@ -67,16 +64,13 @@ internal static class DataConstructor
 
             try
             {
-                var converterType = typeof(StringConverter<>).MakeGenericType(p.PropertyType);
-                var getMethod = converterType.GetMethod("Get", BindingFlags.Public | BindingFlags.Static)!;
-                var converter = getMethod.Invoke(null, null)!;
-
-                var convertMethod = converter.GetType().GetMethod("ConvertToString")!;
-                stringValue = (string)convertMethod.Invoke(converter, new[] { value })!;
+                var converter = StringConverterAttribute.GetConverter(p.PropertyType);
+                var method = converter.GetType().GetMethod("ConvertToString")!;
+                stringValue = (string)method.Invoke(converter, new[] { value })!;
             }
             catch
             {
-                stringValue = value.ToString()!;
+                throw new Exception($"No string converter found for type {p.PropertyType}.");
             }
 
             return new FieldRepresentation(p.Name, stringValue);

@@ -1,8 +1,5 @@
-﻿using Jitter2.Collision.Shapes;
-using Jitter2.LinearMath;
-using Orama.Core.Common;
+﻿using Orama.Core.Common;
 using Orama.Core.Common.Entities;
-using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.GUI;
@@ -11,12 +8,10 @@ using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Physics.Components;
 using Orama.Core.Modules.Physics.Components.Colliders;
-using Orama.Core.Modules.Physics.Engines.Jitter2;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
-using Orama.Serialization;
 using System.Text;
 
 namespace Orama.Desktop;
@@ -25,6 +20,8 @@ internal class TestSerialization
 {
     public int A { get; set; }
     public int B { get; set; }
+
+    public bool MyBool { get; set; } = true;
 }
 
 internal class Program
@@ -33,7 +30,7 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
-        ModuleManager.RegisterModule(new PhysicsModule(new Jitter2World()));
+        ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
@@ -56,6 +53,7 @@ internal class Program
             TestSerialization deserialized = Serialization.Serialization.Deserialize<TestSerialization>(serialized);
             Console.WriteLine(deserialized.A);
             Console.WriteLine(deserialized.B);
+            Console.WriteLine(deserialized.MyBool);
 
             FlyController flyController = new();
             flyController.Name = "Camera";
