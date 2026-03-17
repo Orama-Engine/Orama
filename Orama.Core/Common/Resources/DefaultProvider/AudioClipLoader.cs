@@ -24,11 +24,20 @@ internal class AudioClipLoader : ResourceLoader<AudioClip>
         reader.ReadInt16();
         int bitsPerSample = reader.ReadInt16();
 
-        // data chunk
-        reader.ReadBytes(4);
-        int dataSize = reader.ReadInt32();
-        byte[] pcmData = reader.ReadBytes(dataSize);
-
-        return new AudioClip(pcmData, sampleRate, channels, bitsPerSample);
+        // Loop only exits when a data chunk is found,
+        // malformed files will throw an exception.
+        while (true)
+        {
+            string chunkId = new string(reader.ReadChars(4));
+            int chunkSize = reader.ReadInt32();
+            if (chunkId == "data")
+            {
+                byte[] pcmData = reader.ReadBytes(chunkSize);
+                return new AudioClip(pcmData, sampleRate, channels, bitsPerSample);
+            }
+            reader.ReadBytes(chunkSize);
+        }
+        
+        // Compiler sees a "return null;" here as unreachable..
     }
 }

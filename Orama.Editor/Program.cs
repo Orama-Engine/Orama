@@ -74,9 +74,9 @@ internal class Program
             cube.AddComponent(cubeCollider);
             cube.Start();
 
-            AudioClip test = Application.ResourceProvider.GetResource<AudioClip>("Assets/test.wav");
+            AudioClip? startup = Application.ResourceProvider.GetResource<AudioClip>("Assets/startup.wav");
             IAudioSource source = ModuleManager.GetModule<AudioModule>().CreateSource();
-            source.SetClip(test);
+            source.SetClip(startup);
             source.Volume = 0.5f;
             source.Play();
 
@@ -84,38 +84,7 @@ internal class Program
             FPS.Rect = new Rect(5, 25, 0, 0);
             Application.OnRender += () => FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
 
-            HierarchyWindow hierarchy = new HierarchyWindow();
-            hierarchy.Rect = new Rect(200, 200, 300, 200);
-
-            InspectorWindow inspector = new InspectorWindow();
-            inspector.Rect = new Rect(500, 200, 300, 200);
-            hierarchy.EntitySelected += () => inspector.Target = hierarchy.SelectedEntity;
-
-            MenuBar menuBar = new MenuBar();
-            MenuItem fileMenu = new MenuItem("File");
-            fileMenu.OnClick += () => { EngineOutput.Log("File Menu Clicked"); };
-            menuBar.AddMenuItem(fileMenu);
-
-            MenuItem editMenu = new MenuItem("Edit");
-            editMenu.OnClick += () => { EngineOutput.Log("Edit Menu Clicked"); };
-            menuBar.AddMenuItem(editMenu);
-
-            MenuItem viewMenu = new MenuItem("View");
-            viewMenu.OnClick += () => { EngineOutput.Log("View Menu Clicked"); };
-            menuBar.AddMenuItem(viewMenu);
-
-            MenuItem settingsMenu = new MenuItem("Settings");
-            settingsMenu.OnClick += () => { EngineOutput.Log("Settings Menu Clicked"); };
-            menuBar.AddMenuItem(settingsMenu);
-
-            MenuItem helpMenu = new MenuItem("Help");
-            helpMenu.OnClick += () => { EngineOutput.Log("Help Menu Clicked"); };
-            menuBar.AddMenuItem(helpMenu);
-
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(hierarchy);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(inspector);
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(menuBar);
         };
 
         Application.OnExit += () =>
