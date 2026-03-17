@@ -21,7 +21,7 @@
     <None Update="Assets\PrimitiveCube.fbx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\test.wav">
+    <None Update="Assets\startup.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\TranslateGizmo.fbx">
