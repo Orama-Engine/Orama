@@ -26,7 +26,12 @@ public static class Serialization
     /// <summary> Deserializes a byte array to an object. </summary>
     public static T Deserialize<T>(byte[] data, SerializationType type = DefaultType) where T : new()
     {
-        YAMLBackend backend = new YAMLBackend();
-        return backend.Deserialize<T>(data);
+        Type? backendType = typeof(SerializerBackend).Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(SerializerBackend)) && ((SerializerBackendAttribute)Attribute.GetCustomAttribute(t, typeof(SerializerBackendAttribute))!).SerializationType == type);
+        if (backendType == null)
+            throw new Exception($"No serializer backend found for type {type}.");
+
+        SerializerBackend backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
+        InstanceRepresentation rep = backend.Deserialize(data);
+        return DataConstructor.Deconstruct<T>(rep);
     }
 }

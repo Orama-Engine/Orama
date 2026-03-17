@@ -23,8 +23,8 @@ namespace Orama.Desktop;
 
 internal class TestSerialization
 {
-    public int A;
-    public int B;
+    public int A { get; set; }
+    public int B { get; set; }
 }
 
 internal class Program

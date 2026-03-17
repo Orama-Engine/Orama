@@ -4,7 +4,7 @@ namespace Orama.Serialization;
 /// <summary>
 /// Data representation of a field.
 /// </summary>
-internal record struct FieldRepresentation(string Name, object Value, Type Type);
+internal record struct FieldRepresentation(string Name, string Value);
 
 /// <summary>
 /// Data representation of an instance.
@@ -14,9 +14,6 @@ internal record struct FieldRepresentation(string Name, object Value, Type Type)
 /// </remarks>
 internal struct InstanceRepresentation
 {
-    /// <summary> The type of the instance. </summary>
-    public Type Type { get; set; } 
-
     /// <summary> All serialized fields of the instance. </summary>
     public FieldRepresentation[] Fields { get; set; }
 }

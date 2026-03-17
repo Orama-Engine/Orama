@@ -6,9 +6,9 @@ namespace Orama.Serialization.Backends;
 internal class YAMLBackend : SerializerBackend
 {
     /// <inheritdoc/>
-    public override T Deserialize<T>(byte[] data)
+    public override InstanceRepresentation Deserialize(byte[] data)
     {
-        T obj = (T)Activator.CreateInstance(typeof(T))!;
+        List<FieldRepresentation> fields = new List<FieldRepresentation>();
 
         StringReader reader = new StringReader(Encoding.UTF8.GetString(data));
 
@@ -25,16 +25,10 @@ internal class YAMLBackend : SerializerBackend
             string name = parts[0].Trim();
             string value = parts[1].Trim();
 
-            var field = obj.GetType().GetField(name);
-
-            if (field != null)
-            {
-                object converted = Convert.ChangeType(value, field.FieldType);
-                field.SetValue(obj, converted);
-            }
+            fields.Add(new FieldRepresentation() { Name = name, Value = value });
         }
 
-        return obj;
+        return new InstanceRepresentation() { Fields = fields.ToArray() };
     }
 
 
