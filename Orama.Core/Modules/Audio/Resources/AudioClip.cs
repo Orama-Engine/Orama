@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Orama.Core.Modules.Audio.Resources;
+﻿namespace Orama.Core.Modules.Audio.Resources;
 
 public class AudioClip
 {
