@@ -1,8 +1,8 @@
-﻿
-using System.Text;
+﻿using System.Text;
 
 namespace Orama.Serialization.Backends;
 
+[SerializerBackend(SerializationType.YAML)]
 internal class YAMLBackend : SerializerBackend
 {
     /// <inheritdoc/>

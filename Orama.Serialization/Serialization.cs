@@ -10,8 +10,16 @@ public static class Serialization
     /// <summary> Serializes an object to a byte array. </summary>
     public static byte[] Serialize<T>(T obj, SerializationType type = DefaultType)
     {
+        if (obj == null)
+            throw new ArgumentNullException(nameof(obj));
+
         InstanceRepresentation rep = DataConstructor.Construct(obj);
-        YAMLBackend backend = new YAMLBackend();
+
+        Type? backendType = typeof(SerializerBackend).Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(SerializerBackend)) && ((SerializerBackendAttribute)Attribute.GetCustomAttribute(t, typeof(SerializerBackendAttribute))!).SerializationType == type);
+        if (backendType == null)
+            throw new Exception($"No serializer backend found for type {type}.");
+
+        SerializerBackend backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
         return backend.Serialize(rep);
     }
 
