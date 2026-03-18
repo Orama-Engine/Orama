@@ -1,4 +1,5 @@
 ﻿using Jitter2;
+using Jitter2.Dynamics;
 
 namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 
@@ -8,6 +9,7 @@ namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 public class Jitter2World : IPhysicsWorld
 {
     private readonly World world;
+    private readonly Dictionary<RigidBody, Jitter2Body> bodyMap = new();
 
     /// <summary> Creates a new Jitter2 physics world. </summary>
     public Jitter2World()
@@ -19,8 +21,10 @@ public class Jitter2World : IPhysicsWorld
     /// <inheritdoc/>
     public IPhysicsBody CreateBody()
     {
-        var body = world.CreateRigidBody();
-        return new Jitter2Body(body);
+        var rb = world.CreateRigidBody();
+        var jb = new Jitter2Body(rb, bodyMap);
+        bodyMap[rb] = jb;
+        return jb;
     }
 
     /// <inheritdoc/>

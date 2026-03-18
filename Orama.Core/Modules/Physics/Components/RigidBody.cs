@@ -108,7 +108,7 @@ public class RigidBody : Component, IPhysicsBody
         if (body != null) physics?.World?.DestroyBody(body);
     }
 
-    /// <summary> Adds a box collider to the physics body.</summary>
+    /// <inheritdoc/>
     public int AddBoxCollider(float width, float height, float depth)
     {
         if (body == null) return 0;
@@ -118,7 +118,7 @@ public class RigidBody : Component, IPhysicsBody
         return id;
     }
 
-    /// <summary> Adds a sphere collider to the physics body.</summary>
+    /// <inheritdoc/>
     public int AddSphereCollider(float radius)
     {
         if (body == null) return 0;
@@ -128,11 +128,23 @@ public class RigidBody : Component, IPhysicsBody
         return id;
     }
 
-    /// <summary> Removes a collision shape from the physics body.</summary>
-    /// <param name="shape"> The collision shape to detach from the body. </param>
+    /// <inheritdoc/>
     public void RemoveCollider(int id) => body?.RemoveCollider(id);
 
-    /// <summary> Applies a force to the physics body.</summary>
-    /// <param name="force">The force to apply to the body.</param>
+    /// <inheritdoc/>
     public void AddForce(Vector3 force) => body?.AddForce(force);
+
+    /// <inheritdoc/>
+    public event Action<IPhysicsBody>? OnCollisionEnter
+    {
+        add { if (body != null) body.OnCollisionEnter += value; }
+        remove { if (body != null) body.OnCollisionEnter -= value; }
+    }
+
+    /// <inheritdoc/>
+    public event Action<IPhysicsBody>? OnCollisionExit
+    {
+        add { if (body != null) body.OnCollisionExit += value; }
+        remove { if (body != null) body.OnCollisionExit -= value; }
+    }
 }

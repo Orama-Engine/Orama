@@ -12,13 +12,28 @@ namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 public class Jitter2Body : IPhysicsBody
 {
     internal readonly RigidBody? body;
-
+    private readonly Dictionary<RigidBody, Jitter2Body> bodyMap;
     private readonly Dictionary<int, RigidBodyShape> shapes = new();
     private int nextId = 0;
 
-    internal Jitter2Body(RigidBody body)
+    internal Jitter2Body(RigidBody body, Dictionary<RigidBody, Jitter2Body> bodyMap)
     {
         this.body = body;
+        this.bodyMap = bodyMap;
+
+        body.BeginCollide += (arb) =>
+        {
+            var other = arb.Body1 == body ? arb.Body2 : arb.Body1;
+            if (bodyMap.TryGetValue(other, out var jb))
+                OnCollisionEnter?.Invoke(jb);
+        };
+
+        body.EndCollide += (arb) =>
+        {
+            var other = arb.Body1 == body ? arb.Body2 : arb.Body1;
+            if (bodyMap.TryGetValue(other, out var jb))
+                OnCollisionExit?.Invoke(jb);
+        };
     }
 
     /// <inheritdoc/>
@@ -134,4 +149,10 @@ public class Jitter2Body : IPhysicsBody
         if (body != null)
             body.AddForce(new JVector(force.X, force.Y, force.Z));
     }
+
+    /// <inheritdoc/>
+    public event Action<IPhysicsBody>? OnCollisionEnter;
+
+    /// <inheritdoc/>
+    public event Action<IPhysicsBody>? OnCollisionExit;
 }

@@ -51,4 +51,10 @@ public interface IPhysicsBody
     /// <summary> Applies a force to the physics body.</summary>
     /// <param name="force">The force to apply to the body.</param>
     void AddForce(Vector3 force);
+
+    /// <summary> Fires when this physics body collides with another. </summary>
+    event Action<IPhysicsBody>? OnCollisionEnter;
+
+    /// <summary> Fires when this physics body stops colliding with another. </summary>
+    event Action<IPhysicsBody>? OnCollisionExit;
 }
