@@ -1,4 +1,5 @@
-﻿using Orama.Core.Modules.Audio.Resources;
+﻿using Orama.Core.Common.Utility;
+using Orama.Core.Modules.Audio.Resources;
 
 namespace Orama.Core.Common.Resources.DefaultProvider;
 
@@ -40,7 +41,8 @@ internal class AudioClipLoader : ResourceLoader<AudioClip>
         }
         catch (EndOfStreamException)
         {
-            throw new InvalidDataException("WAV file is malformed or missing data chunk.");
+            EngineOutput.Warning("WAV file is malformed or missing data chunk.");
+            return null;
         }
     }
 }
