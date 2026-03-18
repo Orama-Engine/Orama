@@ -3,9 +3,6 @@ using Orama.Core.Modules.Audio.Resources;
 
 namespace Orama.Core.Modules.Audio.Components;
 
-/// <summary>
-/// An audio source component to attach to an entity.
-/// </summary>
 public class AudioSource : Component
 {
     private IAudioSource? source;
