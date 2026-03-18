@@ -4,6 +4,7 @@ using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.Audio;
+using Orama.Core.Modules.Audio.Components;
 using Orama.Core.Modules.Audio.Resources;
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.GUI.Widgets;
@@ -73,13 +74,14 @@ internal class Program
             var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
             cube.AddComponent(cubeRb);
             cube.AddComponent(cubeCollider);
-            cube.Start();
-
             AudioClip? startup = Application.ResourceProvider.GetResource<AudioClip>("Assets/startup.wav");
-            IAudioSource source = ModuleManager.GetModule<AudioModule>().CreateSource();
-            source.SetClip(startup);
-            source.Volume = 0.5f;
-            source.Play();
+            var cubeAS = new AudioSource();
+            cube.AddComponent(cubeAS);
+            cubeAS.Clip = startup;
+            cubeAS.Volume = 0.5f;
+            cube.Start();
+            cubeAS.Play();
+
 
             Label FPS = new("FPS: N/A");
             FPS.Rect = new Rect(5, 25, 0, 0);
