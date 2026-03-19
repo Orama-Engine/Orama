@@ -27,7 +27,6 @@ internal class StringConverterAttribute : Attribute
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 Type[] types;
-
                 try { types = assembly.GetTypes(); }
                 catch { continue; }
 
@@ -35,17 +34,36 @@ internal class StringConverterAttribute : Attribute
                 {
                     var attr = t.GetCustomAttribute<StringConverterAttribute>();
                     if (attr != null)
-                    {
-                        converters[attr.Type] = Activator.CreateInstance(t)!;
-                    }
+                        converters[attr.Type] = t;
                 }
             }
         }
 
-        if (!converters.TryGetValue(type, out var converter))
-            throw new Exception($"No string converter found for type {type}.");
+        if (converters.TryGetValue(type, out var converterType))
+            return CreateInstance(converterType, type);
 
-        return converter;
+        if (type.IsEnum && converters.TryGetValue(typeof(Enum), out converterType))
+            return CreateInstance(converterType, type);
+
+        var baseType = type.BaseType;
+        while (baseType != null)
+        {
+            if (converters.TryGetValue(baseType, out converterType))
+                return CreateInstance(converterType, type);
+            baseType = baseType.BaseType;
+        }
+
+        throw new Exception($"No string converter found for type {type.Name}");
+    }
+
+    private static object CreateInstance(object converterTypeOrDefinition, Type targetType)
+    {
+        var t = (Type)converterTypeOrDefinition;
+
+        if (t.IsGenericTypeDefinition)
+            t = t.MakeGenericType(targetType);
+
+        return Activator.CreateInstance(t)!;
     }
 }
 

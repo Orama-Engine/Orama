@@ -18,10 +18,18 @@ namespace Orama.Desktop;
 
 internal class TestSerialization
 {
-    public int A { get; set; }
-    public int B { get; set; }
+    public enum TestEnum
+    {
+        A,
+        B,
+        C   
+    }
+    public int A { get; set; } = 1;
+    public int B { get; set; } = 2;
 
     public bool MyBool { get; set; } = true;
+
+    public TestEnum MyEnum { get; set; } = TestEnum.B;
 }
 
 internal class Program
@@ -46,7 +54,7 @@ internal class Program
         {
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
 
-            TestSerialization test = new() { A = 1, B = 2 };
+            TestSerialization test = new();
             byte[] serialized = Serialization.Serialization.Serialize(test);
             Console.WriteLine(Encoding.UTF8.GetString(serialized));
 
@@ -54,6 +62,7 @@ internal class Program
             Console.WriteLine(deserialized.A);
             Console.WriteLine(deserialized.B);
             Console.WriteLine(deserialized.MyBool);
+            Console.WriteLine(deserialized.MyEnum);
 
             FlyController flyController = new();
             flyController.Name = "Camera";
