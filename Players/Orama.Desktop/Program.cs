@@ -39,12 +39,14 @@ internal class Program
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
 
             Entity test = new();
+            test.Transform.Position = new Vector3(0, 5, 0);
             byte[] serialized = Serialization.Serialization.Serialize(test);
             Console.WriteLine(Encoding.UTF8.GetString(serialized));
             test.Destroy();
 
             Entity deserialized = Serialization.Serialization.Deserialize<Entity>(serialized);
             Console.WriteLine(deserialized.Name);
+            Console.WriteLine(deserialized.Transform.Position);
  
 
             FlyController flyController = new();

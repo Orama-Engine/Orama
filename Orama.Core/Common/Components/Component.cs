@@ -1,5 +1,5 @@
-﻿
-using Orama.Core.Common.Entities;
+﻿using Orama.Core.Common.Entities;
+using Orama.Serialization.Attributes;
 
 namespace Orama.Core.Common.Components;
 
@@ -12,6 +12,7 @@ public class Component
     public bool Enabled { get; set; } = true;
 
     /// <summary> The entity this component is attached to. </summary>
+    [DontSerialize] 
     public Entity Entity { get; internal set; } = null!;
 
     /// <summary> Called when the component is enabled. </summary>

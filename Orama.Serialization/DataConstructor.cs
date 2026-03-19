@@ -1,4 +1,5 @@
-﻿using Orama.Serialization.Conversion;
+﻿using Orama.Serialization.Attributes;
+using Orama.Serialization.Conversion;
 using System.Reflection;
 
 namespace Orama.Serialization;
@@ -8,8 +9,6 @@ namespace Orama.Serialization;
 /// </summary>
 internal static class DataConstructor
 {
-    private static HashSet<Type> currentlyConstructing = new();
-
     /// <summary> Constructs a <see cref="InstanceRepresentation"/> from an instance. </summary>
     public static InstanceRepresentation Construct<T>(T instance) => new() { Fields = ConstructFields(instance!, null, new HashSet<object>(ReferenceEqualityComparer.Instance)) };
 
@@ -28,9 +27,8 @@ internal static class DataConstructor
         var type = instance.GetType();
         var fields = new List<FieldRepresentation>();
 
-        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                                 .Where(p => p.CanWrite && p.CanRead))
-        {
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null && (p.CanWrite && p.CanRead || p.GetCustomAttribute<AlwaysSerializeAttribute>() != null)))
+        { 
             var value = prop.GetValue(instance);
             var fullName = prefix == null ? prop.Name : $"{prefix}.{prop.Name}";
 
@@ -73,13 +71,11 @@ internal static class DataConstructor
     {
         var instance = Activator.CreateInstance(type);
 
-        // Separate flat fields from dotted (nested) ones
         var flat = fields.Where(f => !f.Name.Contains('.')).ToArray();
         var nested = fields.Where(f => f.Name.Contains('.')).GroupBy(f => f.Name.Split('.')[0]).ToDictionary(g => g.Key, g => g.Select(f => new FieldRepresentation(f.Name[(f.Name.IndexOf('.') + 1)..], f.Value)).ToArray());
 
-        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null))
         {
-            // Flat primitive field
             if (flat.FirstOrDefault(f => f.Name == prop.Name) is { Name: not null } field)
             {
                 if (string.IsNullOrEmpty(field.Value)) continue;
