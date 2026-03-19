@@ -33,6 +33,7 @@ public class Entity
     public IReadOnlyList<Component> Components => components;
     private List<Component> components = new();
 
+    /// <summary> Initializes a new instance of the <see cref="Entity"/> class. </summary>
     public Entity()
     {
         Transform.Entity = this;

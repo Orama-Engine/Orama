@@ -7,7 +7,7 @@ namespace Orama.Serialization.Conversion;
 /// Marks a class as a string converter.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
-internal class StringConverterAttribute : Attribute
+public class StringConverterAttribute : Attribute
 {
     private static Dictionary<Type, object>? converters = null;
 
@@ -77,4 +77,14 @@ internal abstract class StringConverter<T>
 
     /// <summary> Converts a string to an object. </summary>
     public abstract T ConvertFromString(string value);
+}
+
+[StringConverter(typeof(string))]
+internal class StringStringConverter : StringConverter<string>
+{
+    /// <inheritdoc/>
+    public override string ConvertToString(string value) => value;
+
+    /// <inheritdoc/>
+    public override string ConvertFromString(string value) => value;
 }

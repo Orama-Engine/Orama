@@ -16,22 +16,6 @@ using System.Text;
 
 namespace Orama.Desktop;
 
-internal class TestSerialization
-{
-    public enum TestEnum
-    {
-        A,
-        B,
-        C   
-    }
-    public int A { get; set; } = 1;
-    public int B { get; set; } = 2;
-
-    public bool MyBool { get; set; } = true;
-
-    public TestEnum MyEnum { get; set; } = TestEnum.B;
-}
-
 internal class Program
 {
     static void Main(string[] args)
@@ -54,15 +38,14 @@ internal class Program
         {
             ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
 
-            TestSerialization test = new();
+            Entity test = new();
             byte[] serialized = Serialization.Serialization.Serialize(test);
             Console.WriteLine(Encoding.UTF8.GetString(serialized));
+            test.Destroy();
 
-            TestSerialization deserialized = Serialization.Serialization.Deserialize<TestSerialization>(serialized);
-            Console.WriteLine(deserialized.A);
-            Console.WriteLine(deserialized.B);
-            Console.WriteLine(deserialized.MyBool);
-            Console.WriteLine(deserialized.MyEnum);
+            Entity deserialized = Serialization.Serialization.Deserialize<Entity>(serialized);
+            Console.WriteLine(deserialized.Name);
+ 
 
             FlyController flyController = new();
             flyController.Name = "Camera";
