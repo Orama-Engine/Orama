@@ -27,29 +27,20 @@ internal static class DataConstructor
         var type = instance.GetType();
         var fields = new List<FieldRepresentation>();
 
-        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null && (p.CanWrite && p.CanRead || p.GetCustomAttribute<AlwaysSerializeAttribute>() != null)))
-        { 
+        // Properties
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null && p.GetIndexParameters().Length == 0 && (p.CanWrite && p.CanRead || p.GetCustomAttribute<AlwaysSerializeAttribute>() != null)))
+        {
             var value = prop.GetValue(instance);
             var fullName = prefix == null ? prop.Name : $"{prefix}.{prop.Name}";
+            fields.AddRange(SerializeValue(prop.PropertyType, value, fullName, visited));
+        }
 
-            if (value == null)
-            {
-                fields.Add(new FieldRepresentation(fullName, ""));
-                continue;
-            }
-
-            if (TryConvertToString(prop.PropertyType, value, out var stringValue))
-            {
-                fields.Add(new FieldRepresentation(fullName, stringValue!));
-            }
-            else if (IsNestedObject(prop.PropertyType))
-            {
-                fields.AddRange(ConstructFields(value, fullName, visited));
-            }
-            else
-            {
-                throw new Exception($"No string converter found for type {prop.PropertyType.Name}.");
-            }
+        // Fields
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.GetCustomAttribute<AlwaysSerializeAttribute>() != null && f.GetCustomAttribute<DontSerializeAttribute>() == null))
+        {
+            var value = field.GetValue(instance);
+            var fullName = prefix == null ? field.Name : $"{prefix}.{field.Name}";
+            fields.AddRange(SerializeValue(field.FieldType, value, fullName, visited));
         }
 
         return fields.ToArray();
@@ -74,30 +65,61 @@ internal static class DataConstructor
         var flat = fields.Where(f => !f.Name.Contains('.')).ToArray();
         var nested = fields.Where(f => f.Name.Contains('.')).GroupBy(f => f.Name.Split('.')[0]).ToDictionary(g => g.Key, g => g.Select(f => new FieldRepresentation(f.Name[(f.Name.IndexOf('.') + 1)..], f.Value)).ToArray());
 
-        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null))
-        {
-            if (flat.FirstOrDefault(f => f.Name == prop.Name) is { Name: not null } field)
-            {
-                if (string.IsNullOrEmpty(field.Value)) continue;
+        // Properties
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null && p.CanWrite))
+            DeconstructMember(prop.Name, prop.PropertyType, v => prop.SetValue(instance, v), flat, nested);
 
-                try
-                {
-                    var converter = StringConverterAttribute.GetConverter(prop.PropertyType);
-                    var method = converter.GetType().GetMethod("ConvertFromString")!;
-                    prop.SetValue(instance, method.Invoke(converter, new object[] { field.Value }));
-                }
-                catch
-                {
-                    throw new Exception($"No string converter found for type {prop.PropertyType.Name}.");
-                }
-            }
-            else if (nested.TryGetValue(prop.Name, out var childFields))
-            {
-                prop.SetValue(instance, DeconstructObject(prop.PropertyType, childFields));
-            }
-        }
+        // Fields
+        foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.GetCustomAttribute<AlwaysSerializeAttribute>() != null && f.GetCustomAttribute<DontSerializeAttribute>() == null))
+            DeconstructMember(field.Name, field.FieldType, v => field.SetValue(instance, v), flat, nested);
 
         return instance;
+    }
+
+    private static IEnumerable<FieldRepresentation> SerializeValue(Type type, object? value, string fullName, HashSet<object> visited)
+    {
+        if (value == null)
+        {
+            yield return new FieldRepresentation(fullName, "");
+            yield break;
+        }
+
+        if (TryConvertToString(type, value, out var stringValue))
+        {
+            yield return new FieldRepresentation(fullName, stringValue!);
+        }
+        else if (IsNestedObject(type))
+        {
+            foreach (var f in ConstructFields(value, fullName, visited))
+                yield return f;
+        }
+        else
+        {
+            throw new Exception($"No string converter found for type {type.Name}.");
+        }
+    }
+
+    private static void DeconstructMember(string name, Type memberType, Action<object?> setValue, FieldRepresentation[] flat, Dictionary<string, FieldRepresentation[]> nested)
+    {
+        if (flat.FirstOrDefault(f => f.Name == name) is { Name: not null } field)
+        {
+            if (string.IsNullOrEmpty(field.Value)) return;
+
+            try
+            {
+                var converter = StringConverterAttribute.GetConverter(memberType);
+                var method = converter.GetType().GetMethod("ConvertFromString")!;
+                setValue(method.Invoke(converter, new object[] { field.Value }));
+            }
+            catch
+            {
+                throw new Exception($"No string converter found for type {memberType.Name}.");
+            }
+        }
+        else if (nested.TryGetValue(name, out var childFields))
+        {
+            setValue(DeconstructObject(memberType, childFields));
+        }
     }
 
     private static bool IsNestedObject(Type type) => !type.IsPrimitive && type != typeof(string) && !type.IsEnum && type.GetProperties().Length > 0;

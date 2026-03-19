@@ -45,6 +45,13 @@ public class StringConverterAttribute : Attribute
         if (type.IsEnum && converters.TryGetValue(typeof(Enum), out converterType))
             return CreateInstance(converterType, type);
 
+        if (type.IsGenericType)
+        {
+            var openGeneric = type.GetGenericTypeDefinition();
+            if (converters.TryGetValue(openGeneric, out converterType))
+                return CreateInstance(converterType, type.GetGenericArguments()[0]);
+        }
+
         var baseType = type.BaseType;
         while (baseType != null)
         {

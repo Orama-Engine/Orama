@@ -1,6 +1,7 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Scenes;
+using Orama.Serialization.Attributes;
 using System.Reflection;
 
 namespace Orama.Core.Common.Entities;
@@ -31,6 +32,8 @@ public class Entity
 
     /// <summary> The components attached to the entity. </summary>
     public IReadOnlyList<Component> Components => components;
+
+    [AlwaysSerialize]
     private List<Component> components = new();
 
     /// <summary> Initializes a new instance of the <see cref="Entity"/> class. </summary>
