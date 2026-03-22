@@ -27,13 +27,13 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
-        ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<EditorModule>();
         ModuleManager.RegisterModule<AudioModule>();
+        ModuleManager.RegisterModule<PhysicsModule>();
 
         Application.OnStart += () =>
         {
@@ -69,7 +69,7 @@ internal class Program
             cubeMR.Mesh?.Material = new(shader);
             cubeMR.Mesh?.Material.SetParameter("Color", Color.White);
             cube.Name = "Cube";
-            cube.Transform.Position = new Vector3(0, 100, 0);
+            cube.Transform.Position = new Vector3(0, 50, 0);
             var cubeRb = new RigidBody();
             var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
             cube.AddComponent(cubeRb);
