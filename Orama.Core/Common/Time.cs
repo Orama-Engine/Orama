@@ -5,6 +5,9 @@
 /// </summary>
 public static class Time
 {
+    /// <summary> Fixed delta used for physics simulations. </summary>
+    public static float FixedDelta { get; } = 1f / 60f;
+
     /// <summary> The time elapsed since the last frame in seconds. </summary>
     public static float Delta { get; internal set;  }
 
