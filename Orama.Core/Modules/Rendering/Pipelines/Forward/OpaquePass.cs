@@ -2,7 +2,7 @@
 using Orama.Core.Common.Components;
 using Orama.Core.Common.Utility;
 using Orama.Rendering;
-using Orama.Rendering.Backends;
+using Orama.Rendering.Device;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
@@ -11,13 +11,11 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        Renderer.CommandBuffer.EnableFeature(RenderFeature.DepthTest);
-        Renderer.CommandBuffer.SetDepthMask(true);
+        CommandBuffer buffer = Renderer.CreateCommandBuffer();
 
-        Renderer.CommandBuffer.Clear(0f, 0f, 0f, 1f);
-
-        Renderer.CommandBuffer.DisableFeature(RenderFeature.Blending);
-        Renderer.CommandBuffer.EnableFeature(RenderFeature.CullFaces);
+        buffer.CommandList.Begin();
+        buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(0, 0, 0, 1));
+        buffer.CommandList.End();
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")

@@ -3,18 +3,20 @@ using Silk.NET.Windowing;
 using System.Numerics;
 using Veldrid;
 
-namespace Orama.Rendering.Backends.Veldrid;
+namespace Orama.Rendering.Veldrid;
 
-internal class VeldridBackend : IRendererBackend
+/// <summary>
+/// Interface into low-level Veldrid rendering.
+/// </summary>
+public class VeldridDevice
 {
-    /// <inheritdoc/>
-    public ICommandBuffer CommandBuffer { get; private set; }
-
-    public GraphicsDevice? Device { get; private set; }
+    /// <summary> The underlying Veldrid <see cref="global::Veldrid.GraphicsDevice"/>. </summary>
+    public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
     private RendererBackend backend;
 
-    public VeldridBackend(RendererBackend backend)
+    /// <summary> Initializes a new instance of the <see cref="VeldridDevice"/> class. </summary>
+    public VeldridDevice(RendererBackend backend)
     {
         this.backend = backend;
     }
@@ -41,14 +43,12 @@ internal class VeldridBackend : IRendererBackend
                 
                 break;
             case RendererBackend.Vulkan:
-                Device = GraphicsDevice.CreateVulkan(options, desc);
+                GraphicsDevice = GraphicsDevice.CreateVulkan(options, desc);
                 break;
             case RendererBackend.DirectX11:
-                Device = GraphicsDevice.CreateD3D11(options, desc);
+                GraphicsDevice = GraphicsDevice.CreateD3D11(options, desc);
                 break;
         }
-
-        CommandBuffer = new VeldridBuffer(this);
     }
 
     /// <inheritdoc/>
@@ -64,5 +64,5 @@ internal class VeldridBackend : IRendererBackend
     }
 
     /// <inheritdoc/>
-    public void Resize(int width, int height) => Device.MainSwapchain.Resize((uint)width, (uint)height);
+    public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
 }

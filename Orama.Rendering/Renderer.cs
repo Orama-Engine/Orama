@@ -1,6 +1,6 @@
-﻿using Orama.Rendering.Backends;
-using Orama.Rendering.Backends.Veldrid;
+﻿using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
+using Orama.Rendering.Veldrid;
 using Silk.NET.Windowing;
 using System.Numerics;
 
@@ -21,18 +21,10 @@ public static class Renderer
     /// <summary> The renderer backend in use. </summary>
     public static RendererBackend Backend { get; private set; }
 
-    /// <summary> The command buffer for the current backend. </summary>
-    public static ICommandBuffer CommandBuffer => backends[Backend].CommandBuffer;
+    public static VeldridDevice Veldrid { get; private set; } = null!;
 
     /// <summary> A First In First Out queue of meshes to render for the next frame. </summary>
     public static Queue<GraphicsMesh> RenderQueue { get; } = new();
-
-    private static readonly Dictionary<RendererBackend, IRendererBackend> backends = new()
-    {
-        { RendererBackend.OpenGL, new VeldridBackend(RendererBackend.OpenGL) },
-        { RendererBackend.Vulkan, new VeldridBackend(RendererBackend.Vulkan) },
-        { RendererBackend.DirectX11, new VeldridBackend(RendererBackend.DirectX11) }
-    };
 
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
     /// <param name="window"> The window to initialize the backend for. </param>
@@ -41,33 +33,40 @@ public static class Renderer
     {
         Options = options;
         Backend = backend;
-        backends[backend].Initialize(window);
+
+        Veldrid = new VeldridDevice(backend);
+        Veldrid.Initialize(window);
     }
 
-    /// <summary> Renders the scene. </summary>
+    /// <summary> Creates a new command buffer. </summary>
+    public static CommandBuffer CreateCommandBuffer() => new(Veldrid);
+
+    public static void SubmitCommandBuffer(CommandBuffer commandBuffer)
+    {
+        Veldrid.GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
+    }
+
+    /// <summary> Renders all meshes in the <see cref="RenderQueue"/>. </summary>
     public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
-        backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix);
+
         RenderQueue.Clear();
     }
 
-    /// <summary> Renders the scene offscreen to the provided <see cref="GraphicsTexture"/>. </summary>
+    /// <summary> Renders all meshes in the <see cref="RenderQueue"/> offscreen to the provided <see cref="GraphicsTexture"/>. </summary>
     public static void RenderToTarget(GraphicsTexture renderTarget, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
-        backends[Backend].Render(RenderQueue, viewMatrix, projectionMatrix, renderTarget);
+
         RenderQueue.Clear();
     }
 
     /// <summary> Resizes the renderer. </summary>
-    public static void Resize(int width, int height) => backends[Backend].Resize(width, height);
+    public static void Resize(int width, int height) => Veldrid.Resize(width, height);
 
     /// <summary> Queues a mesh for rendering. Should be called once per frame for each desired mesh. </summary>
     /// <param name="mesh"> The mesh to queue. </param>
     public static void QueueMesh(GraphicsMesh mesh) => RenderQueue.Enqueue(mesh);
 
     /// <summary> Cleans up the renderer. </summary>
-    public static void Dispose()
-    {
-        backends[Backend].Dispose();
-    }
+    public static void Dispose() => Veldrid.Dispose();
 }
