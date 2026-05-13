@@ -1,5 +1,5 @@
 ﻿using Orama.Rendering.Backends;
-using Orama.Rendering.Backends.OpenGL;
+using Orama.Rendering.Backends.Veldrid;
 using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
 using System.Numerics;
@@ -8,7 +8,9 @@ namespace Orama.Rendering;
 
 public enum RendererBackend
 {
-    OpenGL
+    OpenGL,
+    Vulkan,
+    DirectX11
 }
 
 public static class Renderer
@@ -27,7 +29,9 @@ public static class Renderer
 
     private static readonly Dictionary<RendererBackend, IRendererBackend> backends = new()
     {
-        { RendererBackend.OpenGL, new OpenGLBackend() }
+        { RendererBackend.OpenGL, new VeldridBackend(RendererBackend.OpenGL) },
+        { RendererBackend.Vulkan, new VeldridBackend(RendererBackend.Vulkan) },
+        { RendererBackend.DirectX11, new VeldridBackend(RendererBackend.DirectX11) }
     };
 
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>

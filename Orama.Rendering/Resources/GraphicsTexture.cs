@@ -47,6 +47,6 @@ public class GraphicsTexture
         Width = width;
         Height = height;
         Type = dataType;
-        Data = new byte[0];
+        Data = Array.Empty<byte>();
     }
 }

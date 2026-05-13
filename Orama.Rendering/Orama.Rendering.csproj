@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Silk.NET.OpenGL" Version="2.22.0" />
     <PackageReference Include="Silk.NET.Windowing" Version="2.22.0" />
+    <PackageReference Include="Veldrid" Version="4.9.0" />
     <PackageReference Include="Vortice.ShaderCompiler" Version="1.8.0" />
     <PackageReference Include="Vortice.SpirvCross" Version="1.5.3" />
   </ItemGroup>

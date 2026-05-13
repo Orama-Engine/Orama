@@ -19,9 +19,10 @@ public class GraphicsShader
 
     private readonly Dictionary<string, object> parameters = new();
 
-    /// <summary> Set's a parameter in the shaders source. </summary>
+    /// <summary> Sets a parameter in the shaders source. </summary>
     public void SetParameter<T>(string name, T value) => parameters[name] = value ?? throw new ArgumentNullException(nameof(value), $"Shader parameter '{name}' cannot be null.");
 
+    /// <summary> Gets a parameter from the shaders source or null if not found. </summary>
     public object? GetParameter(string name)
     {
         parameters.TryGetValue(name, out var value);
