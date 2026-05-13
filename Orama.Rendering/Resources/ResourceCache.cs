@@ -6,10 +6,10 @@ namespace Orama.Rendering.Resources;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public abstract class ResourceCache<TSelf, TKey, TResource> where TSelf : ResourceCache<TSelf, TKey, TResource>, new() where TKey : notnull
+public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : ResourceCache<TSingletonOwner, TKey, TResource>, new() where TKey : notnull
 {
     /// <summary> Singleton instance. </summary>
-    public static TSelf Instance { get; } = new TSelf();
+    public static TSingletonOwner Instance { get; } = new TSingletonOwner();
 
     public Dictionary<TKey, TResource> Cache { get; } = new();
 

@@ -18,25 +18,30 @@ Pass = ""Opaque""
 
 Properties
 {
-    float4x4 u_MVP;
+
 }
 
 Source
 {
-    struct VSInput
-    {
-        float3 pos : POSITION;
-    };
-
     struct VSOutput
     {
         float4 pos : SV_POSITION;
     };
 
-    VSOutput VertexEntryPoint(VSInput input)
+    VSOutput VertexEntryPoint(uint vertexID : SV_VertexID)
     {
         VSOutput output;
-        output.pos = mul(u_MVP, float4(input.pos, 1.0));
+
+        float2 positions[3] =
+        {
+            float2( 0.0,  0.6),
+            float2(-0.6, -0.6),
+            float2( 0.6, -0.6)
+        };
+
+        float2 pos = positions[vertexID];
+        output.pos = float4(pos, 0.0, 1.0);
+
         return output;
     }
 

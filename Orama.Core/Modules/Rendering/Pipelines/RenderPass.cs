@@ -15,7 +15,7 @@ public abstract class RenderPass
     public abstract void Render();
 
     /// <summary> Queues a renderable object to be rendered during the next frame. </summary>
-    protected void QueueObject(IClientRenderable renderable, CommandBuffer buffer)
+    protected void DrawObject(IClientRenderable renderable, CommandBuffer buffer)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
         var factory = gd.ResourceFactory;
@@ -40,15 +40,19 @@ public abstract class RenderPass
         DeviceBuffer ib = factory.CreateBuffer(new BufferDescription((uint)(renderable.Indices.Length * sizeof(uint)), BufferUsage.IndexBuffer));
         gd.UpdateBuffer(ib, 0, renderable.Indices);
 
-        var descriptor = new PipelineDescription(
+        var shaderDescriptor = new ShaderDescriptor(
+            VertexSource: renderable.Material.Shader.Vertex,
+            FragmentSource: renderable.Material.Shader.Fragment
+        );
+
+        var descriptor = new PipelineDescriptor(
             PassName: renderable.Material.Pass,
+            Shader: shaderDescriptor,
             Outputs: gd.SwapchainFramebuffer.OutputDescription,
             ResourceLayouts: Array.Empty<ResourceLayout>()
         );
 
         Pipeline pipeline = PipelineCache.Instance.GetOrCreate(descriptor);
-
-        // Crash happens here
 
         RenderItem item = new(vb, ib, (uint)renderable.Indices.Length, pipeline, Array.Empty<ResourceSet>());
 

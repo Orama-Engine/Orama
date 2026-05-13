@@ -3,7 +3,7 @@ using Veldrid.SPIRV;
 
 namespace Orama.Rendering.Resources;
 
-public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescription, Pipeline>
+public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescriptor, Pipeline>
 {
     const string VERT_SOURCE = @"
 #version 450
@@ -32,11 +32,11 @@ void main()
 ";
 
     /// <inheritdoc/>
-    protected override Pipeline Create(PipelineDescription key)
+    protected override Pipeline Create(PipelineDescriptor key)
     {
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
-        (byte[] vertBytes, byte[] fragBytes) = ShaderBaker.GLSLToShader(VERT_SOURCE, FRAG_SOURCE);
+        (byte[] vertBytes, byte[] fragBytes) = ShaderBaker.HLSLToShader(key.Shader.VertexSource, key.Shader.FragmentSource);
 
         Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, vertBytes, "main"),
@@ -64,4 +64,6 @@ void main()
     }
 }
 
-public readonly record struct PipelineDescription(string PassName, OutputDescription Outputs, ResourceLayout[] ResourceLayouts);
+public readonly record struct PipelineDescriptor(string PassName, ShaderDescriptor Shader, OutputDescription Outputs, ResourceLayout[] ResourceLayouts);
+
+public readonly record struct ShaderDescriptor(string VertexSource, string FragmentSource);
