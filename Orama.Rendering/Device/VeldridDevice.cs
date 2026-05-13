@@ -52,11 +52,5 @@ public class VeldridDevice
     }
 
     /// <inheritdoc/>
-    public void Render(Queue<RenderItem> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, Texture? renderTarget = null)
-    {
-
-    }
-
-    /// <inheritdoc/>
     public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
 }

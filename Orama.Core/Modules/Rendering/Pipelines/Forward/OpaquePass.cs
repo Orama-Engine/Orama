@@ -1,8 +1,6 @@
-﻿
-using Orama.Core.Common.Components;
-using Orama.Core.Common.Utility;
-using Orama.Rendering;
+﻿using Orama.Rendering;
 using Orama.Rendering.Device;
+using Veldrid;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
@@ -11,26 +9,18 @@ public class OpaquePass : RenderPass
 {
     public override void Render()
     {
-        CommandBuffer buffer = Renderer.CreateCommandBuffer();
+        var gd = Renderer.Veldrid.GraphicsDevice;
+        var buffer = Renderer.CreateCommandBuffer();
 
         buffer.CommandList.Begin();
-        buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(0, 0, 0, 1));
-        buffer.CommandList.End();
-
-        Renderer.SubmitCommandBuffer(buffer);
+        buffer.CommandList.SetFramebuffer(gd.SwapchainFramebuffer);
+        buffer.CommandList.ClearColorTarget(0, new RgbaFloat(0, 0, 0, 1));
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
-                QueueObject(renderable);
+                QueueObject(renderable, buffer);
 
-        // TODO: Better camera target handling
-        if (Camera.Main?.Target != null)
-        {
-            // Renderer.RenderToTarget(Camera.Main.Target.GraphicsTexture, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix : System.Numerics.Matrix4x4.Identity, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix : System.Numerics.Matrix4x4.Identity);
-        } 
-        else
-        {
-            Renderer.Render(Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ViewMatrix : System.Numerics.Matrix4x4.Identity, Camera.Main != null ? (System.Numerics.Matrix4x4)Camera.Main.ProjectionMatrix : System.Numerics.Matrix4x4.Identity);
-        }
+        buffer.CommandList.End();
+        Renderer.SubmitCommandBuffer(buffer);
     }
 }

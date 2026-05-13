@@ -5,13 +5,38 @@ namespace Orama.Rendering.Resources;
 
 public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescription, Pipeline>
 {
+    const string VERT_SOURCE = @"
+#version 450
+
+vec2 positions[3] = vec2[](
+    vec2( 0.0,  0.2),
+    vec2(-0.2, -0.2),
+    vec2( 0.2, -0.2)
+);
+
+void main()
+{
+    gl_Position = vec4(positions[gl_VertexIndex], 0.0, 1.0);
+}
+";
+
+    const string FRAG_SOURCE = @"
+#version 450
+
+layout(location = 0) out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0, 0.0, 1.0, 1.0);
+}
+";
+
     /// <inheritdoc/>
     protected override Pipeline Create(PipelineDescription key)
     {
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
-        byte[] vertBytes = File.ReadAllBytes($"shaders/{key.PassName}.vert.spv");
-        byte[] fragBytes = File.ReadAllBytes($"shaders/{key.PassName}.frag.spv");
+        (byte[] vertBytes, byte[] fragBytes) = ShaderBaker.GLSLToShader(VERT_SOURCE, FRAG_SOURCE);
 
         Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, vertBytes, "main"),

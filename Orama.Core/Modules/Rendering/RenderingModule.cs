@@ -32,6 +32,8 @@ public class RenderingModule : BaseModule
     {
         Pipeline.Render();
         Renderables.Clear();
+
+        Renderer.Present();
     }
 
     public override void Dispose()

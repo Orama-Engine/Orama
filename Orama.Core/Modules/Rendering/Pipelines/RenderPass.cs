@@ -12,19 +12,11 @@ namespace Orama.Core.Modules.Rendering.Pipelines;
 /// </summary>
 public abstract class RenderPass
 {
-    protected CommandBuffer CommandBuffer { get; set; } = null!;
-
-    public void BeginFrame(CommandBuffer buffer)
-    {
-        CommandBuffer = buffer;
-    }
-
     public abstract void Render();
 
     /// <summary> Queues a renderable object to be rendered during the next frame. </summary>
-    public void QueueObject(IClientRenderable renderable)
+    protected void QueueObject(IClientRenderable renderable, CommandBuffer buffer)
     {
-        // TODO: Instantiating a new RenderItem multiple times every frame is very expensive, don't do this
         var gd = Renderer.Veldrid.GraphicsDevice;
         var factory = gd.ResourceFactory;
 
@@ -42,11 +34,11 @@ public abstract class RenderPass
             vertexData[i * 8 + 7] = i < renderable.UVs.Length ? renderable.UVs[i].Y : 0f;
         }
 
-        DeviceBuffer vertexBuffer = factory.CreateBuffer(new BufferDescription((uint)(vertexData.Length * sizeof(float)), BufferUsage.VertexBuffer));
-        gd.UpdateBuffer(vertexBuffer, 0, vertexData);
+        DeviceBuffer vb = factory.CreateBuffer(new BufferDescription((uint)(vertexData.Length * sizeof(float)), BufferUsage.VertexBuffer));
+        gd.UpdateBuffer(vb, 0, vertexData);
 
-        DeviceBuffer indexBuffer = factory.CreateBuffer(new BufferDescription((uint)(renderable.Indices.Length * sizeof(uint)), BufferUsage.IndexBuffer));
-        gd.UpdateBuffer(indexBuffer, 0, renderable.Indices);
+        DeviceBuffer ib = factory.CreateBuffer(new BufferDescription((uint)(renderable.Indices.Length * sizeof(uint)), BufferUsage.IndexBuffer));
+        gd.UpdateBuffer(ib, 0, renderable.Indices);
 
         var descriptor = new PipelineDescription(
             PassName: renderable.Material.Pass,
@@ -56,19 +48,13 @@ public abstract class RenderPass
 
         Pipeline pipeline = PipelineCache.Instance.GetOrCreate(descriptor);
 
-        RenderItem item = new(
-            vertexBuffer,
-            indexBuffer,
-            (uint)renderable.Indices.Length,
-            pipeline,
-            Array.Empty<ResourceSet>()
-        );
+        // Crash happens here
 
-        CommandBuffer.CommandList.SetPipeline(item.Pipeline);
-        CommandBuffer.CommandList.SetVertexBuffer(0, item.VertexBuffer);
-        CommandBuffer.CommandList.SetIndexBuffer(item.IndexBuffer, IndexFormat.UInt32);
-        CommandBuffer.CommandList.DrawIndexed(item.IndexCount);
+        RenderItem item = new(vb, ib, (uint)renderable.Indices.Length, pipeline, Array.Empty<ResourceSet>());
 
-        Renderer.QueueMesh(item);
+        buffer.CommandList.SetPipeline(item.Pipeline);
+        buffer.CommandList.SetVertexBuffer(0, item.VertexBuffer);
+        buffer.CommandList.SetIndexBuffer(item.IndexBuffer, IndexFormat.UInt32);
+        buffer.CommandList.DrawIndexed(item.IndexCount);
     }
 }
