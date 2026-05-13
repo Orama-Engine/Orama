@@ -42,15 +42,12 @@ public static class Renderer
     /// <summary> Creates a new command buffer. </summary>
     public static CommandBuffer CreateCommandBuffer() => new(Veldrid);
 
-    public static void SubmitCommandBuffer(CommandBuffer commandBuffer)
-    {
-        Veldrid.GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
-    }
+    public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
 
     /// <summary> Renders all <see cref="RenderItem"/>s in the <see cref="RenderQueue"/>. </summary>
     public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
-
+        Veldrid.Render(RenderQueue, viewMatrix, projectionMatrix);
         RenderQueue.Clear();
     }
 
@@ -69,5 +66,8 @@ public static class Renderer
     public static void QueueMesh(RenderItem item) => RenderQueue.Enqueue(item);
 
     /// <summary> Cleans up the renderer. </summary>
-    public static void Dispose() => Veldrid.Dispose();
+    public static void Dispose()
+    {
+        PipelineCache.Instance.Dispose();
+    }
 }

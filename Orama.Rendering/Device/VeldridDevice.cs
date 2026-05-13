@@ -52,12 +52,6 @@ public class VeldridDevice
     }
 
     /// <inheritdoc/>
-    public void Dispose()
-    {
-
-    }
-
-    /// <inheritdoc/>
     public void Render(Queue<RenderItem> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, Texture? renderTarget = null)
     {
 

@@ -17,6 +17,8 @@ public class OpaquePass : RenderPass
         buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(0, 0, 0, 1));
         buffer.CommandList.End();
 
+        Renderer.SubmitCommandBuffer(buffer);
+
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
                 QueueObject(renderable);
