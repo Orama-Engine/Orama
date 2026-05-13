@@ -29,7 +29,6 @@ internal class Program
         ModuleManager.RegisterModule<AssemblyModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<RenderingModule>();
-        ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<EditorModule>();
         ModuleManager.RegisterModule<AudioModule>();

@@ -3,6 +3,7 @@ using Orama.Rendering.Resources;
 using Orama.Rendering.Veldrid;
 using Silk.NET.Windowing;
 using System.Numerics;
+using Veldrid;
 
 namespace Orama.Rendering;
 
@@ -23,8 +24,8 @@ public static class Renderer
 
     public static VeldridDevice Veldrid { get; private set; } = null!;
 
-    /// <summary> A First In First Out queue of meshes to render for the next frame. </summary>
-    public static Queue<GraphicsMesh> RenderQueue { get; } = new();
+    /// <summary> A First In First Out queue of <see cref="RenderItem"/>s to render for the next frame. </summary>
+    public static Queue<RenderItem> RenderQueue { get; } = new();
 
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
     /// <param name="window"> The window to initialize the backend for. </param>
@@ -46,15 +47,15 @@ public static class Renderer
         Veldrid.GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
     }
 
-    /// <summary> Renders all meshes in the <see cref="RenderQueue"/>. </summary>
+    /// <summary> Renders all <see cref="RenderItem"/>s in the <see cref="RenderQueue"/>. </summary>
     public static void Render(Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
 
         RenderQueue.Clear();
     }
 
-    /// <summary> Renders all meshes in the <see cref="RenderQueue"/> offscreen to the provided <see cref="GraphicsTexture"/>. </summary>
-    public static void RenderToTarget(GraphicsTexture renderTarget, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
+    /// <summary> Renders all <see cref="RenderItem"/>s in the <see cref="RenderQueue"/> offscreen to the provided <see cref="Texture"/>. </summary>
+    public static void RenderToTarget(Texture renderTarget, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix)
     {
 
         RenderQueue.Clear();
@@ -63,9 +64,9 @@ public static class Renderer
     /// <summary> Resizes the renderer. </summary>
     public static void Resize(int width, int height) => Veldrid.Resize(width, height);
 
-    /// <summary> Queues a mesh for rendering. Should be called once per frame for each desired mesh. </summary>
-    /// <param name="mesh"> The mesh to queue. </param>
-    public static void QueueMesh(GraphicsMesh mesh) => RenderQueue.Enqueue(mesh);
+    /// <summary> Queues a <see cref="RenderItem"/> for rendering. Should be called once per frame for each desired item. </summary>
+    /// <param name="item"> The item to queue. </param>
+    public static void QueueMesh(RenderItem item) => RenderQueue.Enqueue(item);
 
     /// <summary> Cleans up the renderer. </summary>
     public static void Dispose() => Veldrid.Dispose();

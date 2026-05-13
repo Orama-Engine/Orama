@@ -2,8 +2,7 @@
 using Orama.Core.Common.Entities;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
-using Orama.Core.Modules.GUI;
-using Orama.Core.Modules.GUI.Widgets;
+using Orama.Core.Modules.Audio;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Physics.Components;
@@ -24,20 +23,17 @@ internal class Program
         ModuleManager.RegisterModule<AssemblyModule>();
         ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
-        ModuleManager.RegisterModule<RenderingModule>();
-        ModuleManager.RegisterModule<GUIModule>();
         ModuleManager.RegisterModule<InputModule>();
+        ModuleManager.RegisterModule<AudioModule>();
+
+        ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
 
         var debugScene = new Scene();
         ModuleManager.GetModule<SceneModule>()?.CurrentScene = debugScene;
 
-        var FPS = new Label("FPS: N/A");
-        FPS.Rect = new Rect(5, 5, 0, 0);
 
         Application.OnStart += () =>
         {
-            ModuleManager.GetModule<GUIModule>()?.Widgets.Add(FPS);
-
             Entity test = new();
             test.Transform.Position = new Vector3(0, 5, 0);
             byte[] serialized = Serialization.Serialization.Serialize(test);
@@ -77,7 +73,7 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-            FPS.Text = $"FPS: {Application.Window.FramesPerSecond}";
+
         };
 
         Application.OnRender += () =>

@@ -20,6 +20,6 @@ internal class TextureLoader : ResourceLoader<Texture>
         byte[] pixelData = new byte[width * height * 4];
         image.CopyPixelDataTo(pixelData);
 
-        return new Texture(width, height, TextureDataType.RGBA8, pixelData);
+        return new Texture(width, height, TextureFormat.RGBA8, pixelData);
     }
 }

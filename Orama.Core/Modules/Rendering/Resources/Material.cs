@@ -9,32 +9,41 @@ namespace Orama.Core.Modules.Rendering.Resources;
 /// </summary>
 public class Material
 {
-    private const string DEFAULT_VERTEX = @"
-#version 450 core
+    private const string DEFAULT_SHADER = @"
+#vertex VertexEntryPoint
+#fragment FragmentEntryPoint
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in vec3 normal;
-layout(location = 2) in vec2 uv;
+Name = ""Default/White""
+Pass = ""Opaque""
 
-layout(std140, binding = 0) uniform ShaderParams
+Properties
 {
-    mat4 u_MVP;
-};
-
-void main()
-{
-    gl_Position = u_MVP * vec4(pos, 1.0);
+    float4x4 u_MVP;
 }
-";
 
-    private const string DEFAULT_FRAGMENT = @"
-#version 450 core
-
-layout(location = 0) out vec4 FragColor;
-
-void main()
+Source
 {
-    FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    struct VSInput
+    {
+        float3 pos : POSITION;
+    };
+
+    struct VSOutput
+    {
+        float4 pos : SV_POSITION;
+    };
+
+    VSOutput VertexEntryPoint(VSInput input)
+    {
+        VSOutput output;
+        output.pos = mul(u_MVP, float4(input.pos, 1.0));
+        return output;
+    }
+
+    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
+    {
+        return float4(1.0, 1.0, 1.0, 1.0);
+    }
 }
 ";
 
@@ -45,7 +54,7 @@ void main()
     public string Pass { get; set; } = "Opaque";
 
     /// <summary> A default material using a simple shader. </summary>
-    public static Material Default { get; } = new Material(new Shader(DEFAULT_VERTEX, DEFAULT_FRAGMENT));
+    public static Material Default { get; } = new Material(new Shader(DEFAULT_SHADER));
 
     /// <summary> Initializes a new <see cref="Material"/> from the specified <see cref="Resources.GraphicsShader"/>. </summary>
     public Material(Shader shader)
@@ -54,38 +63,19 @@ void main()
         Pass = Shader.Pass;
     }
 
-    /// <summary> Creates a clone of the material. </summary>
-    /// <remarks> The cloned material shares the same underlying <see cref="Orama.Rendering.Resources.GraphicsShader"/> but do not share parameters. </remarks>
-    public Material Clone()
-    {
-        GraphicsShader newShader = new GraphicsShader
-        {
-            VertexBytes = (byte[])Shader.GraphicsShader.VertexBytes.Clone(),
-            FragmentBytes = (byte[])Shader.GraphicsShader.FragmentBytes.Clone()
-        };
-
-        return new Material(new Shader(newShader)) { Pass = Pass };
-    }
-
     /// <summary> Sets the value of a parameter in the material's shader. </summary>
     public void SetParameter<T>(string name, T value)
     {
-        if (value is Texture text)
-        {
-            Shader.GraphicsShader.SetParameter(name, text.GraphicsTexture);
-            return;
-        }
+        if (value is null)
+            throw new ArgumentNullException(nameof(value));
 
-        Shader.GraphicsShader.SetParameter(name, value);
+        Shader.Parameters[name] = value;
     }
 
     /// <summary> Gets the value of a parameter from the material's shader. </summary>
     public T GetParameter<T>(string name)
     {
-        object? value = Shader.GraphicsShader.GetParameter(name);
-
-        if (value is GraphicsTexture graphicsTexture && typeof(T) == typeof(Texture))
-            return (T)(object)new Texture(graphicsTexture);
+        object? value = Shader.Parameters[name];
 
         if (value is T tValue)
             return tValue;

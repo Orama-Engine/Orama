@@ -58,7 +58,7 @@ public class VeldridDevice
     }
 
     /// <inheritdoc/>
-    public void Render(Queue<GraphicsMesh> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, GraphicsTexture? renderTarget = null)
+    public void Render(Queue<RenderItem> renderQueue, Matrix4x4 viewMatrix, Matrix4x4 projectionMatrix, Texture? renderTarget = null)
     {
 
     }

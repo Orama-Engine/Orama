@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Orama.Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Orama.Math.csproj", "{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Editor", "Orama.Editor\Orama.Editor.csproj", "{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.ShaderLang", "Orama.ShaderLang\Orama.ShaderLang.csproj", "{95E5C5AD-50E7-4762-970B-5C9C90D050C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Serialization", "Orama.Serialization\Orama.Serialization.csproj", "{0E59A3C4-D514-4F85-8D1A-72D338B64336}"
@@ -41,10 +39,6 @@ Global
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B9CC229-D8FD-4268-936F-5391C4F6BDA3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95E5C5AD-50E7-4762-970B-5C9C90D050C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95E5C5AD-50E7-4762-970B-5C9C90D050C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95E5C5AD-50E7-4762-970B-5C9C90D050C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
