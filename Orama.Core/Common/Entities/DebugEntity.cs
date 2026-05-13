@@ -11,7 +11,8 @@ namespace Orama.Core.Common.Entities;
 /// </summary>
 public class DebugEntity : Entity
 {
-    [ImplicitComponent] private MeshRenderer renderer = null!;
+    [ImplicitComponent]
+    public MeshRenderer Renderer { get; private set; } = null!;
 
     public override void Start()
     {
@@ -21,8 +22,8 @@ public class DebugEntity : Entity
 
         var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
 
-        renderer.Mesh = mesh;
-        renderer.Mesh?.Material = Material.Default;
+        Renderer.Mesh = mesh;
+        Renderer.Mesh?.Material = Material.Default;
     }
 }
 #endif

@@ -34,17 +34,6 @@ internal class Program
 
         Application.OnStart += () =>
         {
-            Entity test = new();
-            test.Transform.Position = new Vector3(0, 5, 0);
-            byte[] serialized = Serialization.Serialization.Serialize(test);
-            Console.WriteLine(Encoding.UTF8.GetString(serialized));
-            test.Destroy();
-
-            Entity deserialized = Serialization.Serialization.Deserialize<Entity>(serialized);
-            Console.WriteLine(deserialized.Name);
-            Console.WriteLine(deserialized.Transform.Position);
- 
-
             FlyController flyController = new();
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 10, 0);
@@ -54,14 +43,8 @@ internal class Program
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
 
+            floor.Renderer.Material.SetParameter<Color>("u_Color", Color.White);
 
-            var cube = new DebugEntity();
-            cube.Name = "Cube";
-            cube.Transform.Position = new Vector3(0, 100, 0);
-            var cubeRb = new RigidBody();
-            var cubeCollider = new BoxCollider(cube.Transform.Scale.X, cube.Transform.Scale.Y, cube.Transform.Scale.Z);
-            cube.AddComponent(cubeRb);
-            cube.AddComponent(cubeCollider);
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };

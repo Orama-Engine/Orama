@@ -41,16 +41,10 @@ public class Entity
     {
         Transform.Entity = this;
         ModuleManager.GetModule<SceneModule>()?.CurrentScene.Entities.Add(this);
-    }
 
-    /// <summary> Called when the entity is enabled. </summary>
-    /// <remarks> The base implementation adds all implicit components and starts all components. </remarks>
-    public virtual void Start()
-    {
         foreach (var field in GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
         {
-            if (field.FieldType.IsAssignableTo(typeof(Component)) &&
-                field.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0)
+            if (field.FieldType.IsAssignableTo(typeof(Component)) && field.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0)
             {
                 var component = (Component?)field.GetValue(this);
                 if (component == null)
@@ -65,9 +59,7 @@ public class Entity
 
         foreach (var property in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
         {
-            if (property.PropertyType.IsAssignableTo(typeof(Component)) &&
-                property.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0 &&
-                property.CanWrite)
+            if (property.PropertyType.IsAssignableTo(typeof(Component)) && property.GetCustomAttributes(typeof(ImplicitComponent), false).Length > 0 && property.CanWrite)
             {
                 var component = (Component?)property.GetValue(this);
                 if (component == null)
@@ -79,7 +71,12 @@ public class Entity
                 AddComponent(component);
             }
         }
+    }
 
+    /// <summary> Called when the entity is enabled. </summary>
+    /// <remarks> The base implementation starts all components. </remarks>
+    public virtual void Start()
+    {
         foreach (var component in Components)
         {
             if (component.Enabled)
