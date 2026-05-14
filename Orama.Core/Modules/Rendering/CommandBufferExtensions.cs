@@ -20,7 +20,6 @@ public static class CommandBufferExtensions
         public void DrawRenderable(IClientRenderable renderable, Matrix4x4 model)
         {
             var gd = Renderer.Veldrid.GraphicsDevice;
-            var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
             int vertCount = renderable.Vertices.Length;
             float[] vertexData = new float[vertCount * 8];
@@ -36,27 +35,19 @@ public static class CommandBufferExtensions
                 vertexData[i * 8 + 7] = i < renderable.UVs.Length ? renderable.UVs[i].Y : 0f;
             }
 
-            DeviceBuffer vb = factory.CreateBuffer(new BufferDescription((uint)(vertexData.Length * sizeof(float)), BufferUsage.VertexBuffer));
-            gd.UpdateBuffer(vb, 0, vertexData);
-
-            DeviceBuffer ib = factory.CreateBuffer(new BufferDescription((uint)(renderable.Indices.Length * sizeof(uint)), BufferUsage.IndexBuffer));
-            gd.UpdateBuffer(ib, 0, renderable.Indices);
-
-            var shaderDescriptor = new ShaderDescriptor(
-                VertexSource: renderable.Material.Shader.Vertex,
-                FragmentSource: renderable.Material.Shader.Fragment
-            );
-
-            var descriptor = new PipelineDescriptor(
+            Pipeline pipeline = PipelineCache.Instance.GetOrCreate(new PipelineDescriptor(
                 PassName: renderable.Material.Pass,
-                Shader: shaderDescriptor,
+                Shader: new ShaderDescriptor(renderable.Material.Shader.Vertex, renderable.Material.Shader.Fragment),
                 Outputs: gd.SwapchainFramebuffer.OutputDescription,
                 ResourceLayouts: Array.Empty<ResourceLayout>()
-            );
+            ));
 
-            Pipeline pipeline = PipelineCache.Instance.GetOrCreate(descriptor);
-
-            RenderItem item = new(vb, ib, (uint)renderable.Indices.Length, pipeline);
+            RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemDescriptor(
+                VertexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<float, byte>(vertexData).ToArray(), BufferUsage.VertexBuffer),
+                IndexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToArray(), BufferUsage.IndexBuffer),
+                IndexCount: (uint)renderable.Indices.Length,
+                Pipeline: pipeline
+            ));
 
             buffer.DrawItem(item);
         }
