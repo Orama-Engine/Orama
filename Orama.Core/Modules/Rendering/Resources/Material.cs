@@ -23,25 +23,22 @@ Properties
 
 Source
 {
+    struct VSInput
+    {
+        float3 Position : POSITION;
+        float3 Normal   : NORMAL;
+        float2 UV       : TEXCOORD0;
+    };
+
     struct VSOutput
     {
         float4 pos : SV_POSITION;
     };
 
-    VSOutput VertexEntryPoint(uint vertexID : SV_VertexID)
+    VSOutput VertexEntryPoint(VSInput input)
     {
         VSOutput output;
-
-        float2 positions[3] =
-        {
-            float2( 0.0,  0.6),
-            float2(-0.6, -0.6),
-            float2( 0.6, -0.6)
-        };
-
-        float2 pos = positions[vertexID];
-        output.pos = float4(pos, 0.0, 1.0);
-
+        output.pos = float4(input.Position, 1.0);
         return output;
     }
 

@@ -5,13 +5,10 @@ using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.Audio;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
-using Orama.Core.Modules.Physics.Components;
-using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
-using System.Text;
 
 namespace Orama.Desktop;
 

@@ -33,6 +33,9 @@ public readonly record struct BufferDescriptor(byte[] Data, BufferUsage Usage)
     /// <inheritdoc/>
     public override int GetHashCode()
     {
+        // This is very expensive
+        // TODO: Better comparison
+
         var hash = new HashCode();
         hash.Add(Usage);
         foreach (var b in Data)
