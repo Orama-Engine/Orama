@@ -15,7 +15,7 @@ public static class HLSLTarget
         if (!string.IsNullOrWhiteSpace(format.Properties?.Body))
         {
             properties = $@"
-cbuffer ShaderParams : register(b0)
+cbuffer MaterialParams : register(b0)
 {{
 {format.Properties.Body}
 }}
