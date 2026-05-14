@@ -8,7 +8,7 @@ namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 /// <summary> Pass responsible for rendering all solid objects. </summary>
 public class OpaquePass : RenderPass
 {
-    public override void Render()
+    public override void Render(ref RenderFrame frame)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
         var buffer = Renderer.AllocateCommandBuffer();

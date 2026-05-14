@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Components;
 using Orama.Core.Modules.Rendering.Pipelines;
 using Orama.Core.Modules.Rendering.Pipelines.Forward;
 using Orama.Rendering;
@@ -30,7 +31,12 @@ public class RenderingModule : BaseModule
 
     public void Render() 
     {
-        Pipeline.Render();
+        RenderFrame frame = new RenderFrame()
+        {
+            Camera = Camera.Main ?? new Camera(),
+        };
+
+        Pipeline.Render(ref frame);
         Renderables.Clear();
 
         Renderer.Present();
@@ -46,7 +52,7 @@ public class RenderingModule : BaseModule
 
     /// <summary> Renders a client renderable to the window during the next frame. </summary>
     /// <param name="renderable">The object to render.</param>
-    public void RenderObject(IClientRenderable renderable) => Renderables.Add(renderable);
+    public void QueueObject(IClientRenderable renderable) => Renderables.Add(renderable);
 
     public void OnResize(int width, int height) => Renderer.Resize(width, height);
 }

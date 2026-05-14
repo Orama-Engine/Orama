@@ -26,6 +26,6 @@ public class MeshRenderer : Component, IClientRenderable
         if (Mesh == null)
             return;
 
-        ModuleManager.GetModule<RenderingModule>()?.RenderObject(this);
+        ModuleManager.GetModule<RenderingModule>()?.QueueObject(this);
     }
 }

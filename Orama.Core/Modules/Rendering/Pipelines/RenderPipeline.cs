@@ -10,5 +10,9 @@ public abstract class RenderPipeline
     public abstract RenderPass[] Passes { get; }
 
     /// <summary> Renders the pipeline. </summary>
-    public void Render() => Array.ForEach(Passes, p => p.Render());
+    public void Render(ref RenderFrame frame)
+    {
+        foreach (var pass in Passes)
+            pass.Render(ref frame);
+    }
 }

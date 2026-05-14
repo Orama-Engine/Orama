@@ -1,10 +1,4 @@
 ﻿
-using Orama.Rendering;
-using Orama.Rendering.Device;
-using Orama.Rendering.Resources;
-using Veldrid;
-using Vulkan;
-
 namespace Orama.Core.Modules.Rendering.Pipelines;
 
 /// <summary>
@@ -12,5 +6,5 @@ namespace Orama.Core.Modules.Rendering.Pipelines;
 /// </summary>
 public abstract class RenderPass
 {
-    public abstract void Render();
+    public abstract void Render(ref RenderFrame frame);
 }
