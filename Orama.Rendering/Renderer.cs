@@ -37,11 +37,11 @@ public static class Renderer
     }
 
     /// <summary> Creates a new command buffer. </summary>
-    public static CommandBuffer CreateCommandBuffer() => new(Veldrid);
+    public static CommandBuffer AllocateCommandBuffer() => new(Veldrid);
 
     public static void Present() => Veldrid.GraphicsDevice.SwapBuffers();
 
-    public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
+    public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.SubmitCommands(commandBuffer);
 
     /// <summary> Resizes the renderer. </summary>
     public static void Resize(int width, int height) => Veldrid.Resize(width, height);

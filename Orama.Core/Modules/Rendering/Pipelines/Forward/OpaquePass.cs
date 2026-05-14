@@ -1,4 +1,5 @@
-﻿using Orama.Rendering;
+﻿using Orama.Math;
+using Orama.Rendering;
 using Orama.Rendering.Device;
 using Veldrid;
 
@@ -10,17 +11,20 @@ public class OpaquePass : RenderPass
     public override void Render()
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
-        var buffer = Renderer.CreateCommandBuffer();
+        var buffer = Renderer.AllocateCommandBuffer();
 
-        buffer.CommandList.Begin();
+        buffer.Begin();
+
         buffer.CommandList.SetFramebuffer(gd.SwapchainFramebuffer);
-        buffer.CommandList.ClearColorTarget(0, new RgbaFloat(0, 0, 0, 1));
+
+        buffer.ClearColor(Color.Black);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
-                DrawObject(renderable, buffer);
+                buffer.DrawRenderable(renderable);
 
-        buffer.CommandList.End();
+        buffer.End();
         Renderer.SubmitCommandBuffer(buffer);
+        buffer.Dispose();
     }
 }

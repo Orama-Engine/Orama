@@ -1,4 +1,5 @@
-﻿using Orama.Rendering.Resources;
+﻿using Orama.Rendering.Device;
+using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
 using System.Numerics;
 using Veldrid;
@@ -50,6 +51,8 @@ public class VeldridDevice
                 break;
         }
     }
+
+    public void SubmitCommands(CommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
 
     /// <inheritdoc/>
     public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
