@@ -19,6 +19,8 @@ public class OpaquePass : RenderPass
 
         buffer.ClearColor(Color.Black);
 
+        Matrix4x4 transform = Matrix4x4.CreateTRS(Vector3.One, Quaternion.FromEulerAngles(0, 0, 0), Vector3.One);
+
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
                 buffer.DrawRenderable(renderable);

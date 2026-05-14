@@ -69,14 +69,14 @@ public struct Quaternion : IEquatable<Quaternion>
     }
 
     /// <summary> Creates a <see cref="Quaternion"/> from Euler angles (pitch, yaw, roll) in radians. </summary>
-    public static Quaternion FromEulerAngles(Vector3 euler)
+    public static Quaternion FromEulerAngles(float x, float y, float z)
     {
-        float cy = MathF.Cos(euler.Z * 0.5f);
-        float sy = MathF.Sin(euler.Z * 0.5f);
-        float cp = MathF.Cos(euler.Y * 0.5f);
-        float sp = MathF.Sin(euler.Y * 0.5f);
-        float cr = MathF.Cos(euler.X * 0.5f);
-        float sr = MathF.Sin(euler.X * 0.5f);
+        float cy = MathF.Cos(z * 0.5f);
+        float sy = MathF.Sin(z * 0.5f);
+        float cp = MathF.Cos(y * 0.5f);
+        float sp = MathF.Sin(y * 0.5f);
+        float cr = MathF.Cos(x * 0.5f);
+        float sr = MathF.Sin(x * 0.5f);
 
         return new Quaternion(
             sr * cp * cy - cr * sp * sy,
@@ -85,6 +85,9 @@ public struct Quaternion : IEquatable<Quaternion>
             cr * cp * cy + sr * sp * sy
         );
     }
+
+    /// <inheritdoc cref="FromEulerAngles(float, float, float)"/>
+    public static Quaternion FromEulerAngles(Vector3 angles) => FromEulerAngles(angles.X, angles.Y, angles.Z);
 
     #region Operators
 

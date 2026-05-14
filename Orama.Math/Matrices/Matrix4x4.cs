@@ -58,6 +58,15 @@ public struct Matrix4x4
 
     #region Factory Methods
 
+    /// <summary> Creates a transformation matrix from the specified components. </summary>
+    public static Matrix4x4 CreateTRS(Vector3 pos, Quaternion rot, Vector3 scale)
+    {
+        Matrix4x4 translation = CreateTranslation(pos);
+        Matrix4x4 rotation = CreateFromQuaternion(rot);
+        Matrix4x4 scaling = CreateScale(scale);
+        return scaling * rotation * translation;
+    }
+
     /// <summary> Creates a translation matrix from a <see cref="Vector3"/>. </summary>
     public static Matrix4x4 CreateTranslation(Vector3 pos)
     {
