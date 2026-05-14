@@ -56,7 +56,7 @@ public static class CommandBufferExtensions
 
             Pipeline pipeline = PipelineCache.Instance.GetOrCreate(descriptor);
 
-            RenderItem item = new(vb, ib, (uint)renderable.Indices.Length, pipeline, Array.Empty<ResourceSet>());
+            RenderItem item = new(vb, ib, (uint)renderable.Indices.Length, pipeline);
 
             buffer.DrawItem(item);
         }

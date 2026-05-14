@@ -13,15 +13,13 @@ public class RenderItem : IDisposable
     public DeviceBuffer IndexBuffer { get; }
     public uint IndexCount { get; }
     public Pipeline Pipeline { get; }
-    public ResourceSet[] ResourceSets { get; }
 
-    public RenderItem(DeviceBuffer vertexBuffer, DeviceBuffer indexBuffer, uint indexCount, Pipeline pipeline, ResourceSet[] resourceSets)
+    public RenderItem(DeviceBuffer vertexBuffer, DeviceBuffer indexBuffer, uint indexCount, Pipeline pipeline)
     {
         VertexBuffer = vertexBuffer;
         IndexBuffer = indexBuffer;
         IndexCount = indexCount;
         Pipeline = pipeline;
-        ResourceSets = resourceSets;
     }
 
     /// <inheritdoc/>
