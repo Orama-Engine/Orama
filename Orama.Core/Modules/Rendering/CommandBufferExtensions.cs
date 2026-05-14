@@ -12,7 +12,12 @@ public static class CommandBufferExtensions
     {
         public void ClearColor(Color color) => buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
-        public void DrawRenderable(IClientRenderable renderable)
+        public void SetViewProjection(Matrix4x4 view, Matrix4x4 projection)
+        {
+
+        }
+
+        public void DrawRenderable(IClientRenderable renderable, Matrix4x4 model)
         {
             var gd = Renderer.Veldrid.GraphicsDevice;
             var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
