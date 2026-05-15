@@ -18,7 +18,9 @@ Pass = ""Opaque""
 
 Properties
 {
-    float Brightness;
+    float4x4 ObjectMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
 }
 
 Source
@@ -38,13 +40,22 @@ Source
     VSOutput VertexEntryPoint(VSInput input)
     {
         VSOutput output;
-        output.pos = float4(input.Position, 1.0);
+
+        float4 localPos = float4(input.Position, 1.0);
+
+        float4 worldPos = mul(ObjectMatrix, localPos);
+        float4 viewPos = mul(ViewMatrix, worldPos);
+        float4 clipPos = mul(ProjectionMatrix, viewPos);
+
+        output.pos = clipPos;
+
         return output;
     }
 
+
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return float4(Brightness, Brightness, Brightness, Brightness);
+        return float4(1.0, 1.0, 1.0, 1.0);
     }
 }
 ";

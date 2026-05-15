@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common;
+using Orama.Core.Common.Entities;
 using Orama.Math;
 using Orama.Rendering;
 using Orama.Rendering.Device;
@@ -20,20 +21,21 @@ public class OpaquePass : RenderPass
 
         buffer.ClearColor(Color.Black);
 
-        Matrix4x4 model = Matrix4x4.CreateTRS(Vector3.One, Quaternion.FromEulerAngles(0, 0, 0), Vector3.One);
-        Matrix4x4 view = frame.Camera.ViewMatrix;
-        Matrix4x4 projection = frame.Camera.ProjectionMatrix;
-
-        buffer.SetViewProjection(view, projection);
-
-        GPUBuffer paramBuffer = new GPUBuffer();
-        float t = (MathF.Sin(DateTime.Now.Millisecond / 1000f) + 1f) * 0.5f;
-        paramBuffer.AddFloat(t);
-        buffer.UploadGPUBuffer(paramBuffer, 0);
-
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")
+            {
+                Matrix4x4 model = renderable.Transform;
+                Matrix4x4 view = frame.Camera.ViewMatrix;
+                Matrix4x4 projection = frame.Camera.ProjectionMatrix;
+
+                GPUBuffer paramBuffer = new GPUBuffer();
+                paramBuffer.AddMatrix4x4(model);
+                paramBuffer.AddMatrix4x4(view);
+                paramBuffer.AddMatrix4x4(projection);
+                buffer.UploadGPUBuffer(paramBuffer, 0);
+
                 buffer.DrawRenderable(renderable, model);
+            }
 
         buffer.End();
         Renderer.SubmitCommandBuffer(buffer);

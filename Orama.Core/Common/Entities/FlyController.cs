@@ -50,7 +50,7 @@ public class FlyController : Entity
 
         // Update cumulative yaw/pitch
         yaw += -delta.X * mouseSensitivity * Time.Delta;
-        pitch += -delta.Y * mouseSensitivity * Time.Delta;
+        pitch += delta.Y * mouseSensitivity * Time.Delta;
 
         // Build rotation from cumulative angles
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
