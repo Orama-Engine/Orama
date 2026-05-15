@@ -33,12 +33,17 @@ internal class Program
         {
             FlyController flyController = new();
             flyController.Name = "Camera";
-            flyController.Transform.Position = new Vector3(0, 10, 0);
+            flyController.Transform.Position = new Vector3(0, 0, 0);
 
             var floor = new DebugEntity();
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
+
+            var cube = new DebugEntity();
+            cube.Name = "Cube";
+
+
 
             floor.Renderer.Material.SetParameter<Color>("u_Color", Color.White);
 

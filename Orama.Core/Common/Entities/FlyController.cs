@@ -55,6 +55,7 @@ public class FlyController : Entity
         // Build rotation from cumulative angles
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
+
         Transform.Rotation = yawRot * pitchRot;
     }
 }
