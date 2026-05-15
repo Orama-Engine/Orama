@@ -1,4 +1,5 @@
-﻿using Orama.Math;
+﻿using Orama.Core.Common;
+using Orama.Math;
 using Orama.Rendering;
 using Orama.Rendering.Device;
 using Veldrid;
@@ -24,6 +25,11 @@ public class OpaquePass : RenderPass
         Matrix4x4 projection = frame.Camera.ProjectionMatrix;
 
         buffer.SetViewProjection(view, projection);
+
+        GPUBuffer paramBuffer = new GPUBuffer();
+        float t = (MathF.Sin(DateTime.Now.Millisecond / 1000f) + 1f) * 0.5f;
+        paramBuffer.AddFloat(t);
+        buffer.UploadGPUBuffer(paramBuffer, 0);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Pass == "Opaque")

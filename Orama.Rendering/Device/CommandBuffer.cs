@@ -11,6 +11,8 @@ public class CommandBuffer : IDisposable
     /// <summary> The low-level Veldrid command list. </summary>
     public CommandList CommandList { get; }
 
+    public PipelineDescriptor Pipeline { get; set; }
+
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
@@ -32,8 +34,10 @@ public class CommandBuffer : IDisposable
         CommandList.SetGraphicsResourceSet(index, resourceSet);
     }
 
-    public void SetPipeline(Pipeline pipeline)
+    public void SetPipeline(PipelineDescriptor pipelineDesc)
     {
+        Pipeline = pipelineDesc;
+        Pipeline pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
         CommandList.SetPipeline(pipeline);
     }
 

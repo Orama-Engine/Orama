@@ -4,11 +4,14 @@ using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
 using System.Runtime.InteropServices;
 using Veldrid;
+using Vulkan;
 
 namespace Orama.Core.Modules.Rendering;
 
 public static class CommandBufferExtensions
 {
+    private static Dictionary<uint, GPUBuffer> gpuBufferQueue = new Dictionary<uint, GPUBuffer>();
+
     extension(CommandBuffer buffer)
     {
         public void ClearColor(Color color) => buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(color.R, color.G, color.B, color.A));
@@ -17,6 +20,8 @@ public static class CommandBufferExtensions
         {
 
         }
+
+        public void UploadGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
 
         public void DrawRenderable(IClientRenderable renderable, Matrix4x4 model)
         {
@@ -56,11 +61,13 @@ public static class CommandBufferExtensions
                 Pipeline: pipeline
             ));
 
-            Span<byte> bytes = stackalloc byte[16];
-            MemoryMarshal.Write(bytes, 0.5f);
+            buffer.SetPipeline(pipelineDesc);
 
-            buffer.SetPipeline(pipeline);
-            buffer.UploadUniformBuffer(pipelineDesc, (uint)bytes.Length, 0, bytes);
+            foreach (var (slot, gpuBuffer) in gpuBufferQueue)
+                buffer.UploadUniformBuffer(buffer.Pipeline, (uint)gpuBuffer.Data.Count, slot, gpuBuffer.Data.ToArray());
+
+            gpuBufferQueue.Clear();
+
             buffer.DrawItem(item);
         }
     }
