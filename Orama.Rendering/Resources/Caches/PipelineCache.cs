@@ -1,12 +1,13 @@
 ﻿using Veldrid;
 using Veldrid.SPIRV;
+using Vulkan;
 
-namespace Orama.Rendering.Resources;
+namespace Orama.Rendering.Resources.Caches;
 
-public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescriptor, Pipeline>
+public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pipeline>
 {
     /// <inheritdoc/>
-    protected override Pipeline Create(PipelineDescriptor key)
+    protected override Pipeline Create(PipelineKey key)
     {
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
@@ -23,7 +24,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescrip
             new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
-        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutDescriptor(key.ResourceLayout.Elements));
+        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements));
 
         GraphicsPipelineDescription desc = new()
         {
@@ -36,10 +37,12 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescrip
             Outputs = key.Outputs,
         };
 
-        return factory.CreateGraphicsPipeline(desc);
+        Pipeline pipeline = factory.CreateGraphicsPipeline(desc);
+
+        return pipeline;
     }
 }
 
-public readonly record struct PipelineDescriptor(string PassName, ShaderDescriptor Shader, OutputDescription Outputs, ResourceLayoutDescription ResourceLayout);
+public readonly record struct PipelineKey(string PassName, ShaderKey Shader, OutputDescription Outputs, ResourceLayoutDescription ResourceLayout);
 
-public readonly record struct ShaderDescriptor(string VertexSource, string FragmentSource);
+public readonly record struct ShaderKey(string VertexSource, string FragmentSource);

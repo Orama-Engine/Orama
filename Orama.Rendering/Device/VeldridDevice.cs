@@ -14,6 +14,8 @@ public class VeldridDevice
     /// <summary> The underlying Veldrid <see cref="global::Veldrid.GraphicsDevice"/>. </summary>
     public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
+    public ulong CurrentFrame { get; internal set; }
+
     private RendererBackend backend;
 
     /// <summary> Initializes a new instance of the <see cref="VeldridDevice"/> class. </summary>

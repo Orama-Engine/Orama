@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Rendering.Resources;
+﻿namespace Orama.Rendering.Resources.Caches;
 
 /// <summary>
 /// Base class for resource caches.

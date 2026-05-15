@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using Veldrid;
 
-namespace Orama.Rendering.Resources;
+namespace Orama.Rendering.Resources.Caches;
 
-public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemDescriptor, RenderItem>
+public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemKey, RenderItem>
 {
     /// <inheritdoc/>
-    protected override RenderItem Create(RenderItemDescriptor key)
+    protected override RenderItem Create(RenderItemKey key)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
@@ -22,7 +22,9 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemD
         DeviceBuffer ib = factory.CreateBuffer(ibDesc);
         gd.UpdateBuffer(ib, 0, key.IndexBuffer.Data);
 
-        return new RenderItem(vb, ib, key.IndexCount, key.Pipeline);
+        Pipeline pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
+
+        return new RenderItem(vb, ib, key.IndexCount, pipeline);
     }
 }
 
@@ -45,4 +47,4 @@ public readonly record struct BufferDescriptor(byte[] Data, BufferUsage Usage)
     }
 }
 
-public readonly record struct RenderItemDescriptor(BufferDescriptor VertexBuffer, BufferDescriptor IndexBuffer, uint IndexCount, Pipeline Pipeline);
+public readonly record struct RenderItemKey(BufferDescriptor VertexBuffer, BufferDescriptor IndexBuffer, uint IndexCount, PipelineKey Pipeline);

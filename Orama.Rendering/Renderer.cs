@@ -1,5 +1,5 @@
 ﻿using Orama.Rendering.Device;
-using Orama.Rendering.Resources;
+using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using Silk.NET.Windowing;
 using System.Numerics;
@@ -39,7 +39,11 @@ public static class Renderer
     /// <summary> Creates a new command buffer. </summary>
     public static CommandBuffer AllocateCommandBuffer() => new(Veldrid);
 
-    public static void Present() => Veldrid.GraphicsDevice.SwapBuffers();
+    public static void Present()
+    {
+        Veldrid.GraphicsDevice.SwapBuffers();
+        Veldrid.CurrentFrame++;
+    }
 
     public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.SubmitCommands(commandBuffer);
 

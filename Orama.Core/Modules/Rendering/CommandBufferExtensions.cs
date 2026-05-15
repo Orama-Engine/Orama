@@ -2,6 +2,7 @@
 using Orama.Rendering;
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
+using Orama.Rendering.Resources.Caches;
 using System.Runtime.InteropServices;
 using Veldrid;
 using Vulkan;
@@ -16,12 +17,7 @@ public static class CommandBufferExtensions
     {
         public void ClearColor(Color color) => buffer.CommandList.ClearColorTarget(0, new Veldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
-        public void SetViewProjection(Matrix4x4 view, Matrix4x4 projection)
-        {
-
-        }
-
-        public void UploadGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
+        public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
 
         public void DrawRenderable(IClientRenderable renderable, Matrix4x4 model)
         {
@@ -45,20 +41,18 @@ public static class CommandBufferExtensions
             // index 1: ObjectParams
             ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("MaterialParams", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment));
 
-            PipelineDescriptor pipelineDesc = new PipelineDescriptor(
+            PipelineKey pipelineDesc = new PipelineKey(
                 PassName: renderable.Material.Pass,
-                Shader: new ShaderDescriptor(renderable.Material.Shader.Vertex, renderable.Material.Shader.Fragment),
+                Shader: new ShaderKey(renderable.Material.Shader.Vertex, renderable.Material.Shader.Fragment),
                 Outputs: gd.SwapchainFramebuffer.OutputDescription,
                 ResourceLayout: layoutDesc
             );
 
-            Pipeline pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-
-            RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemDescriptor(
+            RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
                 VertexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<float, byte>(vertexData).ToArray(), BufferUsage.VertexBuffer),
                 IndexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToArray(), BufferUsage.IndexBuffer),
                 IndexCount: (uint)renderable.Indices.Length,
-                Pipeline: pipeline
+                Pipeline: pipelineDesc
             ));
 
             buffer.SetPipeline(pipelineDesc);

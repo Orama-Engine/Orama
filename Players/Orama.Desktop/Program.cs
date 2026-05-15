@@ -40,8 +40,11 @@ internal class Program
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
 
-            var cube = new DebugEntity();
-            cube.Name = "Cube";
+            ModuleManager.GetModule<InputModule>()?.KeyPressed += (key) =>
+            {
+                if (key == Key.A)
+                    floor.Destroy();
+            };
 
 
 
