@@ -3,6 +3,7 @@ using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using Silk.NET.GLFW;
+using System.Collections.Immutable;
 using Veldrid;
 
 namespace Orama.Rendering.Device;
@@ -39,7 +40,7 @@ public class CommandBuffer : IDisposable
         DeviceBuffer buffer = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateBuffer(new BufferDescription(size, BufferUsage.UniformBuffer));
         CommandList.UpdateBuffer(buffer, 0, data.ToArray());
 
-        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(target.ResourceLayout.Elements));
+        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(target.ResourceLayout.Elements.ToImmutableArray()));
 
         ResourceSet resourceSet = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(layout, buffer));
         CommandList.SetGraphicsResourceSet(index, resourceSet);

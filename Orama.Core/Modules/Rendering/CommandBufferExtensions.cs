@@ -3,6 +3,7 @@ using Orama.Rendering;
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
+using System.Collections.Immutable;
 using System.Runtime.InteropServices;
 using Veldrid;
 using Vulkan;
@@ -49,8 +50,8 @@ public static class CommandBufferExtensions
             );
 
             RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-                VertexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<float, byte>(vertexData).ToArray(), BufferUsage.VertexBuffer),
-                IndexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToArray(), BufferUsage.IndexBuffer),
+                VertexBuffer: new BufferDescriptor(MemoryMarshal.Cast<float, byte>(vertexData).ToImmutableArray(), BufferUsage.VertexBuffer),
+                IndexBuffer: new BufferDescriptor(MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToImmutableArray(), BufferUsage.IndexBuffer),
                 IndexCount: (uint)renderable.Indices.Length,
                 Pipeline: pipelineDesc
             ));

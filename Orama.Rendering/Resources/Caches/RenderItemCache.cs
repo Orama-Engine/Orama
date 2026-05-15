@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Text;
 using Veldrid;
 
@@ -17,10 +18,10 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
         BufferDescription ibDesc = new BufferDescription((uint)key.IndexBuffer.Data.Length, key.IndexBuffer.Usage);
 
         DeviceBuffer vb = factory.CreateBuffer(vbDesc);
-        gd.UpdateBuffer(vb, 0, key.VertexBuffer.Data);
+        gd.UpdateBuffer(vb, 0, key.VertexBuffer.Data.AsSpan());
 
         DeviceBuffer ib = factory.CreateBuffer(ibDesc);
-        gd.UpdateBuffer(ib, 0, key.IndexBuffer.Data);
+        gd.UpdateBuffer(ib, 0, key.IndexBuffer.Data.AsSpan());
 
         Pipeline pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
@@ -28,9 +29,9 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
     }
 }
 
-public readonly record struct BufferDescriptor(byte[] Data, BufferUsage Usage)
+public readonly record struct BufferDescriptor(ImmutableArray<byte> Data, BufferUsage Usage)
 {
-    public bool Equals(BufferDescriptor other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data);
+    public bool Equals(BufferDescriptor other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
 
     /// <inheritdoc/>
     public override int GetHashCode()

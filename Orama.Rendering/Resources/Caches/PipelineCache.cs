@@ -1,4 +1,5 @@
-﻿using Veldrid;
+﻿using System.Collections.Immutable;
+using Veldrid;
 using Veldrid.SPIRV;
 using Vulkan;
 
@@ -24,7 +25,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
             new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
-        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements));
+        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements.ToImmutableArray()));
 
         GraphicsPipelineDescription desc = new()
         {
