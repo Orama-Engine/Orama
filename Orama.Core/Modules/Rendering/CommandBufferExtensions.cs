@@ -2,6 +2,7 @@
 using Orama.Rendering;
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
+using System.Runtime.InteropServices;
 using Veldrid;
 
 namespace Orama.Core.Modules.Rendering;
@@ -35,12 +36,18 @@ public static class CommandBufferExtensions
                 vertexData[i * 8 + 7] = i < renderable.UVs.Length ? renderable.UVs[i].Y : 0f;
             }
 
-            Pipeline pipeline = PipelineCache.Instance.GetOrCreate(new PipelineDescriptor(
+            // index 0: MaterialParams
+            // index 1: ObjectParams
+            ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("MaterialParams", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment));
+
+            PipelineDescriptor pipelineDesc = new PipelineDescriptor(
                 PassName: renderable.Material.Pass,
                 Shader: new ShaderDescriptor(renderable.Material.Shader.Vertex, renderable.Material.Shader.Fragment),
                 Outputs: gd.SwapchainFramebuffer.OutputDescription,
-                ResourceLayouts: Array.Empty<ResourceLayout>()
-            ));
+                ResourceLayout: layoutDesc
+            );
+
+            Pipeline pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
 
             RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemDescriptor(
                 VertexBuffer: new BufferDescriptor(System.Runtime.InteropServices.MemoryMarshal.Cast<float, byte>(vertexData).ToArray(), BufferUsage.VertexBuffer),
@@ -49,6 +56,11 @@ public static class CommandBufferExtensions
                 Pipeline: pipeline
             ));
 
+            Span<byte> bytes = stackalloc byte[16];
+            MemoryMarshal.Write(bytes, 0.5f);
+
+            buffer.SetPipeline(pipeline);
+            buffer.UploadUniformBuffer(pipelineDesc, (uint)bytes.Length, 0, bytes);
             buffer.DrawItem(item);
         }
     }

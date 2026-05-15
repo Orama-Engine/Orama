@@ -23,6 +23,8 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescrip
             new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
+        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutDescriptor(key.ResourceLayout.Elements));
+
         GraphicsPipelineDescription desc = new()
         {
             BlendState = BlendStateDescription.SingleOverrideBlend,
@@ -30,7 +32,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescrip
             RasterizerState = RasterizerStateDescription.Default,
             PrimitiveTopology = PrimitiveTopology.TriangleList,
             ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
-            ResourceLayouts = key.ResourceLayouts,
+            ResourceLayouts = new[] { layout },
             Outputs = key.Outputs,
         };
 
@@ -38,6 +40,6 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescrip
     }
 }
 
-public readonly record struct PipelineDescriptor(string PassName, ShaderDescriptor Shader, OutputDescription Outputs, ResourceLayout[] ResourceLayouts);
+public readonly record struct PipelineDescriptor(string PassName, ShaderDescriptor Shader, OutputDescription Outputs, ResourceLayoutDescription ResourceLayout);
 
 public readonly record struct ShaderDescriptor(string VertexSource, string FragmentSource);

@@ -18,7 +18,7 @@ Pass = ""Opaque""
 
 Properties
 {
-
+    float Brightness;
 }
 
 Source
@@ -44,7 +44,7 @@ Source
 
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return float4(1.0, 1.0, 1.0, 1.0);
+        return float4(Brightness, Brightness, Brightness, Brightness);
     }
 }
 ";
