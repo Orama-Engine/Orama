@@ -4,6 +4,9 @@ namespace Orama.Rendering.Resources;
 
 public interface IFrameCountedResource
 {
+    /// <summary> Called when the resource is disposed. </summary>
+    public event Action? Disposed;
+
     /// <summary> Tries to dispose the resource. </summary>
     /// <param name="currentFrame">The current frame. </param>
     /// <returns> True if the resource was disposed. </returns>
@@ -28,6 +31,9 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
     /// <summary> The underlying resource. </summary>
     public T Resource { get; }
 
+    /// <inheritdoc/>
+    public event Action? Disposed;
+
     /// <summary> Initializes a new instance of the <see cref="FrameCountedResource{T}"/> class. </summary>
     public FrameCountedResource(T resource)
     {
@@ -45,6 +51,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
         {
             Console.WriteLine($"Disposing {typeof(T).Name} ({Resource})");
             FrameDisposalQueue.DisposalQueue.Enqueue(this);
+            Disposed?.Invoke();
             return true;
         }
 

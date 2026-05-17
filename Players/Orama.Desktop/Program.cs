@@ -44,6 +44,16 @@ internal class Program
             {
                 if (key == Key.A)
                     floor.Destroy();
+
+
+                if (key == Key.D)
+                {
+                    floor = new DebugEntity();
+                    floor.Name = "Floor";
+                    floor.Transform.Scale = new Vector3(10, 1, 10);
+                    floor.Transform.Position = new Vector3(0, 0, 0);
+                    floor.Start();
+                }
             };
 
 

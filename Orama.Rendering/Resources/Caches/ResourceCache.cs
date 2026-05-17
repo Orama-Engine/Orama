@@ -28,14 +28,10 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 
         FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
         value.LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+        value.Disposed += () => Cache.Remove(key);
 
         Cache[key] = value;
 
         return value;
-    }
-
-    public void Dispose()
-    {
-        Cache.Clear();
     }
 }

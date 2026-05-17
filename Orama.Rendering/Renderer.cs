@@ -56,6 +56,6 @@ public static class Renderer
     /// <summary> Cleans up the renderer. </summary>
     public static void Dispose()
     {
-        PipelineCache.Instance.Dispose();
+        FrameDisposalQueue.DisposeResources(Veldrid.CurrentFrame);
     }
 }
