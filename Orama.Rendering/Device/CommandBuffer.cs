@@ -1,8 +1,6 @@
-﻿
-using Orama.Rendering.Resources;
+﻿using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
-using Silk.NET.GLFW;
 using System.Collections.Immutable;
 using Veldrid;
 

@@ -3,6 +3,7 @@ using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
 using System.Numerics;
 using Veldrid;
+using Veldrid.OpenGL;
 
 namespace Orama.Rendering.Veldrid;
 
@@ -43,7 +44,8 @@ public class VeldridDevice
         switch(backend)
         {
             case RendererBackend.OpenGL:
-                
+                // TODO: OpenGL support
+                throw new NotImplementedException();
                 break;
             case RendererBackend.Vulkan:
                 GraphicsDevice = GraphicsDevice.CreateVulkan(options, desc);
