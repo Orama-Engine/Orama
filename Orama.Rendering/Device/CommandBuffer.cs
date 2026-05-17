@@ -15,8 +15,6 @@ public class CommandBuffer : IDisposable
 
     public PipelineKey Pipeline { get; set; }
 
-    private readonly List<(RCGHandle<Pipeline> Handle, ulong Frame)> acquiredPipelines = new();
-
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
@@ -25,15 +23,7 @@ public class CommandBuffer : IDisposable
 
     public void Begin() => CommandList.Begin();
 
-    public void End()
-    {
-        CommandList.End();
-
-        foreach (var (handle, frame) in acquiredPipelines)
-            RCGResourceRegistry<Pipeline>.Instance.Release(handle, frame);
-
-        acquiredPipelines.Clear();
-    }
+    public void End() => CommandList.End();
 
     public void UploadUniformBuffer(PipelineKey target, uint size, uint index, ReadOnlySpan<byte> data)
     {
