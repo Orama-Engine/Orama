@@ -45,8 +45,7 @@ public static class Renderer
         Veldrid.GraphicsDevice.SwapBuffers();
         Veldrid.CurrentFrame++;
 
-        foreach (var frameResource in FrameDisposalQueue.ActiveResources)
-            frameResource.TryDispose((uint)Veldrid.CurrentFrame);
+        FrameDisposalQueue.DisposeResources(Veldrid.CurrentFrame);
     }
 
     public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.SubmitCommands(commandBuffer);

@@ -49,7 +49,7 @@ public static class CommandBufferExtensions
                 ResourceLayout: layoutDesc
             );
 
-            RenderItem item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
+            FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
                 VertexBuffer: new BufferDescriptor(MemoryMarshal.Cast<float, byte>(vertexData).ToImmutableArray(), BufferUsage.VertexBuffer),
                 IndexBuffer: new BufferDescriptor(MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToImmutableArray(), BufferUsage.IndexBuffer),
                 IndexCount: (uint)renderable.Indices.Length,
@@ -63,7 +63,7 @@ public static class CommandBufferExtensions
 
             gpuBufferQueue.Clear();
 
-            buffer.DrawItem(item);
+            buffer.DrawItem(item.Resource);
         }
     }
 }

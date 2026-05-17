@@ -5,43 +5,37 @@
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : ResourceCache<TSingletonOwner, TKey, TResource>, new() where TKey : notnull
+public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : ResourceCache<TSingletonOwner, TKey, TResource>, new() where TKey : notnull where TResource : IDisposable
 {
     /// <summary> Singleton instance. </summary>
     public static TSingletonOwner Instance { get; } = new TSingletonOwner();
 
-    public Dictionary<TKey, TResource> Cache { get; } = new();
+    public Dictionary<TKey, FrameCountedResource<TResource>> Cache { get; } = new();
 
     /// <summary> Creates a new <typeparamref name="TResource"/> for the given key. </summary>
     protected abstract TResource Create(TKey key);
 
     /// <summary> Gets or creates a <typeparamref name="TResource"/> for the given key. </summary>
-    public TResource GetOrCreate(TKey key)
+    public FrameCountedResource<TResource> GetOrCreate(TKey key)
     {
-        if (Cache.TryGetValue(key, out TResource? existing))
-            return existing;
-
-        TResource created = Create(key);
-        Cache[key] = created;
-        return created;
-    }
-
-    public bool Invalidate(TKey key)
-    {
-        if (Cache.Remove(key, out TResource? resource))
+        if (Cache.TryGetValue(key, out FrameCountedResource<TResource>? existing))
         {
-            (resource as IDisposable)?.Dispose();
-            return true;
+            existing.LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+            return existing;
         }
 
-        return false;
+        TResource created = Create(key);
+
+        FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
+        value.LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+
+        Cache[key] = value;
+
+        return value;
     }
 
     public void Dispose()
     {
-        foreach (var resource in Cache.Values)
-            (resource as IDisposable)?.Dispose();
-
         Cache.Clear();
     }
 }

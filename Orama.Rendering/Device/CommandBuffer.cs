@@ -30,9 +30,9 @@ public class CommandBuffer : IDisposable
         DeviceBuffer buffer = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateBuffer(new BufferDescription(size, BufferUsage.UniformBuffer));
         CommandList.UpdateBuffer(buffer, 0, data.ToArray());
 
-        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(target.ResourceLayout.Elements.ToImmutableArray()));
+        FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(target.ResourceLayout.Elements.ToImmutableArray()));
 
-        ResourceSet resourceSet = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(layout, buffer));
+        ResourceSet resourceSet = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(layout.Resource, buffer));
         CommandList.SetGraphicsResourceSet(index, resourceSet);
     }
 
@@ -40,8 +40,9 @@ public class CommandBuffer : IDisposable
     {
         Pipeline = pipelineDesc;
 
-        Pipeline pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-        CommandList.SetPipeline(pipeline);
+        FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
+
+        CommandList.SetPipeline(pipeline.Resource);
     }
 
     public void DrawItem(RenderItem item)

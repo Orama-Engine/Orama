@@ -25,7 +25,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
             new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
-        ResourceLayout layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements.ToImmutableArray()));
+        FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements.ToImmutableArray()));
 
         GraphicsPipelineDescription desc = new()
         {
@@ -34,7 +34,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
             RasterizerState = RasterizerStateDescription.CullNone,
             PrimitiveTopology = PrimitiveTopology.TriangleList,
             ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
-            ResourceLayouts = new[] { layout },
+            ResourceLayouts = new[] { layout.Resource },
             Outputs = key.Outputs,
         };
 

@@ -23,9 +23,9 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
         DeviceBuffer ib = factory.CreateBuffer(ibDesc);
         gd.UpdateBuffer(ib, 0, key.IndexBuffer.Data.AsSpan());
 
-        Pipeline pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
+        FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
-        return new RenderItem(vb, ib, key.IndexCount, pipeline);
+        return new RenderItem(vb, ib, key.IndexCount, pipeline.Resource);
     }
 }
 

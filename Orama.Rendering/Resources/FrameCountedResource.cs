@@ -7,7 +7,10 @@ public interface IFrameCountedResource
     /// <summary> Tries to dispose the resource. </summary>
     /// <param name="currentFrame">The current frame. </param>
     /// <returns> True if the resource was disposed. </returns>
-    public bool TryDispose(uint currentFrame);
+    public bool TryDispose(ulong currentFrame);
+
+    /// <summary> Force releases the GPU resource. </summary>
+    public void ReleaseGPUResource();
 }
 
 /// <summary>
@@ -16,11 +19,11 @@ public interface IFrameCountedResource
 /// <typeparam name="T">The underlying resource type.</typeparam>
 public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposable
 {
-    /// <summary> The number of frames to wait before disposing the resource. Defaults to 60. </summary>
-    public uint FrameDisposalBuffer { get; init; } = 60;
+    /// <summary> The number of frames to wait before disposing the resource. Defaults to 200. </summary>
+    public uint FrameDisposalBuffer { get; init; } = 200;
 
-    /// <summary> The last frame the resource was used. </summary>
-    internal uint LastUsedFrame { get; set; }
+    /// <summary> The last frame the resource was used or <see langword="null"/> if never used. </summary>
+    internal ulong? LastUsedFrame { get; set; } = null;
 
     /// <summary> The underlying resource. </summary>
     public T Resource { get; }
@@ -33,15 +36,21 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
     }
 
     /// <inheritdoc/>
-    public bool TryDispose(uint currentFrame)
+    public bool TryDispose(ulong currentFrame)
     {
-        if (currentFrame - LastUsedFrame > FrameDisposalBuffer)
+        if (LastUsedFrame is null)
+            return false;
+
+        if (currentFrame - LastUsedFrame.Value > FrameDisposalBuffer)
         {
-            Console.WriteLine($"Disposing GPU Resource {Resource}");
+            Console.WriteLine($"Disposing {typeof(T).Name} ({Resource})");
             FrameDisposalQueue.DisposalQueue.Enqueue(this);
             return true;
         }
 
         return false;
     }
+
+    /// <inheritdoc/>
+    public void ReleaseGPUResource() => Resource.Dispose();
 }
