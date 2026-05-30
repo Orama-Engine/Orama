@@ -58,7 +58,7 @@ internal class Program
 
 
 
-            floor.Renderer.Material.SetParameter<Color>("u_Color", Color.White);
+            floor.Renderer.Material.SetProperty<Color>("u_Color", Color.Blue);
 
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
