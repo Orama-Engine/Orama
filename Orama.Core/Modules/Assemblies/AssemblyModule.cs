@@ -1,4 +1,7 @@
 ﻿
+using Orama.Core.Common.Utility;
+using System.Reflection;
+
 namespace Orama.Core.Modules.Assemblies;
 
 /// <summary>
@@ -20,6 +23,13 @@ public class AssemblyModule : BaseModule
     /// <inheritdoc/>
     public override void Dispose() => UnloadAll();
 
+    /// <inheritdoc/>
+    public override void Initialize()
+    {
+        foreach (var loadedAssembly in AppDomain.CurrentDomain.GetAssemblies())
+            RunLoadAttributes(loadedAssembly);
+    }
+
     /// <summary> Loads an assembly from the specified path. </summary>
     public ExternalAssembly LoadFromPath(string path)
     {
@@ -28,7 +38,13 @@ public class AssemblyModule : BaseModule
         var context = new ExternalAssemblyLoadContext();
         var assembly = context.LoadFromAssemblyPath(absolutePath);
 
-        return new ExternalAssembly(absolutePath, context, assembly);
+        ExternalAssembly asm = new(absolutePath, context, assembly);
+        _assemblies.Add(asm);
+        AssemblyLoaded?.Invoke(asm);
+
+        RunLoadAttributes(assembly);
+
+        return asm;
     }
 
     /// <summary> Unloads the specified assembly. </summary>
@@ -51,5 +67,13 @@ public class AssemblyModule : BaseModule
         }
 
         _assemblies.Clear();
+    }
+
+    private void RunLoadAttributes(Assembly assembly)
+    {
+        foreach (var type in assembly.GetTypes())
+            foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                if (method.IsDefined(typeof(OnAssemblyLoadAttribute), false) && method.GetParameters().Length == 0)
+                    method.Invoke(null, null);
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using Orama.Core.Common.Utility;
+
 namespace Orama.Core.Common.Entities;
 
 /// <summary>
@@ -7,6 +9,12 @@ namespace Orama.Core.Common.Entities;
 [AttributeUsage(AttributeTargets.Class)]
 public class EntityAttribute : Attribute
 {
+    [OnAssemblyLoad]
+    public static void TestInitializer()
+    {
+        EngineOutput.Log("Entity system initialized.");
+    }
+
     /// <summary> The text name of the entity. (i.e. "my_awesome_entity") </summary>
     public string Name { get; }
 
