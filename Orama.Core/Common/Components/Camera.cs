@@ -43,13 +43,13 @@ public class Camera : Component
         get
         {
             float f = 1f / MathF.Tan(FOV / 2f);
-            float zRange = ZNear - ZFar;
+            float zRange = ZFar - ZNear;
 
             return new Matrix4x4(
                 f / AspectRatio, 0, 0, 0,
                 0, f, 0, 0,
-                0, 0, (ZFar + ZNear) / zRange, -1,
-                0, 0, (2 * ZFar * ZNear) / zRange, 0
+                0, 0, ZFar / zRange, 1,
+                0, 0, (-ZNear * ZFar) / zRange, 0
             );
         }
     }

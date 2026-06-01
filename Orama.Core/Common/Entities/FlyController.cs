@@ -48,13 +48,15 @@ public class FlyController : Entity
         // Mouse look
         Vector2 delta = Input.MouseDelta;
 
-        // Update cumulative yaw/pitch
-        yaw += -delta.X * mouseSensitivity * Time.Delta;
-        pitch += delta.Y * mouseSensitivity * Time.Delta;
+        yaw += delta.X * mouseSensitivity * Time.Delta;
+        pitch += -delta.Y * mouseSensitivity * Time.Delta;
 
-        // Build rotation from cumulative angles
+        pitch = Math.Math.Clamp(pitch, -1.55f, 1.55f);
+
         Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
-        Quaternion pitchRot = Quaternion.CreateFromAxisAngle(Vector3.Right, pitch);
+
+        Vector3 right = Vector3.Transform(Vector3.Right, yawRot);
+        Quaternion pitchRot = Quaternion.CreateFromAxisAngle(right, pitch);
 
         Transform.Rotation = yawRot * pitchRot;
     }

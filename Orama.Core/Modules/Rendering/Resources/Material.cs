@@ -21,8 +21,6 @@ Properties
     float4x4 ObjectMatrix;
     float4x4 ViewMatrix;
     float4x4 ProjectionMatrix;
-
-    float4 u_Color;
 }
 
 Source
@@ -57,7 +55,7 @@ Source
 
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return u_Color;
+        return float4(1.0, 1.0, 1.0, 1.0);
     }
 }
 ";

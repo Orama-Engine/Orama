@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Common.Entities;
+using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.Audio;
@@ -18,11 +19,12 @@ internal class Program
     {
         // REGISTER MODULES
         ModuleManager.RegisterModule<AssemblyModule>();
+
         ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
-        ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<AudioModule>();
 
+        ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
 
         var debugScene = new Scene();

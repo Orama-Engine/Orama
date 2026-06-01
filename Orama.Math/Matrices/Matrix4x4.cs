@@ -112,42 +112,42 @@ public struct Matrix4x4
     }
 
     /// <summary> Creates a rotation matrix around the X axis. </summary>
-    public static Matrix4x4 CreateRotationX(float radians)
+    public static Matrix4x4 CreateRotationX(float r)
     {
-        float c = MathF.Cos(radians);
-        float s = MathF.Sin(radians);
+        float c = MathF.Cos(r);
+        float s = MathF.Sin(r);
 
         return new Matrix4x4(
             1, 0, 0, 0,
-            0, c, s, 0,
-            0, -s, c, 0,
+            0, c, -s, 0,
+            0, s, c, 0,
             0, 0, 0, 1
         );
     }
 
     /// <summary> Creates a rotation matrix around the Y axis. </summary>
-    public static Matrix4x4 CreateRotationY(float radians)
+    public static Matrix4x4 CreateRotationY(float r)
     {
-        float c = MathF.Cos(radians);
-        float s = MathF.Sin(radians);
+        float c = MathF.Cos(r);
+        float s = MathF.Sin(r);
 
         return new Matrix4x4(
-            c, 0, -s, 0,
-            0, 1, 0, 0,
-            s, 0, c, 0,
-            0, 0, 0, 1
+             c, 0, s, 0,
+             0, 1, 0, 0,
+            -s, 0, c, 0,
+             0, 0, 0, 1
         );
     }
 
     /// <summary> Creates a rotation matrix around the Z axis. </summary>
-    public static Matrix4x4 CreateRotationZ(float radians)
+    public static Matrix4x4 CreateRotationZ(float r)
     {
-        float c = MathF.Cos(radians);
-        float s = MathF.Sin(radians);
+        float c = MathF.Cos(r);
+        float s = MathF.Sin(r);
 
         return new Matrix4x4(
-            c, s, 0, 0,
-            -s, c, 0, 0,
+            c, -s, 0, 0,
+            s, c, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1
         );
@@ -186,7 +186,7 @@ public struct Matrix4x4
     /// <summary> Creates a right-handed LookAt view matrix. </summary>
     public static Matrix4x4 LookAt(Vector3 eye, Vector3 target, Vector3 up)
     {
-        Vector3 zAxis = Vector3.Normalize(eye - target); // Forward
+        Vector3 zAxis = Vector3.Normalize(target - eye); // Forward
         Vector3 xAxis = Vector3.Normalize(Vector3.Cross(up, zAxis)); // Right
         Vector3 yAxis = Vector3.Cross(zAxis, xAxis); // True up
 
