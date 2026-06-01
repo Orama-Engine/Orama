@@ -95,14 +95,12 @@ public class Entity
         }
     }
 
-    /// <summary>
-    /// Destroys the specified entity and releases any associated resources.
-    /// </summary>
+    /// <summary> Destroys the specified entity and releases any associated resources. </summary>
     public void Destroy()
     {
         Enabled = false;
 
-        foreach (var component in Components.ToList())
+        foreach (var component in Components.ToList()) // ToList for enumeration issues
         {
             component.Enabled = false;
             component.Destroy();

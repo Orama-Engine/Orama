@@ -9,6 +9,7 @@ namespace Orama.Core.Common.Entities;
 /// <summary>
 /// Internal entity useful for debugging systems.
 /// </summary>
+[Entity("debug_entity")]
 public class DebugEntity : Entity
 {
     [ImplicitComponent]
