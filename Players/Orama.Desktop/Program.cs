@@ -33,11 +33,11 @@ internal class Program
 
         Application.OnStart += () =>
         {
-            FlyController flyController = new();
+            Entity flyController = EntityRegistry.CreateEntity("fly_controller");
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 0, 0);
 
-            var floor = new DebugEntity();
+            Entity floor = EntityRegistry.CreateEntity("debug_entity");
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
@@ -50,17 +50,13 @@ internal class Program
 
                 if (key == Key.D)
                 {
-                    floor = new DebugEntity();
+                    floor = EntityRegistry.CreateEntity("debug_entity");
                     floor.Name = "Floor";
                     floor.Transform.Scale = new Vector3(10, 1, 10);
                     floor.Transform.Position = new Vector3(0, 0, 0);
                     floor.Start();
                 }
             };
-
-
-
-            floor.Renderer.Material.SetProperty<Color>("u_Color", Color.Blue);
 
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
