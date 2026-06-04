@@ -7,17 +7,9 @@ namespace Orama.Core.Modules.Physics.Components;
 /// <summary>
 /// Represents a physics rigid body that enables simulation of physical interactions for an <see cref="Entity"/>.
 /// </summary>
-public class RigidBody : Component, IPhysicsBody
+public class RigidBody : Component
 {
-    /// <inheritdoc/>
-    public Entity? Owner { get; init; }
-
     private IPhysicsBody? body;
-
-    public RigidBody()
-    {
-        Owner = Entity;
-    }
 
     /// <inheritdoc/>
     public bool IsStatic
