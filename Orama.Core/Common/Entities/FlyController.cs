@@ -2,6 +2,7 @@
 using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
+using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 using Orama.Rendering.Resources;
@@ -40,8 +41,10 @@ public class FlyController : Entity
         if (Input.IsKeyDown(Key.S)) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
         if (Input.IsKeyDown(Key.A)) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
         if (Input.IsKeyDown(Key.D)) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(Key.Q)) Transform.Position -= Transform.Up * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(Key.E)) Transform.Position += Transform.Up * moveSpeed * Time.Delta;
+
+        if (Input.IsKeyPressed(Key.E))
+            if (ModuleManager.GetModule<PhysicsModule>()?.World.TryRaycast(Transform.Position, Transform.Forward, 1f, out RaycastResult result) == true)
+                EngineOutput.Log(result.HitPoint.ToString());
 
         if (!cursorLocked)
             return;

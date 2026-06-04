@@ -42,22 +42,6 @@ internal class Program
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
 
-            ModuleManager.GetModule<InputModule>()?.KeyPressed += (key) =>
-            {
-                if (key == Key.A)
-                    floor.Destroy();
-
-
-                if (key == Key.D)
-                {
-                    floor = EntityRegistry.CreateEntity("debug_entity");
-                    floor.Name = "Floor";
-                    floor.Transform.Scale = new Vector3(10, 1, 10);
-                    floor.Transform.Position = new Vector3(0, 0, 0);
-                    floor.Start();
-                }
-            };
-
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };

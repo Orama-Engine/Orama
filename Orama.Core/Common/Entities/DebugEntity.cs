@@ -1,5 +1,7 @@
 ﻿#if DEBUG
 using Orama.Core.Common.Utility;
+using Orama.Core.Modules.Physics.Components;
+using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Core.Modules.Rendering.Components;
 using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
@@ -15,9 +17,17 @@ public class DebugEntity : Entity
     [ImplicitComponent]
     public MeshRenderer Renderer { get; private set; } = null!;
 
+    [ImplicitComponent]
+    public RigidBody RigidBody { get; private set; } = null!;
+
     public override void Start()
     {
         base.Start();
+
+        BoxCollider col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
+        col.Start();
+
+        RigidBody.IsStatic = true;
 
         EngineOutput.Log("Debug entity started.");
 

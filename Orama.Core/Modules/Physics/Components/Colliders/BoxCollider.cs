@@ -1,4 +1,6 @@
 ﻿
+using Orama.Math;
+
 namespace Orama.Core.Modules.Physics.Components.Colliders;
 
 public class BoxCollider : Collider
@@ -8,6 +10,8 @@ public class BoxCollider : Collider
     public float Depth { get; set; }
 
     public BoxCollider(float width, float height, float depth) => (Width, Height, Depth) = (width, height, depth);
+
+    public BoxCollider(Vector3 size) => (Width, Height, Depth) = (size.X, size.Y, size.Z);
 
     public override void Start()
     {

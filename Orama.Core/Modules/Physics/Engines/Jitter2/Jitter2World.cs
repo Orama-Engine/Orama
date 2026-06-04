@@ -1,5 +1,9 @@
 ﻿using Jitter2;
+using Jitter2.Collision;
+using Jitter2.Collision.Shapes;
 using Jitter2.Dynamics;
+using Jitter2.LinearMath;
+using System.Numerics;
 
 namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 
@@ -36,4 +40,53 @@ public class Jitter2World : IPhysicsWorld
 
     /// <inheritdoc/>
     public void Step(float delta) => world.Step(delta, true);
+
+    /// <inheritdoc/>
+    public bool TryRaycast(Vector3 origin, Vector3 direction, float maxDistance, out RaycastResult hit)
+    {
+        var jOrigin = new JVector(origin.X, origin.Y, origin.Z);
+        var jDirection = new JVector(direction.X, direction.Y, direction.Z);
+
+        float dirLength = jDirection.Length();
+        if (dirLength < 1e-6f)
+        {
+            hit = default;
+            return false;
+        }
+
+        JVector jDirectionNorm = JVector.Multiply(jDirection, 1f / dirLength);
+
+        bool didHit = world.DynamicTree.RayCast(
+            jOrigin,
+            jDirectionNorm,
+            maxDistance,
+            pre: null,
+            post: null,
+            out IDynamicTreeProxy? proxy,
+            out JVector hitNormal,
+            out float lambda
+        );
+
+        if (!didHit || proxy is not RigidBodyShape shape || shape.RigidBody == null)
+        {
+            hit = default;
+            return false;
+        }
+
+        if (!bodyMap.TryGetValue(shape.RigidBody, out var jitterBody))
+        {
+            hit = default;
+            return false;
+        }
+
+        hit = new RaycastResult
+        {
+            Body = jitterBody,
+            HitPoint = origin + direction * (float)lambda,
+            Normal = new Vector3((float)hitNormal.X, (float)hitNormal.Y, (float)hitNormal.Z),
+            Distance = (float)lambda
+        };
+
+        return true;
+    }
 }
