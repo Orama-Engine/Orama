@@ -5,10 +5,11 @@ using Orama.Math;
 namespace Orama.Core.Modules.Physics.Components;
 
 /// <summary>
-/// Represents a physics rigid body that enables simulation of physical interactions for an entity.
+/// Represents a physics rigid body that enables simulation of physical interactions for an <see cref="Entity"/>.
 /// </summary>
 public class RigidBody : Component, IPhysicsBody
 {
+    /// <inheritdoc/>
     public Entity? Owner { get; init; }
 
     private IPhysicsBody? body;
