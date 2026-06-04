@@ -1,4 +1,5 @@
-﻿using Orama.ShaderLang;
+﻿using Orama.Rendering;
+using Orama.ShaderLang;
 using Orama.ShaderLang.Targets;
 
 namespace Orama.Core.Modules.Rendering.Resources;
@@ -40,8 +41,10 @@ public class Shader
         {
             ShaderLangFormat format = ShaderLangFormat.FromSource(value);
             (string, string) hlsl = HLSLTarget.Compile(format);
-            Vertex = hlsl.Item1;
-            Fragment = hlsl.Item2;
+
+            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.HLSLToShader(hlsl.Item1, hlsl.Item2);
+            VertexBytecode = spirv.Item1;
+            FragmentBytecode = spirv.Item2;
 
             Pass = format.Pass ?? "None";
             
@@ -49,11 +52,11 @@ public class Shader
         }
     }
 
-    /// <summary> The shader's raw HLSL vertex shader source. </summary>
-    internal string Vertex { get; private set; } = string.Empty;
+    /// <summary> The shader's raw SPIR-V bytecode. </summary>
+    internal byte[] VertexBytecode { get; private set; } = Array.Empty<byte>();
 
-    /// <summary> The shader's raw HLSL fragment shader source. </summary>
-    internal string Fragment { get; private set; } = string.Empty;
+    /// <summary> The shader's raw SPIR-V bytecode. </summary>
+    internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
 
     /// <summary> The shader's parameter definitions. </summary>
     public IReadOnlyList<ShaderParameter> Parameters => parameters;

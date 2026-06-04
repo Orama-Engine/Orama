@@ -44,7 +44,7 @@ public static class CommandBufferExtensions
 
             PipelineKey pipelineDesc = new PipelineKey(
                 PassName: renderable.Material.Pass,
-                Shader: new ShaderKey(renderable.Material.Shader.Vertex, renderable.Material.Shader.Fragment),
+                Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
                 Outputs: gd.SwapchainFramebuffer.OutputDescription,
                 ResourceLayout: layoutDesc
             );

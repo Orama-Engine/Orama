@@ -23,7 +23,7 @@ public class InputModule : BaseModule
     public event Action<Key>? KeyPressed;
 
     /// <summary> The current mouse position. </summary>
-    public Vector2 MousePosition { get { return input.Mice[0].Position; } set { input.Mice[0].Position = value; } }
+    public Vector2 MousePosition { get => input.Mice[0].Position; set => input.Mice[0].Position = value; }
 
     /// <summary> Whether the cursor is locked to the window. </summary>
     public bool CursorLocked { get { return input.Mice[0].Cursor.CursorMode == CursorMode.Raw && input.Mice[0].Cursor.IsConfined; } set { input.Mice[0].Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal; input.Mice[0].Cursor.IsConfined = value; } }

@@ -12,11 +12,9 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
     {
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
-        (byte[] vertBytes, byte[] fragBytes) = ShaderBaker.HLSLToShader(key.Shader.VertexSource, key.Shader.FragmentSource);
-
         Shader[] shaders = factory.CreateFromSpirv(
-            new ShaderDescription(ShaderStages.Vertex, vertBytes, "main"),
-            new ShaderDescription(ShaderStages.Fragment, fragBytes, "main")
+            new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
+            new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main")
         );
 
         VertexLayoutDescription vertexLayout = new(
@@ -46,4 +44,4 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 
 public readonly record struct PipelineKey(string PassName, ShaderKey Shader, OutputDescription Outputs, ResourceLayoutDescription ResourceLayout);
 
-public readonly record struct ShaderKey(string VertexSource, string FragmentSource);
+public readonly record struct ShaderKey(byte[] VertexBytecode, byte[] FragmentBytecode);
