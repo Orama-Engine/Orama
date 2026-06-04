@@ -1,4 +1,5 @@
 ﻿
+using Orama.Core.Common.Entities;
 using System.Numerics;
 
 namespace Orama.Core.Modules.Physics;
@@ -10,7 +11,7 @@ public interface IPhysicsWorld
 {
     /// <summary> Creates a new physics body and adds it to the physics world. </summary>
     /// <returns> The created physics body. </returns>
-    IPhysicsBody CreateBody();
+    IPhysicsBody CreateBody(Entity? owner = null);
 
     /// <summary> Destroys a physics body and removes it from the physics world. </summary>
     /// <param name="body"> The physics body to remove. </param>

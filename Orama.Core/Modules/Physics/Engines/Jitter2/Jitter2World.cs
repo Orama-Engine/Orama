@@ -3,6 +3,7 @@ using Jitter2.Collision;
 using Jitter2.Collision.Shapes;
 using Jitter2.Dynamics;
 using Jitter2.LinearMath;
+using Orama.Core.Common.Entities;
 using System.Numerics;
 
 namespace Orama.Core.Modules.Physics.Engines.Jitter2;
@@ -23,10 +24,14 @@ public class Jitter2World : IPhysicsWorld
     }
 
     /// <inheritdoc/>
-    public IPhysicsBody CreateBody()
+    public IPhysicsBody CreateBody(Entity? owner = null)
     {
         var rb = world.CreateRigidBody();
-        var jb = new Jitter2Body(rb, bodyMap);
+        var jb = new Jitter2Body(rb, bodyMap)
+        {
+            Owner = owner
+        };
+
         bodyMap[rb] = jb;
         return jb;
     }

@@ -1,4 +1,5 @@
 ﻿using Orama.Core.Common.Components;
+using Orama.Core.Common.Entities;
 using Orama.Math;
 
 namespace Orama.Core.Modules.Physics.Components;
@@ -8,12 +9,13 @@ namespace Orama.Core.Modules.Physics.Components;
 /// </summary>
 public class RigidBody : Component, IPhysicsBody
 {
+    public Entity? Owner { get; init; }
+
     private IPhysicsBody? body;
 
     public RigidBody()
     {
-        var physics = ModuleManager.GetModule<PhysicsModule>();
-        body = physics?.World?.CreateBody();
+        Owner = Entity;
     }
 
     /// <inheritdoc/>
@@ -88,6 +90,9 @@ public class RigidBody : Component, IPhysicsBody
 
     public override void Start()
     {
+        var physics = ModuleManager.GetModule<PhysicsModule>();
+        body = physics?.World?.CreateBody(Entity);
+
         if (body != null)
             body.Position = Entity.Transform.Position;
     }

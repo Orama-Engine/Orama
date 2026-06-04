@@ -1,4 +1,5 @@
-﻿using Orama.Core.Modules.Physics.Components.Colliders;
+﻿using Orama.Core.Common.Entities;
+using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Math;
 
 namespace Orama.Core.Modules.Physics;
@@ -8,6 +9,9 @@ namespace Orama.Core.Modules.Physics;
 /// </summary>
 public interface IPhysicsBody
 {
+    /// <summary> The <see cref="Entity"/> that owns the physics body or null if the body is not owned by an <see cref="Entity"/>. </summary>
+    Entity? Owner { get; init; }
+
     /// <summary> Whether the physics body is static or dynamic. </summary>
     bool IsStatic { get; set; }
 

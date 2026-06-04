@@ -1,4 +1,5 @@
 ﻿using Orama.Math;
+using Orama.Core.Common.Entities;
 
 namespace Orama.Core.Modules.Physics;
 

@@ -1,6 +1,7 @@
 ﻿using Jitter2.Collision.Shapes;
 using Jitter2.Dynamics;
 using Jitter2.LinearMath;
+using Orama.Core.Common.Entities;
 using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Math;
 
@@ -11,6 +12,8 @@ namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 /// </summary>
 public class Jitter2Body : IPhysicsBody
 {
+    public Entity? Owner { get; init; }
+
     internal readonly RigidBody? body;
     private readonly Dictionary<RigidBody, Jitter2Body> bodyMap;
     private readonly Dictionary<int, RigidBodyShape> shapes = new();
