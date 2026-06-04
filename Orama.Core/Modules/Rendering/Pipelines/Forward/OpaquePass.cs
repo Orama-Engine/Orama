@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Common.Entities;
+using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
 using Orama.Rendering;
 using Orama.Rendering.Device;
@@ -26,12 +27,23 @@ public class OpaquePass : RenderPass
             {
                 Matrix4x4 model = renderable.Transform;
                 Matrix4x4 view = frame.Camera.ViewMatrix;
-                Matrix4x4 projection = frame.Camera.ProjectionMatrix;
+                Matrix4x4 proj = frame.Camera.ProjectionMatrix;
+
+                renderable.Material.SetProperty("ModelMatrix", model);
+                renderable.Material.SetProperty("ViewMatrix", view);
+                renderable.Material.SetProperty("ProjectionMatrix", proj);
+
+                renderable.Material.SetProperty("Color", Vector4.One);
 
                 GPUBuffer paramBuffer = new GPUBuffer();
-                paramBuffer.AddMatrix4x4(model);
-                paramBuffer.AddMatrix4x4(view);
-                paramBuffer.AddMatrix4x4(projection);
+
+                foreach (var param in renderable.Material.Shader.Parameters)
+                {
+                    object? value = GetValueFromMaterialOrDefault(renderable.Material, param);
+
+                    paramBuffer.AddParameter(param, value);
+                }
+
                 buffer.QueueGPUBuffer(paramBuffer, 0);
 
                 buffer.DrawRenderable(renderable, model);
@@ -40,5 +52,13 @@ public class OpaquePass : RenderPass
         buffer.End();
         Renderer.SubmitCommandBuffer(buffer);
         buffer.Dispose();
+    }
+
+    object? GetValueFromMaterialOrDefault(Material mat, ShaderParameter p)
+    {
+        if (mat.TryGetProperty(p.Name, out var value))
+            return value;
+
+        return null;
     }
 }

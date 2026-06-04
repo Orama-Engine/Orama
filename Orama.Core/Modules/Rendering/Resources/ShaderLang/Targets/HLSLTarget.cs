@@ -11,16 +11,25 @@ public static class HLSLTarget
         format.MetaData.TryGetValue("vertex", out string? vertexEntry);
         format.MetaData.TryGetValue("fragment", out string? fragmentEntry);
 
-        string properties = "";
+        string properties = $@"
+cbuffer FrameParams : register(b0)
+{{
+    float4x4 ObjectMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
+}}
+";
+
         if (!string.IsNullOrWhiteSpace(format.Properties?.Body))
         {
-            properties = $@"
-cbuffer MaterialParams : register(b0)
+            properties += $@"
+cbuffer MaterialParams : register(b1)
 {{
 {format.Properties.Body}
 }}
 ";
         }
+
 
         string sourceBody = format.Source?.Body ?? "";
 
@@ -37,6 +46,8 @@ cbuffer MaterialParams : register(b0)
 {sourceBody.Replace(vertexEntry, "main")}
 ";
         }
+
+        Console.WriteLine(vertex);
 
         // Fragment shader
         if (!string.IsNullOrEmpty(fragmentEntry))

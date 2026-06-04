@@ -1,4 +1,5 @@
-﻿using Orama.Math;
+﻿using Orama.Core.Modules.Rendering.Resources;
+using Orama.Math;
 using Orama.Rendering.Device;
 
 namespace Orama.Core.Modules.Rendering;
@@ -47,6 +48,51 @@ public class GPUBuffer
         AddFloat(m.M21); AddFloat(m.M22); AddFloat(m.M23); AddFloat(m.M24);
         AddFloat(m.M31); AddFloat(m.M32); AddFloat(m.M33); AddFloat(m.M34);
         AddFloat(m.M41); AddFloat(m.M42); AddFloat(m.M43); AddFloat(m.M44);
+    }
+
+    public void AddParameter(ShaderParameter p, object? value)
+    {
+        value ??= GetDefault(p.Type);
+
+        // TODO: Dictionary
+        switch (p.Type)
+        {
+            case ShaderParameter.ParamType.Float:
+                AddFloat((float)value);
+                break;
+
+            case ShaderParameter.ParamType.Float2:
+                var v2 = (Vector2)value;
+                AddFloat2(v2.X, v2.Y);
+                break;
+
+            case ShaderParameter.ParamType.Float3:
+                var v3 = (Vector3)value;
+                AddFloat3(v3.X, v3.Y, v3.Z);
+                break;
+
+            case ShaderParameter.ParamType.Float4:
+                var v4 = (Vector4)value;
+                AddFloat4(v4.X, v4.Y, v4.Z, v4.W);
+                break;
+
+            case ShaderParameter.ParamType.Matrix:
+                AddMatrix4x4((Matrix4x4)value);
+                break;
+        }
+    }
+
+    private object GetDefault(ShaderParameter.ParamType type)
+    {
+        return type switch
+        {
+            ShaderParameter.ParamType.Float => 0f,
+            ShaderParameter.ParamType.Float2 => Vector2.Zero,
+            ShaderParameter.ParamType.Float3 => Vector3.Zero,
+            ShaderParameter.ParamType.Float4 => Vector4.Zero,
+            ShaderParameter.ParamType.Matrix => Matrix4x4.Identity,
+            _ => 0f
+        };
     }
 
     private void EnsureAlignment(int alignment)

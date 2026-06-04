@@ -18,9 +18,7 @@ Pass = ""Opaque""
 
 Properties
 {
-    float4x4 ObjectMatrix;
-    float4x4 ViewMatrix;
-    float4x4 ProjectionMatrix;
+
 }
 
 Source
@@ -55,7 +53,7 @@ Source
 
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return float4(1.0, 1.0, 1.0, 1.0);
+        return Color;
     }
 }
 ";
@@ -97,4 +95,6 @@ Source
 
         throw new InvalidCastException($"Cannot cast parameter '{name}' to type {typeof(T).Name}");
     }
+
+    public bool TryGetProperty(string name, out object? value) => properties.TryGetValue(name, out value);
 }
