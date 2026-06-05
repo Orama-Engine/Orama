@@ -1,5 +1,5 @@
 # Orama
-![PreRelease](https://img.shields.io/badge/Version-Pre--Release-orange)
+![PreRelease](https://img.shields.io/badge/Version-Pre--Release-orange) ![MIT](https://img.shields.io/badge/License-MIT-blue)
 
 The .NET 11 C# 15 Virtual-Reality Game Engine.
 
