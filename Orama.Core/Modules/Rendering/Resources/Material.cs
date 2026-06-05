@@ -18,7 +18,7 @@ Pass = ""Opaque""
 
 Properties
 {
-
+    float4 Color;
 }
 
 Source

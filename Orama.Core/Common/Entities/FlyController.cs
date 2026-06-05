@@ -3,9 +3,7 @@ using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
-using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
-using Orama.Rendering.Resources;
 
 namespace Orama.Core.Common.Entities;
 
