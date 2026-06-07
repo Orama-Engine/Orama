@@ -33,13 +33,13 @@ public class VeldridDevice
         var options = new GraphicsDeviceOptions()
         {
             Debug = true,
-            SyncToVerticalBlank = true
+            SyncToVerticalBlank = false
         };
 
 #warning Windows only hack
         SwapchainSource source = SwapchainSource.CreateWin32(native.Win32.Value.Hwnd, native.Win32.Value.HInstance);
 
-        SwapchainDescription desc = new SwapchainDescription(source, (uint)window.Size.X, (uint)window.Size.Y, null, true);
+        SwapchainDescription desc = new SwapchainDescription(source, (uint)window.Size.X, (uint)window.Size.Y, null, false);
 
         switch(backend)
         {

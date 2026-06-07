@@ -58,7 +58,7 @@ internal class Program
 
         Application.OnRender += () =>
         {
-
+            EngineOutput.Log($"FPS - {Application.Window.FramesPerSecond}");
         };
 
         Application.Initialize();

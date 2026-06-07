@@ -2,7 +2,7 @@
 namespace Orama.Core.Modules.Input;
 
 /// <summary>
-/// Represents a key on the keyboard.
+/// Represents a key on an input device.
 /// </summary>
 public enum Key
 {
