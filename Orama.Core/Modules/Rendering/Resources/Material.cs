@@ -18,7 +18,7 @@ Pass = ""Opaque""
 
 Properties
 {
-    float4 Color;
+
 }
 
 Source
@@ -53,7 +53,7 @@ Source
 
     float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
     {
-        return Color;
+        return float4(1, 1, 1, 1);
     }
 }
 ";
