@@ -21,8 +21,7 @@ public static class ShaderBaker
         CompilerOptions opts = new()
         {
             SourceLanguage = sourceLang,
-            EntryPoint = "main",
-            GeneratedDebug = true // Kinda hacky
+            EntryPoint = "main"
         };
 
         opts.ShaderStage = ShaderKind.VertexShader;

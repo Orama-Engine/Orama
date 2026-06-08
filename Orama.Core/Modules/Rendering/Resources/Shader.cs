@@ -12,7 +12,7 @@ public sealed class ShaderParameter
         Float2,
         Float3,
         Float4,
-        Matrix
+        Matrix4x4
     }
 
     public string Name { get; }
@@ -46,8 +46,6 @@ public class Shader
             VertexBytecode = spirv.Item1;
             FragmentBytecode = spirv.Item2;
 
-            parameters = SPIRVUtil.ExtractParameters(spirv.Item1);
-
             Pass = format.Pass ?? "None";
             
             field = value;
@@ -63,7 +61,7 @@ public class Shader
     /// <summary> The shader's parameter definitions. </summary>
     public IReadOnlyList<ShaderParameter> Parameters => parameters;
 
-    private List<ShaderParameter> parameters = new List<ShaderParameter>();
+    private readonly List<ShaderParameter> parameters = new List<ShaderParameter>();
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
     public Shader(string shaderLangSource) => Source = shaderLangSource;
