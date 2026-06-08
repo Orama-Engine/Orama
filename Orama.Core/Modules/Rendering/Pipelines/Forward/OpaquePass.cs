@@ -29,7 +29,7 @@ public class OpaquePass : RenderPass
                 Matrix4x4 view = frame.Camera.ViewMatrix;
                 Matrix4x4 proj = frame.Camera.ProjectionMatrix;
 
-                renderable.Material.SetProperty("ObjectMatrix", model);
+                renderable.Material.SetProperty("ModelMatrix", model);
                 renderable.Material.SetProperty("ViewMatrix", view);
                 renderable.Material.SetProperty("ProjectionMatrix", proj);
 
