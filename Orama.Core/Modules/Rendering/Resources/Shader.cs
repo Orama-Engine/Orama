@@ -28,6 +28,14 @@ public sealed class ShaderParameter
     }
 }
 
+public readonly struct ConstantBufferDescriptor
+{
+    public string Name { get; }
+    public uint Binding { get; }
+
+    public List<ShaderParameter> Parameters { get; }
+}
+
 public class Shader
 {
     /// <summary> The name of the shader's pass. </summary>

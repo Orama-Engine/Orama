@@ -1,15 +1,14 @@
-﻿using Orama.Core.Common;
-using Orama.Core.Common.Entities;
-using Orama.Math;
+﻿using Orama.Math;
 using Orama.Rendering;
-using Orama.Rendering.Device;
-using Veldrid;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
-/// <summary> Pass responsible for rendering all solid objects. </summary>
+/// <summary>
+/// Pass responsible for rendering all solid objects.
+/// </summary>
 public class OpaquePass : RenderPass
 {
+    /// <inheritdoc/>
     public override void Render(ref RenderFrame frame)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;

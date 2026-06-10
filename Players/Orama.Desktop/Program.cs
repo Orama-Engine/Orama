@@ -4,6 +4,7 @@ using Orama.Core.Common.Utility;
 using Orama.Core.Modules;
 using Orama.Core.Modules.Assemblies;
 using Orama.Core.Modules.Audio;
+using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
@@ -23,6 +24,7 @@ internal class Program
         ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<AudioModule>();
+        ModuleManager.RegisterModule<GUIModule>();
 
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
@@ -58,7 +60,7 @@ internal class Program
 
         Application.OnRender += () =>
         {
-            EngineOutput.Log($"FPS - {Application.Window.FramesPerSecond}");
+
         };
 
         Application.Initialize();
