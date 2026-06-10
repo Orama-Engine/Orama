@@ -1,6 +1,7 @@
 ﻿using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
 using Silk.NET.Windowing;
+using System.ComponentModel;
 using System.Numerics;
 using Veldrid;
 using Veldrid.OpenGL;
@@ -33,33 +34,26 @@ public class VeldridDevice
         var options = new GraphicsDeviceOptions()
         {
             Debug = true,
-            SyncToVerticalBlank = false
+            SyncToVerticalBlank = window.VSync
         };
+
+        if (backend == RendererBackend.Platform)
+        {
+            backend = true switch
+            {
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.DirectX11,
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL) => RendererBackend.OpenGL,
+
+                _ => throw new InvalidOperationException("No supported graphics backend found!")
+            };
+        }
 
         switch(backend)
         {
             case RendererBackend.OpenGL:
-                var glPlatformInfo = new OpenGLPlatformInfo(
-                    openGLContextHandle: window.GLContext!.Handle,
-                    getProcAddress: name =>
-                    {
-                        window.GLContext!.TryGetProcAddress(name, out var ptr);
-                        return ptr;
-                    },
-                    makeCurrent: handle => window.GLContext.MakeCurrent(),
-                    getCurrentContext: () => window.GLContext.Handle,
-                    clearCurrentContext: () => window.GLContext.Clear(),
-                    deleteContext: handle => window.GLContext.Dispose(),
-                    swapBuffers: () => window.GLContext.SwapBuffers(),
-                    setSyncToVerticalBlank: vsync => window.GLContext.SwapInterval(vsync ? 1 : 0)
-                );
-
-                GraphicsDevice = GraphicsDevice.CreateOpenGL(
-                    options,
-                    glPlatformInfo,
-                    (uint)window.Size.X,
-                    (uint)window.Size.Y
-                );
+                // TODO... Maybe?
+                throw new NotImplementedException();
                 break;
             case RendererBackend.Vulkan:
             case RendererBackend.DirectX11:

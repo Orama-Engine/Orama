@@ -27,7 +27,7 @@ public class RenderingModule : BaseModule
         RendererOptions options = new();
         options.Culling = CullingMode.Back;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Platform, options);
     }
 
     public void Render() 

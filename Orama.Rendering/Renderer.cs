@@ -10,6 +10,9 @@ namespace Orama.Rendering;
 
 public enum RendererBackend
 {
+    /// <summary> Automatically determines the best backend for the current platform. </summary>
+    Platform,
+
     OpenGL,
     Vulkan,
     DirectX11
@@ -29,7 +32,7 @@ public static class Renderer
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
     /// <param name="window"> The window to initialize the backend for. </param>
     /// <param name="backend"> The backend to initialize. </param>
-    public static void Initialize(IWindow window, RendererBackend backend, RendererOptions options = default)
+    public static void Initialize(IWindow window, RendererBackend backend = RendererBackend.Platform, RendererOptions options = default)
     {
         Options = options;
         Backend = backend;

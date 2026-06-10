@@ -28,6 +28,7 @@ public class Window
     {
         WindowOptions options = WindowOptions.Default;
         options.VSync = false;
+
         InternalWindow = Silk.NET.Windowing.Window.Create(options);
     }
 
