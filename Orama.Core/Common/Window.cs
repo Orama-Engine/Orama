@@ -26,7 +26,11 @@ public class Window
     /// <summary> Initializes a new instance of the <see cref="Window"/> class. </summary>
     public Window()
     {
-        WindowOptions options = WindowOptions.Default;
+        WindowOptions options = WindowOptions.Default with
+        {
+            API = GraphicsAPI.None
+        };
+
         options.VSync = false;
 
         InternalWindow = Silk.NET.Windowing.Window.Create(options);
