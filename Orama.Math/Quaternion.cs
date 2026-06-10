@@ -27,6 +27,8 @@ public struct Quaternion : IEquatable<Quaternion>
         W = w;
     }
 
+    public static Quaternion Identity => new(0, 0, 0, 1);
+
     /// <summary> Creates a <see cref="Quaternion"/> representing a rotation around an axis by an angle in radians. </summary>
     public static Quaternion CreateFromAxisAngle(Vector3 axis, float angle)
     {

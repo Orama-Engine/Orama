@@ -110,7 +110,7 @@ public class Jitter2Body : IPhysicsBody
     /// <inheritdoc/>
     public Quaternion Orientation
     {
-        get => body != null ? new Quaternion(body.Orientation.X, body.Orientation.Y, body.Orientation.Z, body.Orientation.W) : new Quaternion(0, 0, 0, 1); // Identity
+        get => body != null ? new Quaternion(body.Orientation.X, body.Orientation.Y, body.Orientation.Z, body.Orientation.W) : Quaternion.Identity;
         set { if (body != null) body.Orientation = new JQuaternion(value.X, value.Y, value.Z, value.W); }
     }
 

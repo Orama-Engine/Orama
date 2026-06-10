@@ -39,7 +39,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         GraphicsPipelineDescription desc = new()
         {
             BlendState = BlendStateDescription.SingleOverrideBlend,
-            DepthStencilState = DepthStencilStateDescription.DepthOnlyLessEqual,
+            DepthStencilState = DepthStencilStateDescription.Disabled,
             RasterizerState = rasterizerState,
             PrimitiveTopology = PrimitiveTopology.TriangleList,
             ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
