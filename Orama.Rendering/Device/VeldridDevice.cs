@@ -1,8 +1,10 @@
 ﻿using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
+using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
 using System.ComponentModel;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using Veldrid;
 using Veldrid.OpenGL;
 
@@ -58,11 +60,10 @@ public class VeldridDevice
             case RendererBackend.Vulkan:
             case RendererBackend.DirectX11:
                 {
-#warning Vulkan should support Non-Win32
                     if (native is null)
                         throw new NullReferenceException(nameof(native));
 
-                    SwapchainSource source = SwapchainSource.CreateWin32(native.Win32!.Value.Hwnd, native.Win32!.Value.HInstance);
+                    SwapchainSource source = CreateSwapchainSource(native);
 
                     SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
                     GraphicsDevice = backend == RendererBackend.Vulkan ? GraphicsDevice.CreateVulkan(options, desc) : GraphicsDevice.CreateD3D11(options, desc);
@@ -75,4 +76,20 @@ public class VeldridDevice
 
     /// <inheritdoc/>
     public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
+
+    private static SwapchainSource CreateSwapchainSource(INativeWindow? native)
+    {
+        ArgumentNullException.ThrowIfNull(native);
+
+        if (native.Win32 is { } win32)
+            return SwapchainSource.CreateWin32(win32.Hwnd, win32.HInstance);
+
+        if (native.X11 is { } x11)
+            return SwapchainSource.CreateXlib(x11.Display, (nint)x11.Window);
+
+        if (native.Wayland is { } wayland)
+            return SwapchainSource.CreateWayland(wayland.Display, wayland.Surface);
+
+        throw new PlatformNotSupportedException("No supported native window handle was available.");
+    }
 }
