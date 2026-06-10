@@ -24,9 +24,9 @@ public class RenderingModule : BaseModule
         Application.OnRender += Render;
 
         RendererOptions options = new();
-        options.Culling = CullingMode.Back;
+        options.Culling = CullingMode.None;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Platform, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
     }
 
     public void Render() 

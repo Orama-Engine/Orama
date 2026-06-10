@@ -18,8 +18,8 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         );
 
         VertexLayoutDescription vertexLayout = new(
-            new VertexElementDescription("Position", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
-            new VertexElementDescription("Normal", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
+            new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float3),
+            new VertexElementDescription("Normal", VertexElementSemantic.Normal, VertexElementFormat.Float3),
             new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
