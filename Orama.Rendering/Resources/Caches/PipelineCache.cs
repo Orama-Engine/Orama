@@ -14,7 +14,8 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 
         Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
-            new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main")
+            new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main"),
+            new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: true)
         );
 
         VertexLayoutDescription vertexLayout = new(
