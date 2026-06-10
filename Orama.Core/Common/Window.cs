@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using Orama.Math;
+﻿using Orama.Math;
 using Silk.NET.Windowing;
 
 namespace Orama.Core.Common;

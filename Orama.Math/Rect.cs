@@ -7,28 +7,26 @@ namespace Orama.Math;
 /// </summary>
 public struct Rect
 {
-    /// <summary> The X position of the <see cref="Rect"/>. </summary>
-    public int X {  get; set; }
+    /// <summary> The position of the <see cref="Rect"/>. </summary>
+    public Vector2I Position { get; set; }
 
-    /// <summary> The Y position of the <see cref="Rect"/>. </summary>
-    public int Y {  get; set; }
-
-    /// <summary> The width (X scale) of the <see cref="Rect"/>. </summary>
-    public int Width {  get; set; }
-
-    /// <summary> The height (Y scale) of the <see cref="Rect"/>. </summary>
-    public int Height {  get; set; }
+    /// <summary> The size/scale of the <see cref="Rect"/>. </summary>
+    public Vector2I Size { get; set; }
 
     /// <summary> Creates a new instance of <see cref="Rect"/>. </summary>
-    public Rect() => (X, Y, Width, Height) = (0, 0, 0, 0);
+    public Rect() { }
 
     /// <summary> Creates a new instance of <see cref="Rect"/> with the specified components. </summary>
-    public Rect(int x, int y) => (X, Y, Width, Height) = (x, y, 0, 0);
+    public Rect(int x, int y) => Position = new Vector2I(x, y);
 
     /// <summary> Creates a new instance of <see cref="Rect"/> with the specified components. </summary>
-    public Rect(int x, int y, int width, int height) => (X, Y, Width, Height) = (x, y, width, height);
+    public Rect(int x, int y, int width, int height)
+    {
+        Position = new Vector2I(x, y);
+        Size = new Vector2I(width, height);
+    }
 
     /// <summary> Checks if the specified coordinates are contained in the <see cref="Rect"/>. </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool Contains(int x, int y) => x >= X && x < X + Width && y >= Y && y < Y + Height;
+    public bool Contains(int x, int y) => x >= Position.X && x < Position.X + Size.X && y >= Position.Y && y < Position.Y + Size.Y;
 }
