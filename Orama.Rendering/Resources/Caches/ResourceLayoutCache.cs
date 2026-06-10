@@ -3,12 +3,6 @@ using Veldrid;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, ResourceLayoutKey, ResourceLayout>
-{
-    /// <inheritdoc/>
-    protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
-}
-
 public readonly record struct ResourceLayoutKey(ImmutableArray<ResourceLayoutElementDescription> Elements)
 {
     public bool Equals(ResourceLayoutKey other) => Elements.AsSpan().SequenceEqual(other.Elements.AsSpan());
@@ -22,4 +16,10 @@ public readonly record struct ResourceLayoutKey(ImmutableArray<ResourceLayoutEle
 
         return hash.ToHashCode();
     }
+}
+
+public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, ResourceLayoutKey, ResourceLayout>
+{
+    /// <inheritdoc/>
+    protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
 }
