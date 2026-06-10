@@ -12,7 +12,7 @@ public class FlyController : Entity
 {
     [ImplicitComponent] public Camera Camera { get; set; } = null!;
 
-    private float mouseSensitivity = 0.25f;
+    private float mouseSensitivity = 0.0025f;
     private float moveSpeed = 8.0f;
 
     private float pitch;
@@ -50,8 +50,8 @@ public class FlyController : Entity
         // Mouse look
         Vector2 delta = Input.MouseDelta;
 
-        yaw += delta.X * mouseSensitivity * Time.Delta;
-        pitch += -delta.Y * mouseSensitivity * Time.Delta;
+        yaw += delta.X * mouseSensitivity;
+        pitch += -delta.Y * mouseSensitivity;
 
         pitch = Math.Math.Clamp(pitch, -1.55f, 1.55f);
 
