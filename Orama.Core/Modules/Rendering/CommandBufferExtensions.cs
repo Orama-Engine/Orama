@@ -49,9 +49,12 @@ public static class CommandBufferExtensions
                 ResourceLayout: layoutDesc
             );
 
+            var vertexBytes = MemoryMarshal.AsBytes(vertexData.AsSpan()).ToArray();
+            var indexBytes = MemoryMarshal.AsBytes(renderable.Indices.AsSpan()).ToArray();
+
             FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-                VertexBuffer: new BufferDescriptor(MemoryMarshal.Cast<float, byte>(vertexData).ToImmutableArray(), BufferUsage.VertexBuffer),
-                IndexBuffer: new BufferDescriptor(MemoryMarshal.Cast<uint, byte>(renderable.Indices).ToImmutableArray(), BufferUsage.IndexBuffer),
+                VertexBuffer: new BufferDescriptor(ImmutableCollectionsMarshal.AsImmutableArray(vertexBytes), BufferUsage.VertexBuffer),
+                IndexBuffer: new BufferDescriptor(ImmutableCollectionsMarshal.AsImmutableArray(indexBytes), BufferUsage.IndexBuffer),
                 IndexCount: (uint)renderable.Indices.Length,
                 Pipeline: pipelineDesc
             ));

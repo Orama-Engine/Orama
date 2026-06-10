@@ -63,6 +63,7 @@ public class VeldridDevice
 
                     SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
                     GraphicsDevice = backend == RendererBackend.Vulkan ? GraphicsDevice.CreateVulkan(options, desc) : GraphicsDevice.CreateD3D11(options, desc);
+
                     break;
                 }
         }

@@ -19,9 +19,9 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         );
 
         VertexLayoutDescription vertexLayout = new(
-            new VertexElementDescription("Position", VertexElementSemantic.Position, VertexElementFormat.Float3),
-            new VertexElementDescription("Normal", VertexElementSemantic.Normal, VertexElementFormat.Float3),
-            new VertexElementDescription("UV", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
+            new VertexElementDescription("POSITION", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
+            new VertexElementDescription("NORMAL", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
+            new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
         );
 
         FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements.ToImmutableArray()));

@@ -1,9 +1,4 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Formats.Png;
-
-using Orama.Rendering.Resources;
-
+﻿
 namespace Orama.Core.Modules.Rendering.Resources;
 
 public enum TextureFormat
