@@ -36,23 +36,44 @@ public class VeldridDevice
             SyncToVerticalBlank = false
         };
 
-#warning Windows only hack
-        SwapchainSource source = SwapchainSource.CreateWin32(native.Win32.Value.Hwnd, native.Win32.Value.HInstance);
-
-        SwapchainDescription desc = new SwapchainDescription(source, (uint)window.Size.X, (uint)window.Size.Y, null, false);
-
         switch(backend)
         {
             case RendererBackend.OpenGL:
-                // TODO: OpenGL support
-                throw new NotImplementedException();
+                var glPlatformInfo = new OpenGLPlatformInfo(
+                    openGLContextHandle: window.GLContext!.Handle,
+                    getProcAddress: name =>
+                    {
+                        window.GLContext!.TryGetProcAddress(name, out var ptr);
+                        return ptr;
+                    },
+                    makeCurrent: handle => window.GLContext.MakeCurrent(),
+                    getCurrentContext: () => window.GLContext.Handle,
+                    clearCurrentContext: () => window.GLContext.Clear(),
+                    deleteContext: handle => window.GLContext.Dispose(),
+                    swapBuffers: () => window.GLContext.SwapBuffers(),
+                    setSyncToVerticalBlank: vsync => window.GLContext.SwapInterval(vsync ? 1 : 0)
+                );
+
+                GraphicsDevice = GraphicsDevice.CreateOpenGL(
+                    options,
+                    glPlatformInfo,
+                    (uint)window.Size.X,
+                    (uint)window.Size.Y
+                );
                 break;
             case RendererBackend.Vulkan:
-                GraphicsDevice = GraphicsDevice.CreateVulkan(options, desc);
-                break;
             case RendererBackend.DirectX11:
-                GraphicsDevice = GraphicsDevice.CreateD3D11(options, desc);
-                break;
+                {
+#warning Vulkan should support Non-Win32
+                    if (native is null)
+                        throw new NullReferenceException(nameof(native));
+
+                    SwapchainSource source = SwapchainSource.CreateWin32(native.Win32!.Value.Hwnd, native.Win32!.Value.HInstance);
+
+                    SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
+                    GraphicsDevice = backend == RendererBackend.Vulkan ? GraphicsDevice.CreateVulkan(options, desc) : GraphicsDevice.CreateD3D11(options, desc);
+                    break;
+                }
         }
     }
 

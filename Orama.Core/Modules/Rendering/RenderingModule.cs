@@ -15,9 +15,10 @@ public class RenderingModule : BaseModule
     /// <summary> The renderable objects to render next frame. </summary>
     internal List<IClientRenderable> Renderables { get; set; } = new();
 
-    /// <summary> The rendering pipeline in use. </summary>
+    /// <summary> The <see cref="RenderPipeline"/> in use. </summary>
     public RenderPipeline Pipeline { get; set; } = new ForwardRenderPipeline();
 
+    /// <inheritdoc/>
     public override void Initialize()
     {
         Application.OnResize +=  (size) => OnResize((int)size.X, (int)size.Y);
@@ -26,7 +27,7 @@ public class RenderingModule : BaseModule
         RendererOptions options = new();
         options.Culling = CullingMode.Back;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.OpenGL, options);
     }
 
     public void Render() 
@@ -42,6 +43,7 @@ public class RenderingModule : BaseModule
         Renderer.Present();
     }
 
+    /// <inheritdoc/>
     public override void Dispose()
     {
         Renderer.Dispose();

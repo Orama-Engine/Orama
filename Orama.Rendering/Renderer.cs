@@ -23,6 +23,7 @@ public static class Renderer
     /// <summary> The renderer backend in use. </summary>
     public static RendererBackend Backend { get; private set; }
 
+    /// <summary> The lower-level <see cref="VeldridDevice"/>. </summary>
     public static VeldridDevice Veldrid { get; private set; } = null!;
 
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
@@ -40,6 +41,7 @@ public static class Renderer
     /// <summary> Creates a new command buffer. </summary>
     public static CommandBuffer AllocateCommandBuffer() => new(Veldrid);
 
+    /// <summary> Presents the current frame. </summary>
     public static void Present()
     {
         Veldrid.GraphicsDevice.SwapBuffers();
@@ -48,6 +50,7 @@ public static class Renderer
         FrameDisposalQueue.DisposeResources(Veldrid.CurrentFrame);
     }
 
+    /// <summary> Submits the given <see cref="CommandBuffer"/> to be ran. </summary>
     public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.SubmitCommands(commandBuffer);
 
     /// <summary> Resizes the renderer. </summary>
@@ -56,6 +59,7 @@ public static class Renderer
     /// <summary> Cleans up the renderer. </summary>
     public static void Dispose()
     {
-        FrameDisposalQueue.DisposeResources(Veldrid.CurrentFrame);
+        FrameDisposalQueue.DisposeResources(ulong.MaxValue);
+        Veldrid.GraphicsDevice.Dispose();
     }
 }
