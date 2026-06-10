@@ -25,11 +25,21 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 
         FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(key.ResourceLayout.Elements.ToImmutableArray()));
 
+        RasterizerStateDescription rasterizerState =
+            Renderer.Options.Culling switch
+            {
+                CullingMode.None => RasterizerStateDescription.CullNone,
+                CullingMode.Back => new RasterizerStateDescription(FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
+                CullingMode.Front => new RasterizerStateDescription(FaceCullMode.Front, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
+
+                _ => RasterizerStateDescription.CullNone
+            };
+
         GraphicsPipelineDescription desc = new()
         {
             BlendState = BlendStateDescription.SingleOverrideBlend,
             DepthStencilState = DepthStencilStateDescription.DepthOnlyLessEqual,
-            RasterizerState = RasterizerStateDescription.CullNone,
+            RasterizerState = rasterizerState,
             PrimitiveTopology = PrimitiveTopology.TriangleList,
             ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),
             ResourceLayouts = new[] { layout.Resource },

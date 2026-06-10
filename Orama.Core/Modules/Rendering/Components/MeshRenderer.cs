@@ -21,6 +21,7 @@ public class MeshRenderer : Component, IClientRenderable
 
     public Material Material => Mesh?.Material ?? Material.Default;
 
+    /// <inheritdoc/>
     public override void Update()
     {
         if (Mesh == null)

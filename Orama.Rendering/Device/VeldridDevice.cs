@@ -1,12 +1,7 @@
 ﻿using Orama.Rendering.Device;
-using Orama.Rendering.Resources;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
-using System.ComponentModel;
-using System.Numerics;
-using System.Runtime.InteropServices;
 using Veldrid;
-using Veldrid.OpenGL;
 
 namespace Orama.Rendering.Veldrid;
 
@@ -18,6 +13,7 @@ public class VeldridDevice
     /// <summary> The underlying Veldrid <see cref="global::Veldrid.GraphicsDevice"/>. </summary>
     public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
+    /// <summary> The current frame number. </summary>
     public ulong CurrentFrame { get; internal set; }
 
     private RendererBackend backend;
@@ -36,7 +32,7 @@ public class VeldridDevice
         var options = new GraphicsDeviceOptions()
         {
             Debug = true,
-            SyncToVerticalBlank = window.VSync
+            SyncToVerticalBlank = window.VSync,
         };
 
         if (backend == RendererBackend.Platform)
@@ -47,7 +43,7 @@ public class VeldridDevice
                 _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.DirectX11,
                 _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL) => RendererBackend.OpenGL,
 
-                _ => throw new InvalidOperationException("No supported graphics backend found!")
+                _ => throw new InvalidOperationException("No supported graphics backend found.")
             };
         }
 
