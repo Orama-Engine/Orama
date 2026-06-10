@@ -1,7 +1,6 @@
 ﻿
 using Orama.Core.Modules.Rendering.Resources;
 using Orama.Math;
-using Orama.Rendering;
 
 namespace Orama.Core.Common.Components;
 
@@ -25,9 +24,6 @@ public class Camera : Component
     /// <summary> The main camera. </summary>
     public static Camera? Main { get; private set; }
 
-
-    // TODO: We should probably have a consistent format for camera matrices and modify them right before upload but for now we change them depending on backend
-
     /// <summary> Gets the view <see cref="Matrix4x4"/> for this Camera. </summary>
     public Matrix4x4 ViewMatrix
     {
@@ -47,40 +43,14 @@ public class Camera : Component
         get
         {
             float f = 1f / MathF.Tan(FOV / 2f);
+            float zRange = ZFar - ZNear;
 
-            Matrix4x4 proj;
-
-            if (Renderer.Veldrid.GraphicsDevice.IsDepthRangeZeroToOne)
-            {
-                // D3D11 / Metal ortho depth [0, 1]
-                proj = new Matrix4x4(
-                    f / AspectRatio, 0, 0, 0,
-                    0, f, 0, 0,
-                    0, 0, ZFar / (ZFar - ZNear), 1,
-                    0, 0, -ZNear * ZFar / (ZFar - ZNear), 0
-                );
-            }
-            else
-            {
-                // Vulkan / OpenGL ortho depth [-1, 1]
-                float zRange = ZFar - ZNear;
-                proj = new Matrix4x4(
-                    f / AspectRatio, 0, 0, 0,
-                    0, f, 0, 0,
-                    0, 0, ZFar / zRange, 1,
-                    0, 0, -(ZNear * ZFar) / zRange, 0
-                );
-            }
-
-            if (Renderer.Veldrid.GraphicsDevice.IsClipSpaceYInverted)
-            {
-                proj.M21 = -proj.M21;
-                proj.M22 = -proj.M22;
-                proj.M23 = -proj.M23;
-                proj.M24 = -proj.M24;
-            }
-
-            return proj;
+            return new Matrix4x4(
+                f / AspectRatio, 0, 0, 0,
+                0, f, 0, 0,
+                0, 0, ZFar / zRange, 1,
+                0, 0, (-ZNear * ZFar) / zRange, 0
+            );
         }
     }
 
@@ -89,48 +59,22 @@ public class Camera : Component
     {
         get
         {
-            float right = AspectRatio;
-            float left = -AspectRatio;
+            float right = AspectRatio * 1f;
+            float left = -right;
             float top = 1f;
-            float bottom = -1f;
+            float bottom = -top;
 
-            float rl = right - left;
-            float tb = top - bottom;
+            float zRange = ZFar - ZNear;
 
-            Matrix4x4 proj;
-
-            if (Renderer.Veldrid.GraphicsDevice.IsDepthRangeZeroToOne)
-            {
-                // D3D11 / Metal ortho depth [0, 1]
-                float zRange = ZFar - ZNear;
-                proj = new Matrix4x4(
-                    2f / rl, 0, 0, 0,
-                    0, 2f / tb, 0, 0,
-                    0, 0, 1f / zRange, 0,
-                    -(right + left) / rl, -(top + bottom) / tb, -ZNear / zRange, 1
-                );
-            }
-            else
-            {
-                // Vulkan / OpenGL ortho depth [-1, 1]
-                float zRange = ZFar - ZNear;
-                proj = new Matrix4x4(
-                    2f / rl, 0, 0, 0,
-                    0, 2f / tb, 0, 0,
-                    0, 0, -2f / zRange, 0,
-                    -(right + left) / rl, -(top + bottom) / tb, -(ZFar + ZNear) / zRange, 1
-                );
-            }
-
-            if (Renderer.Veldrid.GraphicsDevice.IsClipSpaceYInverted)
-            {
-                proj.M21 = -proj.M21;
-                proj.M22 = -proj.M22;
-                proj.M23 = -proj.M23;
-                proj.M24 = -proj.M24;
-            }
-
-            return proj;
+            return new Matrix4x4(
+                2f / (right - left), 0, 0, 0,
+                0, 2f / (top - bottom), 0, 0,
+                0, 0, -2f / zRange, 0,
+                -(right + left) / (right - left),
+                -(top + bottom) / (top - bottom),
+                -(ZFar + ZNear) / zRange,
+                1
+            );
         }
     }
 

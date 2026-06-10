@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Veldrid;
 using Veldrid.SPIRV;
+using Vulkan;
 
 namespace Orama.Rendering.Resources.Caches;
 
