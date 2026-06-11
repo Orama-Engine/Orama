@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Modules.Audio.Resources;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Audio.Components;
 
@@ -18,7 +19,19 @@ public class AudioSource : Component
 
     /// <summary> Whether the audio source loops. </summary>
     public bool Loop { get; set; } = false;
-     
+
+    /// <summary> The world-space position of the audio source. </summary>
+    public Vector3 Position { get; set; } = Vector3.Zero;
+
+    /// <summary> The line-of-sight obstruction level of the audio source. </summary>
+    public float Obstruction { get; set; } = 0f;
+
+    /// <summary> The acoustic occlusion level of the audio source. </summary>
+    public float Occlusion { get; set; } = 0f;
+
+    /// <summary> Whether the audio source's path to the listener is currently blocked. </summary>
+    public bool Obstructed { get; set; } = false;
+
     /// <inheritdoc/>
     public override void Start()
     {
@@ -39,6 +52,14 @@ public class AudioSource : Component
 
     /// <summary> Stops the audio source. </summary>
     public void Stop() => source?.Stop();
+
+    public override void Update()
+    {
+        if (source == null) return;
+        source.Position = Entity.Transform.Position;
+        source.Obstruction = Obstructed ? 0.6f : 0f;
+        source.Update();
+    }
 
     /// <inheritdoc/>
     public override void Destroy()

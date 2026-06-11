@@ -1,5 +1,6 @@
 ﻿
 using Orama.Core.Modules.Audio.Resources;
+using Orama.Math;
 
 namespace Orama.Core.Modules.Audio;
 
@@ -20,6 +21,18 @@ public interface IAudioSource
     /// <summary> Whether the audio source is currently playing. </summary>
     bool IsPlaying { get; }
 
+    /// <summary> The world-space position of the audio source. </summary>
+    Vector3 Position { get; set; }
+
+    /// <summary> The line-of-sight obstruction level of the audio source. </summary>
+    float Obstruction { get; set; }
+
+    /// <summary> The acoustic occlusion level of the audio source. </summary>
+    float Occlusion { get; set; }
+
+    /// <summary> Whether the audio source's path to the listener is currently blocked. </summary>
+    bool Obstructed { get; set; }
+
     /// <summary> Sets the audio clip to be used for playback. </summary>
     /// <param name="clip"> The audio clip to assign. </param>
     void SetClip(AudioClip clip);
@@ -32,4 +45,6 @@ public interface IAudioSource
 
     /// <summary> Destroys the audio source. </summary>
     void Destroy();
+
+    void Update();
 }

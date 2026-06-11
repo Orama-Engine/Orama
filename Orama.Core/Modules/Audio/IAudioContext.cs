@@ -1,4 +1,5 @@
 ﻿
+
 namespace Orama.Core.Modules.Audio;
 
 /// <summary>
@@ -13,4 +14,16 @@ public interface IAudioContext
     /// <summary> Destroys an audio source and removes it from the context. </summary>
     /// <param name="source"> The audio source to remove. </param>
     void DestroySource(IAudioSource source);
+
+    /// <summary> Creates a new audio listener within the context. </summary>
+    /// <returns> The created audio listener. </returns>
+    IAudioListener CreateListener();
+
+    /// <summary> Destroys an audio listener and removes it from the context. </summary>
+    /// <param name="listener"> The audio listener to remove. </param>
+    void DestroyListener(IAudioListener listener);
+
+    /// <summary> Sets the active audio listener for the context. </summary>
+    /// <param name="listener"> The audio listener to make current. </param>
+    void SetListener(IAudioListener? listener);
 }
