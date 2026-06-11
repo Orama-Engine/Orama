@@ -21,9 +21,6 @@ public interface IAudioSource
     /// <summary> Whether the audio source is currently playing. </summary>
     bool IsPlaying { get; }
 
-    /// <summary> The world-space position of the audio source. </summary>
-    Vector3 Position { get; set; }
-
     /// <summary> The line-of-sight obstruction level of the audio source. </summary>
     float Obstruction { get; set; }
 

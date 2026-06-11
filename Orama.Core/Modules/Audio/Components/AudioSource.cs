@@ -20,9 +20,6 @@ public class AudioSource : Component
     /// <summary> Whether the audio source loops. </summary>
     public bool Loop { get; set; } = false;
 
-    /// <summary> The world-space position of the audio source. </summary>
-    public Vector3 Position { get; set; } = Vector3.Zero;
-
     /// <summary> The line-of-sight obstruction level of the audio source. </summary>
     public float Obstruction { get; set; } = 0f;
 
@@ -56,7 +53,6 @@ public class AudioSource : Component
     public override void Update()
     {
         if (source == null) return;
-        source.Position = Entity.Transform.Position;
         source.Obstruction = Obstructed ? 0.6f : 0f;
         source.Update();
     }
