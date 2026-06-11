@@ -41,9 +41,6 @@ public static class Renderer
         Veldrid.Initialize(window);
     }
 
-    /// <summary> Creates a new command buffer. </summary>
-    public static CommandBuffer AllocateCommandBuffer() => new(Veldrid);
-
     /// <summary> Presents the current frame. </summary>
     public static void Present()
     {

@@ -1,5 +1,6 @@
 ﻿using Orama.Math;
 using Orama.Rendering;
+using Orama.Rendering.Device;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 
@@ -12,7 +13,7 @@ public class OpaquePass : RenderPass
     public override void Render(ref RenderFrame frame)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
-        var buffer = Renderer.AllocateCommandBuffer();
+        var buffer = CommandBufferPool.Rent();
 
         buffer.Begin();
 
@@ -38,6 +39,6 @@ public class OpaquePass : RenderPass
 
         buffer.End();
         Renderer.SubmitCommandBuffer(buffer);
-        buffer.Dispose();
+        CommandBufferPool.Return(buffer);
     }
 }
