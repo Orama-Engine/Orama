@@ -31,7 +31,6 @@ public class VeldridDevice
 
         var options = new GraphicsDeviceOptions()
         {
-            Debug = true,
             SyncToVerticalBlank = window.VSync,
         };
 

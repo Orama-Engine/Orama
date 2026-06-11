@@ -28,21 +28,22 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 
 public readonly record struct BufferDescriptor(ImmutableArray<byte> Data, BufferUsage Usage)
 {
-    public bool Equals(BufferDescriptor other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
+    private readonly int hash = ComputeHash(Data, Usage);
 
-    /// <inheritdoc/>
-    public override int GetHashCode()
+    private static int ComputeHash(ImmutableArray<byte> data, BufferUsage usage)
     {
-        // This is very expensive
-        // TODO: Better comparison
-
         var hash = new HashCode();
-        hash.Add(Usage);
-        foreach (var b in Data)
-            hash.Add(b);
-
+        hash.Add(usage);
+        hash.AddBytes(data.AsSpan());
         return hash.ToHashCode();
     }
+
+    /// <inheritdoc/>
+    public override int GetHashCode() => hash;
+
+    /// <inheritdoc/>
+    public bool Equals(BufferDescriptor other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
+
 }
 
 public readonly record struct RenderItemKey(BufferDescriptor VertexBuffer, BufferDescriptor IndexBuffer, uint IndexCount, PipelineKey Pipeline);
