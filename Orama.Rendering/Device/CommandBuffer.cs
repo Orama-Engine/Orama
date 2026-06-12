@@ -25,13 +25,13 @@ public class CommandBuffer : IDisposable
 
     public void UploadUniformBuffer(PipelineKey target, uint size, uint index, ReadOnlySpan<byte> data)
     {
-        DeviceBuffer buffer = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateBuffer(new BufferDescription(size, BufferUsage.UniformBuffer));
-        CommandList.UpdateBuffer(buffer, 0, data.ToArray());
+        FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey(size, BufferUsage.UniformBuffer));
+        CommandList.UpdateBuffer(buffer.Resource, 0, data.ToArray());
 
         FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(target.ResourceLayout.Elements.ToImmutableArray()));
 
-        ResourceSet resourceSet = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(layout.Resource, buffer));
-        CommandList.SetGraphicsResourceSet(index, resourceSet);
+        FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffer.Resource));
+        CommandList.SetGraphicsResourceSet(index, resourceSet.Resource);
     }
 
     public void SetPipeline(PipelineKey pipelineDesc)

@@ -26,7 +26,7 @@ public class RenderingModule : BaseModule
         RendererOptions options = new();
         options.Culling = CullingMode.None;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.DirectX11, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
     }
 
     public void Render() 
