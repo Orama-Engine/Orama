@@ -14,6 +14,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
         BufferDescription vbDesc = new BufferDescription((uint)key.VertexBuffer.Data.Length, key.VertexBuffer.Usage);
         BufferDescription ibDesc = new BufferDescription((uint)key.IndexBuffer.Data.Length, key.IndexBuffer.Usage);
 
+        // We dont have to get these via FrameCountedResources since RenderItem.Dispose() Disposes the vb and ib
         DeviceBuffer vb = factory.CreateBuffer(vbDesc);
         gd.UpdateBuffer(vb, 0, key.VertexBuffer.Data.AsSpan());
 
@@ -26,7 +27,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
     }
 }
 
-public readonly record struct BufferDescriptor(ImmutableArray<byte> Data, BufferUsage Usage)
+public readonly record struct RIBufferKey(ImmutableArray<byte> Data, BufferUsage Usage)
 {
     private readonly int hash = ComputeHash(Data, Usage);
 
@@ -42,8 +43,8 @@ public readonly record struct BufferDescriptor(ImmutableArray<byte> Data, Buffer
     public override int GetHashCode() => hash;
 
     /// <inheritdoc/>
-    public bool Equals(BufferDescriptor other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
+    public bool Equals(RIBufferKey other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
 
 }
 
-public readonly record struct RenderItemKey(BufferDescriptor VertexBuffer, BufferDescriptor IndexBuffer, uint IndexCount, PipelineKey Pipeline);
+public readonly record struct RenderItemKey(RIBufferKey VertexBuffer, RIBufferKey IndexBuffer, uint IndexCount, PipelineKey Pipeline);

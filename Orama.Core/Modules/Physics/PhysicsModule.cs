@@ -26,5 +26,6 @@ public class PhysicsModule : BaseModule
         World = new Jitter2World();
     }
 
+    /// <inheritdoc/>
     public override void Update() => World.Step(Time.FixedDelta);
 }

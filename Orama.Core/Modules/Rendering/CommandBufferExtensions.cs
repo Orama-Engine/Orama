@@ -53,8 +53,8 @@ public static class CommandBufferExtensions
             var indexBytes = MemoryMarshal.AsBytes(renderable.Indices.AsSpan()).ToArray();
 
             FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-                VertexBuffer: new BufferDescriptor(ImmutableCollectionsMarshal.AsImmutableArray(vertexBytes), BufferUsage.VertexBuffer),
-                IndexBuffer: new BufferDescriptor(ImmutableCollectionsMarshal.AsImmutableArray(indexBytes), BufferUsage.IndexBuffer),
+                VertexBuffer: new RIBufferKey(ImmutableCollectionsMarshal.AsImmutableArray(vertexBytes), BufferUsage.VertexBuffer),
+                IndexBuffer: new RIBufferKey(ImmutableCollectionsMarshal.AsImmutableArray(indexBytes), BufferUsage.IndexBuffer),
                 IndexCount: (uint)renderable.Indices.Length,
                 Pipeline: pipelineDesc
             ));

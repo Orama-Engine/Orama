@@ -13,6 +13,9 @@ namespace Orama.Core.Modules.Physics.Engines.Jitter2;
 /// </summary>
 public class Jitter2World : IPhysicsWorld
 {
+    /// <inheritdoc/>
+    public uint SubstepCount { get => (uint)world.SubstepCount; set => world.SubstepCount = (int)value; }
+
     private readonly World world;
     private readonly Dictionary<RigidBody, Jitter2Body> bodyMap = new();
 
@@ -20,7 +23,7 @@ public class Jitter2World : IPhysicsWorld
     public Jitter2World()
     {
         world = new World();
-        world.SubstepCount = 4;
+        world.SubstepCount = (int)SubstepCount;
     }
 
     /// <inheritdoc/>

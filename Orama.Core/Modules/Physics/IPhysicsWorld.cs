@@ -9,6 +9,9 @@ namespace Orama.Core.Modules.Physics;
 /// </summary>
 public interface IPhysicsWorld
 {
+    /// <summary> The amount of substeps to perform per step. A higher substep count results in a more accurate simulation, but is slower. </summary>
+    public uint SubstepCount { get; set; }
+
     /// <summary> Creates a new physics body and adds it to the physics world. </summary>
     /// <returns> The created physics body. </returns>
     IPhysicsBody CreateBody(Entity? owner = null);
