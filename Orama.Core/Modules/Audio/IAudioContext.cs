@@ -26,4 +26,6 @@ public interface IAudioContext
     /// <summary> Sets the active audio listener for the context. </summary>
     /// <param name="listener"> The audio listener to make current. </param>
     void SetListener(IAudioListener? listener);
+
+    void SetDistanceModel(AudioDistanceModel model);
 }

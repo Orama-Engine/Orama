@@ -42,4 +42,20 @@ public class OpenALContext : IAudioContext
 
     /// <inheritdoc/>
     public void SetListener(IAudioListener? listener) => activeListener = listener;
+
+    /// <inheritdoc/>
+    public void SetDistanceModel(AudioDistanceModel model)
+    {
+        al.DistanceModel(model switch
+        {
+            AudioDistanceModel.None => DistanceModel.None,
+            AudioDistanceModel.InverseDistance => DistanceModel.InverseDistance,
+            AudioDistanceModel.InverseDistanceClamped => DistanceModel.InverseDistanceClamped,
+            AudioDistanceModel.LinearDistance => DistanceModel.LinearDistance,
+            AudioDistanceModel.LinearDistanceClamped => DistanceModel.LinearDistanceClamped,
+            AudioDistanceModel.ExponentDistance => DistanceModel.ExponentDistance,
+            AudioDistanceModel.ExponentDistanceClamped => DistanceModel.ExponentDistanceClamped,
+            _ => throw new ArgumentOutOfRangeException(nameof(model))
+        });
+    }
 }

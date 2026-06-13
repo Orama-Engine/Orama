@@ -20,9 +20,6 @@ public class OpenALSource : IAudioSource
         filter = efx.GenFilter();
         efx.SetFilterProperty(filter, FilterInteger.FilterType, (int)FilterType.Lowpass);
     }
-
-    /// <inheritdoc/>
-    public Vector3 Position { get; set; }
     /// <inheritdoc/>
     public float Obstruction { get; set; } = 0f;
     /// <inheritdoc/>
@@ -78,9 +75,45 @@ public class OpenALSource : IAudioSource
     }
 
     /// <inheritdoc/>
-    public void Update()
+    public float MinDistance
     {
-        al.SetSourceProperty(source, SourceVector3.Position, Position.X, Position.Y, Position.Z);
+        get
+        {
+            float value = 0f;
+            al.GetSourceProperty(source, SourceFloat.ReferenceDistance, out value);
+            return value;
+        }
+        set => al.SetSourceProperty(source, SourceFloat.ReferenceDistance, value);
+    }
+
+    /// <inheritdoc/>
+    public float MaxDistance
+    {
+        get
+        {
+            float value = 0f;
+            al.GetSourceProperty(source, SourceFloat.MaxDistance, out value);
+            return value;
+        }
+        set => al.SetSourceProperty(source, SourceFloat.MaxDistance, value);
+    }
+
+    /// <inheritdoc/>
+    public float RolloffFactor
+    {
+        get
+        {
+            float value = 0f;
+            al.GetSourceProperty(source, SourceFloat.RolloffFactor, out value);
+            return value;
+        }
+        set => al.SetSourceProperty(source, SourceFloat.RolloffFactor, value);
+    }
+
+    /// <inheritdoc/>
+    public void Update(Vector3 position)
+    {
+        al.SetSourceProperty(source, SourceVector3.Position, position.X, position.Y, position.Z);
         float gainHF = 1.0f - MathF.Min(1.0f, MathF.Max(0f, Obstruction));
 
         efx.SetFilterProperty(filter, FilterFloat.LowpassGain, 1.0f);
@@ -98,6 +131,9 @@ public class OpenALSource : IAudioSource
 
         al.BufferData(buffer, format, clip.Data, clip.SampleRate);
         al.SetSourceProperty(source, SourceInteger.Buffer, buffer);
+        al.SetSourceProperty(source, SourceFloat.ReferenceDistance, MinDistance);
+        al.SetSourceProperty(source, SourceFloat.MaxDistance, MaxDistance);
+        al.SetSourceProperty(source, SourceFloat.RolloffFactor, RolloffFactor);
     }
 
     /// <inheritdoc/>

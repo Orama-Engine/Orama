@@ -3,6 +3,17 @@ using Orama.Core.Modules.Scenes;
 
 namespace Orama.Core.Modules.Audio;
 
+public enum AudioDistanceModel
+{
+    None,
+    InverseDistance,
+    InverseDistanceClamped,
+    LinearDistance,
+    LinearDistanceClamped,
+    ExponentDistance,
+    ExponentDistanceClamped
+}
+
 /// <summary>
 /// Module responsible for handling audio.
 /// </summary>
@@ -18,9 +29,17 @@ public class AudioModule : BaseModule, IAudioContext
     /// <inheritdoc/>
     public void DestroySource(IAudioSource source) => context.DestroySource(source);
 
+    /// <inheritdoc/>
     public IAudioListener CreateListener() => context.CreateListener();
+
+    /// <inheritdoc/>
     public void DestroyListener(IAudioListener listener) => context.DestroyListener(listener);
+
+    /// <inheritdoc/>
     public void SetListener(IAudioListener? listener) => context.SetListener(listener);
+
+    /// <inheritdoc/>
+    public void SetDistanceModel(AudioDistanceModel model) => context.SetDistanceModel(model); 
 
     /// <summary> Creates a new audio module with the given audio context. </summary>
     /// <param name="context"> The audio context to use. </param>

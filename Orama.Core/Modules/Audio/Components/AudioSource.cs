@@ -29,6 +29,10 @@ public class AudioSource : Component
     /// <summary> Whether the audio source's path to the listener is currently blocked. </summary>
     public bool Obstructed { get; set; } = false;
 
+    public float MinDistance { get; set; }
+    public float MaxDistance { get; set; }
+    public float RolloffFactor { get; set; }
+
     /// <inheritdoc/>
     public override void Start()
     {
@@ -40,6 +44,9 @@ public class AudioSource : Component
             source.Volume = Volume;
             source.Pitch = Pitch;
             source.Loop = Loop;
+            source.MinDistance = MinDistance;
+            source.MaxDistance = MaxDistance;
+            source.RolloffFactor = RolloffFactor;
             if (Clip != null) source.SetClip(Clip);
         }
     }
@@ -50,11 +57,12 @@ public class AudioSource : Component
     /// <summary> Stops the audio source. </summary>
     public void Stop() => source?.Stop();
 
+    /// <inheritdoc/>
     public override void Update()
     {
         if (source == null) return;
         source.Obstruction = Obstructed ? 0.6f : 0f;
-        source.Update();
+        source.Update(Entity.Transform.Position);
     }
 
     /// <inheritdoc/>
