@@ -27,5 +27,7 @@ public interface IAudioContext
     /// <param name="listener"> The audio listener to make current. </param>
     void SetListener(IAudioListener? listener);
 
+    /// <summary> Sets the distance attenuation model used for spatial audio calculations. </summary>
+    /// <param name="model"> The distance model to apply. </param>
     void SetDistanceModel(AudioDistanceModel model);
 }

@@ -29,9 +29,14 @@ public interface IAudioSource
     /// <summary> Whether the audio source's path to the listener is currently blocked. </summary>
     bool Obstructed { get; set; }
 
-    float MinDistance { get; set; }
-    float MaxDistance { get; set; }
-    float RolloffFactor { get; set; }
+    /// <summary> The distance at which the audio source is heard at full volume. </summary>
+    public float MinDistance { get; set; }
+
+    /// <summary> The distance beyond which the audio source's volume no longer attenuates. </summary>
+    public float MaxDistance { get; set; }
+
+    /// <summary> How quickly the audio source's volume attenuates with distance. </summary>
+    public float RolloffFactor { get; set; }
 
     /// <summary> Sets the audio clip to be used for playback. </summary>
     /// <param name="clip"> The audio clip to assign. </param>

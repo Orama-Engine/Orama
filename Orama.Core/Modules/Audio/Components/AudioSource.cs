@@ -29,8 +29,13 @@ public class AudioSource : Component
     /// <summary> Whether the audio source's path to the listener is currently blocked. </summary>
     public bool Obstructed { get; set; } = false;
 
+    /// <summary> The distance at which the audio source is heard at full volume. </summary>
     public float MinDistance { get; set; }
+
+    /// <summary> The distance beyond which the audio source's volume no longer attenuates. </summary>
     public float MaxDistance { get; set; }
+
+    /// <summary> How quickly the audio source's volume attenuates with distance. </summary>
     public float RolloffFactor { get; set; }
 
     /// <inheritdoc/>

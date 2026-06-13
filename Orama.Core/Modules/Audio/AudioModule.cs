@@ -3,17 +3,6 @@ using Orama.Core.Modules.Scenes;
 
 namespace Orama.Core.Modules.Audio;
 
-public enum AudioDistanceModel
-{
-    None,
-    InverseDistance,
-    InverseDistanceClamped,
-    LinearDistance,
-    LinearDistanceClamped,
-    ExponentDistance,
-    ExponentDistanceClamped
-}
-
 /// <summary>
 /// Module responsible for handling audio.
 /// </summary>
@@ -53,4 +42,16 @@ public class AudioModule : BaseModule, IAudioContext
         var activeScene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
         if (activeScene != null) audioPhysics.Update(activeScene);
     }
+}
+
+/// <summary> Defines how audio source volume attenuates with distance from the listener. </summary>
+public enum AudioDistanceModel
+{
+    None,
+    InverseDistance,
+    InverseDistanceClamped,
+    LinearDistance,
+    LinearDistanceClamped,
+    ExponentDistance,
+    ExponentDistanceClamped
 }
