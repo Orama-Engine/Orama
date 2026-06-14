@@ -39,7 +39,7 @@ public class VeldridDevice
             backend = true switch
             {
                 _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
-                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.DirectX11,
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.Direct3D11,
                 _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL) => RendererBackend.OpenGL,
 
                 _ => throw new InvalidOperationException("No supported graphics backend found.")
@@ -53,7 +53,7 @@ public class VeldridDevice
                 throw new NotImplementedException();
                 break;
             case RendererBackend.Vulkan:
-            case RendererBackend.DirectX11:
+            case RendererBackend.Direct3D11:
                 {
                     if (native is null)
                         throw new NullReferenceException(nameof(native));

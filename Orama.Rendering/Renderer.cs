@@ -15,7 +15,7 @@ public enum RendererBackend
 
     OpenGL,
     Vulkan,
-    DirectX11
+    Direct3D11
 }
 
 public static class Renderer

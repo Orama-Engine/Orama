@@ -14,7 +14,7 @@ public class RenderingModule : BaseModule
     /// <summary> The renderable objects to render next frame. </summary>
     internal List<IClientRenderable> Renderables { get; set; } = new();
 
-    public RendererBackend RendererBackend { get; } = RendererBackend.Vulkan;
+    public RendererBackend RendererBackend { get; } = RendererBackend.Direct3D11;
 
     /// <summary> The <see cref="RenderPipeline"/> in use. </summary>
     public RenderPipeline Pipeline { get; set; } = new ForwardRenderPipeline();
