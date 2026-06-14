@@ -20,6 +20,7 @@ public class DebugEntity : Entity
     [ImplicitComponent]
     public RigidBody RigidBody { get; private set; } = null!;
 
+    /// <inheritdoc/>
     public override void Start()
     {
         base.Start();
