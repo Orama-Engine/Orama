@@ -117,4 +117,4 @@ Source
 }
 ```
 ### Modern C#
-Orama has been written to be C# 15-first. Extensive use of properties, nullability, attributes, and abstraction means code can be more explicit and less based in guess work.
+Orama has been written to be C# 14-first. Extensive use of properties, nullability, attributes, and abstraction means code can be more explicit and less based in guess work.
