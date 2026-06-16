@@ -10,7 +10,7 @@ internal class DefaultResourceProvider : IResourceProvider
     {
         if (!File.Exists(path))
         {
-            EngineOutput.Warning($"Requested resource '{path}' does not exist.");
+            EngineConsole.Warning($"Requested resource '{path}' does not exist.");
             return null;
         }
 

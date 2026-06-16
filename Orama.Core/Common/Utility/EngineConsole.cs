@@ -4,7 +4,7 @@ namespace Orama.Core.Common.Utility;
 /// <summary>
 /// Utility for outputting to the engine console.
 /// </summary>
-public static class EngineOutput
+public static class EngineConsole
 {
     /// <summary> The current console output. </summary>
     public static List<string> Output { get; set; } = new();

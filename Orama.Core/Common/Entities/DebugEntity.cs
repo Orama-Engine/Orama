@@ -30,7 +30,7 @@ public class DebugEntity : Entity
 
         RigidBody.IsStatic = true;
 
-        EngineOutput.Log("Debug entity started.");
+        EngineConsole.Log("Debug entity started.");
 
         var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
 

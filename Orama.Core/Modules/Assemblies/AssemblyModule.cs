@@ -9,7 +9,7 @@ namespace Orama.Core.Modules.Assemblies;
 /// </summary>
 public class AssemblyModule : BaseModule
 {
-    private readonly HashSet<ExternalAssembly> _assemblies = new();
+    private readonly HashSet<ExternalAssembly> assemblies = new();
 
     /// <summary> Called when an assembly is loaded. </summary>
     public Action<ExternalAssembly>? AssemblyLoaded { get; set; }
@@ -18,7 +18,7 @@ public class AssemblyModule : BaseModule
     public Action<ExternalAssembly>? AssemblyUnloaded { get; set; }
 
     /// <summary> The assemblies loaded into the process. </summary>
-    public IReadOnlyCollection<ExternalAssembly> Assemblies => _assemblies;
+    public IReadOnlyCollection<ExternalAssembly> Assemblies => assemblies;
 
     /// <inheritdoc/>
     public override void Dispose() => UnloadAll();
@@ -39,7 +39,7 @@ public class AssemblyModule : BaseModule
         var assembly = context.LoadFromAssemblyPath(absolutePath);
 
         ExternalAssembly asm = new(absolutePath, context, assembly);
-        _assemblies.Add(asm);
+        assemblies.Add(asm);
         AssemblyLoaded?.Invoke(asm);
 
         RunLoadAttributes(assembly);
@@ -50,7 +50,7 @@ public class AssemblyModule : BaseModule
     /// <summary> Unloads the specified assembly. </summary>
     public void Unload(ExternalAssembly assembly)
     {
-        if (_assemblies.Remove(assembly))
+        if (assemblies.Remove(assembly))
         {
             assembly.LoadContext.Unload();
             AssemblyUnloaded?.Invoke(assembly);
@@ -60,13 +60,13 @@ public class AssemblyModule : BaseModule
     /// <summary> Unloads all currently loaded assemblies. </summary>
     public void UnloadAll()
     {
-        foreach (var asm in _assemblies)
+        foreach (var asm in assemblies)
         {
             asm.LoadContext.Unload();
             AssemblyUnloaded?.Invoke(asm);
         }
 
-        _assemblies.Clear();
+        assemblies.Clear();
     }
 
     private void RunLoadAttributes(Assembly assembly)

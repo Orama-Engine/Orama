@@ -24,7 +24,7 @@ public class Scene
             }
             catch (Exception ex)
             {
-                EngineOutput.Exception(ex);
+                EngineConsole.Exception(ex);
             }
         }
     }
@@ -42,7 +42,7 @@ public class Scene
             }
             catch (Exception ex)
             {
-                EngineOutput.Exception(ex);
+                EngineConsole.Exception(ex);
             }
         }
     }

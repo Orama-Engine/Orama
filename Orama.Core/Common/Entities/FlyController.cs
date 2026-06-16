@@ -42,7 +42,7 @@ public class FlyController : Entity
 
         if (Input.IsKeyPressed(Key.E))
             if (ModuleManager.GetModule<PhysicsModule>()?.World.TryRaycast(Transform.Position, Transform.Forward, 1f, out RaycastResult result) == true)
-                EngineOutput.Log(result.Body.Owner?.Name ?? "null");
+                EngineConsole.Log(result.Body.Owner?.Name ?? "null");
 
         if (!cursorLocked)
             return;

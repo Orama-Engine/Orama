@@ -41,7 +41,7 @@ internal class AudioClipLoader : ResourceLoader<AudioClip>
         }
         catch (EndOfStreamException)
         {
-            EngineOutput.Warning("WAV file is malformed or missing data chunk.");
+            EngineConsole.Warning("WAV file is malformed or missing data chunk.");
             return null;
         }
     }

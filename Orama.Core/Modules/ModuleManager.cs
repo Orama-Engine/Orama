@@ -36,7 +36,7 @@ public static class ModuleManager
         Application.OnExit += module.Dispose;
 
         var name = module.GetType().Name.ToString();
-        EngineOutput.Log($"Registered module: {name}", "ModuleManager");
+        EngineConsole.Log($"Registered module: {name}", "ModuleManager");
 
         return module;
     }
