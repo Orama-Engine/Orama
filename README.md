@@ -3,6 +3,9 @@
 
 The .NET 11 C# 15 Virtual-Reality Game Engine.
 
+> [!WARNING]
+> Orama is a Pre-Release engine. It's API will have **breaking changes**.
+
 ## Features
 ### Virtual Reality
 Orama was made specifically for Virtual Reality with no workarounds and no retrofitting. Whilst other studios are forced to bend engines never designed with VR in mind, Orama works with it for every step.
