@@ -25,7 +25,7 @@ public class AssemblyModule : BaseModule
     public override void Initialize()
     {
         foreach (var loadedAssembly in AppDomain.CurrentDomain.GetAssemblies())
-            OnAssemblyLoadAttribute.RunLoadAttributes(loadedAssembly);
+            OnAssemblyLoadAttribute.RunOnAssembly(loadedAssembly);
     }
 
     /// <summary> Loads an assembly from the specified path. </summary>
@@ -40,7 +40,7 @@ public class AssemblyModule : BaseModule
         assemblies.Add(asm);
         AssemblyLoaded?.Invoke(asm);
 
-        OnAssemblyLoadAttribute.RunLoadAttributes(assembly);
+        OnAssemblyLoadAttribute.RunOnAssembly(assembly);
 
         return asm;
     }

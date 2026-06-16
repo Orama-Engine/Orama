@@ -8,7 +8,7 @@ namespace Orama.Core.Modules.Assemblies;
 [AttributeUsage(AttributeTargets.Method)]
 public class OnAssemblyLoadAttribute : Attribute
 {
-    public static void RunLoadAttributes(Assembly assembly)
+    public static void RunOnAssembly(Assembly assembly)
     {
         foreach (var type in assembly.GetTypes())
             foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
