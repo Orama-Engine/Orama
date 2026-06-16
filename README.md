@@ -3,6 +3,9 @@
 
 The .NET 11 C# 15 Virtual-Reality Game Engine.
 
+> [!WARNING]
+> Orama is a Pre-Release engine. It's API will have **breaking changes**.
+
 ## Features
 ### Virtual Reality
 Orama was made specifically for Virtual Reality with no workarounds and no retrofitting. Whilst other studios are forced to bend engines never designed with VR in mind, Orama works with it for every step.
@@ -114,4 +117,4 @@ Source
 }
 ```
 ### Modern C#
-Orama has been written to be C# 15-first. Extensive use of properties, nullability, attributes, and abstraction means code can be more explicit and less based in guess work.
+Orama has been written to be C# 14-first. Extensive use of properties, nullability, attributes, and abstraction means code can be more explicit and less based in guess work.
