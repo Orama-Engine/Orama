@@ -1,6 +1,4 @@
-﻿
-using Orama.Core.Common.Utility;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Orama.Core.Modules.Assemblies;
 
@@ -27,7 +25,7 @@ public class AssemblyModule : BaseModule
     public override void Initialize()
     {
         foreach (var loadedAssembly in AppDomain.CurrentDomain.GetAssemblies())
-            RunLoadAttributes(loadedAssembly);
+            OnAssemblyLoadAttribute.RunLoadAttributes(loadedAssembly);
     }
 
     /// <summary> Loads an assembly from the specified path. </summary>
@@ -42,7 +40,7 @@ public class AssemblyModule : BaseModule
         assemblies.Add(asm);
         AssemblyLoaded?.Invoke(asm);
 
-        RunLoadAttributes(assembly);
+        OnAssemblyLoadAttribute.RunLoadAttributes(assembly);
 
         return asm;
     }
@@ -67,13 +65,5 @@ public class AssemblyModule : BaseModule
         }
 
         assemblies.Clear();
-    }
-
-    private void RunLoadAttributes(Assembly assembly)
-    {
-        foreach (var type in assembly.GetTypes())
-            foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                if (method.IsDefined(typeof(OnAssemblyLoadAttribute), false) && method.GetParameters().Length == 0)
-                    method.Invoke(null, null);
     }
 }
