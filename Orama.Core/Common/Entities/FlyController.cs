@@ -1,8 +1,7 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Common.Utility;
-using Orama.Core.Modules;
-using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
+using Orama.Input;
 using Orama.Math;
 using Orama.Modules;
 

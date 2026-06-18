@@ -1,5 +1,4 @@
 ﻿using Orama.Core.Common.Resources;
-using Orama.Core.Common.Resources.Default;
 using Orama.Math;
 
 namespace Orama.Core.Common;
@@ -33,7 +32,7 @@ public static class Application
     public static void Initialize(IResourceProvider? resourceProvider = null)
     {
         if (resourceProvider == null)
-            resourceProvider = new DefaultResourceProvider();
+            resourceProvider = null!;
 
         ResourceProvider = resourceProvider;
 

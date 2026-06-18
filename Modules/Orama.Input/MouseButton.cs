@@ -1,5 +1,5 @@
 ﻿
-namespace Orama.Core.Modules.Input;
+namespace Orama.Input;
 
 /// <summary>
 /// Represents a mouse button.
@@ -10,3 +10,4 @@ public enum MouseButton
     Right,
     Middle
 }
+

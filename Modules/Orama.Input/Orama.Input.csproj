@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.Input" Version="2.23.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Orama.Math\Orama.Math.csproj" />
+    <ProjectReference Include="..\..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
+    <ProjectReference Include="..\..\Orama.Modules\Orama.Modules.csproj" />
+  </ItemGroup>
+
+</Project>

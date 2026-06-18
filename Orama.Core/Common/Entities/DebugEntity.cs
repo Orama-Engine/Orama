@@ -31,11 +31,6 @@ public class DebugEntity : Entity
         RigidBody.IsStatic = true;
 
         EngineConsole.Log("Debug entity started.");
-
-        var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
-
-        Renderer.Mesh = mesh;
-        Renderer.Mesh?.Material = Material.Default;
     }
 }
 #endif

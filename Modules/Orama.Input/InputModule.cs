@@ -1,10 +1,9 @@
 ﻿using Orama.Core.Common;
-using Orama.Core.Common.Utility;
 using Orama.Math;
 using Orama.Modules;
 using Silk.NET.Input;
 
-namespace Orama.Core.Modules.Input;
+namespace Orama.Input;
 
 /// <summary>
 /// Module responsible for handling user input.
@@ -19,7 +18,7 @@ public class InputModule : BaseModule
 
     /// <summary> Invoked when the mouse moves. </summary>
     public event Action<Vector2>? MouseMoved;
-    
+
     /// <summary> Invoked when a key is pressed. </summary>
     public event Action<Key>? KeyPressed;
 

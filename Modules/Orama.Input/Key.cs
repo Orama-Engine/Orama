@@ -1,5 +1,5 @@
 ﻿
-namespace Orama.Core.Modules.Input;
+namespace Orama.Input;
 
 /// <summary>
 /// Represents a key on an input device.
