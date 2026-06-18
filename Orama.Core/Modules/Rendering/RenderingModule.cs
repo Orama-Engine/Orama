@@ -39,7 +39,7 @@ public class RenderingModule : BaseModule
             Camera = Camera.Main ?? new Camera(),
         };
 
-        Pipeline.Render(ref frame);
+        Pipeline.Render(in frame);
         Renderables.Clear();
 
         Renderer.Present();
