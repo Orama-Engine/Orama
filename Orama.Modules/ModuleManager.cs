@@ -1,4 +1,6 @@
 ﻿
+using Orama.Core.Common.Utility;
+
 namespace Orama.Modules;
 
 /// <summary>
@@ -34,6 +36,8 @@ public static class ModuleManager
         {
             module.Initialize();
             module.IsInitialized = true;
+
+            EngineConsole.Log($"Initialized module {module.GetType().Name}", "ModuleManager");
         }
     }
 
@@ -44,6 +48,8 @@ public static class ModuleManager
         {
             module.IsInitialized = false;
             module.Dispose();
+
+            EngineConsole.Log($"Disposed module {module.GetType().Name}", "ModuleManager");
         }
     }
 }
