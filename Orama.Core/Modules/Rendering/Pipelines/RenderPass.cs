@@ -6,5 +6,5 @@ namespace Orama.Core.Modules.Rendering.Pipelines;
 /// </summary>
 public abstract class RenderPass
 {
-    public abstract void Render(ref RenderFrame frame);
+    public abstract void Render(in RenderFrame frame);
 }

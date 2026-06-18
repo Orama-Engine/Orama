@@ -10,7 +10,7 @@ namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 public class OpaquePass : RenderPass
 {
     /// <inheritdoc/>
-    public override void Render(ref RenderFrame frame)
+    public override void Render(in RenderFrame frame)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
         var buffer = CommandBufferPool.Rent();

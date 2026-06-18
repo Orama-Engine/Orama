@@ -13,6 +13,6 @@ public abstract class RenderPipeline
     public void Render(ref RenderFrame frame)
     {
         foreach (var pass in Passes)
-            pass.Render(ref frame);
+            pass.Render(in frame);
     }
 }
