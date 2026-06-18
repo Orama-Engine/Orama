@@ -1,6 +1,7 @@
 ﻿using Orama.Math;
 using Orama.Rendering;
 using Orama.Rendering.Device;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Rendering.Pipelines.Forward;
 

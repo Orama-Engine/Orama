@@ -2,6 +2,7 @@
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Audio;
 

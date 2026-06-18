@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
+    <ProjectReference Include="..\Orama.Modules\Orama.Modules.csproj" />
     <ProjectReference Include="..\Orama.Rendering\Orama.Rendering.csproj" />
     <ProjectReference Include="..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>

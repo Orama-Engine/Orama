@@ -11,6 +11,7 @@ using Orama.Core.Modules.Rendering;
 using Orama.Core.Modules.Scenes;
 using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
+using Orama.Modules;
 
 namespace Orama.Desktop;
 
@@ -35,6 +36,8 @@ internal class Program
 
         Application.OnStart += () =>
         {
+            ModuleManager.InitializeAll();
+
             Entity flyController = EntityRegistry.CreateEntity("fly_controller");
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 0, 0);
@@ -50,7 +53,7 @@ internal class Program
 
         Application.OnExit += () =>
         {
-
+            ModuleManager.DisposeAll();
         };
 
         Application.OnUpdate += () =>

@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Modules.Physics.Engines.Jitter2;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Physics;
 
@@ -8,24 +9,24 @@ namespace Orama.Core.Modules.Physics;
 /// </summary>
 public class PhysicsModule : BaseModule
 {
-    /// <summary>
-    /// The physics world.
-    /// </summary>
-    public IPhysicsWorld World { get; }
+    public IPhysicsWorld World { get; set; } = null!;
 
-    /// <summary> Creates a new physics module with the given physics world. </summary>
-    /// <param name="world"> The physics world to use. </param>
-    public PhysicsModule(IPhysicsWorld world)
+    /// <inheritdoc/>
+    public override void Initialize()
     {
-        World = world;
-    }
+        Application.OnUpdate += Update;
 
-    /// <summary> Creates a new physics module with the default physics world. </summary>
-    public PhysicsModule()
-    {
         World = new Jitter2World();
     }
 
     /// <inheritdoc/>
-    public override void Update() => World.Step(Time.FixedDelta);
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        Application.OnUpdate -= Update;
+    }
+
+    /// <inheritdoc/>
+    public void Update() => World.Step(Time.FixedDelta);
 }

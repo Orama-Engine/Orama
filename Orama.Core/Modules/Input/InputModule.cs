@@ -1,6 +1,7 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Common.Utility;
 using Orama.Math;
+using Orama.Modules;
 using Silk.NET.Input;
 
 namespace Orama.Core.Modules.Input;
@@ -83,9 +84,11 @@ public class InputModule : BaseModule
     private static readonly Dictionary<Silk.NET.Input.MouseButton, MouseButton> mouseButtonMapInverse = mouseButtonMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
     #endregion
 
-
+    /// <inheritdoc/>
     public override void Initialize()
     {
+        Application.OnUpdate += Update;
+
         input = Application.Window.InternalWindow.CreateInput();
 
         // Bind Events
@@ -116,7 +119,16 @@ public class InputModule : BaseModule
             previousKeys[key] = false;
     }
 
-    public override void Update()
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        base.Dispose();
+        input.Dispose();
+
+        Application.OnUpdate -= Update;
+    }
+
+    public void Update()
     {
         // Update previous key states for all keyboards
         foreach (var kb in input.Keyboards)

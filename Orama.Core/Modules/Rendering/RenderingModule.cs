@@ -2,6 +2,7 @@
 using Orama.Core.Common.Components;
 using Orama.Core.Modules.Rendering.Pipelines;
 using Orama.Core.Modules.Rendering.Pipelines.Forward;
+using Orama.Modules;
 using Orama.Rendering;
 
 namespace Orama.Core.Modules.Rendering;
@@ -48,6 +49,8 @@ public class RenderingModule : BaseModule
     /// <inheritdoc/>
     public override void Dispose()
     {
+        base.Dispose();
+
         Renderer.Dispose();
 
         Application.OnResize -= (size) => OnResize((int)size.X, (int)size.Y);

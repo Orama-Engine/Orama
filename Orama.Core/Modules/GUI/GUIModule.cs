@@ -1,5 +1,7 @@
 ﻿
+using Orama.Core.Common;
 using Orama.Core.Modules.GUI.Widgets;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.GUI;
 
@@ -13,10 +15,21 @@ public class GUIModule : BaseModule
     public Widget RootWidget { get; set; } = new Widget();
 
     /// <inheritdoc/>
-    public override void Update()
+    public override void Initialize()
     {
-        base.Update();
+        Application.OnUpdate += Update;
+    }
 
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        Application.OnUpdate -= Update;
+    }
+
+    public void Update()
+    {
         RootWidget.Update();
         RootWidget.Draw(PaintEngine);
     }

@@ -1,5 +1,7 @@
-﻿using Orama.Core.Modules.Audio.Engines.OpenAL;
+﻿using Orama.Core.Common;
+using Orama.Core.Modules.Audio.Engines.OpenAL;
 using Orama.Core.Modules.Scenes;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Audio;
 
@@ -37,7 +39,21 @@ public class AudioModule : BaseModule, IAudioContext
     /// <summary> Creates a new audio module with the default audio context. </summary>
     public AudioModule() => this.context = new OpenALContext();
 
-    public override void Update()
+    /// <inheritdoc/>
+    public override void Initialize()
+    {
+        Application.OnUpdate += Update;
+    }
+
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        Application.OnUpdate -= Update;
+    }
+
+    public void Update()
     {
         var activeScene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
         if (activeScene != null) audioPhysics.Update(activeScene);

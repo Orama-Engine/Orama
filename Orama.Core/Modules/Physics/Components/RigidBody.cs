@@ -1,6 +1,7 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Common.Entities;
 using Orama.Math;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Physics.Components;
 

@@ -4,6 +4,7 @@ using Orama.Core.Modules;
 using Orama.Core.Modules.Input;
 using Orama.Core.Modules.Physics;
 using Orama.Math;
+using Orama.Modules;
 
 namespace Orama.Core.Common.Entities;
 

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Orama.Modules;
+using System.Reflection;
 
 namespace Orama.Core.Modules.Assemblies;
 
@@ -19,7 +20,12 @@ public class AssemblyModule : BaseModule
     public IReadOnlyCollection<ExternalAssembly> Assemblies => assemblies;
 
     /// <inheritdoc/>
-    public override void Dispose() => UnloadAll();
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        UnloadAll();
+    }
 
     /// <inheritdoc/>
     public override void Initialize()

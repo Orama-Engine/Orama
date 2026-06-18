@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Or
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Serialization", "Orama.Serialization\Orama.Serialization.csproj", "{0E59A3C4-D514-4F85-8D1A-72D338B64336}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Modules", "Orama.Modules\Orama.Modules.csproj", "{122322BF-5D5B-45FE-9C1D-5478E0E2971E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{0E59A3C4-D514-4F85-8D1A-72D338B64336}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E59A3C4-D514-4F85-8D1A-72D338B64336}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E59A3C4-D514-4F85-8D1A-72D338B64336}.Release|Any CPU.Build.0 = Release|Any CPU
+		{122322BF-5D5B-45FE-9C1D-5478E0E2971E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{122322BF-5D5B-45FE-9C1D-5478E0E2971E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{122322BF-5D5B-45FE-9C1D-5478E0E2971E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{122322BF-5D5B-45FE-9C1D-5478E0E2971E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

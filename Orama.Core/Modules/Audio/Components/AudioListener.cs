@@ -1,5 +1,6 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Modules.Audio.Resources;
+using Orama.Modules;
 
 namespace Orama.Core.Modules.Audio.Components;
 
