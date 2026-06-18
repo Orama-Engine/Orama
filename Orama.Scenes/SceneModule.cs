@@ -1,8 +1,9 @@
 ﻿using Orama.Core.Common;
-using Orama.Core.Modules.Scenes.Resources;
+using Orama.Core.Common.Entities;
 using Orama.Modules;
+using Orama.Modules.Resources;
 
-namespace Orama.Core.Modules.Scenes;
+namespace Orama.Scenes;
 
 /// <summary>
 /// Module responsible for managing scenes.
@@ -16,6 +17,8 @@ public class SceneModule : BaseModule
     public override void Initialize()
     {
         Application.OnUpdate += Update;
+
+        EntityRegistry.RegisterFactories();
 
         CurrentScene = new Scene();
     }

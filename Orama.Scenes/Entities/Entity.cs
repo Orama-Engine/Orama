@@ -1,7 +1,6 @@
 ﻿using Orama.Core.Common.Components;
-using Orama.Core.Modules;
-using Orama.Core.Modules.Scenes;
 using Orama.Modules;
+using Orama.Scenes;
 using Orama.Serialization.Attributes;
 using System.Reflection;
 

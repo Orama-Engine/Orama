@@ -1,8 +1,8 @@
 ﻿using Orama.Core.Modules.Audio.Components;
 using Orama.Core.Modules.Physics;
-using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
 using Orama.Modules;
+using Orama.Modules.Resources;
 
 namespace Orama.Core.Modules.Audio;
 

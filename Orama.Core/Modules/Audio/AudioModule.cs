@@ -1,7 +1,7 @@
 ﻿using Orama.Core.Common;
 using Orama.Core.Modules.Audio.Engines.OpenAL;
-using Orama.Core.Modules.Scenes;
 using Orama.Modules;
+using Orama.Scenes;
 
 namespace Orama.Core.Modules.Audio;
 

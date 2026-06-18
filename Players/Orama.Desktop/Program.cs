@@ -5,11 +5,11 @@ using Orama.Core.Modules.Audio;
 using Orama.Core.Modules.GUI;
 using Orama.Core.Modules.Physics;
 using Orama.Core.Modules.Rendering;
-using Orama.Core.Modules.Scenes;
-using Orama.Core.Modules.Scenes.Resources;
 using Orama.Math;
 using Orama.Modules;
 using Orama.Input;
+using Orama.Scenes;
+using Orama.Modules.Resources;
 
 namespace Orama.Desktop;
 

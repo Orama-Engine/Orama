@@ -1,4 +1,4 @@
-﻿using Orama.Core.Modules.Assemblies;
+﻿using Orama.Core.Common.Utility;
 using System.Reflection;
 
 namespace Orama.Core.Common.Entities;
@@ -10,16 +10,18 @@ public static class EntityRegistry
 {
     private static readonly Dictionary<string, Func<Entity>> factories = new();
 
-    [OnAssemblyLoad]
     public static void RegisterFactories()
     {
-        var entities = typeof(Entity).Assembly.GetTypes().Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
-
-        foreach (var entity in entities)
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
-            var attribute = entity.GetCustomAttribute<EntityAttribute>(false);
-            if (attribute != null)
-                RegisterFromType(attribute.Name, entity);
+            var entities = assembly.GetTypes().Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
+
+            foreach (var entity in entities)
+            {
+                var attribute = entity.GetCustomAttribute<EntityAttribute>(false);
+                if (attribute != null)
+                    RegisterFromType(attribute.Name, entity);
+            }
         }
     }
 
