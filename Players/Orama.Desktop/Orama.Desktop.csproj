@@ -13,9 +13,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Orama.Input\Orama.Input.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
     <ProjectReference Include="..\..\Orama.Core\Orama.Core.csproj" />
     <ProjectReference Include="..\..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
-    <ProjectReference Include="..\..\Orama.Scenes\Orama.Scenes.csproj" />
     <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>
 
