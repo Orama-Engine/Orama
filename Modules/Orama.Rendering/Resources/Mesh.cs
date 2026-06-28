@@ -28,8 +28,7 @@ internal class MeshLoader : ResourceLoader<Mesh>
         using var ms = new MemoryStream(data);
         using var importer = new AssimpContext();
 
-        // TODO: figure out how to tell assimp the file extension
-        var scene = importer.ImportFileFromStream(ms, PostProcessPreset.TargetRealTimeMaximumQuality, ".fbx");
+        var scene = importer.ImportFileFromStream(ms, PostProcessPreset.TargetRealTimeMaximumQuality);
 
         if (scene == null || scene.MeshCount == 0)
             return null;
