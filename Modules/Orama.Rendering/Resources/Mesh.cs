@@ -1,4 +1,5 @@
-using Orama.Rendering.Resources;
+using Assimp;
+using Orama.Common.Resources.DefaultProvider;
 using Orama.Math;
 
 namespace Orama.Rendering.Resources;
@@ -15,4 +16,35 @@ public class Mesh
     public uint[] Indices { get; set; } = new uint[0];
     public Vector3[] Normals { get; set; } = new Vector3[0];
     public Vector2[] UVs { get; set; } = new Vector2[0];
+}
+
+
+[ResourceLoader]
+internal class MeshLoader : ResourceLoader<Mesh>
+{
+    /// <inheritdoc/>
+    public override Mesh? LoadResource(byte[] data)
+    {
+        using var ms = new MemoryStream(data);
+        using var importer = new AssimpContext();
+
+        // TODO: figure out how to tell assimp the file extension
+        var scene = importer.ImportFileFromStream(ms, PostProcessPreset.TargetRealTimeMaximumQuality, ".fbx");
+
+        if (scene == null || scene.MeshCount == 0)
+            return null;
+
+        var mesh = scene.Meshes[0];
+
+        var vertices = mesh.Vertices.Select(v => new Vector3(v.X, v.Y, v.Z)).ToArray();
+        var normals = mesh.Normals.Select(n => new Vector3(n.X, n.Y, n.Z)).ToArray();
+        var indices = mesh.GetIndices();
+
+        Mesh output = new();
+        output.Vertices = vertices;
+        output.Normals = normals;
+        output.Indices = indices.Select(i => unchecked((uint)i)).ToArray();
+
+        return output;
+    }
 }

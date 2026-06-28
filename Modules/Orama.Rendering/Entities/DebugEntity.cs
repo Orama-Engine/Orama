@@ -4,6 +4,8 @@ using Orama.Physics.Components;
 using Orama.Physics.Components.Colliders;
 using Orama.Scenes.Entities;
 using Orama.Common.Utility;
+using Orama.Common;
+using Orama.Rendering.Resources;
 
 namespace Orama.Rendering.Entities;
 
@@ -28,6 +30,11 @@ public class DebugEntity : Entity
         col.Start();
 
         RigidBody.IsStatic = true;
+
+        var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+
+        Renderer.Mesh = mesh;
+        Renderer.Mesh?.Material = Material.Default;
 
         EngineConsole.Log("Debug entity started.");
     }
