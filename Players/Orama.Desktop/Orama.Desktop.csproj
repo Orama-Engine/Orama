@@ -12,11 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Modules\Orama.Assemblies\Orama.Assemblies.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.Audio\Orama.Audio.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.GUI\Orama.GUI.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Input\Orama.Input.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.Physics\Orama.Physics.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Rendering\Orama.Rendering.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
     <ProjectReference Include="..\..\Orama.Common\Orama.Common.csproj" />
-    <ProjectReference Include="..\..\Orama.Core\Orama.Core.csproj" />
+    <ProjectReference Include="..\..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>
 
