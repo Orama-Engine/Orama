@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Physics", "Orama.Phys
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Audio", "Orama.Audio\Orama.Audio.csproj", "{09D5F491-1419-407D-AB1B-DCCA41B45AFB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Assemblies", "Orama.Assemblies\Orama.Assemblies.csproj", "{87E702D2-DD7F-497F-A1EE-C1860F283D1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{09D5F491-1419-407D-AB1B-DCCA41B45AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09D5F491-1419-407D-AB1B-DCCA41B45AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09D5F491-1419-407D-AB1B-DCCA41B45AFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87E702D2-DD7F-497F-A1EE-C1860F283D1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87E702D2-DD7F-497F-A1EE-C1860F283D1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87E702D2-DD7F-497F-A1EE-C1860F283D1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87E702D2-DD7F-497F-A1EE-C1860F283D1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +95,7 @@ Global
 		{E74302BE-25B2-4E3A-A0A0-9817F68C8972} = {36C8767E-D111-47FF-BC51-C5C40220331B}
 		{C0A57E12-D7B0-47AC-899B-85D076636C07} = {36C8767E-D111-47FF-BC51-C5C40220331B}
 		{09D5F491-1419-407D-AB1B-DCCA41B45AFB} = {36C8767E-D111-47FF-BC51-C5C40220331B}
+		{87E702D2-DD7F-497F-A1EE-C1860F283D1F} = {36C8767E-D111-47FF-BC51-C5C40220331B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E79CEB70-7EFC-4178-88BA-524C039C0197}
