@@ -10,8 +10,6 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />
-    <PackageReference Include="Silk.NET.OpenAL" Version="2.23.0" />
-    <PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.23.0" />
     <PackageReference Include="SixLabors.Fonts" Version="2.1.3" />
     <PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
     <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
@@ -20,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Modules\Orama.Input\Orama.Input.csproj" />
     <ProjectReference Include="..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
+    <ProjectReference Include="..\Orama.Audio\Orama.Audio.csproj" />
     <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
     <ProjectReference Include="..\Orama.Modules\Orama.Modules.csproj" />

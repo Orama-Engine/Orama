@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Silk.NET.OpenAL" Version="2.23.0" />
+    <PackageReference Include="Silk.NET.OpenAL.Extensions.Creative" Version="2.23.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
+    <ProjectReference Include="..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
+    <ProjectReference Include="..\Orama.Modules\Orama.Modules.csproj" />
+    <ProjectReference Include="..\Orama.Physics\Orama.Physics.csproj" />
+  </ItemGroup>
+
+</Project>
