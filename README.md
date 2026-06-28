@@ -8,7 +8,7 @@ The .NET 10 C# 14 Virtual-Reality Game Engine.
 
 ## Features
 ### Virtual Reality
-Orama was made specifically for Virtual Reality with no workarounds and no retrofitting. Whilst other studios are forced to bend engines never designed with VR in mind, Orama works with it for every step.
+Orama was made specifically for Virtual Reality with no workarounds and no retrofitting.
 
 ### Extreme Modularity
 All engine subsystems have their lifecycle hooked into the `Module` system. Because of this, subsystems can be arbitrarily disabled, profiled, or singled out for debugging.
