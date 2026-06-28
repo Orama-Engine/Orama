@@ -1,11 +1,10 @@
 using Orama.Rendering.Components;
-using Orama.Core.Common;
-using Orama.Core.Common.Utility;
 using Orama.Input;
 using Orama.Math;
-using Orama.Modules;
 using Orama.Physics;
 using Orama.Scenes.Entities;
+using Orama.Common;
+using Orama.Common.Utility;
 
 namespace Orama.Rendering.Entities;
 

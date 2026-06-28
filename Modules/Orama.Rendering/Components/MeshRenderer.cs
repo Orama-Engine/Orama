@@ -1,7 +1,7 @@
 using Orama.Rendering.Resources;
 using Orama.Math;
-using Orama.Modules;
 using Orama.Scenes.Components;
+using Orama.Common;
 
 namespace Orama.Rendering.Components;
 

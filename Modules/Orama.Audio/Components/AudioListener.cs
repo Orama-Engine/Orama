@@ -1,4 +1,4 @@
-﻿using Orama.Modules;
+﻿using Orama.Common;
 using Orama.Scenes.Components;
 
 namespace Orama.Audio.Components;

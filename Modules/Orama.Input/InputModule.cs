@@ -1,6 +1,5 @@
-﻿using Orama.Core.Common;
+﻿using Orama.Common;
 using Orama.Math;
-using Orama.Modules;
 using Silk.NET.Input;
 
 namespace Orama.Input;

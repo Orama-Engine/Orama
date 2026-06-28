@@ -1,7 +1,7 @@
-﻿using Orama.Core.Common.Resources;
+﻿using Orama.Common.Resources;
 using Orama.Math;
 
-namespace Orama.Core.Common;
+namespace Orama.Common;
 
 /// <summary>
 /// The top-level application.

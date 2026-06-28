@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Core.Common.Utility;
+﻿namespace Orama.Common.Utility;
 
 /// <summary>
 /// Utility for using file paths relative to the engine.

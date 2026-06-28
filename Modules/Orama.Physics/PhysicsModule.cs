@@ -1,5 +1,4 @@
-﻿using Orama.Core.Common;
-using Orama.Modules;
+﻿using Orama.Common;
 using Orama.Physics.Engines.Jitter2;
 
 namespace Orama.Physics;

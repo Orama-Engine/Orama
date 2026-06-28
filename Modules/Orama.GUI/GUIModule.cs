@@ -1,6 +1,5 @@
-﻿using Orama.Core.Common;
+﻿using Orama.Common;
 using Orama.GUI.Widgets;
-using Orama.Modules;
 
 namespace Orama.GUI;
 

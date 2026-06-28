@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Orama.Common\Orama.Common.csproj" />
     <ProjectReference Include="..\..\Orama.Math\Orama.Math.csproj" />
-    <ProjectReference Include="..\..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
-    <ProjectReference Include="..\..\Orama.Modules\Orama.Modules.csproj" />
     <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿using Orama.Audio.Resources;
+using Orama.Common;
 using Orama.Math;
-using Orama.Modules;
 using Orama.Scenes.Components;
 
 namespace Orama.Audio.Components;

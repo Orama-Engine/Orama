@@ -1,7 +1,6 @@
-﻿
-using Orama.Core.Common.Utility;
+﻿using Orama.Common.Utility;
 
-namespace Orama.Modules;
+namespace Orama.Common;
 
 /// <summary>
 /// Orchestrates all <see cref="BaseModule"/>s.

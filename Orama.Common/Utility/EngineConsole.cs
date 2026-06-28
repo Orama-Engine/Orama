@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Core.Common.Utility;
+﻿namespace Orama.Common.Utility;
 
 /// <summary>
 /// Utility for outputting to the engine console.

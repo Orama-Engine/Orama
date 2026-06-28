@@ -1,4 +1,4 @@
-﻿using Orama.Core.Common.Utility;
+﻿using Orama.Common.Utility;
 using Orama.Scenes.Entities;
 
 namespace Orama.Scenes.Resources;

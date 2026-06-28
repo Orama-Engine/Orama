@@ -1,4 +1,4 @@
-﻿namespace Orama.Modules;
+﻿namespace Orama.Common;
 
 public abstract class BaseModule : IDisposable
 {

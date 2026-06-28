@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Core.Common.Resources;
+﻿namespace Orama.Common.Resources;
 
 /// <summary>
 /// A Provider for game resources/assets.

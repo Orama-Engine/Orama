@@ -1,4 +1,4 @@
-﻿using Orama.Modules;
+﻿using Orama.Common;
 using System.Reflection;
 
 namespace Orama.Assemblies;

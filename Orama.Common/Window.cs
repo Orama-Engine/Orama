@@ -1,7 +1,7 @@
 ﻿using Orama.Math;
 using Silk.NET.Windowing;
 
-namespace Orama.Core.Common;
+namespace Orama.Common;
 
 /// <summary>
 /// A Platform-agnostic Window.
