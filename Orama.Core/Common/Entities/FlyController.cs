@@ -1,9 +1,10 @@
 ﻿using Orama.Core.Common.Components;
 using Orama.Core.Common.Utility;
-using Orama.Core.Modules.Physics;
 using Orama.Input;
 using Orama.Math;
 using Orama.Modules;
+using Orama.Physics;
+using Orama.Scenes.Entities;
 
 namespace Orama.Core.Common.Entities;
 

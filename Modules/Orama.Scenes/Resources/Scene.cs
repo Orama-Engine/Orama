@@ -1,7 +1,7 @@
-﻿using Orama.Core.Common.Entities;
-using Orama.Core.Common.Utility;
+﻿using Orama.Core.Common.Utility;
+using Orama.Scenes.Entities;
 
-namespace Orama.Modules.Resources;
+namespace Orama.Scenes.Resources;
 
 /// <summary>
 /// A collection of Entities.

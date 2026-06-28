@@ -1,7 +1,8 @@
-﻿using Silk.NET.OpenAL;
+﻿using Orama.Audio;
+using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
 
-namespace Orama.Core.Modules.Audio.Engines.OpenAL;
+namespace Orama.Audio.Engines.OpenAL;
 
 public class OpenALContext : IAudioContext
 {

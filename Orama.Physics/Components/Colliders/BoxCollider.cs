@@ -1,7 +1,6 @@
-﻿
-using Orama.Math;
+﻿using Orama.Math;
 
-namespace Orama.Core.Modules.Physics.Components.Colliders;
+namespace Orama.Physics.Components.Colliders;
 
 public class BoxCollider : Collider
 {

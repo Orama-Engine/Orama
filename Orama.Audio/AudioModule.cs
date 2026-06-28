@@ -1,9 +1,9 @@
-﻿using Orama.Core.Common;
-using Orama.Core.Modules.Audio.Engines.OpenAL;
+﻿using Orama.Audio.Engines.OpenAL;
+using Orama.Core.Common;
 using Orama.Modules;
 using Orama.Scenes;
 
-namespace Orama.Core.Modules.Audio;
+namespace Orama.Audio;
 
 /// <summary>
 /// Module responsible for handling audio.

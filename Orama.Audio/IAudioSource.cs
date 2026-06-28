@@ -1,7 +1,7 @@
-﻿using Orama.Core.Modules.Audio.Resources;
+﻿using Orama.Audio.Resources;
 using Orama.Math;
 
-namespace Orama.Core.Modules.Audio;
+namespace Orama.Audio;
 
 /// <summary>
 /// Represents an audio source within the audio context.

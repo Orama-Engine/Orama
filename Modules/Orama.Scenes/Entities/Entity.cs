@@ -1,10 +1,10 @@
-﻿using Orama.Core.Common.Components;
-using Orama.Modules;
+﻿using Orama.Modules;
 using Orama.Scenes;
+using Orama.Scenes.Components;
 using Orama.Serialization.Attributes;
 using System.Reflection;
 
-namespace Orama.Core.Common.Entities;
+namespace Orama.Scenes.Entities;
 
 /// <summary>
 /// A Container for game logic and components.

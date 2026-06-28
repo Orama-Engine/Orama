@@ -1,8 +1,8 @@
 ﻿using Orama.Core.Common;
-using Orama.Core.Modules.Physics.Engines.Jitter2;
 using Orama.Modules;
+using Orama.Physics.Engines.Jitter2;
 
-namespace Orama.Core.Modules.Physics;
+namespace Orama.Physics;
 
 /// <summary>
 /// Module responsible for handling the physics simulation.

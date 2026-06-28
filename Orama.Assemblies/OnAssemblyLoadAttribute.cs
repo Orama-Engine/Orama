@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Orama.Core.Modules.Assemblies;
+namespace Orama.Assemblies;
 
 /// <summary>
 /// Marks a static method to be ran automatically when the assembly is loaded.

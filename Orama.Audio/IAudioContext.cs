@@ -1,6 +1,4 @@
-﻿
-
-namespace Orama.Core.Modules.Audio;
+﻿namespace Orama.Audio;
 
 /// <summary>
 /// Represents an audio context responsible for managing audio sources.

@@ -1,7 +1,6 @@
-﻿
-using System.Reflection;
+﻿using System.Reflection;
 
-namespace Orama.Core.Modules.Assemblies;
+namespace Orama.Assemblies;
 
 /// <summary>
 /// An assembly that is loaded from an external source.

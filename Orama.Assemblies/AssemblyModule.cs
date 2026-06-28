@@ -1,7 +1,7 @@
 ﻿using Orama.Modules;
 using System.Reflection;
 
-namespace Orama.Core.Modules.Assemblies;
+namespace Orama.Assemblies;
 
 /// <summary>
 /// Module responsible for management of external assemblies.

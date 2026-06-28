@@ -1,10 +1,10 @@
-﻿using Orama.Core.Modules.Audio.Components;
-using Orama.Core.Modules.Physics;
+﻿using Orama.Audio.Components;
 using Orama.Math;
 using Orama.Modules;
-using Orama.Modules.Resources;
+using Orama.Physics;
+using Orama.Scenes.Resources;
 
-namespace Orama.Core.Modules.Audio;
+namespace Orama.Audio;
 
 /// <summary>
 /// Responsible for processing physics-based audio propagation and obstructions.

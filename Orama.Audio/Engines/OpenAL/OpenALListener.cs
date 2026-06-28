@@ -2,7 +2,7 @@
 using Silk.NET.OpenAL;
 
 
-namespace Orama.Core.Modules.Audio.Engines.OpenAL;
+namespace Orama.Audio.Engines.OpenAL;
 
 public class OpenALListener : IAudioListener
 {

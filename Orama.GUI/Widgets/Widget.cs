@@ -1,7 +1,6 @@
-﻿
-using Orama.Math;
+﻿using Orama.Math;
 
-namespace Orama.Core.Modules.GUI.Widgets;
+namespace Orama.GUI.Widgets;
 
 /// <summary>
 /// Base class for all GUI widgets.

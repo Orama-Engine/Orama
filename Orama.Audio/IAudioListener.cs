@@ -1,6 +1,6 @@
 ﻿using Orama.Math;
 
-namespace Orama.Core.Modules.Audio;
+namespace Orama.Audio;
 
 /// <summary>
 /// Represents an audio listener within the audio context.

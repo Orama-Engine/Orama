@@ -1,11 +1,11 @@
 ﻿using Jitter2.Collision.Shapes;
 using Jitter2.Dynamics;
 using Jitter2.LinearMath;
-using Orama.Core.Common.Entities;
-using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Math;
+using Orama.Physics;
+using Orama.Scenes.Entities;
 
-namespace Orama.Core.Modules.Physics.Engines.Jitter2;
+namespace Orama.Physics.Engines.Jitter2;
 
 /// <summary>
 /// Represents a Jitter2 physics body within the physics world.

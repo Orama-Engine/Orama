@@ -1,7 +1,6 @@
-﻿
-using Orama.Math;
+﻿using Orama.Math;
 
-namespace Orama.Core.Common.Components;
+namespace Orama.Scenes.Components;
 
 /// <summary>
 /// A 3D Position, Rotation and Scale.

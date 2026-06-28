@@ -1,9 +1,9 @@
-﻿using Orama.Core.Common.Components;
-using Orama.Core.Modules.Audio.Resources;
+﻿using Orama.Audio.Resources;
 using Orama.Math;
 using Orama.Modules;
+using Orama.Scenes.Components;
 
-namespace Orama.Core.Modules.Audio.Components;
+namespace Orama.Audio.Components;
 
 public class AudioSource : Component
 {

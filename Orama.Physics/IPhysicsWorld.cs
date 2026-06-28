@@ -1,8 +1,7 @@
-﻿
-using Orama.Core.Common.Entities;
+﻿using Orama.Scenes.Entities;
 using System.Numerics;
 
-namespace Orama.Core.Modules.Physics;
+namespace Orama.Physics;
 
 /// <summary>
 /// Represents a simulated physics world.

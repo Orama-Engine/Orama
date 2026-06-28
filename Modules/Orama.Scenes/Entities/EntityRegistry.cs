@@ -1,7 +1,7 @@
 ﻿using Orama.Core.Common.Utility;
 using System.Reflection;
 
-namespace Orama.Core.Common.Entities;
+namespace Orama.Scenes.Entities;
 
 /// <summary>
 /// Handles the registration and management of <see cref="Entity"/>s.

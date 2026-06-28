@@ -1,9 +1,8 @@
-﻿
-using Orama.Core.Common;
-using Orama.Core.Modules.GUI.Widgets;
+﻿using Orama.Core.Common;
+using Orama.GUI.Widgets;
 using Orama.Modules;
 
-namespace Orama.Core.Modules.GUI;
+namespace Orama.GUI;
 
 /// <summary>
 /// Module responsible for GUI.

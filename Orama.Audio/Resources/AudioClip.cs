@@ -1,4 +1,4 @@
-﻿namespace Orama.Core.Modules.Audio.Resources;
+﻿namespace Orama.Audio.Resources;
 
 public class AudioClip
 {

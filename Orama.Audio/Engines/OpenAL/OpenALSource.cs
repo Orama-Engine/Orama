@@ -1,9 +1,9 @@
-﻿using Orama.Core.Modules.Audio.Resources;
+﻿using Orama.Audio.Resources;
 using Orama.Math;
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
 
-namespace Orama.Core.Modules.Audio.Engines.OpenAL;
+namespace Orama.Audio.Engines.OpenAL;
 
 public class OpenALSource : IAudioSource
 {

@@ -1,7 +1,6 @@
-﻿
-using Orama.Math;
+﻿using Orama.Math;
 
-namespace Orama.Core.Modules.GUI;
+namespace Orama.GUI;
 
 /// <summary>
 /// Handles low-level rendering of GUI elements.

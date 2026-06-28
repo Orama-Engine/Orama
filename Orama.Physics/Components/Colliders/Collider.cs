@@ -1,6 +1,6 @@
-﻿using Orama.Core.Common.Components;
+﻿using Orama.Scenes.Components;
 
-namespace Orama.Core.Modules.Physics.Components.Colliders;
+namespace Orama.Physics.Components.Colliders;
 
 public class Collider : Component
 {

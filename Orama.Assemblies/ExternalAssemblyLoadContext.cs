@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.Loader;
 
-namespace Orama.Core.Modules.Assemblies;
+namespace Orama.Assemblies;
 
 internal class ExternalAssemblyLoadContext : AssemblyLoadContext
 {

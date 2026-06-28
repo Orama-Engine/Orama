@@ -1,5 +1,4 @@
-﻿
-namespace Orama.Core.Common.Entities;
+﻿namespace Orama.Scenes.Entities;
 
 /// <summary>
 /// Registers a class inherting from <see cref="Entity"/> into the Entity system.

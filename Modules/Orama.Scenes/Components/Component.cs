@@ -1,7 +1,7 @@
-﻿using Orama.Core.Common.Entities;
+﻿using Orama.Scenes.Entities;
 using Orama.Serialization.Attributes;
 
-namespace Orama.Core.Common.Components;
+namespace Orama.Scenes.Components;
 
 /// <summary>
 /// A Container for reusable modular logic.

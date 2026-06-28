@@ -1,8 +1,7 @@
-﻿using Orama.Core.Common.Entities;
-using Orama.Core.Modules.Physics.Components.Colliders;
-using Orama.Math;
+﻿using Orama.Math;
+using Orama.Scenes.Entities;
 
-namespace Orama.Core.Modules.Physics;
+namespace Orama.Physics;
 
 /// <summary>
 /// Represents a physics body within the simulation.

@@ -1,7 +1,7 @@
 ﻿using Orama.Core.Common;
-using Orama.Core.Common.Entities;
 using Orama.Modules;
-using Orama.Modules.Resources;
+using Orama.Scenes.Entities;
+using Orama.Scenes.Resources;
 
 namespace Orama.Scenes;
 

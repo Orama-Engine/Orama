@@ -1,5 +1,6 @@
-﻿
-namespace Orama.Core.Modules.Physics.Components.Colliders;
+﻿using Orama.Physics.Components;
+
+namespace Orama.Physics.Components.Colliders;
 
 public class SphereCollider : Collider
 {

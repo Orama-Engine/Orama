@@ -1,8 +1,7 @@
-﻿using Orama.Core.Common.Components;
-using Orama.Core.Modules.Audio.Resources;
-using Orama.Modules;
+﻿using Orama.Modules;
+using Orama.Scenes.Components;
 
-namespace Orama.Core.Modules.Audio.Components;
+namespace Orama.Audio.Components;
 
 public class AudioListener : Component
 {

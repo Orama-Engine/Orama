@@ -1,10 +1,9 @@
 ﻿#if DEBUG
 using Orama.Core.Common.Utility;
-using Orama.Core.Modules.Physics.Components;
-using Orama.Core.Modules.Physics.Components.Colliders;
 using Orama.Core.Modules.Rendering.Components;
-using Orama.Core.Modules.Rendering.Resources;
-using Orama.Math;
+using Orama.Physics.Components;
+using Orama.Physics.Components.Colliders;
+using Orama.Scenes.Entities;
 
 namespace Orama.Core.Common.Entities;
 

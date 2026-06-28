@@ -1,9 +1,9 @@
-﻿using Orama.Core.Common.Components;
-using Orama.Core.Common.Entities;
-using Orama.Math;
+﻿using Orama.Math;
 using Orama.Modules;
+using Orama.Scenes.Components;
+using Orama.Scenes.Entities;
 
-namespace Orama.Core.Modules.Physics.Components;
+namespace Orama.Physics.Components;
 
 /// <summary>
 /// Represents a physics rigid body that enables simulation of physical interactions for an <see cref="Entity"/>.
