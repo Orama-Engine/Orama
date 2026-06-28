@@ -25,13 +25,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Modules.Common", "Ora
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Scenes", "Modules\Orama.Scenes\Orama.Scenes.csproj", "{E74302BE-25B2-4E3A-A0A0-9817F68C8972}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Physics", "Orama.Physics\Orama.Physics.csproj", "{C0A57E12-D7B0-47AC-899B-85D076636C07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Physics", "Modules\Orama.Physics\Orama.Physics.csproj", "{C0A57E12-D7B0-47AC-899B-85D076636C07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Audio", "Orama.Audio\Orama.Audio.csproj", "{09D5F491-1419-407D-AB1B-DCCA41B45AFB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Audio", "Modules\Orama.Audio\Orama.Audio.csproj", "{09D5F491-1419-407D-AB1B-DCCA41B45AFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Assemblies", "Orama.Assemblies\Orama.Assemblies.csproj", "{87E702D2-DD7F-497F-A1EE-C1860F283D1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Assemblies", "Modules\Orama.Assemblies\Orama.Assemblies.csproj", "{87E702D2-DD7F-497F-A1EE-C1860F283D1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.GUI", "Orama.GUI\Orama.GUI.csproj", "{5C2D351E-F5F2-4F34-8FC4-9D2F8B94AA2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.GUI", "Modules\Orama.GUI\Orama.GUI.csproj", "{5C2D351E-F5F2-4F34-8FC4-9D2F8B94AA2D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
