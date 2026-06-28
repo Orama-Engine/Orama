@@ -1,6 +1,4 @@
 ﻿
-using Assimp;
-
 namespace Orama.Core.Modules.Physics.Components.Colliders;
 
 public class SphereCollider : Collider

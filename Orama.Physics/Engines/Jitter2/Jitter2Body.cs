@@ -42,8 +42,8 @@ public class Jitter2Body : IPhysicsBody
     /// <inheritdoc/>
     public bool IsStatic
     {
-        get => body?.IsStatic ?? false;
-        set { if (body != null) body.IsStatic = value; }
+        get => body?.MotionType == MotionType.Static;
+        set => body?.MotionType = value ? MotionType.Static : MotionType.Dynamic;
     }
 
     /// <inheritdoc/>
@@ -53,7 +53,7 @@ public class Jitter2Body : IPhysicsBody
         set
         { 
             if (body != null)
-                if (body.IsStatic != true)
+                if (body.MotionType == MotionType.Static != true)
                     body.SetMassInertia(value);
         }
     }
