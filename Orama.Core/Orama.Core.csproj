@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	<TargetFramework>net10.0</TargetFramework>
@@ -25,7 +25,6 @@
     <ProjectReference Include="..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\Orama.Modules.Common\Orama.Modules.Common.csproj" />
     <ProjectReference Include="..\Orama.Modules\Orama.Modules.csproj" />
-    <ProjectReference Include="..\Orama.Rendering\Orama.Rendering.csproj" />
     <ProjectReference Include="..\Orama.Serialization\Orama.Serialization.csproj" />
   </ItemGroup>
 

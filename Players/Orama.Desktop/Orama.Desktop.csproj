@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Orama.Input\Orama.Input.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.Rendering\Orama.Rendering.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
     <ProjectReference Include="..\..\Orama.Core\Orama.Core.csproj" />
     <ProjectReference Include="..\..\Orama.Modules.Common\Orama.Modules.Common.csproj" />

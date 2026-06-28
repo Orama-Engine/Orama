@@ -1,5 +1,5 @@
-﻿using Orama.Core.Common;
-using Orama.Core.Modules.Rendering;
+using Orama.Core.Common;
+using Orama.Rendering;
 using Orama.Math;
 using Orama.Modules;
 using Orama.Input;
