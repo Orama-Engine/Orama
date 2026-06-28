@@ -5,7 +5,7 @@ VisualStudioVersion = 18.0.11123.170
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Players", "Players", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Desktop", "Players\Orama.Desktop\Orama.Desktop.csproj", "{D9202E06-5A35-42FF-B005-BD52D9363F83}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Players.Desktop", "Players\Orama.Players.Desktop\Orama.Players.Desktop.csproj", "{D9202E06-5A35-42FF-B005-BD52D9363F83}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Math", "Orama.Math\Orama.Math.csproj", "{2C553164-0368-4E0E-A5AF-B60ACF30D5F0}"
 EndProject
