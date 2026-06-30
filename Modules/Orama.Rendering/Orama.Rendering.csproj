@@ -9,9 +9,9 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNetter" Version="6.0.5" />
+    <PackageReference Include="NeoVeldrid" Version="1.1.0" />
+    <PackageReference Include="NeoVeldrid.SPIRV" Version="1.1.0" />
     <PackageReference Include="Silk.NET.Windowing" Version="2.23.0" />
-    <PackageReference Include="Veldrid" Version="4.9.0" />
-    <PackageReference Include="Veldrid.SPIRV" Version="1.0.15" />
     <PackageReference Include="Vortice.ShaderCompiler" Version="1.9.0" />
   </ItemGroup>
 

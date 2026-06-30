@@ -1,6 +1,6 @@
 
 using System.Numerics;
-using Veldrid;
+using NeoVeldrid;
 
 namespace Orama.Rendering.Resources;
 

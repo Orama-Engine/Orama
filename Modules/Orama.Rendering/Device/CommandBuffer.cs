@@ -4,7 +4,7 @@ using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using System.Collections.Immutable;
 using System.Runtime.InteropServices;
-using Veldrid;
+using NeoVeldrid;
 
 namespace Orama.Rendering.Device;
 
@@ -27,7 +27,7 @@ public class CommandBuffer : IDisposable
 
     public void End() => CommandList.End();
 
-    public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new global::Veldrid.RgbaFloat(color.R, color.G, color.B, color.A));
+    public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new global::NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
     public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
 

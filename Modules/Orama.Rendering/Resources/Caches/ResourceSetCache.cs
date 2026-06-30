@@ -1,4 +1,4 @@
-using Veldrid;
+using NeoVeldrid;
 
 namespace Orama.Rendering.Resources.Caches;
 

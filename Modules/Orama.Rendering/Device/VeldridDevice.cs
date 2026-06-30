@@ -1,7 +1,7 @@
 using Orama.Rendering.Device;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
-using Veldrid;
+using NeoVeldrid;
 
 namespace Orama.Rendering.Veldrid;
 

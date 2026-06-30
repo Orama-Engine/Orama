@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
-using Veldrid;
-using Veldrid.SPIRV;
-using Vulkan;
+using NeoVeldrid;
+using NeoVeldrid.SPIRV;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -12,7 +11,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
     {
         var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
-        global::Veldrid.Shader[] shaders = factory.CreateFromSpirv(
+        global::NeoVeldrid.Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
             new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main"),
             new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: true)

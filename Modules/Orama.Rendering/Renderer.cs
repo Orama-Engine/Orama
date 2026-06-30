@@ -4,7 +4,6 @@ using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using Silk.NET.Windowing;
 using System.Numerics;
-using Veldrid;
 
 namespace Orama.Rendering;
 
