@@ -1,5 +1,6 @@
 ﻿using Orama.Common;
 using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Orama.Assemblies;
 
@@ -8,8 +9,6 @@ namespace Orama.Assemblies;
 /// </summary>
 public class AssemblyModule : BaseModule
 {
-    private readonly HashSet<ExternalAssembly> assemblies = new();
-
     /// <summary> Called when an assembly is loaded. </summary>
     public Action<ExternalAssembly>? AssemblyLoaded { get; set; }
 
@@ -18,6 +17,9 @@ public class AssemblyModule : BaseModule
 
     /// <summary> The assemblies loaded into the process. </summary>
     public IReadOnlyCollection<ExternalAssembly> Assemblies => assemblies;
+
+    private readonly HashSet<ExternalAssembly> assemblies = new();
+
 
     /// <inheritdoc/>
     public override void Dispose()
@@ -39,7 +41,7 @@ public class AssemblyModule : BaseModule
     {
         string absolutePath = System.IO.Path.GetFullPath(path);
 
-        var context = new ExternalAssemblyLoadContext();
+        var context = new AssemblyLoadContext("OramaPlugin", true);
         var assembly = context.LoadFromAssemblyPath(absolutePath);
 
         ExternalAssembly asm = new(absolutePath, context, assembly);

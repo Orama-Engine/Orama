@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.Loader;
 
 namespace Orama.Assemblies;
 
@@ -14,10 +15,10 @@ public sealed class ExternalAssembly
     public Assembly Assembly { get; }
 
     /// <summary> The load context of the <see cref="ExternalAssembly"/> </summary>
-    internal ExternalAssemblyLoadContext LoadContext { get; }
+    internal AssemblyLoadContext LoadContext { get; }
 
     /// <summary> Initializes a new instance of <see cref="ExternalAssembly"/>. </summary>
-    internal ExternalAssembly(string path, ExternalAssemblyLoadContext loadContext, Assembly assembly)
+    internal ExternalAssembly(string path, AssemblyLoadContext loadContext, Assembly assembly)
     {
         Path = path;
         LoadContext = loadContext;
