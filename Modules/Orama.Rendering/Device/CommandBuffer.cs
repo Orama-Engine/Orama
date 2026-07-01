@@ -8,11 +8,15 @@ using NeoVeldrid;
 
 namespace Orama.Rendering.Device;
 
+/// <summary>
+/// A Buffer of GPU commands to be submitted.
+/// </summary>
 public class CommandBuffer : IDisposable
 {
     /// <summary> The low-level Veldrid command list. </summary>
     public CommandList CommandList { get; }
 
+    /// <summary> The current pipeline in use. </summary>
     public PipelineKey Pipeline { get; set; }
 
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
@@ -73,7 +77,7 @@ public class CommandBuffer : IDisposable
         SetPipeline(pipelineDesc);
 
         foreach (var (slot, gpuBuffer) in gpuBufferQueue)
-            UploadUniformBuffer(Pipeline, (uint)gpuBuffer.Data.Count, slot, gpuBuffer.Data.ToArray());
+            UploadUniformBuffer(Pipeline, (uint)gpuBuffer.Data.Length, slot, gpuBuffer.Data);
 
         gpuBufferQueue.Clear();
 

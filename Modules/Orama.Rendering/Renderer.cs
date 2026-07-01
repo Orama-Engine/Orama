@@ -1,10 +1,8 @@
 using NeoVeldrid;
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
-using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using Silk.NET.Windowing;
-using System.Numerics;
 
 namespace Orama.Rendering;
 

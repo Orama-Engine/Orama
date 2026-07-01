@@ -1,5 +1,6 @@
 using Orama.Math;
 using Orama.Rendering.Device;
+using System.Runtime.InteropServices;
 
 namespace Orama.Rendering;
 
@@ -8,16 +9,24 @@ namespace Orama.Rendering;
 /// </summary>
 public class GPUBuffer
 {
-    public IReadOnlyList<byte> Data => data;
+    /// <summary> The initial size of the internal buffer. </summary>
+    public const int DEFAULT_SIZE = 256;
 
-    private List<byte> data = new();
+    /// <summary> Raw data of the buffer. </summary>
+    public ReadOnlySpan<byte> Data => data.AsSpan(0, offset);
+
+    private byte[] data = new byte[DEFAULT_SIZE];
     private int offset = 0;
 
     public void AddFloat(float value)
     {
         EnsureAlignment(4);
+        EnsureCapacity(offset + 4);
 
-        data.AddRange(BitConverter.GetBytes(value));
+        Span<byte> dest = data.AsSpan(offset, 4);
+        BitConverter.TryWriteBytes(dest, value);
+
+        offset += 4;
     }
 
     public void AddFloat2(float x, float y)
@@ -49,15 +58,48 @@ public class GPUBuffer
         AddFloat(m.M41); AddFloat(m.M42); AddFloat(m.M43); AddFloat(m.M44);
     }
 
+    /// <summary> Adds raw bytes directly to the buffer (e.g. for structs via MemoryMarshal). </summary>
+    public void AddBytes(ReadOnlySpan<byte> bytes)
+    {
+        EnsureCapacity(offset + bytes.Length);
+        bytes.CopyTo(data.AsSpan(offset));
+        offset += bytes.Length;
+    }
+
+    /// <summary> Adds a blittable struct as raw bytes, respecting its natural alignment. </summary>
+    public void AddStruct<T>(T value) where T : unmanaged
+    {
+        int size = Marshal.SizeOf<T>();
+        EnsureAlignment(size >= 16 ? 16 : (size >= 8 ? 8 : 4));
+
+        ReadOnlySpan<T> span = MemoryMarshal.CreateReadOnlySpan(ref value, 1);
+        AddBytes(MemoryMarshal.AsBytes(span));
+    }
+
+    public void Reset() => offset = 0;
+
     private void EnsureAlignment(int alignment)
     {
         int aligned = Align(offset, alignment);
+        EnsureCapacity(aligned);
 
         while (offset < aligned)
         {
-            data.Add(0);
+            data[offset] = 0;
             offset++;
         }
+    }
+
+    private void EnsureCapacity(int required)
+    {
+        if (required <= data.Length)
+            return;
+
+        int newSize = data.Length;
+        while (newSize < required)
+            newSize *= 2;
+
+        Array.Resize(ref data, newSize);
     }
 
     protected static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
