@@ -1,3 +1,4 @@
+using NeoVeldrid;
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
@@ -9,9 +10,6 @@ namespace Orama.Rendering;
 
 public enum RendererBackend
 {
-    /// <summary> Automatically determines the best backend for the current platform. </summary>
-    Platform,
-
     OpenGL,
     Vulkan,
     Direct3D11
@@ -31,12 +29,25 @@ public static class Renderer
     /// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
     /// <param name="window"> The window to initialize the backend for. </param>
     /// <param name="backend"> The backend to initialize. </param>
-    public static void Initialize(IWindow window, RendererBackend backend = RendererBackend.Platform, RendererOptions options = default)
+    public static void Initialize(IWindow window, RendererBackend? backend = null, RendererOptions options = default)
     {
         Options = options;
-        Backend = backend;
 
-        Veldrid = new VeldridDevice(backend);
+        if (backend == null)
+        {
+            backend = true switch
+            {
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.Direct3D11,
+                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL) => RendererBackend.OpenGL,
+
+                _ => throw new InvalidOperationException("No supported graphics backend found.")
+            };
+        }
+
+        Backend = backend.Value;
+
+        Veldrid = new VeldridDevice(Backend);
         Veldrid.Initialize(window);
     }
 

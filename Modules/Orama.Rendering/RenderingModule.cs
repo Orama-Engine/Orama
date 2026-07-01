@@ -14,8 +14,6 @@ public class RenderingModule : BaseModule
     /// <summary> The renderable objects to render next frame. </summary>
     internal List<IClientRenderable> Renderables { get; set; } = new();
 
-    public RendererBackend RendererBackend { get; } = RendererBackend.Platform;
-
     /// <summary> The <see cref="RenderPipeline"/> in use. </summary>
     public RenderPipeline Pipeline { get; set; } = new ForwardRenderPipeline();
 
@@ -28,8 +26,8 @@ public class RenderingModule : BaseModule
         RendererOptions options = new();
         options.Culling = CullingMode.None;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend, options);
-        Application.Window.Title += $" - [{RendererBackend}]";
+        Renderer.Initialize(Application.Window.InternalWindow, null, options);
+        Application.Window.Title += $" - [{Renderer.Backend}]";
     }
 
     public void Render() 

@@ -34,18 +34,6 @@ public class VeldridDevice
             SyncToVerticalBlank = window.VSync,
         };
 
-        if (backend == RendererBackend.Platform)
-        {
-            backend = true switch
-            {
-                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
-                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.Direct3D11,
-                _ when GraphicsDevice.IsBackendSupported(GraphicsBackend.OpenGL) => RendererBackend.OpenGL,
-
-                _ => throw new InvalidOperationException("No supported graphics backend found.")
-            };
-        }
-
         switch(backend)
         {
             case RendererBackend.OpenGL:
