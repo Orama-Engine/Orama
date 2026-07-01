@@ -29,19 +29,19 @@ public class FlyController : Entity
         if (Input == null)
             return;
 
-        if (Input.IsKeyPressed(Key.Escape))
+        if (Input.IsKeyPressed(KeyboardKey.Escape))
         {
             cursorLocked = !cursorLocked;
             Input.CursorLocked = cursorLocked;
         }
 
         // Movement
-        if (Input.IsKeyDown(Key.W)) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(Key.S)) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(Key.A)) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(Key.D)) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(KeyboardKey.W)) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(KeyboardKey.S)) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(KeyboardKey.A)) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
+        if (Input.IsKeyDown(KeyboardKey.D)) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
 
-        if (Input.IsKeyPressed(Key.E))
+        if (Input.IsKeyPressed(KeyboardKey.E))
             if (ModuleManager.GetModule<PhysicsModule>()?.World.TryRaycast(Transform.Position, Transform.Forward, 1f, out RaycastResult result) == true)
                 EngineConsole.Log(result.Body.Owner?.Name ?? "null");
 

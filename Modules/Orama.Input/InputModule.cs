@@ -19,7 +19,7 @@ public class InputModule : BaseModule
     public event Action<Vector2>? MouseMoved;
 
     /// <summary> Invoked when a key is pressed. </summary>
-    public event Action<Key>? KeyPressed;
+    public event Action<KeyboardKey>? KeyPressed;
 
     /// <summary> The current mouse position. </summary>
     public Vector2 MousePosition { get => input.Mice[0].Position; set => input.Mice[0].Position = value; }
@@ -36,41 +36,41 @@ public class InputModule : BaseModule
     private Dictionary<Silk.NET.Input.Key, bool> previousKeys = new();
 
     #region Silk Mappings
-    private static readonly Dictionary<Key, Silk.NET.Input.Key> keyMap = new()
+    private static readonly Dictionary<KeyboardKey, Silk.NET.Input.Key> keyMap = new()
     {
-        { Key.A, Silk.NET.Input.Key.A },
-        { Key.B, Silk.NET.Input.Key.B },
-        { Key.C, Silk.NET.Input.Key.C },
-        { Key.D, Silk.NET.Input.Key.D },
-        { Key.E, Silk.NET.Input.Key.E },
-        { Key.F, Silk.NET.Input.Key.F },
-        { Key.G, Silk.NET.Input.Key.G },
-        { Key.H, Silk.NET.Input.Key.H },
-        { Key.I, Silk.NET.Input.Key.I },
-        { Key.J, Silk.NET.Input.Key.J },
-        { Key.K, Silk.NET.Input.Key.K },
-        { Key.L, Silk.NET.Input.Key.L },
-        { Key.M, Silk.NET.Input.Key.M },
-        { Key.N, Silk.NET.Input.Key.N },
-        { Key.O, Silk.NET.Input.Key.O },
-        { Key.P, Silk.NET.Input.Key.P },
-        { Key.Q, Silk.NET.Input.Key.Q },
-        { Key.R, Silk.NET.Input.Key.R },
-        { Key.S, Silk.NET.Input.Key.S },
-        { Key.T, Silk.NET.Input.Key.T },
-        { Key.U, Silk.NET.Input.Key.U },
-        { Key.V, Silk.NET.Input.Key.V },
-        { Key.W, Silk.NET.Input.Key.W },
-        { Key.X, Silk.NET.Input.Key.X },
-        { Key.Y, Silk.NET.Input.Key.Y },
-        { Key.Z, Silk.NET.Input.Key.Z },
-        { Key.Space, Silk.NET.Input.Key.Space },
-        { Key.Enter, Silk.NET.Input.Key.Enter },
-        { Key.Backspace, Silk.NET.Input.Key.Backspace },
-        { Key.Escape, Silk.NET.Input.Key.Escape }
+        { KeyboardKey.A, Silk.NET.Input.Key.A },
+        { KeyboardKey.B, Silk.NET.Input.Key.B },
+        { KeyboardKey.C, Silk.NET.Input.Key.C },
+        { KeyboardKey.D, Silk.NET.Input.Key.D },
+        { KeyboardKey.E, Silk.NET.Input.Key.E },
+        { KeyboardKey.F, Silk.NET.Input.Key.F },
+        { KeyboardKey.G, Silk.NET.Input.Key.G },
+        { KeyboardKey.H, Silk.NET.Input.Key.H },
+        { KeyboardKey.I, Silk.NET.Input.Key.I },
+        { KeyboardKey.J, Silk.NET.Input.Key.J },
+        { KeyboardKey.K, Silk.NET.Input.Key.K },
+        { KeyboardKey.L, Silk.NET.Input.Key.L },
+        { KeyboardKey.M, Silk.NET.Input.Key.M },
+        { KeyboardKey.N, Silk.NET.Input.Key.N },
+        { KeyboardKey.O, Silk.NET.Input.Key.O },
+        { KeyboardKey.P, Silk.NET.Input.Key.P },
+        { KeyboardKey.Q, Silk.NET.Input.Key.Q },
+        { KeyboardKey.R, Silk.NET.Input.Key.R },
+        { KeyboardKey.S, Silk.NET.Input.Key.S },
+        { KeyboardKey.T, Silk.NET.Input.Key.T },
+        { KeyboardKey.U, Silk.NET.Input.Key.U },
+        { KeyboardKey.V, Silk.NET.Input.Key.V },
+        { KeyboardKey.W, Silk.NET.Input.Key.W },
+        { KeyboardKey.X, Silk.NET.Input.Key.X },
+        { KeyboardKey.Y, Silk.NET.Input.Key.Y },
+        { KeyboardKey.Z, Silk.NET.Input.Key.Z },
+        { KeyboardKey.Space, Silk.NET.Input.Key.Space },
+        { KeyboardKey.Enter, Silk.NET.Input.Key.Enter },
+        { KeyboardKey.Backspace, Silk.NET.Input.Key.Backspace },
+        { KeyboardKey.Escape, Silk.NET.Input.Key.Escape }
     };
 
-    private static readonly Dictionary<Silk.NET.Input.Key, Key> keyMapInverse = keyMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+    private static readonly Dictionary<Silk.NET.Input.Key, KeyboardKey> keyMapInverse = keyMap.ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
 
     private static readonly Dictionary<MouseButton, Silk.NET.Input.MouseButton> mouseButtonMap = new()
     {
@@ -144,11 +144,11 @@ public class InputModule : BaseModule
 
     /// <summary> Checks if the specified key is currently pressed. </summary>
     /// <param name="key"> The key to check. </param>
-    public bool IsKeyDown(Key key) => input.Keyboards.Any(kb => kb.IsKeyPressed(keyMap[key]));
+    public bool IsKeyDown(KeyboardKey key) => input.Keyboards.Any(kb => kb.IsKeyPressed(keyMap[key]));
 
     /// <summary> Checks if the specified key was pressed this frame. </summary>
     /// <param name="key"> The key to check. </param>
-    public bool IsKeyPressed(Key key)
+    public bool IsKeyPressed(KeyboardKey key)
     {
         Silk.NET.Input.Key mappedKey = keyMap[key];
 
