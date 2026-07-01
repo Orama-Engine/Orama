@@ -1,4 +1,6 @@
-﻿namespace Orama.Common.Utility;
+﻿using System.Runtime.CompilerServices;
+
+namespace Orama.Common.Utility;
 
 /// <summary>
 /// Utility for outputting to the engine console.
@@ -23,12 +25,14 @@ public static class EngineConsole
     }
 
     /// <summary> Output a message. </summary>
-    public static void Log(string message, string origin = "Log")
+    public static void Log(string message, [CallerFilePath] string origin = "Log")
     {
         var prevColor = Console.ForegroundColor;
         Console.ForegroundColor = ConsoleColor.Gray;
 
-        string output = $"[{origin}] {message}";
+        ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+
+        string output = $"[{parsedOrigin}] {message}";
         Console.WriteLine(output);
 
         Console.ForegroundColor = prevColor;
