@@ -42,7 +42,7 @@ public class Shader
             ShaderLangFormat format = ShaderLangFormat.FromSource(value);
             (string, string) hlsl = HLSLTarget.Compile(format);
 
-            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.HLSLToShader(hlsl.Item1, hlsl.Item2);
+            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.HLSLToSPIRV(hlsl.Item1, hlsl.Item2);
             VertexBytecode = spirv.Item1;
             FragmentBytecode = spirv.Item2;
 

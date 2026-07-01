@@ -11,10 +11,10 @@ public static class ShaderBaker
     private static readonly Compiler compiler = new();
 
     /// <summary> Compiles GLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) GLSLToShader(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.GLSL);
+    public static (byte[] Vert, byte[] Frag) GLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.GLSL);
 
     /// <summary> Compiles HLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) HLSLToShader(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.HLSL);
+    public static (byte[] Vert, byte[] Frag) HLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.HLSL);
 
     private static (byte[] Vert, byte[] Frag) Compile(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
     {
