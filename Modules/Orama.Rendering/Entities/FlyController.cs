@@ -5,6 +5,7 @@ using Orama.Physics;
 using Orama.Scenes.Entities;
 using Orama.Common;
 using Orama.Common.Utility;
+using Orama.Input.Devices;
 
 namespace Orama.Rendering.Entities;
 
@@ -28,28 +29,27 @@ public class FlyController : Entity
         var Input = ModuleManager.GetModule<InputModule>();
         if (Input == null)
             return;
-
-        if (Input.IsKeyPressed(KeyboardKey.Escape))
+        
+        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.Escape) ?? false)
         {
             cursorLocked = !cursorLocked;
-            Input.CursorLocked = cursorLocked;
+            Input.PrimaryMouse?.CursorLocked = cursorLocked;
         }
 
-        // Movement
-        if (Input.IsKeyDown(KeyboardKey.W)) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(KeyboardKey.S)) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(KeyboardKey.A)) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
-        if (Input.IsKeyDown(KeyboardKey.D)) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
+        if (Input.PrimaryGamepad?.IsButtonPressed(Gamepad.Button.ActionLeft) ?? false)
+            EngineConsole.Log("Action left pressed.");
 
-        if (Input.IsKeyPressed(KeyboardKey.E))
-            if (ModuleManager.GetModule<PhysicsModule>()?.World.TryRaycast(Transform.Position, Transform.Forward, 1f, out RaycastResult result) == true)
-                EngineConsole.Log(result.Body.Owner?.Name ?? "null");
+        // Movement
+        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.W) ?? false) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.S) ?? false) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
+        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.A) ?? false) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
+        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.D) ?? false) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
 
         if (!cursorLocked)
             return;
 
         // Mouse look
-        Vector2 delta = Input.MouseDelta;
+        Vector2 delta = Input.PrimaryMouse?.MouseDelta ?? Vector2.Zero;
 
         yaw += delta.X * mouseSensitivity;
         pitch += -delta.Y * mouseSensitivity;
