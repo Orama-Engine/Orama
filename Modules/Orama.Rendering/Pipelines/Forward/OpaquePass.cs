@@ -35,7 +35,7 @@ public class OpaquePass : RenderPass
                 paramBuffer.AddMatrix4x4(projection);
                 buffer.QueueGPUBuffer(paramBuffer, 0);
 
-                buffer.DrawRenderable(renderable, model);
+                buffer.DrawRenderable(renderable);
             }
 
         buffer.End();

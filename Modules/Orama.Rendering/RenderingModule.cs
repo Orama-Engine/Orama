@@ -20,7 +20,7 @@ public class RenderingModule : BaseModule
     /// <inheritdoc/>
     public override void Initialize()
     {
-        Application.OnResize +=  (size) => OnResize((int)size.X, (int)size.Y);
+        Application.OnResize += (size) => OnResize((int)size.X, (int)size.Y);
         Application.OnRender += Render;
 
         RendererOptions options = new();

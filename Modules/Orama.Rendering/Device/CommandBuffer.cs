@@ -35,7 +35,7 @@ public class CommandBuffer : IDisposable
 
     public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
 
-    public void DrawRenderable(IClientRenderable renderable, Matrix4x4 model)
+    public void DrawRenderable(IClientRenderable renderable)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
 
