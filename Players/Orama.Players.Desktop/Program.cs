@@ -10,6 +10,7 @@ using Orama.Scenes.Entities;
 using Orama.Scenes.Resources;
 using Orama.Common;
 using Orama.Common.Utility;
+using Orama.VirtualReality;
 
 namespace Orama.Desktop;
 
@@ -28,9 +29,10 @@ internal class Program
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
 
+        ModuleManager.RegisterModule<VirtualRealityModule>();
+
         var debugScene = new Scene();
         ModuleManager.GetModule<SceneModule>()?.CurrentScene = debugScene;
-
 
         Application.OnStart += () =>
         {

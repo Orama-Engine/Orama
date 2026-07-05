@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\Modules\Orama.Physics\Orama.Physics.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Rendering\Orama.Rendering.csproj" />
     <ProjectReference Include="..\..\Modules\Orama.Scenes\Orama.Scenes.csproj" />
+    <ProjectReference Include="..\..\Modules\Orama.VirtualReality\Orama.VirtualReality.csproj" />
     <ProjectReference Include="..\..\Orama.Common\Orama.Common.csproj" />
     <ProjectReference Include="..\..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />

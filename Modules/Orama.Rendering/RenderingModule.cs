@@ -26,7 +26,7 @@ public class RenderingModule : BaseModule
         RendererOptions options = new();
         options.Culling = CullingMode.None;
 
-        Renderer.Initialize(Application.Window.InternalWindow, null, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Direct3D11, options);
         Application.Window.Title += $" - [{Renderer.Backend}]";
     }
 
