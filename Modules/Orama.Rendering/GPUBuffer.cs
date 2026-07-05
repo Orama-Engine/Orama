@@ -7,7 +7,7 @@ namespace Orama.Rendering;
 /// <summary>
 /// Buffer that assembles data in a format readable by a <see cref="CommandBuffer"/>.
 /// </summary>
-public class GPUBuffer
+public struct GPUBuffer
 {
     /// <summary> The initial size of the internal buffer. </summary>
     public const int DEFAULT_SIZE = 256;
@@ -17,6 +17,8 @@ public class GPUBuffer
 
     private byte[] data = new byte[DEFAULT_SIZE];
     private int offset = 0;
+
+    public GPUBuffer() { }
 
     public void AddFloat(float value)
     {
@@ -102,5 +104,5 @@ public class GPUBuffer
         Array.Resize(ref data, newSize);
     }
 
-    protected static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
+    private static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
 }
