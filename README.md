@@ -14,9 +14,9 @@ Orama was made specifically for Virtual Reality with no workarounds and no retro
 All engine subsystems have their lifecycle hooked into the `Module` system. Because of this, subsystems can be arbitrarily disabled, profiled, or singled out for debugging.
 
 ```csharp
-if (Input.IsKeyPressed(Key.E))
+if (Input.PrimaryHandLeft.IsButtonPressed(VirtualRealityController.Button.ActionUp))
   if (ModuleManager.GetModule<PhysicsModule>()?.World.TryRaycast(Transform.Position, Transform.Forward, 1f, out RaycastResult result) == true)
-    EngineOutput.Log(result.Body.Owner?.Name ?? "null");
+    EngineConsole.Log(result.Body.Owner?.Name ?? "null");
 ```
 
 ### Entity System
