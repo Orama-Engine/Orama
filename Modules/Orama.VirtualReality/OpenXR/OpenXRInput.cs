@@ -1,6 +1,7 @@
 ﻿using Orama.VirtualReality.OpenXR.Bindings;
 using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
+
 using Action = Silk.NET.OpenXR.Action;
 
 namespace Orama.VirtualReality.OpenXR;
@@ -53,11 +54,7 @@ internal static class OpenXRInput
     private static ActionSet actionSet;
     private static bool initialized;
 
-    /// <summary>
-    /// Creates the action set and actions, and suggests bindings across common
-    /// interaction profiles. Safe to call multiple times — only runs once.
-    /// Must be called before <see cref="Attach"/>.
-    /// </summary>
+    /// <summary> Creates the action set and actions, and suggests bindings across common interaction profiles. Safe to call multiple times — only runs once. Must be called before <see cref="Attach"/>. </summary>
     public static unsafe void Initialize(XR xr, OpenXRInstance instance)
     {
         if (initialized)
@@ -163,10 +160,7 @@ internal static class OpenXRInput
         }
     }
 
-    /// <summary>
-    /// Attaches the shared action set to the session. Call once per session,
-    /// after <see cref="Initialize"/> and before the first <see cref="Sync"/> call.
-    /// </summary>
+    /// <summary> Attaches the shared action set to the session. Call once per session, after <see cref="Initialize"/> and before the first <see cref="Sync"/> call. </summary>
     public static unsafe void Attach(XR xr, OpenXRSession session)
     {
         ActionSet set = actionSet;
@@ -180,9 +174,7 @@ internal static class OpenXRInput
         xr.AttachSessionActionSets(session.Native, &attachInfo);
     }
 
-    /// <summary>
-    /// Syncs all actions. Call once per frame, before reading any controller state.
-    /// </summary>
+    /// <summary> Syncs all actions. Call once per frame, before reading any controller state. </summary>
     public static unsafe void Sync(XR xr, OpenXRSession session)
     {
         ActiveActionSet active = new()
