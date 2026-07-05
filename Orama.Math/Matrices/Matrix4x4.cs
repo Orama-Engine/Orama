@@ -119,8 +119,8 @@ public struct Matrix4x4
 
         return new Matrix4x4(
             1, 0, 0, 0,
-            0, c, -s, 0,
-            0, s, c, 0,
+            0, c, s, 0,
+            0, -s, c, 0,
             0, 0, 0, 1
         );
     }
@@ -132,10 +132,10 @@ public struct Matrix4x4
         float s = MathF.Sin(r);
 
         return new Matrix4x4(
-             c, 0, s, 0,
-             0, 1, 0, 0,
-            -s, 0, c, 0,
-             0, 0, 0, 1
+            c, 0, -s, 0,
+            0, 1, 0, 0,
+            s, 0, c, 0,
+            0, 0, 0, 1
         );
     }
 
@@ -146,8 +146,8 @@ public struct Matrix4x4
         float s = MathF.Sin(r);
 
         return new Matrix4x4(
-            c, -s, 0, 0,
-            s, c, 0, 0,
+            c, s, 0, 0,
+            -s, c, 0, 0,
             0, 0, 1, 0,
             0, 0, 0, 1
         );
@@ -159,7 +159,7 @@ public struct Matrix4x4
         Matrix4x4 rx = CreateRotationX(euler.X);
         Matrix4x4 ry = CreateRotationY(euler.Y);
         Matrix4x4 rz = CreateRotationZ(euler.Z);
-        return rz * ry * rx;
+        return rx * ry * rz;
     }
 
     /// <summary> Creates a rotation matrix from a <see cref="Quaternion"/>. </summary>

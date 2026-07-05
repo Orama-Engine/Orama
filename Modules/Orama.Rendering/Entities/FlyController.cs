@@ -61,6 +61,6 @@ public class FlyController : Entity
         Vector3 right = Vector3.Transform(Vector3.Right, yawRot);
         Quaternion pitchRot = Quaternion.CreateFromAxisAngle(right, pitch);
 
-        Transform.Rotation = yawRot * pitchRot;
+        Transform.Rotation = pitchRot * yawRot;
     }
 }
