@@ -77,7 +77,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                 {
                     Type = StructureType.SessionCreateInfo,
                     SystemId = SystemID.Value,
-                    Next = GraphicsBinding
+                    Next = (void*)GraphicsBinding.Native
                 };
 
                 Session session = new();
@@ -95,54 +95,8 @@ internal class OpenXRDevice : VirtualRealityDevice
         }
     }
 
-    private static GraphicsBindingD3D11KHR d3d11Binding;
-    private static GraphicsBindingVulkanKHR vulkanBinding;
-
-    /// <summary> Pointer to the current renderers Graphics Binding. </summary>
-    public static unsafe void* GraphicsBinding
-    {
-        get
-        {
-            if (field != null)
-                return field;
-
-            unsafe
-            {
-                switch (Renderer.Backend)
-                {
-                    case RendererBackend.Vulkan:
-                        vulkanBinding = new GraphicsBindingVulkanKHR
-                        {
-                            Type = StructureType.GraphicsBindingVulkanKhr,
-
-                            Instance = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().Instance),
-                            PhysicalDevice = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
-                            Device = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().Device),
-
-                            QueueFamilyIndex = Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
-                            QueueIndex = 0
-                        };
-                        field = Unsafe.AsPointer(ref vulkanBinding);
-                        break;
-
-                    case RendererBackend.Direct3D11:
-                        d3d11Binding = new GraphicsBindingD3D11KHR()
-                        {
-                            Type = StructureType.GraphicsBindingD3D11Khr,
-                            Device = (void*)Renderer.Veldrid.GraphicsDevice.GetD3D11Info().Device,
-                        };
-                        field = Unsafe.AsPointer(ref d3d11Binding);
-                        break;
-
-                    default:
-                        break;
-
-                }
-            }
-
-            return field;
-        }
-    }
+    /// <summary> Current renderers Graphics Binding. </summary>
+    public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;
 
     /// <inheritdoc/>
     public override bool TryInitialize()
@@ -150,7 +104,9 @@ internal class OpenXRDevice : VirtualRealityDevice
         unsafe
         {
             OpenXR = XR.GetApi();
+            GraphicsBinding = new OpenXRGraphicsBinding(OpenXR, Renderer.Backend);
             Instance = new OpenXRInstance(OpenXR);
+
 
             EngineConsole.Log(SystemID?.ToString() ?? "NULL");
             EngineConsole.Log(Instance.Native.ToString() ?? "NULL");
