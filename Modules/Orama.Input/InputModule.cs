@@ -25,6 +25,8 @@ public class InputModule : BaseModule
 
     private IInputContext input = null!;
 
+    public void AddDevice(Devices.IInputDevice device) => devices.Add(device);
+
     /// <inheritdoc/>
     public override void Initialize()
     {

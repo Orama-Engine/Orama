@@ -1,4 +1,6 @@
-﻿using Orama.Rendering;
+﻿using Orama.Common;
+using Orama.Input;
+using Orama.Rendering;
 using Orama.VirtualReality.OpenXR.Bindings;
 using Silk.NET.OpenXR;
 
@@ -28,5 +30,28 @@ internal class OpenXRDevice : VirtualRealityDevice
         GraphicsBinding = new OpenXRGraphicsBinding(OpenXR, Renderer.Backend);
         Instance = new OpenXRInstance(OpenXR);
         Session = new OpenXRSession(OpenXR, GraphicsBinding, Instance);
+
+        Name = Instance.DeviceName;
+
+        // Input
+        OpenXRInput.Initialize(OpenXR, Instance);
+        OpenXRInput.Attach(OpenXR, Session);
+
+        var leftHand = new OpenXRController(this, VirtualRealityController.HandType.Left);
+        var rightHand = new OpenXRController(this, VirtualRealityController.HandType.Right);
+
+        var inputModule = ModuleManager.GetModule<InputModule>();
+        inputModule?.AddDevice(leftHand);
+        inputModule?.AddDevice(rightHand);
+    }
+
+    /// <inheritdoc/>
+    public override void Update()
+    {
+        base.Update();
+
+        OpenXRInput.Sync(OpenXR, Session);
+        Session.PollEvents();
+        Session.SubmitBlank();
     }
 }

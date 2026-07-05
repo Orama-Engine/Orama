@@ -9,5 +9,7 @@ namespace Orama.VirtualReality;
 /// </remarks>
 public abstract class VirtualRealityDevice
 {
+    public string Name { get; set; } = "Unknown VR Device";
     public abstract void Initialize();
+    public virtual void Update() { }
 }

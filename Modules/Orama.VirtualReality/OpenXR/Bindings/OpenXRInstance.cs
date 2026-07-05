@@ -24,6 +24,9 @@ internal class OpenXRInstance : OpenXRBinding
     /// <summary> The list of extensions that this instance supports. </summary>
     public IReadOnlyList<string> Extensions => extensions;
 
+    /// <summary> The name of the Virtual Reality headset. </summary>
+    public string DeviceName { get; private set; }
+
     /// <summary> The ID of the current system. </summary>
     public ulong SystemID
     {
@@ -81,6 +84,15 @@ internal class OpenXRInstance : OpenXRBinding
                 throw new Exception($"Failed to create OpenXR instance: {res}");
 
             Native = instance;
+
+            SystemProperties properties = new()
+            {
+                Type = StructureType.SystemProperties
+            };
+
+            OpenXR.GetSystemProperties(instance, SystemID, ref properties);
+
+            DeviceName = Marshal.PtrToStringAnsi((IntPtr)properties.SystemName) ?? "Unknown";
 
             CheckGraphicsRequirements();
         }
@@ -156,7 +168,6 @@ internal class OpenXRInstance : OpenXRBinding
                     if (res != Result.Success)
                         throw new Exception($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
 
-                    EngineConsole.Log($"D3D11 min feature level: {requirements.MinFeatureLevel}, adapter LUID: {requirements.AdapterLuid}");
                     break;
                 }
 
@@ -178,7 +189,6 @@ internal class OpenXRInstance : OpenXRBinding
                     if (res != Result.Success)
                         throw new Exception($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
 
-                    EngineConsole.Log($"Vulkan API version range: {requirements.MinApiVersionSupported} - {requirements.MaxApiVersionSupported}");
                     break;
                 }
 

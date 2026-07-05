@@ -12,13 +12,27 @@ public class VirtualRealityModule : BaseModule
     /// <inheritdoc/>
     public override void Initialize()
     {
+        Application.OnUpdate += Update;
+
         try
         {
             Device.Initialize();
+
+            EngineConsole.Log($"Connected Virtual Reality device: {Device.Name}");
         } catch (Exception ex)
         {
             EngineConsole.Exception(ex);
             EngineConsole.Warning("Exception occured during Virtual Reality device initialization, switching to emulation.");
         }
     }
+
+    /// <inheritdoc/>
+    public override void Dispose()
+    {
+        base.Dispose();
+
+        Application.OnUpdate -= Update;
+    }
+
+    public void Update() => Device.Update();
 }

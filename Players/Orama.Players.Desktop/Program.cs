@@ -28,7 +28,6 @@ internal class Program
 
         ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
-
         ModuleManager.RegisterModule<VirtualRealityModule>();
 
         var debugScene = new Scene();
@@ -58,10 +57,11 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandRight?.IsButtonPressed(VirtualRealityController.Button.ActionUp) == true)
-            {
-                EngineConsole.Log("ActionUp");
-            }
+            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.IsButtonPressed(VirtualRealityController.Button.ActionUp) == true)
+                EngineConsole.Log("Action Up");
+
+            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.GripPressedAmount > 0.2f)
+                EngineConsole.Log("Left Grip: " + ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.GripPressedAmount);
         };
 
         Application.OnRender += () =>
