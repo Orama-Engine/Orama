@@ -44,7 +44,7 @@ internal class OpenXRDevice : VirtualRealityDevice
             if (Instance == null)
                 return null;
 
-            Result result = OpenXR.GetSystem(Instance.Value, ref systemInfo, ref systemID);
+            Result result = OpenXR.GetSystem(Instance.Native, ref systemInfo, ref systemID);
 
             if (result != Result.Success)
             {
@@ -58,91 +58,7 @@ internal class OpenXRDevice : VirtualRealityDevice
     }
 
     /// <summary> This device's OpenXR Instance. </summary>
-    public Instance? Instance
-    {
-        get
-        {
-            if (field != null)
-                return field;
-
-            unsafe
-            {
-                string requiredExtension = Renderer.Backend switch
-                {
-                    RendererBackend.Vulkan => XR_KHR_VULKAN_ENABLE_EXTENSION_NAME,
-                    RendererBackend.Direct3D11 => XR_KHR_D3D11_ENABLE_EXTENSION_NAME,
-                    _ => throw new NotSupportedException("Unsupported renderer backend for OpenXR")
-                };
-
-                uint propCount = 0;
-                OpenXR.EnumerateInstanceExtensionProperties((byte*)null, 0, &propCount, null);
-
-                Span<ExtensionProperties> props = new ExtensionProperties[propCount];
-                for (int i = 0; i < props.Length; i++)
-                {
-                    props[i].Type = StructureType.ExtensionProperties;
-                    props[i].Next = null;
-                }
-                OpenXR.EnumerateInstanceExtensionProperties((byte*)null, propCount, &propCount, props);
-
-                bool found = false;
-                for (int i = 0; i < props.Length; i++)
-                {
-                    fixed (void* namePtr = props[i].ExtensionName)
-                    {
-                        string name = SilkMarshal.PtrToString((IntPtr)namePtr)!;
-                        if (name == requiredExtension)
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!found)
-                {
-                    EngineConsole.Warning($"Required OpenXR extension not supported: {requiredExtension}");
-                    return null;
-                }
-
-                var extensions = new List<string> { requiredExtension };
-                IntPtr extensionsPtr = SilkMarshal.StringArrayToPtr(extensions);
-
-                ApplicationInfo appInfo = new ApplicationInfo()
-                {
-                    ApiVersion = new Version64(1, 0, 0)
-                };
-
-                Span<byte> appNameSpan = new Span<byte>(appInfo.ApplicationName, 128);
-                Span<byte> engineNameSpan = new Span<byte>(appInfo.EngineName, 128);
-
-                SilkMarshal.StringIntoSpan("Orama", appNameSpan);
-                SilkMarshal.StringIntoSpan("None", engineNameSpan);
-
-                InstanceCreateInfo createInfo = new InstanceCreateInfo
-                {
-                    Type = StructureType.InstanceCreateInfo,
-                    ApplicationInfo = appInfo,
-                    EnabledExtensionCount = (uint)extensions.Count,
-                    EnabledExtensionNames = (byte**)extensionsPtr,
-                    Next = null
-                };
-
-                Instance instance = new();
-
-                Result result = OpenXR.CreateInstance(ref createInfo, ref instance);
-
-                if (result != Result.Success)
-                {
-                    EngineConsole.Warning($"Failed to create OpenXR Instance: {result}");
-                    return null;
-                }
-
-                field = instance;
-                return field;
-            }
-        }
-    }
+    public OpenXRInstance Instance { get; private set; } = null!;
 
     /// <summary> This device's OpenXR Session. </summary>
     public Session? Session
@@ -165,7 +81,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                 };
 
                 Session session = new();
-                Result result = OpenXR.CreateSession(Instance.Value, &createInfo, &session);
+                Result result = OpenXR.CreateSession(Instance.Native, &createInfo, &session);
 
                 if (result != Result.Success)
                 {
@@ -234,9 +150,10 @@ internal class OpenXRDevice : VirtualRealityDevice
         unsafe
         {
             OpenXR = XR.GetApi();
+            Instance = new OpenXRInstance(OpenXR);
 
             EngineConsole.Log(SystemID?.ToString() ?? "NULL");
-            EngineConsole.Log(Instance?.Handle.ToString() ?? "NULL");
+            EngineConsole.Log(Instance.Native.ToString() ?? "NULL");
 
             if (Instance == null || SystemID == null)
                 return false;
@@ -260,7 +177,7 @@ internal class OpenXRDevice : VirtualRealityDevice
             case RendererBackend.Direct3D11:
                 {
                     PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Instance.Value, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr);
+                    Result res = OpenXR.GetInstanceProcAddr(Instance.Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"Failed to get xrGetD3D11GraphicsRequirementsKHR: {res}");
@@ -274,7 +191,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                         Type = StructureType.GraphicsRequirementsD3D11Khr
                     };
 
-                    res = fn(Instance.Value, SystemID.Value, &requirements);
+                    res = fn(Instance.Native, SystemID.Value, &requirements);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
@@ -288,7 +205,7 @@ internal class OpenXRDevice : VirtualRealityDevice
             case RendererBackend.Vulkan:
                 {
                     PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Instance.Value, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr);
+                    Result res = OpenXR.GetInstanceProcAddr(Instance.Native, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"Failed to get xrGetVulkanGraphicsRequirementsKHR: {res}");
@@ -302,7 +219,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                         Type = StructureType.GraphicsRequirementsVulkanKhr
                     };
 
-                    res = fn(Instance.Value, SystemID.Value, &requirements);
+                    res = fn(Instance.Native, SystemID.Value, &requirements);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
