@@ -11,12 +11,6 @@ namespace Orama.VirtualReality.OpenXR;
 /// </summary>
 internal class OpenXRDevice : VirtualRealityDevice
 {
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private unsafe delegate Result pfnGetD3D11GraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsD3D11KHR* req);
-
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private unsafe delegate Result pfnGetVulkanGraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsVulkanKHR* req);
-
     /// <summary> The OpenXR API. </summary>
     public XR OpenXR { get; private set; } = null!;
 
@@ -77,81 +71,9 @@ internal class OpenXRDevice : VirtualRealityDevice
             if (Instance == null)
                 return false;
 
-            if (!CheckGraphicsRequirements())
-                return false;
-
             EngineConsole.Log(Session?.Handle.ToString() ?? "NULL");
 
             return true;
-        }
-    }
-
-    private unsafe bool CheckGraphicsRequirements()
-    {
-        if (Instance == null)
-            return false;
-
-        switch (Renderer.Backend)
-        {
-            case RendererBackend.Direct3D11:
-                {
-                    PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Instance.Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr);
-                    if (res != Result.Success)
-                    {
-                        EngineConsole.Warning($"Failed to get xrGetD3D11GraphicsRequirementsKHR: {res}");
-                        return false;
-                    }
-
-                    var fn = Marshal.GetDelegateForFunctionPointer<pfnGetD3D11GraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
-
-                    GraphicsRequirementsD3D11KHR requirements = new()
-                    {
-                        Type = StructureType.GraphicsRequirementsD3D11Khr
-                    };
-
-                    res = fn(Instance.Native, Instance.SystemID, &requirements);
-                    if (res != Result.Success)
-                    {
-                        EngineConsole.Warning($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
-                        return false;
-                    }
-
-                    EngineConsole.Log($"D3D11 min feature level: {requirements.MinFeatureLevel}, adapter LUID: {requirements.AdapterLuid}");
-                    return true;
-                }
-
-            case RendererBackend.Vulkan:
-                {
-                    PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Instance.Native, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr);
-                    if (res != Result.Success)
-                    {
-                        EngineConsole.Warning($"Failed to get xrGetVulkanGraphicsRequirementsKHR: {res}");
-                        return false;
-                    }
-
-                    var fn = Marshal.GetDelegateForFunctionPointer<pfnGetVulkanGraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
-
-                    GraphicsRequirementsVulkanKHR requirements = new()
-                    {
-                        Type = StructureType.GraphicsRequirementsVulkanKhr
-                    };
-
-                    res = fn(Instance.Native, Instance.SystemID, &requirements);
-                    if (res != Result.Success)
-                    {
-                        EngineConsole.Warning($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
-                        return false;
-                    }
-
-                    EngineConsole.Log($"Vulkan API version range: {requirements.MinApiVersionSupported} - {requirements.MaxApiVersionSupported}");
-                    return true;
-                }
-
-            default:
-                EngineConsole.Warning("Unsupported renderer backend for OpenXR");
-                return false;
         }
     }
 }

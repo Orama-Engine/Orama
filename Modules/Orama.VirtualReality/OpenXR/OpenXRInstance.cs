@@ -3,6 +3,7 @@ using Orama.Rendering;
 using Silk.NET.Core;
 using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
+using System.Runtime.InteropServices;
 
 namespace Orama.VirtualReality.OpenXR;
 
@@ -11,6 +12,12 @@ namespace Orama.VirtualReality.OpenXR;
 /// </summary>
 internal class OpenXRInstance : OpenXRBinding
 {
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    private unsafe delegate Result pfnGetD3D11GraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsD3D11KHR* req);
+
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    private unsafe delegate Result pfnGetVulkanGraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsVulkanKHR* req);
+
     /// <summary> The native <see cref="Silk.NET.OpenXR.Instance"/>. </summary>
     public Instance Native { get; }
 
@@ -74,6 +81,8 @@ internal class OpenXRInstance : OpenXRBinding
                 throw new Exception($"Failed to create OpenXR instance: {res}");
 
             Native = instance;
+
+            CheckGraphicsRequirements();
         }
     }
 
@@ -122,5 +131,59 @@ internal class OpenXRInstance : OpenXRBinding
         }
 
         return extensions;
+    }
+
+    // This needs to run for a valid instance
+    private unsafe void CheckGraphicsRequirements()
+    {
+        switch (Renderer.Backend)
+        {
+            case RendererBackend.Direct3D11:
+                {
+                    PfnVoidFunction fnPtr = new();
+                    Result res = OpenXR.GetInstanceProcAddr(Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr);
+                    if (res != Result.Success)
+                        throw new Exception($"Failed to get xrGetD3D11GraphicsRequirementsKHR: {res}");
+
+                    var fn = Marshal.GetDelegateForFunctionPointer<pfnGetD3D11GraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
+
+                    GraphicsRequirementsD3D11KHR requirements = new()
+                    {
+                        Type = StructureType.GraphicsRequirementsD3D11Khr
+                    };
+
+                    res = fn(Native, SystemID, &requirements);
+                    if (res != Result.Success)
+                        throw new Exception($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
+
+                    EngineConsole.Log($"D3D11 min feature level: {requirements.MinFeatureLevel}, adapter LUID: {requirements.AdapterLuid}");
+                    break;
+                }
+
+            case RendererBackend.Vulkan:
+                {
+                    PfnVoidFunction fnPtr = new();
+                    Result res = OpenXR.GetInstanceProcAddr(Native, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr);
+                    if (res != Result.Success)
+                        throw new Exception($"Failed to get xrGetVulkanGraphicsRequirementsKHR: {res}");
+
+                    var fn = Marshal.GetDelegateForFunctionPointer<pfnGetVulkanGraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
+
+                    GraphicsRequirementsVulkanKHR requirements = new()
+                    {
+                        Type = StructureType.GraphicsRequirementsVulkanKhr
+                    };
+
+                    res = fn(Native, SystemID, &requirements);
+                    if (res != Result.Success)
+                        throw new Exception($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
+
+                    EngineConsole.Log($"Vulkan API version range: {requirements.MinApiVersionSupported} - {requirements.MaxApiVersionSupported}");
+                    break;
+                }
+
+            default:
+                throw new NotSupportedException("Unsupported renderer backend for OpenXR");
+        }
     }
 }
