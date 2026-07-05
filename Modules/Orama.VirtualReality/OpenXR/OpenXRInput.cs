@@ -16,8 +16,8 @@ internal static class OpenXRInput
     {
         TriggerValue = 0,
         GripValue,
-        ActionUp,   // A / X
-        ActionDown, // B / Y
+        ActionDown,   // A / X
+        ActionUp, // B / Y
         System,     // menu / system button
         Count
     }

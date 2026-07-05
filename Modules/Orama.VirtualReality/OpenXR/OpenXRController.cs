@@ -17,10 +17,10 @@ internal class OpenXRController : VirtualRealityController
         // obviously hacky
         var path = button switch
         {
-            Button.ActionUp => OpenXRInput.InputPath.ActionUp,
-            Button.ActionDown => OpenXRInput.InputPath.ActionDown,
+            Button.ActionUp => OpenXRInput.InputPath.ActionDown,
+            Button.ActionDown => OpenXRInput.InputPath.ActionUp,
             Button.System => OpenXRInput.InputPath.System,
-            _ => OpenXRInput.InputPath.ActionUp,
+            _ => OpenXRInput.InputPath.ActionDown,
         };
 
         return OpenXRInput.GetBool(owner.OpenXR, owner.Session, (int)Handness, path);
