@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Orama.Common\Orama.Common.csproj" />
+    <ProjectReference Include="..\Orama.Input\Orama.Input.csproj" />
     <ProjectReference Include="..\Orama.Rendering\Orama.Rendering.csproj" />
   </ItemGroup>
 

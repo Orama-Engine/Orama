@@ -5,7 +5,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
 using System.Runtime.InteropServices;
 
-namespace Orama.VirtualReality.OpenXR;
+namespace Orama.VirtualReality.OpenXR.Bindings;
 
 /// <summary>
 /// Managed bindings for <see cref="Instance"/>.

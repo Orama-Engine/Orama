@@ -1,7 +1,6 @@
-﻿
-using Silk.NET.OpenXR;
+﻿using Silk.NET.OpenXR;
 
-namespace Orama.VirtualReality.OpenXR;
+namespace Orama.VirtualReality.OpenXR.Bindings;
 
 /// <summary>
 /// Base class for all OpenXR managed bindings.

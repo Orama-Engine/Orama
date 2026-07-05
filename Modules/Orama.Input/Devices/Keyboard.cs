@@ -3,7 +3,7 @@ using Silk.NET.Input;
 
 namespace Orama.Input.Devices;
 
-public sealed class Keyboard : InputDevice
+public sealed class Keyboard : IInputDevice
 {
     /// <summary>
     /// Represents a key on a Keyboard.

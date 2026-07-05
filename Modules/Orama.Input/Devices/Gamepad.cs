@@ -2,7 +2,7 @@
 
 namespace Orama.Input.Devices;
 
-public sealed class Gamepad : InputDevice
+public sealed class Gamepad : IInputDevice
 {
     /// <summary>
     /// Represents a Gamepad button.

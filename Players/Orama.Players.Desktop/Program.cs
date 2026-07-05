@@ -58,7 +58,10 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-
+            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandRight?.IsButtonPressed(VirtualRealityController.Button.ActionUp) == true)
+            {
+                EngineConsole.Log("ActionUp");
+            }
         };
 
         Application.OnRender += () =>

@@ -3,7 +3,7 @@ using Silk.NET.Input;
 
 namespace Orama.Input.Devices;
 
-public sealed class Mouse : InputDevice
+public sealed class Mouse : IInputDevice
 {
     /// <summary>
     /// Represents a mouse button.
@@ -46,10 +46,8 @@ public sealed class Mouse : InputDevice
     public bool IsButtonDown(Button button) => InternalMouse.IsButtonPressed(buttonMap[button]);
 
     /// <inheritdoc/>
-    internal override void Update()
+    internal void Update()
     {
-        base.Update();
-
         var mousePos = InternalMouse.Position;
         MouseDelta = new Vector2(mousePos.X - lastMousePosition.X, mousePos.Y - lastMousePosition.Y);
         lastMousePosition = mousePos;

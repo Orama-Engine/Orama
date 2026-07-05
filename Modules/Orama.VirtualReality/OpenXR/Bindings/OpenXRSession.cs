@@ -1,7 +1,7 @@
 ﻿using Orama.Common.Utility;
 using Silk.NET.OpenXR;
 
-namespace Orama.VirtualReality.OpenXR;
+namespace Orama.VirtualReality.OpenXR.Bindings;
 
 /// <summary>
 /// Managed bindings for <see cref="Session"/>.

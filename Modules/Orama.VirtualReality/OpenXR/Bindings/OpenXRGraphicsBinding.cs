@@ -3,7 +3,7 @@ using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
 using System.Runtime.CompilerServices;
 
-namespace Orama.VirtualReality.OpenXR;
+namespace Orama.VirtualReality.OpenXR.Bindings;
 
 /// <summary>
 /// Managed bindings for <see cref="GraphicsBinding"/>.
