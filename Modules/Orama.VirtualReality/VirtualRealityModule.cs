@@ -12,9 +12,13 @@ public class VirtualRealityModule : BaseModule
     /// <inheritdoc/>
     public override void Initialize()
     {
-        if (!Device.TryInitialize())
+        try
         {
-            EngineConsole.Warning("Failed to initialize Virtual Reality Device! Switching to Emulation.");
+            Device.Initialize();
+        } catch (Exception ex)
+        {
+            EngineConsole.Exception(ex);
+            EngineConsole.Warning("Exception occured during Virtual Reality device initialization, switching to emulation.");
         }
     }
 }

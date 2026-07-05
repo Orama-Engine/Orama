@@ -9,5 +9,5 @@ namespace Orama.VirtualReality;
 /// </remarks>
 public abstract class VirtualRealityDevice
 {
-    public abstract bool TryInitialize();
+    public abstract void Initialize();
 }

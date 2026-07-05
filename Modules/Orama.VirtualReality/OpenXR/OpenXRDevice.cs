@@ -22,20 +22,11 @@ internal class OpenXRDevice : VirtualRealityDevice
     public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;
 
     /// <inheritdoc/>
-    public override bool TryInitialize()
+    public override void Initialize()
     {
-        try
-        {
-            OpenXR = XR.GetApi();
-            GraphicsBinding = new OpenXRGraphicsBinding(OpenXR, Renderer.Backend);
-            Instance = new OpenXRInstance(OpenXR);
-            Session = new OpenXRSession(OpenXR, GraphicsBinding, Instance);
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            return false;
-        }
+        OpenXR = XR.GetApi();
+        GraphicsBinding = new OpenXRGraphicsBinding(OpenXR, Renderer.Backend);
+        Instance = new OpenXRInstance(OpenXR);
+        Session = new OpenXRSession(OpenXR, GraphicsBinding, Instance);
     }
 }
