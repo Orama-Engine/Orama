@@ -14,6 +14,9 @@ internal class OpenXRDevice : VirtualRealityDevice
     /// <summary> Current renderers Graphics Binding. </summary>
     public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;
 
+    // Kinda hacky, maybe move to VirtualRealityDevice?
+    public bool IsValid => OpenXR != null && Instance != null && Session != null;
+
     /// <summary> The OpenXR API. </summary>
     public XR OpenXR { get; private set; } = null!;
 
@@ -49,6 +52,9 @@ internal class OpenXRDevice : VirtualRealityDevice
     public override void Update()
     {
         base.Update();
+
+        if (!IsValid)
+            return;
 
         OpenXRInput.Sync(OpenXR, Session);
         Session.PollEvents();
