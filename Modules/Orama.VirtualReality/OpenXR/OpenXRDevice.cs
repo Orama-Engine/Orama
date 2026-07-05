@@ -1,5 +1,5 @@
-﻿using Orama.Common.Utility;
-using Orama.Rendering;
+﻿using Orama.Rendering;
+using Orama.VirtualReality.OpenXR.Bindings;
 using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR;
@@ -9,6 +9,9 @@ namespace Orama.VirtualReality.OpenXR;
 /// </summary>
 internal class OpenXRDevice : VirtualRealityDevice
 {
+    /// <summary> Current renderers Graphics Binding. </summary>
+    public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;
+
     /// <summary> The OpenXR API. </summary>
     public XR OpenXR { get; private set; } = null!;
 
@@ -17,9 +20,6 @@ internal class OpenXRDevice : VirtualRealityDevice
 
     /// <summary> This device's OpenXR Session. </summary>
     public OpenXRSession Session { get; private set; } = null!;
-
-    /// <summary> Current renderers Graphics Binding. </summary>
-    public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;
 
     /// <inheritdoc/>
     public override void Initialize()
