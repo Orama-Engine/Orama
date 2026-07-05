@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 namespace Orama.VirtualReality.OpenXR;
 
 /// <summary>
-/// Managed bindings for <see cref="Silk.NET.OpenXR.Instance"/>.
+/// Managed bindings for <see cref="Instance"/>.
 /// </summary>
 internal class OpenXRInstance : OpenXRBinding
 {
@@ -18,7 +18,7 @@ internal class OpenXRInstance : OpenXRBinding
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private unsafe delegate Result pfnGetVulkanGraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsVulkanKHR* req);
 
-    /// <summary> The native <see cref="Silk.NET.OpenXR.Instance"/>. </summary>
+    /// <summary> The native <see cref="Instance"/>. </summary>
     public Instance Native { get; }
 
     /// <summary> The list of extensions that this instance supports. </summary>

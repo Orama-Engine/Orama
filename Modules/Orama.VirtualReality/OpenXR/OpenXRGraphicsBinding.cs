@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace Orama.VirtualReality.OpenXR;
 
 /// <summary>
-/// Managed bindings for <see cref="Silk.NET.OpenXR.GraphicsBinding"/>.
+/// Managed bindings for <see cref="GraphicsBinding"/>.
 /// </summary>
 internal class OpenXRGraphicsBinding : OpenXRBinding
 {
