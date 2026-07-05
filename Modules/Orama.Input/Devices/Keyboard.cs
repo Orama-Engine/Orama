@@ -63,4 +63,7 @@ public sealed class Keyboard : IInputDevice
 
     /// <summary> Checks if the given <see cref="Key"/> is currently held down. </summary>
     public bool IsKeyDown(Key key) => InternalKeyboard.IsKeyPressed(keyMap[key]);
+
+    /// <inheritdoc/>
+    public void Update() { }
 }

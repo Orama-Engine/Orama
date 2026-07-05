@@ -80,4 +80,6 @@ public sealed class Gamepad : IInputDevice
         return 0f;
     }
 
+    /// <inheritdoc/>
+    public void Update() { }
 }

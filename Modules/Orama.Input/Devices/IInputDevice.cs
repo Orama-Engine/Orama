@@ -7,5 +7,5 @@ namespace Orama.Input.Devices;
 public interface IInputDevice
 {
     /// <summary> Runs once per <see cref="InputModule"/> update. </summary>
-    void Update() { }
+    void Update();
 }

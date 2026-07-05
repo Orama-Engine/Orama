@@ -46,7 +46,7 @@ public sealed class Mouse : IInputDevice
     public bool IsButtonDown(Button button) => InternalMouse.IsButtonPressed(buttonMap[button]);
 
     /// <inheritdoc/>
-    internal void Update()
+    public void Update()
     {
         var mousePos = InternalMouse.Position;
         MouseDelta = new Vector2(mousePos.X - lastMousePosition.X, mousePos.Y - lastMousePosition.Y);

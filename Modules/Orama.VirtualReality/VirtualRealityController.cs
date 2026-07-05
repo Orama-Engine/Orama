@@ -37,4 +37,7 @@ public abstract class VirtualRealityController : IInputDevice
 
     /// <summary> Checks if the given <see cref="Button"/> is currently held down. </summary>
     public abstract bool IsButtonPressed(Button button);
+
+    /// <inheritdoc/>
+    public abstract void Update();
 }
