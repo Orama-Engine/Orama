@@ -52,7 +52,7 @@ public class FlyController : Entity
         Vector2 delta = Input.PrimaryMouse?.MouseDelta ?? Vector2.Zero;
 
         yaw += delta.X * mouseSensitivity;
-        pitch += -delta.Y * mouseSensitivity;
+        pitch += delta.Y * mouseSensitivity;
 
         pitch = Math.Math.Clamp(pitch, -1.55f, 1.55f);
 
