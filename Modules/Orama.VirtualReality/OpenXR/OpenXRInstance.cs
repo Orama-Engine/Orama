@@ -17,6 +17,28 @@ internal class OpenXRInstance : OpenXRBinding
     /// <summary> The list of extensions that this instance supports. </summary>
     public IReadOnlyList<string> Extensions => extensions;
 
+    /// <summary> The ID of the current system. </summary>
+    public ulong SystemID
+    {
+        get
+        {
+            ulong systemID = 0;
+
+            SystemGetInfo systemInfo = new()
+            {
+                Type = StructureType.SystemGetInfo,
+                FormFactor = FormFactor.HeadMountedDisplay // TODO: Support handhelds?
+            };
+
+            Result result = OpenXR.GetSystem(Native, ref systemInfo, ref systemID);
+
+            if (result != Result.Success)
+                throw new Exception($"Failed to get system ID: {result}");
+
+            return systemID;
+        }
+    }
+
     private List<string> extensions = new();
 
     public OpenXRInstance(XR openXR) : base(openXR)

@@ -1,9 +1,7 @@
 ﻿using Orama.Common.Utility;
 using Orama.Rendering;
 using Silk.NET.Core;
-using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace Orama.VirtualReality.OpenXR;
@@ -19,43 +17,8 @@ internal class OpenXRDevice : VirtualRealityDevice
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private unsafe delegate Result pfnGetVulkanGraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsVulkanKHR* req);
 
-    public const string XR_KHR_VULKAN_ENABLE_EXTENSION_NAME = "XR_KHR_vulkan_enable";
-    public const string XR_KHR_D3D11_ENABLE_EXTENSION_NAME = "XR_KHR_D3D11_enable";
-
     /// <summary> The OpenXR API. </summary>
     public XR OpenXR { get; private set; } = null!;
-
-    /// <summary> This device's OpenXR System ID. </summary>
-    public ulong? SystemID
-    {
-        get
-        {
-            if (field != null)
-                return field;
-
-            ulong systemID = 0;
-
-            SystemGetInfo systemInfo = new()
-            {
-                Type = StructureType.SystemGetInfo,
-                FormFactor = FormFactor.HeadMountedDisplay // TODO: Support handhelds?
-            };
-
-            if (Instance == null)
-                return null;
-
-            Result result = OpenXR.GetSystem(Instance.Native, ref systemInfo, ref systemID);
-
-            if (result != Result.Success)
-            {
-                EngineConsole.Warning($"Failed to get OpenXR System: {result}");
-                return null;
-            }
-
-            field = systemID;
-            return field;
-        }
-    }
 
     /// <summary> This device's OpenXR Instance. </summary>
     public OpenXRInstance Instance { get; private set; } = null!;
@@ -70,13 +33,13 @@ internal class OpenXRDevice : VirtualRealityDevice
 
             unsafe
             {
-                if (GraphicsBinding == null || SystemID == null || Instance == null)
+                if (GraphicsBinding == null || Instance == null)
                     return null;
 
                 SessionCreateInfo createInfo = new()
                 {
                     Type = StructureType.SessionCreateInfo,
-                    SystemId = SystemID.Value,
+                    SystemId = Instance.SystemID,
                     Next = (void*)GraphicsBinding.Native
                 };
 
@@ -108,10 +71,10 @@ internal class OpenXRDevice : VirtualRealityDevice
             Instance = new OpenXRInstance(OpenXR);
 
 
-            EngineConsole.Log(SystemID?.ToString() ?? "NULL");
+            EngineConsole.Log(Instance.SystemID.ToString());
             EngineConsole.Log(Instance.Native.ToString() ?? "NULL");
 
-            if (Instance == null || SystemID == null)
+            if (Instance == null)
                 return false;
 
             if (!CheckGraphicsRequirements())
@@ -125,7 +88,7 @@ internal class OpenXRDevice : VirtualRealityDevice
 
     private unsafe bool CheckGraphicsRequirements()
     {
-        if (Instance == null || SystemID == null)
+        if (Instance == null)
             return false;
 
         switch (Renderer.Backend)
@@ -147,7 +110,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                         Type = StructureType.GraphicsRequirementsD3D11Khr
                     };
 
-                    res = fn(Instance.Native, SystemID.Value, &requirements);
+                    res = fn(Instance.Native, Instance.SystemID, &requirements);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
@@ -175,7 +138,7 @@ internal class OpenXRDevice : VirtualRealityDevice
                         Type = StructureType.GraphicsRequirementsVulkanKhr
                     };
 
-                    res = fn(Instance.Native, SystemID.Value, &requirements);
+                    res = fn(Instance.Native, Instance.SystemID, &requirements);
                     if (res != Result.Success)
                     {
                         EngineConsole.Warning($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
