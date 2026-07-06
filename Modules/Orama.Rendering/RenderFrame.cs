@@ -1,4 +1,4 @@
-using Orama.Rendering.Components;
+using Orama.Math;
 
 namespace Orama.Rendering;
 
@@ -7,5 +7,6 @@ namespace Orama.Rendering;
 /// </summary>
 public readonly struct RenderFrame
 {
-    public Camera Camera { get; init; }
+    public Matrix4x4 View {  get; init; }
+    public Matrix4x4 Projection { get; init; }
 }

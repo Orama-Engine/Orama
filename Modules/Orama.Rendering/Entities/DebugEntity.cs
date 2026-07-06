@@ -29,6 +29,8 @@ public class DebugEntity : Entity
         BoxCollider col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
         col.Start();
 
+        RigidBody.IsStatic = true;
+
         var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
 
         Renderer.Mesh = mesh;

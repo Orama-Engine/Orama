@@ -3,6 +3,7 @@ using Orama.Rendering.Pipelines;
 using Orama.Rendering.Pipelines.Forward;
 using Orama.Rendering;
 using Orama.Common;
+using Orama.Math;
 
 namespace Orama.Rendering;
 
@@ -32,9 +33,13 @@ public class RenderingModule : BaseModule
 
     public void Render() 
     {
+        if (Camera.Main == null)
+            new Camera();
+
         RenderFrame frame = new RenderFrame()
         {
-            Camera = Camera.Main ?? new Camera(),
+            View = Camera.Main?.ViewMatrix ?? Matrix4x4.Identity,
+            Projection = Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity
         };
 
         Pipeline.Render(in frame);

@@ -46,8 +46,6 @@ internal class Program
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
-            floor.Start();
-            floor.RigidBody.IsStatic = true;
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };

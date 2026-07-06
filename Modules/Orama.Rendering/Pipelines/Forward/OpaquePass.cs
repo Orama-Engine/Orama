@@ -26,8 +26,8 @@ public class OpaquePass : RenderPass
             if (renderable.Material.Pass == "Opaque")
             {
                 Matrix4x4 model = renderable.Transform;
-                Matrix4x4 view = frame.Camera.ViewMatrix;
-                Matrix4x4 projection = frame.Camera.ProjectionMatrix;
+                Matrix4x4 view = frame.View;
+                Matrix4x4 projection = frame.Projection;
 
                 GPUBuffer paramBuffer = new GPUBuffer();
                 paramBuffer.AddMatrix4x4(model);
