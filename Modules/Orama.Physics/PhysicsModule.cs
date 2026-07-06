@@ -10,6 +10,8 @@ public class PhysicsModule : BaseModule
 {
     public IPhysicsWorld World { get; set; } = null!;
 
+    private double accumulator = 0f;
+
     /// <inheritdoc/>
     public override void Initialize()
     {
@@ -27,5 +29,13 @@ public class PhysicsModule : BaseModule
     }
 
     /// <inheritdoc/>
-    public void Update() => World.Step(Time.FixedDelta);
+    public void Update()
+    {
+        accumulator += Time.PreciseDelta;
+        while (accumulator > Time.FixedDelta)
+        {
+            accumulator -= Time.FixedDelta;
+            World.Step(Time.FixedDelta);
+        }
+    }
 }
