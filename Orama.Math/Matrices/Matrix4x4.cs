@@ -245,10 +245,10 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
         );
     }
 
-    /// <summary> Transforms a <see cref="Vector4"/> by this matrix. </summary>
+    /// <inheritdoc/>
     public override bool Equals([NotNullWhen(true)] object? obj) => obj is Matrix4x4 other && Equals(other);
 
-
+    /// <inheritdoc/>
     public bool Equals(Matrix4x4 other)
     {
         return
@@ -256,6 +256,31 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
             M21 == other.M21 && M22 == other.M22 && M23 == other.M23 && M24 == other.M24 &&
             M31 == other.M31 && M32 == other.M32 && M33 == other.M33 && M34 == other.M34 &&
             M41 == other.M41 && M42 == other.M42 && M43 == other.M43 && M44 == other.M44;
+    }
+
+    /// <inheritdoc/>
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            var hashCode = M11.GetHashCode();
+            hashCode = (hashCode * 397) ^ M12.GetHashCode();
+            hashCode = (hashCode * 397) ^ M13.GetHashCode();
+            hashCode = (hashCode * 397) ^ M14.GetHashCode();
+            hashCode = (hashCode * 397) ^ M21.GetHashCode();
+            hashCode = (hashCode * 397) ^ M22.GetHashCode();
+            hashCode = (hashCode * 397) ^ M23.GetHashCode();
+            hashCode = (hashCode * 397) ^ M24.GetHashCode();
+            hashCode = (hashCode * 397) ^ M31.GetHashCode();
+            hashCode = (hashCode * 397) ^ M32.GetHashCode();
+            hashCode = (hashCode * 397) ^ M33.GetHashCode();
+            hashCode = (hashCode * 397) ^ M34.GetHashCode();
+            hashCode = (hashCode * 397) ^ M41.GetHashCode();
+            hashCode = (hashCode * 397) ^ M42.GetHashCode();
+            hashCode = (hashCode * 397) ^ M43.GetHashCode();
+            hashCode = (hashCode * 397) ^ M44.GetHashCode();
+            return hashCode;
+        }
     }
 
     #endregion
