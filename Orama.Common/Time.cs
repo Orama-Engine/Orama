@@ -12,9 +12,6 @@ public static class Time
     public static float Delta { get; internal set;  }
 
     /// <summary> The precise time elapsed since the last frame in seconds. </summary>
-    /// <remarks> 
-    /// This value is more precise than <see cref="Delta"/> and is useful
-    /// for high-precision simulations. For other purposes, use <see cref="Delta"/>.
-    /// </remarks>
+    /// <remarks> This value is more precise than <see cref="Delta"/> and is useful for high-precision simulations. For other purposes, use <see cref="Delta"/>. </remarks>
     public static double PreciseDelta { get; internal set; }
 }

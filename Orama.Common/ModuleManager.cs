@@ -23,7 +23,13 @@ public static class ModuleManager
 
     /// <summary> Gets a registered <see cref="BaseModule"/> of type <typeparamref name="T"/>. </summary>
     /// <returns> The registered <see cref="BaseModule"/> instance or null if not found. </returns>
-    public static T? GetModule<T>() where T : BaseModule => (T?)modules[typeof(T)];
+    public static T? GetModule<T>() where T : BaseModule
+    {
+        if (modules.TryGetValue(typeof(T), out var module))
+            return (T)module;
+
+        return null;
+    }
 
     /// <summary> Unregisters a <see cref="BaseModule"/>. </summary>
     internal static void UnregisterModule(Type type) => modules.Remove(type);

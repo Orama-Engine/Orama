@@ -11,6 +11,7 @@ using Orama.Scenes.Resources;
 using Orama.Common;
 using Orama.Common.Utility;
 using Orama.VirtualReality;
+using Orama.Rendering.Entities;
 
 namespace Orama.Desktop;
 
@@ -27,7 +28,7 @@ internal class Program
         ModuleManager.RegisterModule<GUIModule>();
 
         ModuleManager.RegisterModule<InputModule>();
-        ModuleManager.RegisterModule<RenderingModule>(); // Rendering should always be last
+        ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<VirtualRealityModule>();
 
         var debugScene = new Scene();
@@ -41,15 +42,12 @@ internal class Program
             flyController.Name = "Camera";
             flyController.Transform.Position = new Vector3(0, 0, 0);
 
-            Entity floor = EntityRegistry.CreateEntity("debug_entity");
+            DebugEntity floor = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
             floor.Name = "Floor";
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
-
-            Entity cube = EntityRegistry.CreateEntity("debug_entity");
-            cube.Name = "Cube";
-            cube.Transform.Position = new Vector3(0, 1, 0);
-
+            floor.Start();
+            floor.RigidBody.IsStatic = true;
 
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };
@@ -61,11 +59,7 @@ internal class Program
 
         Application.OnUpdate += () =>
         {
-            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.IsButtonPressed(VirtualRealityController.Button.ActionUp) == true)
-                EngineConsole.Log("Action Up");
 
-            if (ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.GripPressedAmount > 0.2f)
-                EngineConsole.Log("Left Grip: " + ModuleManager.GetModule<InputModule>()?.PrimaryHandLeft?.GripPressedAmount);
         };
 
         Application.OnRender += () =>
