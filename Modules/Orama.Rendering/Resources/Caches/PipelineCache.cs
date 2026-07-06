@@ -14,7 +14,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         global::NeoVeldrid.Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
             new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main"),
-            new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: false)
+            new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: Renderer.Veldrid.GraphicsDevice.IsClipSpaceYInverted)
         );
 
         VertexLayoutDescription vertexLayout = new(

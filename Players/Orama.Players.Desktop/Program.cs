@@ -47,6 +47,9 @@ internal class Program
             floor.Transform.Scale = new Vector3(10, 1, 10);
             floor.Transform.Position = new Vector3(0, 0, 0);
 
+            DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
+            cube.Transform.Position = new Vector3(0, 1, 0);
+
             ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
         };
 
