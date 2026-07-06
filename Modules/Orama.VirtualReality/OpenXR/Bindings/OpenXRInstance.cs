@@ -40,10 +40,7 @@ internal class OpenXRInstance : OpenXRBinding
                 FormFactor = FormFactor.HeadMountedDisplay // TODO: Support handhelds?
             };
 
-            Result result = OpenXR.GetSystem(Native, ref systemInfo, ref systemID);
-
-            if (result != Result.Success)
-                throw new Exception($"Failed to get system ID: {result}");
+            OpenXR.GetSystem(Native, ref systemInfo, ref systemID).VerifySuccess();
 
             return systemID;
         }
@@ -79,9 +76,7 @@ internal class OpenXRInstance : OpenXRBinding
             };
 
             Instance instance = new();
-            Result res = OpenXR.CreateInstance(ref createInfo, ref instance);
-            if (res != Result.Success)
-                throw new Exception($"Failed to create OpenXR instance: {res}");
+            OpenXR.CreateInstance(ref createInfo, ref instance).VerifySuccess();
 
             Native = instance;
 
@@ -90,7 +85,7 @@ internal class OpenXRInstance : OpenXRBinding
                 Type = StructureType.SystemProperties
             };
 
-            OpenXR.GetSystemProperties(instance, SystemID, ref properties);
+            OpenXR.GetSystemProperties(instance, SystemID, ref properties).VerifySuccess();
 
             DeviceName = Marshal.PtrToStringAnsi((IntPtr)properties.SystemName) ?? "Unknown";
 
@@ -153,9 +148,7 @@ internal class OpenXRInstance : OpenXRBinding
             case RendererBackend.Direct3D11:
                 {
                     PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr);
-                    if (res != Result.Success)
-                        throw new Exception($"Failed to get xrGetD3D11GraphicsRequirementsKHR: {res}");
+                    OpenXR.GetInstanceProcAddr(Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr).VerifySuccess();
 
                     var fn = Marshal.GetDelegateForFunctionPointer<pfnGetD3D11GraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
 
@@ -164,9 +157,7 @@ internal class OpenXRInstance : OpenXRBinding
                         Type = StructureType.GraphicsRequirementsD3D11Khr
                     };
 
-                    res = fn(Native, SystemID, &requirements);
-                    if (res != Result.Success)
-                        throw new Exception($"xrGetD3D11GraphicsRequirementsKHR failed: {res}");
+                    fn(Native, SystemID, &requirements);
 
                     break;
                 }
@@ -174,9 +165,7 @@ internal class OpenXRInstance : OpenXRBinding
             case RendererBackend.Vulkan:
                 {
                     PfnVoidFunction fnPtr = new();
-                    Result res = OpenXR.GetInstanceProcAddr(Native, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr);
-                    if (res != Result.Success)
-                        throw new Exception($"Failed to get xrGetVulkanGraphicsRequirementsKHR: {res}");
+                    OpenXR.GetInstanceProcAddr(Native, "xrGetVulkanGraphicsRequirementsKHR", ref fnPtr).VerifySuccess();
 
                     var fn = Marshal.GetDelegateForFunctionPointer<pfnGetVulkanGraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
 
@@ -185,9 +174,7 @@ internal class OpenXRInstance : OpenXRBinding
                         Type = StructureType.GraphicsRequirementsVulkanKhr
                     };
 
-                    res = fn(Native, SystemID, &requirements);
-                    if (res != Result.Success)
-                        throw new Exception($"xrGetVulkanGraphicsRequirementsKHR failed: {res}");
+                    fn(Native, SystemID, &requirements);
 
                     break;
                 }

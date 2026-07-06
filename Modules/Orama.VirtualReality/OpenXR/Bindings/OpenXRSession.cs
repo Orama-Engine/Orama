@@ -23,7 +23,7 @@ internal class OpenXRSession : OpenXRBinding
             };
 
             Session session = new();
-            Result result = OpenXR.CreateSession(instance.Native, &createInfo, &session);
+            OpenXR.CreateSession(instance.Native, &createInfo, &session).VerifySuccess();
 
             SessionBeginInfo beginInfo = new()
             {
@@ -31,10 +31,7 @@ internal class OpenXRSession : OpenXRBinding
                 PrimaryViewConfigurationType = ViewConfigurationType.PrimaryStereo
             };
 
-            if (result != Result.Success)
-                throw new Exception($"Failed to create OpenXR session: {result}");
-
-            OpenXR.BeginSession(session, ref beginInfo);
+            OpenXR.BeginSession(session, ref beginInfo).VerifySuccess();
 
             Native = session;
         }
