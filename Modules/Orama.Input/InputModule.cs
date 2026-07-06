@@ -9,8 +9,8 @@ namespace Orama.Input;
 /// </summary>
 public class InputModule : BaseModule
 {
-    /// <summary> A collection of all connected input devices. </summary>
-    public IReadOnlyCollection<Devices.IInputDevice> Devices => devices;
+    /// <summary> All currently connected input devices. </summary>
+    public IReadOnlyList<Devices.IInputDevice> Devices => devices;
 
     /// <summary> The primary (first connected) <see cref="Keyboard"/>. </summary>
     public Keyboard? PrimaryKeyboard { get; private set; }
@@ -21,7 +21,7 @@ public class InputModule : BaseModule
     /// <summary> The primary (first connected) <see cref="Gamepad"/>. </summary>
     public Gamepad? PrimaryGamepad { get; private set; }
 
-    private HashSet<Devices.IInputDevice> devices = new();
+    private List<Devices.IInputDevice> devices = new();
 
     private IInputContext input = null!;
 

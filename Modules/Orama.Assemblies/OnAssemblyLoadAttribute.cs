@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Orama.Common.Utility;
+using System.Reflection;
 
 namespace Orama.Assemblies;
 
@@ -12,7 +13,17 @@ public class OnAssemblyLoadAttribute : Attribute
     {
         foreach (var type in assembly.GetTypes())
             foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-                if (method.IsDefined(typeof(OnAssemblyLoadAttribute), false) && method.GetParameters().Length == 0)
-                    method.Invoke(null, null);
+            {
+                if (method.GetParameters().Length != 0)
+                    continue;
+
+                if (method.ReturnType != typeof(void))
+                    continue;
+
+                if (!method.IsDefined(typeof(OnAssemblyLoadAttribute), false))
+                    continue;
+
+                method.Invoke(null, null);
+            }
     }
 }

@@ -33,7 +33,13 @@ public class AssemblyModule : BaseModule
     public override void Initialize()
     {
         foreach (var loadedAssembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            // Hacky hacky
+            if (loadedAssembly.FullName?.Contains("System") ?? false)
+                continue;
+
             OnAssemblyLoadAttribute.RunOnAssembly(loadedAssembly);
+        }
     }
 
     /// <summary> Loads an assembly from the specified path. </summary>
