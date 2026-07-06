@@ -1,5 +1,5 @@
 ﻿using Orama.Common;
-using System.Reflection;
+using Orama.Common.Utility;
 using System.Runtime.Loader;
 
 namespace Orama.Assemblies;
@@ -9,18 +9,6 @@ namespace Orama.Assemblies;
 /// </summary>
 public class AssemblyModule : BaseModule
 {
-    /// <summary> Called when an assembly is loaded. </summary>
-    public Action<ExternalAssembly>? AssemblyLoaded { get; set; }
-
-    /// <summary> Called when an assembly is unloaded. </summary>
-    public Action<ExternalAssembly>? AssemblyUnloaded { get; set; }
-
-    /// <summary> The assemblies loaded into the process. </summary>
-    public IReadOnlyCollection<ExternalAssembly> Assemblies => assemblies;
-
-    private readonly HashSet<ExternalAssembly> assemblies = new();
-
-
     /// <inheritdoc/>
     public override void Dispose()
     {
@@ -32,52 +20,31 @@ public class AssemblyModule : BaseModule
     /// <inheritdoc/>
     public override void Initialize()
     {
-        foreach (var loadedAssembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            // Hacky hacky
-            if (loadedAssembly.FullName?.Contains("System") ?? false)
-                continue;
-
+        foreach (var loadedAssembly in Reflection.GameAssemblies)
             OnAssemblyLoadAttribute.RunOnAssembly(loadedAssembly);
-        }
     }
 
     /// <summary> Loads an assembly from the specified path. </summary>
-    public ExternalAssembly LoadFromPath(string path)
+    public OramaAssembly LoadFromPath(string path)
     {
         string absolutePath = System.IO.Path.GetFullPath(path);
 
         var context = new AssemblyLoadContext("OramaPlugin", true);
         var assembly = context.LoadFromAssemblyPath(absolutePath);
 
-        ExternalAssembly asm = new(absolutePath, context, assembly);
-        assemblies.Add(asm);
-        AssemblyLoaded?.Invoke(asm);
+        OramaAssembly asm = new(absolutePath, context, assembly);
+        Reflection.GameAssemblies.Add(asm);
+        asm.Unloaded += (a) => Reflection.GameAssemblies.Remove(a);
 
         OnAssemblyLoadAttribute.RunOnAssembly(assembly);
 
         return asm;
     }
 
-    /// <summary> Unloads the specified assembly. </summary>
-    public void Unload(ExternalAssembly assembly)
-    {
-        if (assemblies.Remove(assembly))
-        {
-            assembly.LoadContext.Unload();
-            AssemblyUnloaded?.Invoke(assembly);
-        }
-    }
-
     /// <summary> Unloads all currently loaded assemblies. </summary>
     public void UnloadAll()
     {
-        foreach (var asm in assemblies)
-        {
-            asm.LoadContext.Unload();
-            AssemblyUnloaded?.Invoke(asm);
-        }
-
-        assemblies.Clear();
+        foreach (var asm in Reflection.GameAssemblies)
+            asm.TryUnload();
     }
 }

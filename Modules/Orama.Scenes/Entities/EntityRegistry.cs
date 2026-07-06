@@ -1,4 +1,4 @@
-﻿using Orama.Common.Utility;
+﻿using Orama.Assemblies;
 using System.Reflection;
 
 namespace Orama.Scenes.Entities;
@@ -12,13 +12,9 @@ public static class EntityRegistry
 
     public static void RegisterFactories()
     {
-        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        foreach (var assembly in Reflection.GameAssemblies)
         {
-            // Hacky hacky
-            if (assembly.FullName?.Contains("System") ?? false)
-                continue;
-
-            var entities = assembly.GetTypes().Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
+            var entities = assembly.Types.Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
 
             foreach (var entity in entities)
             {

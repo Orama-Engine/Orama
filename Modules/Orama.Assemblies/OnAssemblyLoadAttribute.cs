@@ -8,9 +8,9 @@ namespace Orama.Assemblies;
 [AttributeUsage(AttributeTargets.Method)]
 public class OnAssemblyLoadAttribute : Attribute
 {
-    public static void RunOnAssembly(Assembly assembly)
+    public static void RunOnAssembly(OramaAssembly assembly)
     {
-        foreach (var type in assembly.GetTypes())
+        foreach (var type in assembly.Types)
             foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (method.GetParameters().Length != 0)

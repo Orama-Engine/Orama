@@ -10,6 +10,7 @@
     <ProjectReference Include="..\..\Orama.Common\Orama.Common.csproj" />
     <ProjectReference Include="..\..\Orama.Math\Orama.Math.csproj" />
     <ProjectReference Include="..\..\Orama.Serialization\Orama.Serialization.csproj" />
+    <ProjectReference Include="..\Orama.Assemblies\Orama.Assemblies.csproj" />
   </ItemGroup>
 
 </Project>
