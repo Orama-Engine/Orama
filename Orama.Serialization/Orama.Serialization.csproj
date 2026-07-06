@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Modules\Orama.Assemblies\Orama.Assemblies.csproj" />
+  </ItemGroup>
+
 </Project>

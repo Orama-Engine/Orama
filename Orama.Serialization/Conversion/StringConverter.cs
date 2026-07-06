@@ -1,4 +1,4 @@
-﻿
+﻿using Orama.Assemblies;
 using System.Reflection;
 
 namespace Orama.Serialization.Conversion;
@@ -24,11 +24,9 @@ public class StringConverterAttribute : Attribute
         {
             converters = new Dictionary<Type, object>();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in Reflection.GameAssemblies)
             {
-                Type[] types;
-                try { types = assembly.GetTypes(); }
-                catch { continue; }
+                Type[] types = assembly.Types;
 
                 foreach (var t in types)
                 {
