@@ -14,6 +14,10 @@ public static class EntityRegistry
     {
         foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
         {
+            // Hacky hacky
+            if (assembly.FullName?.Contains("System") ?? false)
+                continue;
+
             var entities = assembly.GetTypes().Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
 
             foreach (var entity in entities)
