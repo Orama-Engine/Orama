@@ -45,14 +45,14 @@ internal class OpenXRSession : OpenXRBinding
         };
 
         FrameState frameState;
-        OpenXR.WaitFrame(Native, &waitInfo, &frameState);
+        OpenXR.WaitFrame(Native, &waitInfo, &frameState).VerifySuccess();
 
         FrameBeginInfo beginInfo = new()
         {
             Type = StructureType.FrameBeginInfo
         };
 
-        OpenXR.BeginFrame(Native, &beginInfo);
+        OpenXR.BeginFrame(Native, &beginInfo).VerifySuccess();
 
         FrameEndInfo endFrame = new()
         {
@@ -63,7 +63,7 @@ internal class OpenXRSession : OpenXRBinding
             Layers = null
         };
 
-        OpenXR.EndFrame(Native, &endFrame);
+        OpenXR.EndFrame(Native, &endFrame).VerifySuccess();
     }
 
     public unsafe void PollEvents()
@@ -91,7 +91,7 @@ internal class OpenXRSession : OpenXRBinding
                                 PrimaryViewConfigurationType = ViewConfigurationType.PrimaryStereo
                             };
 
-                            OpenXR.BeginSession(Native, &beginInfo);
+                            OpenXR.BeginSession(Native, &beginInfo).VerifySuccess();
                         }
 
                         break;

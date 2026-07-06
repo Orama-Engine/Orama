@@ -107,7 +107,7 @@ internal class OpenXRInstance : OpenXRBinding
         extensions.Add(requiredExtension);
 
         uint propCount = 0;
-        OpenXR.EnumerateInstanceExtensionProperties((byte*)null, 0, &propCount, null);
+        OpenXR.EnumerateInstanceExtensionProperties((byte*)null, 0, &propCount, null).VerifySuccess();
 
         Span<ExtensionProperties> props = new ExtensionProperties[propCount];
         for (int i = 0; i < props.Length; i++)
@@ -115,7 +115,8 @@ internal class OpenXRInstance : OpenXRBinding
             props[i].Type = StructureType.ExtensionProperties;
             props[i].Next = null;
         }
-        OpenXR.EnumerateInstanceExtensionProperties((byte*)null, propCount, &propCount, props);
+
+        OpenXR.EnumerateInstanceExtensionProperties((byte*)null, propCount, &propCount, props).VerifySuccess();
 
         bool found = false;
         for (int i = 0; i < props.Length; i++)
