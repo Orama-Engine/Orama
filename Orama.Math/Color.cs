@@ -34,7 +34,7 @@ public struct Color : IEquatable<Color>
     public override bool Equals(object? obj)
     {
         if (obj is Color other)
-            return this == other;
+            return Equals(other);
 
         return false;
     }

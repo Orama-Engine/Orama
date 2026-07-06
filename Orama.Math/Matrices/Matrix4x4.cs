@@ -1,11 +1,12 @@
 ﻿namespace Orama.Math;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Represents a four-dimensional matrix.
 /// </summary>
-public struct Matrix4x4
+public struct Matrix4x4 : IEquatable<Matrix4x4>
 {
     #region Components
     public float M11 { get; set; }
@@ -242,6 +243,19 @@ public struct Matrix4x4
             v.X * M12 + v.Y * M22 + v.Z * M32 + M42,
             v.X * M13 + v.Y * M23 + v.Z * M33 + M43
         );
+    }
+
+    /// <summary> Transforms a <see cref="Vector4"/> by this matrix. </summary>
+    public override bool Equals([NotNullWhen(true)] object? obj) => obj is Matrix4x4 other && Equals(other);
+
+
+    public bool Equals(Matrix4x4 other)
+    {
+        return
+            M11 == other.M11 && M12 == other.M12 && M13 == other.M13 && M14 == other.M14 &&
+            M21 == other.M21 && M22 == other.M22 && M23 == other.M23 && M24 == other.M24 &&
+            M31 == other.M31 && M32 == other.M32 && M33 == other.M33 && M34 == other.M34 &&
+            M41 == other.M41 && M42 == other.M42 && M43 == other.M43 && M44 == other.M44;
     }
 
     #endregion
