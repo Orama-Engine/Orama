@@ -9,56 +9,40 @@ namespace Orama.Rendering.Resources;
 /// </summary>
 public class Material
 {
-    private const string DEFAULT_SHADER = @"
-#vertex VertexEntryPoint
-#fragment FragmentEntryPoint
-
-Name = ""Default/White""
-Pass = ""Opaque""
-
-Properties
+private const string DEFAULT_SHADER = """
+cbuffer Globals
 {
     float4x4 ObjectMatrix;
     float4x4 ViewMatrix;
     float4x4 ProjectionMatrix;
 }
 
-Source
+struct VSInput
 {
-    struct VSInput
-    {
-        float3 Position : POSITION;
-        float3 Normal   : NORMAL;
-        float2 UV       : TEXCOORD0;
-    };
+    float3 Position : POSITION;
+    float3 Normal : NORMAL;
+    float2 UV : TEXCOORD0;
+};
 
-    struct VSOutput
-    {
-        float4 pos : SV_POSITION;
-    };
+struct VSOutput
+{
+    float4 Position : SV_Position;
+};
 
-    VSOutput VertexEntryPoint(VSInput input)
-    {
-        VSOutput output;
-
-        float4 localPos = float4(input.Position, 1.0);
-
-        float4 worldPos = mul(ObjectMatrix, localPos);
-        float4 viewPos = mul(ViewMatrix, worldPos);
-        float4 clipPos = mul(ProjectionMatrix, viewPos);
-
-        output.pos = clipPos;
-
-        return output;
-    }
-
-
-    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
-    {
-        return float4(1.0, 1.0, 1.0, 1.0);
-    }
+[shader("vertex")]
+VSOutput vertexMain(VSInput i)
+{
+    VSOutput o;
+    o.Position = mul(ProjectionMatrix, mul(ViewMatrix, mul(ObjectMatrix, float4(i.Position, 1))));
+    return o;
 }
-";
+
+[shader("fragment")]
+float4 fragmentMain(VSOutput i) : SV_Target
+{
+    return float4(1, 1, 1, 1);
+}
+""";
 
     /// <summary> The GPU <see cref="Resources.Shader"/> used by the material. </summary>
     public Shader Shader { get; set; }

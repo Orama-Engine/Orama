@@ -1,39 +1,79 @@
 using System.Collections.Concurrent;
-using Vortice.ShaderCompiler;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using Silk.NET.OpenGL.Extensions.EXT;
+using SlangShaderSharp;
 
 namespace Orama.Rendering;
 
 /// <summary>
-/// Bakes GLSL and HLSL shaders to SPIRV.
+/// Bakes Slang shaders to SPIRV.
 /// </summary>
 public static class ShaderBaker
 {
-    private static readonly Compiler compiler = new();
+    private static IGlobalSession globalSession;
+    private static ISession localSession;
 
-    /// <summary> Compiles GLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) GLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.GLSL);
-
-    /// <summary> Compiles HLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) HLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.HLSL);
-
-    private static (byte[] Vert, byte[] Frag) Compile(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
+    static ShaderBaker()
     {
-        CompilerOptions opts = new()
+        Slang.CreateGlobalSession(Slang.ApiVersion, out var gs);
+        globalSession = gs;
+
+        SessionDesc sesDesc = new()
         {
-            SourceLanguage = sourceLang,
-            EntryPoint = "main"
+            Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }]
         };
 
-        opts.ShaderStage = ShaderKind.VertexShader;
-        var vert = compiler.Compile(vertexSource, "vertex.shader", opts);
-        if (vert.Status != CompilationStatus.Success)
-            throw new Exception("Vertex shader compilation failed: " + vert.ErrorMessage);
+        globalSession.CreateSession(sesDesc, out var ls);
+        localSession = ls;
+    }
 
-        opts.ShaderStage = ShaderKind.FragmentShader;
-        var frag = compiler.Compile(fragmentSource, "fragment.shader", opts);
-        if (frag.Status != CompilationStatus.Success)
-            throw new Exception("Fragment shader compilation failed: " + frag.ErrorMessage);
+    /// <summary> Compiles Slang source to SPIRV. </summary>
+    public static (byte[] Vert, byte[] Frag) SlangToSpirV(string source)
+    {
+        IModule? module = localSession.LoadModuleFromSourceString("shader", "shader.slang", source, out _);
+        if (module == null)
+            throw new Exception("TBD");
 
-        return (vert.Bytecode, frag.Bytecode);
+        module.FindEntryPointByName("vertexMain", out IEntryPoint vertexEntry);
+        module.FindEntryPointByName("fragmentMain", out IEntryPoint fragmentEntry);
+
+        IComponentType[] components =
+        {
+            module,
+            vertexEntry,
+        };
+
+        localSession.CreateCompositeComponentType(components, out IComponentType vertexProgram, out _);
+
+        vertexProgram.Link(out IComponentType linkedVertex, out _);
+
+        linkedVertex.GetEntryPointCode(0, 0, out ISlangBlob vertexBlob, out _);
+
+        components =
+        [
+            module,
+            fragmentEntry,
+        ];
+
+        localSession.CreateCompositeComponentType(components, out IComponentType fragmentProgram, out _);
+
+        fragmentProgram.Link(out IComponentType linkedFragment, out _);
+
+        linkedFragment.GetEntryPointCode(0, 0, out ISlangBlob fragmentBlob, out _);
+
+        unsafe
+        {
+            byte[] vert = new byte[vertexBlob.GetBufferSize()];
+            fixed (byte* dst = vert)
+                Buffer.MemoryCopy(vertexBlob.GetBufferPointer(), dst, vert.Length, vert.Length);
+
+            byte[] frag = new byte[fragmentBlob.GetBufferSize()];
+            fixed (byte* dst = frag)
+                Buffer.MemoryCopy(fragmentBlob.GetBufferPointer(), dst, frag.Length, frag.Length);
+
+            return (vert, frag);
+        }
+
     }
 }

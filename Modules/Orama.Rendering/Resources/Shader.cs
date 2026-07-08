@@ -1,6 +1,5 @@
 using Orama.Rendering;
-using Orama.ShaderLang;
-using Orama.ShaderLang.Targets;
+using SlangShaderSharp;
 
 namespace Orama.Rendering.Resources;
 
@@ -39,14 +38,12 @@ public class Shader
         get => field;
         set
         {
-            ShaderLangFormat format = ShaderLangFormat.FromSource(value);
-            (string, string) hlsl = HLSLTarget.Compile(format);
 
-            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.HLSLToSPIRV(hlsl.Item1, hlsl.Item2);
+            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.SlangToSpirV(value);
             VertexBytecode = spirv.Item1;
             FragmentBytecode = spirv.Item2;
 
-            Pass = format.Pass ?? "None";
+            Pass = "Opaque";
             
             field = value;
         }
