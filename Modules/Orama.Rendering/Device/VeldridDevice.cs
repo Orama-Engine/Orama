@@ -39,7 +39,6 @@ public class VeldridDevice
             case RendererBackend.OpenGL:
                 // TODO... Maybe?
                 throw new NotImplementedException();
-                break;
             case RendererBackend.Vulkan:
             case RendererBackend.Direct3D11:
                 {

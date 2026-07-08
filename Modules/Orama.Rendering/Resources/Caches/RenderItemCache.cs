@@ -43,7 +43,7 @@ public readonly record struct RIBufferKey(ImmutableArray<byte> Data, BufferUsage
     public override int GetHashCode() => hash;
 
     /// <inheritdoc/>
-    public bool Equals(RIBufferKey other) => Usage == other.Usage && Data.AsSpan().SequenceEqual(other.Data.AsSpan());
+    public bool Equals(RIBufferKey other) => Usage == other.Usage && Data.SequenceEqual(other.Data);
 
 }
 
