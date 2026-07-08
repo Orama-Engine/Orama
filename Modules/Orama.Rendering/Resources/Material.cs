@@ -10,12 +10,14 @@ namespace Orama.Rendering.Resources;
 public class Material
 {
 private const string DEFAULT_SHADER = """
-cbuffer Globals
+struct GlobalData
 {
     float4x4 ObjectMatrix;
     float4x4 ViewMatrix;
     float4x4 ProjectionMatrix;
-}
+};
+
+ParameterBlock<GlobalData> Globals;
 
 struct VSInput
 {
@@ -30,15 +32,20 @@ struct VSOutput
 };
 
 [shader("vertex")]
-VSOutput vertexMain(VSInput i)
+VSOutput VertexMain(VSInput i)
 {
     VSOutput o;
-    o.Position = mul(ProjectionMatrix, mul(ViewMatrix, mul(ObjectMatrix, float4(i.Position, 1))));
+
+    float4 world = mul(Globals.ObjectMatrix, float4(i.Position, 1));
+    float4 view = mul(Globals.ViewMatrix, world);
+
+    o.Position = mul(Globals.ProjectionMatrix, view);
+
     return o;
 }
 
 [shader("fragment")]
-float4 fragmentMain(VSOutput i) : SV_Target
+float4 FragmentMain(VSOutput i) : SV_Target
 {
     return float4(1, 1, 1, 1);
 }

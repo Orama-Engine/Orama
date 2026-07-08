@@ -40,8 +40,7 @@ public class CommandBuffer : IDisposable
         var gd = Renderer.Veldrid.GraphicsDevice;
 
         // index 0: MaterialParams
-        // index 1: ObjectParams
-        ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("MaterialParams", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment));
+        ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("Globals", ResourceKind.UniformBuffer, ShaderStages.Vertex));
 
         PipelineKey pipelineDesc = new PipelineKey(
             PassName: renderable.Material.Pass,

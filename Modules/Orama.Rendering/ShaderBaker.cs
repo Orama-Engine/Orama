@@ -1,7 +1,3 @@
-using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Silk.NET.OpenGL.Extensions.EXT;
 using SlangShaderSharp;
 
 namespace Orama.Rendering;
@@ -19,9 +15,24 @@ public static class ShaderBaker
         Slang.CreateGlobalSession(Slang.ApiVersion, out var gs);
         globalSession = gs;
 
+        CompilerOptionEntry[] options =
+        [
+            new CompilerOptionEntry
+                {
+                    Name = CompilerOptionName.MatrixLayoutColumn,
+                    Value = new CompilerOptionValue
+                    {
+                        Kind = CompilerOptionValueKind.Int,
+                        IntValue0 = 1
+                    }
+                }
+        ];
+
+
         SessionDesc sesDesc = new()
         {
-            Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }]
+            Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }],
+            CompilerOptionEntries = options,
         };
 
         globalSession.CreateSession(sesDesc, out var ls);
@@ -35,8 +46,8 @@ public static class ShaderBaker
         if (module == null)
             throw new Exception("TBD");
 
-        module.FindEntryPointByName("vertexMain", out IEntryPoint vertexEntry);
-        module.FindEntryPointByName("fragmentMain", out IEntryPoint fragmentEntry);
+        module.FindEntryPointByName("VertexMain", out IEntryPoint vertexEntry);
+        module.FindEntryPointByName("FragmentMain", out IEntryPoint fragmentEntry);
 
         IComponentType[] components =
         {
