@@ -39,20 +39,6 @@ public class CommandBuffer : IDisposable
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
 
-        int vertCount = renderable.Vertices.Length;
-        float[] vertexData = new float[vertCount * 8];
-        for (int i = 0; i < vertCount; i++)
-        {
-            vertexData[i * 8 + 0] = renderable.Vertices[i].X;
-            vertexData[i * 8 + 1] = renderable.Vertices[i].Y;
-            vertexData[i * 8 + 2] = renderable.Vertices[i].Z;
-            vertexData[i * 8 + 3] = i < renderable.Normals.Length ? renderable.Normals[i].X : 0f;
-            vertexData[i * 8 + 4] = i < renderable.Normals.Length ? renderable.Normals[i].Y : 0f;
-            vertexData[i * 8 + 5] = i < renderable.Normals.Length ? renderable.Normals[i].Z : 1f;
-            vertexData[i * 8 + 6] = i < renderable.UVs.Length ? renderable.UVs[i].X : 0f;
-            vertexData[i * 8 + 7] = i < renderable.UVs.Length ? renderable.UVs[i].Y : 0f;
-        }
-
         // index 0: MaterialParams
         // index 1: ObjectParams
         ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("MaterialParams", ResourceKind.UniformBuffer, ShaderStages.Vertex | ShaderStages.Fragment));
@@ -64,13 +50,11 @@ public class CommandBuffer : IDisposable
             ResourceLayout: layoutDesc
         );
 
-        var vertexBytes = MemoryMarshal.AsBytes(vertexData.AsSpan()).ToArray();
-        var indexBytes = MemoryMarshal.AsBytes(renderable.Indices.AsSpan()).ToArray();
-
         FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-            VertexBuffer: new RIBufferKey(ImmutableCollectionsMarshal.AsImmutableArray(vertexBytes), BufferUsage.VertexBuffer),
-            IndexBuffer: new RIBufferKey(ImmutableCollectionsMarshal.AsImmutableArray(indexBytes), BufferUsage.IndexBuffer),
-            IndexCount: (uint)renderable.Indices.Length,
+            VertexPositions: renderable.Vertices.ToImmutableArray(),
+            VertexNormals: renderable.Normals.ToImmutableArray(),
+            VertexUVs: renderable.UVs.ToImmutableArray(),
+            Indices: renderable.Indices.ToImmutableArray(),
             Pipeline: pipelineDesc
         ));
 
