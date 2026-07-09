@@ -32,10 +32,10 @@ public sealed class ShaderParameter
 public class Shader
 {
     /// <summary> The name of the shader's pass. </summary>
-    public string Pass { get; private set; }
+    public string Pass { get; internal set; }
 
     /// <summary> The name of the shader. This is used to import this shader. </summary>
-    public string Name { get; private set; }
+    public string Name { get; internal set; }
 
     /// <summary> The shader's raw ShaderLang source. </summary>
     public string Source

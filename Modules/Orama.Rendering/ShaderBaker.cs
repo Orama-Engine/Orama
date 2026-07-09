@@ -33,6 +33,7 @@ public static class ShaderBaker
         SessionDesc sesDesc = new()
         {
             Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }],
+            SearchPaths = ["Assets"], // Hacky
             CompilerOptionEntries = options,
         };
 
