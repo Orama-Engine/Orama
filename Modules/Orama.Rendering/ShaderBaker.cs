@@ -1,3 +1,4 @@
+using Orama.Common.Utility;
 using SlangShaderSharp;
 
 namespace Orama.Rendering;
@@ -45,9 +46,31 @@ public static class ShaderBaker
         IModule? module = localSession.LoadModuleFromSourceString("shader", "shader.slang", source, out _);
         if (module == null)
             throw new Exception("TBD");
+            
+        IEntryPoint? vertexEntry = null;
+        IEntryPoint? fragmentEntry = null;
 
-        module.FindEntryPointByName("VertexMain", out IEntryPoint vertexEntry);
-        module.FindEntryPointByName("FragmentMain", out IEntryPoint fragmentEntry);
+        for (int i = 0; i < module.GetDefinedEntryPointCount(); i++)
+        {
+            module.GetDefinedEntryPoint(i, out var entryPoint);
+            ShaderReflection reflection = entryPoint.GetLayout(0, out _);
+            SlangStage stage = reflection.GetEntryPointByIndex(0).Stage;
+
+            switch (stage)
+            {
+                case SlangStage.Vertex:
+                    vertexEntry = entryPoint;
+                    break;
+
+                case SlangStage.Fragment:
+                    fragmentEntry = entryPoint;
+                    break;
+            }
+        }
+
+        // TODO: Support only one entry point
+        if (vertexEntry == null || fragmentEntry == null)
+            throw new Exception("TBD");
 
         IComponentType[] components =
         {

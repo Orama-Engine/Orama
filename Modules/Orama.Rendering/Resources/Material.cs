@@ -32,7 +32,7 @@ struct VSOutput
 };
 
 [shader("vertex")]
-VSOutput VertexMain(VSInput i)
+VSOutput Vertex(VSInput i)
 {
     VSOutput o;
 
@@ -45,7 +45,7 @@ VSOutput VertexMain(VSInput i)
 }
 
 [shader("fragment")]
-float4 FragmentMain(VSOutput i) : SV_Target
+float4 Fragment(VSOutput i) : SV_Target
 {
     return float4(1, 1, 1, 1);
 }
