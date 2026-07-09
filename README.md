@@ -67,54 +67,42 @@ public class CustomRenderPass : RenderPass
 }
 ```
 
-### ShaderLang
-```hlsl
-#vertex VertexEntryPoint
-#fragment FragmentEntryPoint
+### Slang Shaders
+```slang
+import Orama.Core;
+import Orama.Attributes;
 
-Name = ""Default/White""
-Pass = ""Opaque""
+#include "Orama/Preprocessor.slang"
 
-Properties
+SHADER_ATTRIBUTES(
+    [ShaderPass("Opaque")]
+)
+
+SHADER_PARAMETERS(
+    float4x4 ObjectMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
+)
+
+[Shader("vertex")]
+VertexOutput Vertex(VertexInput i)
 {
-    float4 Color;
+    VertexOutput o;
+
+    float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
+    float4 view = mul(Parameters.ViewMatrix, world);
+
+    o.Position = mul(Parameters.ProjectionMatrix, view);
+
+    return o;
 }
 
-Source
+[Shader("fragment")]
+float4 Fragment(VertexOutput i) : SV_Target
 {
-    struct VSInput
-    {
-        float3 Position : POSITION;
-        float3 Normal   : NORMAL;
-        float2 UV       : TEXCOORD0;
-    };
-
-    struct VSOutput
-    {
-        float4 pos : SV_POSITION;
-    };
-
-    VSOutput VertexEntryPoint(VSInput input)
-    {
-        VSOutput output;
-
-        float4 localPos = float4(input.Position, 1.0);
-
-        float4 worldPos = mul(ObjectMatrix, localPos);
-        float4 viewPos = mul(ViewMatrix, worldPos);
-        float4 clipPos = mul(ProjectionMatrix, viewPos);
-
-        output.pos = clipPos;
-
-        return output;
-    }
-
-
-    float4 FragmentEntryPoint(VSOutput input) : SV_TARGET
-    {
-        return Color;
-    }
+    return float4(1, 1, 1, 1);
 }
 ```
+
 ### Modern C#
 Orama has been written to be C# 14-first. Extensive use of properties, nullability, attributes, and abstraction means code can be more explicit and less based in guess work.

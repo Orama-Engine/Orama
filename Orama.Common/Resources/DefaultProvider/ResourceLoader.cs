@@ -10,8 +10,9 @@ public abstract class ResourceLoader<T> where T : class
 {
     /// <summary> Loads a resource from the given byte data. </summary>
     /// <param name="data"> The byte data. </param>
+    /// <param name="name"> The name of the resource or null if not applicable. </param>
     /// <returns> The loaded resource or null if invalid. </returns>
-    public abstract T? LoadResource(byte[] data);
+    public abstract T? LoadResource(byte[] data, string? name = null);
 
     /// <summary> Gets an instance of the resource loader this type. </summary>
     /// <returns> The resource loader for the specified type or null if not found. </returns>

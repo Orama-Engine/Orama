@@ -1,39 +1,130 @@
-using System.Collections.Concurrent;
-using Vortice.ShaderCompiler;
+using Orama.Common.Utility;
+using SlangShaderSharp;
 
 namespace Orama.Rendering;
 
 /// <summary>
-/// Bakes GLSL and HLSL shaders to SPIRV.
+/// Bakes Slang shaders to SPIRV.
 /// </summary>
 public static class ShaderBaker
 {
-    private static readonly Compiler compiler = new();
+    private static IGlobalSession globalSession;
+    private static ISession localSession;
 
-    /// <summary> Compiles GLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) GLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.GLSL);
-
-    /// <summary> Compiles HLSL source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) HLSLToSPIRV(string vertex, string fragment) => Compile(vertex, fragment, SourceLanguage.HLSL);
-
-    private static (byte[] Vert, byte[] Frag) Compile(string vertexSource, string fragmentSource, SourceLanguage sourceLang)
+    static ShaderBaker()
     {
-        CompilerOptions opts = new()
+        Slang.CreateGlobalSession(Slang.ApiVersion, out var gs);
+        globalSession = gs;
+
+        CompilerOptionEntry[] options =
+        [
+            new CompilerOptionEntry
+                {
+                    Name = CompilerOptionName.MatrixLayoutColumn,
+                    Value = new CompilerOptionValue
+                    {
+                        Kind = CompilerOptionValueKind.Int,
+                        IntValue0 = 1
+                    }
+                }
+        ];
+
+
+        SessionDesc sesDesc = new()
         {
-            SourceLanguage = sourceLang,
-            EntryPoint = "main"
+            Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }],
+            SearchPaths = ["Assets"], // Hacky
+            CompilerOptionEntries = options,
         };
 
-        opts.ShaderStage = ShaderKind.VertexShader;
-        var vert = compiler.Compile(vertexSource, "vertex.shader", opts);
-        if (vert.Status != CompilationStatus.Success)
-            throw new Exception("Vertex shader compilation failed: " + vert.ErrorMessage);
-
-        opts.ShaderStage = ShaderKind.FragmentShader;
-        var frag = compiler.Compile(fragmentSource, "fragment.shader", opts);
-        if (frag.Status != CompilationStatus.Success)
-            throw new Exception("Fragment shader compilation failed: " + frag.ErrorMessage);
-
-        return (vert.Bytecode, frag.Bytecode);
+        globalSession.CreateSession(sesDesc, out var ls);
+        localSession = ls;
     }
+
+    /// <summary> Compiles Slang source to SPIRV. </summary>
+    public static SlangCompilationResult SlangToSpirV(string source, string name)
+    {
+        IModule? module = localSession.LoadModuleFromSourceString(name, $"{name}.slang", source, out ISlangBlob? diagnostics);
+        if (module == null)
+            throw new Exception($"Failed to compile shader: {diagnostics?.AsString}");
+
+        IEntryPoint? vertexEntry = null;
+        IEntryPoint? fragmentEntry = null;
+
+        for (int i = 0; i < module.GetDefinedEntryPointCount(); i++)
+        {
+            module.GetDefinedEntryPoint(i, out var entryPoint);
+            ShaderReflection reflection = entryPoint.GetLayout(0, out _);
+            SlangStage stage = reflection.GetEntryPointByIndex(0).Stage;
+
+            switch (stage)
+            {
+                case SlangStage.Vertex:
+                    vertexEntry = entryPoint;
+                    break;
+
+                case SlangStage.Fragment:
+                    fragmentEntry = entryPoint;
+                    break;
+            }
+        }
+
+        List<AttributeReflection> attributes = new();
+
+        ShaderReflection layout = module.GetLayout(0, out _);
+        TypeReflection? attributesType = layout.FindTypeByName("ShaderAttributes");
+        if (attributesType != null)
+        {
+            var aCount = attributesType.Value.AttributeCount;
+
+            for (uint i = 0; i < aCount; i++)
+            {
+                var attribute = attributesType.Value.GetAttribute(i);
+                attributes.Add(attribute);
+            }
+        }
+
+        byte[] vert = Array.Empty<byte>();
+        byte[] frag = Array.Empty<byte>();
+
+        if (vertexEntry == null && fragmentEntry == null)
+            return new SlangCompilationResult() { ShaderAttributes = attributes };
+
+        unsafe
+        {
+            if (vertexEntry != null)
+            {
+                IComponentType[] components = { module, vertexEntry };
+                localSession.CreateCompositeComponentType(components, out IComponentType vertexProgram, out _);
+                vertexProgram.Link(out IComponentType linkedVertex, out _);
+                linkedVertex.GetEntryPointCode(0, 0, out ISlangBlob vertexBlob, out _);
+
+                vert = new byte[vertexBlob.GetBufferSize()];
+                fixed (byte* dst = vert)
+                    Buffer.MemoryCopy(vertexBlob.GetBufferPointer(), dst, vert.Length, vert.Length);
+            }
+
+            if (fragmentEntry != null)
+            {
+                IComponentType[] components = { module, fragmentEntry };
+                localSession.CreateCompositeComponentType(components, out IComponentType fragmentProgram, out _);
+                fragmentProgram.Link(out IComponentType linkedFragment, out _);
+                linkedFragment.GetEntryPointCode(0, 0, out ISlangBlob fragmentBlob, out _);
+
+                frag = new byte[fragmentBlob.GetBufferSize()];
+                fixed (byte* dst = frag)
+                    Buffer.MemoryCopy(fragmentBlob.GetBufferPointer(), dst, frag.Length, frag.Length);
+            }
+        }
+
+        return new SlangCompilationResult() { FragmentBytes = frag, VertexBytes = vert, ShaderAttributes = attributes };
+    }
+}
+
+public readonly ref struct SlangCompilationResult
+{
+    public byte[] VertexBytes { get; init; }
+    public byte[] FragmentBytes { get; init; }
+
+    public List<AttributeReflection> ShaderAttributes { get; init; }
 }

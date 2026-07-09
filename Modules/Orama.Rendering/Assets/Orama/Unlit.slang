@@ -1,0 +1,36 @@
+// Unlit.slang
+// Default unlit shader.
+
+import Orama.Core;
+import Orama.Attributes;
+
+#include "Orama/Preprocessor.slang"
+
+SHADER_ATTRIBUTES(
+    [ShaderPass("Opaque")]
+)
+
+SHADER_PARAMETERS(
+    float4x4 ObjectMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
+)
+
+[Shader("vertex")]
+VertexOutput Vertex(VertexInput i)
+{
+    VertexOutput o;
+
+    float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
+    float4 view = mul(Parameters.ViewMatrix, world);
+
+    o.Position = mul(Parameters.ProjectionMatrix, view);
+
+    return o;
+}
+
+[Shader("fragment")]
+float4 Fragment(VertexOutput i) : SV_Target
+{
+    return float4(1, 1, 1, 1);
+}
