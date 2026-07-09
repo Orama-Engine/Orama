@@ -1,6 +1,6 @@
-import Orama;
+import Orama.Core;
 
-#include "Orama.Preprocessor.slang"
+#include "Orama/Preprocessor.slang"
 
 SHADER_PARAMETERS(
     float4x4 ObjectMatrix;

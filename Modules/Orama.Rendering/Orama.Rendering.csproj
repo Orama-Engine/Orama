@@ -24,13 +24,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Assets\Orama.Unlit.slang">
+    <None Update="Assets\Orama\Unlit.slang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Orama.Preprocessor.slang">
+    <None Update="Assets\Orama\Preprocessor.slang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Assets\Orama.slang">
+    <None Update="Assets\Orama\Core.slang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
