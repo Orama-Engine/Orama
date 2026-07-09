@@ -68,46 +68,39 @@ public static class ShaderBaker
             }
         }
 
-        // TODO: Support only one entry point
-        if (vertexEntry == null || fragmentEntry == null)
-            throw new Exception("TBD");
+        byte[] vert = Array.Empty<byte>();
+        byte[] frag = Array.Empty<byte>();
 
-        IComponentType[] components =
-        {
-            module,
-            vertexEntry,
-        };
-
-        localSession.CreateCompositeComponentType(components, out IComponentType vertexProgram, out _);
-
-        vertexProgram.Link(out IComponentType linkedVertex, out _);
-
-        linkedVertex.GetEntryPointCode(0, 0, out ISlangBlob vertexBlob, out _);
-
-        components =
-        [
-            module,
-            fragmentEntry,
-        ];
-
-        localSession.CreateCompositeComponentType(components, out IComponentType fragmentProgram, out _);
-
-        fragmentProgram.Link(out IComponentType linkedFragment, out _);
-
-        linkedFragment.GetEntryPointCode(0, 0, out ISlangBlob fragmentBlob, out _);
+        if (vertexEntry == null && fragmentEntry == null)
+            return (vert, frag);
 
         unsafe
         {
-            byte[] vert = new byte[vertexBlob.GetBufferSize()];
-            fixed (byte* dst = vert)
-                Buffer.MemoryCopy(vertexBlob.GetBufferPointer(), dst, vert.Length, vert.Length);
+            if (vertexEntry != null)
+            {
+                IComponentType[] components = { module, vertexEntry };
+                localSession.CreateCompositeComponentType(components, out IComponentType vertexProgram, out _);
+                vertexProgram.Link(out IComponentType linkedVertex, out _);
+                linkedVertex.GetEntryPointCode(0, 0, out ISlangBlob vertexBlob, out _);
 
-            byte[] frag = new byte[fragmentBlob.GetBufferSize()];
-            fixed (byte* dst = frag)
-                Buffer.MemoryCopy(fragmentBlob.GetBufferPointer(), dst, frag.Length, frag.Length);
+                vert = new byte[vertexBlob.GetBufferSize()];
+                fixed (byte* dst = vert)
+                    Buffer.MemoryCopy(vertexBlob.GetBufferPointer(), dst, vert.Length, vert.Length);
+            }
 
-            return (vert, frag);
+            if (fragmentEntry != null)
+            {
+                IComponentType[] components = { module, fragmentEntry };
+                localSession.CreateCompositeComponentType(components, out IComponentType fragmentProgram, out _);
+                fragmentProgram.Link(out IComponentType linkedFragment, out _);
+                linkedFragment.GetEntryPointCode(0, 0, out ISlangBlob fragmentBlob, out _);
+
+                frag = new byte[fragmentBlob.GetBufferSize()];
+                fixed (byte* dst = frag)
+                    Buffer.MemoryCopy(fragmentBlob.GetBufferPointer(), dst, frag.Length, frag.Length);
+            }
         }
 
+        return (vert, frag);
     }
 }

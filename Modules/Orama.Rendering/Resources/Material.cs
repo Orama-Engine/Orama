@@ -53,19 +53,6 @@ public struct VSOutput
 {
     public float4 Position : SV_Position;
 };
-
-[shader("vertex")]
-VSOutput Vertex(VSInput i)
-{
-    VSOutput o;
-    return o;
-}
-
-[shader("fragment")]
-float4 Fragment(VSOutput i) : SV_Target
-{
-    return float4(1, 1, 1, 1);
-}
 """;
 
     static Material()
