@@ -1,0 +1,7 @@
+// Provides information for the Slang Language Extension for Visual Studio (https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-vs-extension)
+
+{
+  "slang.additionalSearchPaths": [
+    "."
+  ]
+}
