@@ -1,9 +1,11 @@
 ﻿using Orama.Common;
 using Orama.Common.Utility;
+using Orama.Rendering;
 using Orama.VirtualReality.OpenXR;
 
 namespace Orama.VirtualReality;
 
+[InitializeAfter(typeof(RenderingModule))]
 public class VirtualRealityModule : BaseModule
 {
     /// <summary> The currently connected <see cref="VirtualRealityDevice"/>. </summary>

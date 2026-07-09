@@ -20,16 +20,14 @@ internal class Program
     static void Main(string[] args)
     {
         // REGISTER MODULES
+        ModuleManager.RegisterModule<InputModule>();
         ModuleManager.RegisterModule<AssemblyModule>();
-
         ModuleManager.RegisterModule<PhysicsModule>();
         ModuleManager.RegisterModule<SceneModule>();
         ModuleManager.RegisterModule<AudioModule>();
         ModuleManager.RegisterModule<GUIModule>();
-
-        ModuleManager.RegisterModule<InputModule>();
-        ModuleManager.RegisterModule<RenderingModule>();
         ModuleManager.RegisterModule<VirtualRealityModule>();
+        ModuleManager.RegisterModule<RenderingModule>();
 
         var debugScene = new Scene();
         ModuleManager.GetModule<SceneModule>()?.CurrentScene = debugScene;

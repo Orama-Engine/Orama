@@ -1,4 +1,5 @@
 ﻿using Orama.Common.Utility;
+using System.Reflection;
 
 namespace Orama.Common;
 
@@ -23,10 +24,14 @@ public static class ModuleManager
 
     /// <summary> Gets a registered <see cref="BaseModule"/> of type <typeparamref name="T"/>. </summary>
     /// <returns> The registered <see cref="BaseModule"/> instance or null if not found. </returns>
-    public static T? GetModule<T>() where T : BaseModule
+    public static T? GetModule<T>() where T : BaseModule => GetModule(typeof(T)) as T;
+
+    /// <summary> Gets a registered <see cref="BaseModule"/> of type <paramref name="type"/>. </summary>
+    /// <returns> The registered <see cref="BaseModule"/> instance or null if not found. </returns>
+    public static BaseModule? GetModule(Type type)
     {
-        if (modules.TryGetValue(typeof(T), out var module))
-            return (T)module;
+        if (modules.TryGetValue(type, out var module))
+            return module;
 
         return null;
     }
@@ -38,12 +43,37 @@ public static class ModuleManager
     public static void InitializeAll()
     {
         foreach (var module in modules.Values)
-        {
-            module.Initialize();
-            module.IsInitialized = true;
+            InitializeModule(module);
+    }
 
-            EngineConsole.Log($"Initialized module {module.GetType().Name}");
+    // Kinda hacky, we could maybe move to BaseModule.Initialize()?
+    private static void InitializeModule(BaseModule module)
+    {
+        if (module.IsInitialized)
+            return;
+
+        var attr = module.GetType().GetCustomAttribute<InitializeAfterAttribute>();
+
+        if (attr != null)
+        {
+            foreach (var dependencyType in attr.Types)
+            {
+                var dependency = GetModule(dependencyType);
+
+                if (dependency == null)
+                {
+                    EngineConsole.Warning($"Module {module.GetType().Name} depends on {dependencyType.Name} which is not registered.");
+                    return;
+                }
+
+                InitializeModule(dependency);
+            }
         }
+
+        module.Initialize();
+        module.IsInitialized = true;
+
+        EngineConsole.Log($"Initialized {module.GetType().Name}");
     }
 
     /// <summary> Disposes all <see cref="BaseModule"/>s currently registered. </summary>
