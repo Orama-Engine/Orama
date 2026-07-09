@@ -2,8 +2,13 @@
 // Default unlit shader.
 
 import Orama.Core;
+import Orama.Attributes;
 
 #include "Orama/Preprocessor.slang"
+
+SHADER_ATTRIBUTES(
+    [ShaderPass("Opaque")]
+)
 
 SHADER_PARAMETERS(
     float4x4 ObjectMatrix;

@@ -23,7 +23,7 @@ public class OpaquePass : RenderPass
         buffer.ClearColor(Color.Black);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
-            if (renderable.Material.Pass == "Opaque")
+            if (renderable.Material.Shader.Pass == "Opaque")
             {
                 Matrix4x4 model = renderable.Transform;
                 Matrix4x4 view = frame.View;

@@ -42,7 +42,7 @@ public static class ShaderBaker
     }
 
     /// <summary> Compiles Slang source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) SlangToSpirV(string source, string name)
+    public static SlangCompilationResult SlangToSpirV(string source, string name)
     {
         IModule? module = localSession.LoadModuleFromSourceString(name, $"{name}.slang", source, out ISlangBlob? diagnostics);
         if (module == null)
@@ -69,11 +69,26 @@ public static class ShaderBaker
             }
         }
 
+        List<AttributeReflection> attributes = new();
+
+        ShaderReflection layout = module.GetLayout(0, out _);
+        TypeReflection? attributesType = layout.FindTypeByName("ShaderAttributes");
+        if (attributesType != null)
+        {
+            var aCount = attributesType.Value.AttributeCount;
+
+            for (uint i = 0; i < aCount; i++)
+            {
+                var attribute = attributesType.Value.GetAttribute(i);
+                attributes.Add(attribute);
+            }
+        }
+
         byte[] vert = Array.Empty<byte>();
         byte[] frag = Array.Empty<byte>();
 
         if (vertexEntry == null && fragmentEntry == null)
-            return (vert, frag);
+            return new SlangCompilationResult() { ShaderAttributes = attributes };
 
         unsafe
         {
@@ -102,6 +117,14 @@ public static class ShaderBaker
             }
         }
 
-        return (vert, frag);
+        return new SlangCompilationResult() { FragmentBytes = frag, VertexBytes = vert, ShaderAttributes = attributes };
     }
+}
+
+public readonly ref struct SlangCompilationResult
+{
+    public byte[] VertexBytes { get; init; }
+    public byte[] FragmentBytes { get; init; }
+
+    public List<AttributeReflection> ShaderAttributes { get; init; }
 }

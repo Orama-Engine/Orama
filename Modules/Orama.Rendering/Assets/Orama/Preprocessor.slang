@@ -15,3 +15,7 @@ module Preprocessor;
     };                                                                                                                 \
     ParameterBlock<ShaderParameters> Parameters;
 
+// Allows applying attributes at a shader level.
+#define SHADER_ATTRIBUTES(attributes)                                                                                      \
+	attributes                                                                                           \
+    struct ShaderAttributes {};

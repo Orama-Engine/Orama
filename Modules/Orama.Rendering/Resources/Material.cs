@@ -13,9 +13,6 @@ public class Material
     /// <summary> The GPU <see cref="Resources.Shader"/> used by the material. </summary>
     public Shader Shader { get; set; }
 
-    /// <summary> The name of the pass to which the material belongs. </summary>
-    public string Pass { get; set; } = "Opaque";
-
     /// <summary> A default material using a simple shader. </summary>
     public static Material Default { get; }
 
@@ -25,13 +22,11 @@ public class Material
     public Material(Shader shader)
     {
         Shader = shader;
-        Pass = Shader.Pass;
     }
 
     static Material()
     {
         Shader? def = Application.ResourceProvider.GetResource<Shader>("Assets/Orama/Unlit.slang");
-        def?.Pass = "Opaque";
         if (def == null)
         {
             Default = new Material(new Shader(""));

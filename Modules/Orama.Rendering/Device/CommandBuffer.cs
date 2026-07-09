@@ -43,7 +43,7 @@ public class CommandBuffer : IDisposable
         ResourceLayoutDescription layoutDesc = new(new ResourceLayoutElementDescription("Globals", ResourceKind.UniformBuffer, ShaderStages.Vertex));
 
         PipelineKey pipelineDesc = new PipelineKey(
-            PassName: renderable.Material.Pass,
+            PassName: renderable.Material.Shader.Pass,
             Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
             Outputs: gd.SwapchainFramebuffer.OutputDescription,
             ResourceLayout: layoutDesc

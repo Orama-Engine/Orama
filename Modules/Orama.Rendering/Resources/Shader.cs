@@ -32,7 +32,7 @@ public sealed class ShaderParameter
 public class Shader
 {
     /// <summary> The name of the shader's pass. </summary>
-    public string Pass { get; internal set; }
+    public string Pass { get; internal set; } = "None";
 
     /// <summary> The name of the shader. This is used to import this shader. </summary>
     public string Name { get; internal set; }
@@ -43,10 +43,14 @@ public class Shader
         get => field;
         set
         {
-            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.SlangToSpirV(value, Name);
-            VertexBytecode = spirv.Item1;
-            FragmentBytecode = spirv.Item2;
-            
+            SlangCompilationResult comp = ShaderBaker.SlangToSpirV(value, Name);
+            VertexBytecode = comp.VertexBytes;
+            FragmentBytecode = comp.FragmentBytes;
+
+            foreach (var attribute in comp.ShaderAttributes)
+                if (attribute.Name == "ShaderPass")
+                    Pass = attribute.GetArgumentValueString(0);
+
             field = value;
         }
     }
@@ -63,11 +67,10 @@ public class Shader
     private readonly List<ShaderParameter> parameters = new List<ShaderParameter>();
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
-    public Shader(string shaderLangSource, string name = "None", string pass = "None")
+    public Shader(string shaderLangSource, string name = "None")
     {
         Name = name;
         Source = shaderLangSource;
-        Pass = pass;
     }
 }
 
