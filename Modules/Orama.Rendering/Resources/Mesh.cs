@@ -23,7 +23,7 @@ public class Mesh
 internal class MeshLoader : ResourceLoader<Mesh>
 {
     /// <inheritdoc/>
-    public override Mesh? LoadResource(byte[] data)
+    public override Mesh? LoadResource(byte[] data, string? name = null)
     {
         using var ms = new MemoryStream(data);
         using var importer = new AssimpContext();

@@ -1,5 +1,7 @@
+using Orama.Common.Resources.DefaultProvider;
 using Orama.Rendering;
 using SlangShaderSharp;
+using System.Text;
 
 namespace Orama.Rendering.Resources;
 
@@ -67,4 +69,11 @@ public class Shader
         Source = shaderLangSource;
         Pass = pass;
     }
+}
+
+[ResourceLoader]
+internal class ShaderLoader : ResourceLoader<Shader>
+{
+    /// <inheritdoc/>
+    public override Shader? LoadResource(byte[] data, string? name = null) => new Shader(Encoding.UTF8.GetString(data), name ?? "None");
 }
