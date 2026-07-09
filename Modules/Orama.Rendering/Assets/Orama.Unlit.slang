@@ -8,7 +8,7 @@ SHADER_PARAMETERS(
     float4x4 ProjectionMatrix;
 )
 
-[shader("vertex")]
+[Shader("vertex")]
 VSOutput Vertex(VSInput i)
 {
     VSOutput o;
@@ -21,7 +21,7 @@ VSOutput Vertex(VSInput i)
     return o;
 }
 
-[shader("fragment")]
+[Shader("fragment")]
 float4 Fragment(VSOutput i) : SV_Target
 {
     return float4(1, 1, 1, 1);
