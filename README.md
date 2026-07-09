@@ -69,9 +69,14 @@ public class CustomRenderPass : RenderPass
 
 ### Slang Shaders
 ```slang
-import Orama;
+import Orama.Core;
+import Orama.Attributes;
 
-#include "Orama.Preprocessor.slang"
+#include "Orama/Preprocessor.slang"
+
+SHADER_ATTRIBUTES(
+    [ShaderPass("Opaque")]
+)
 
 SHADER_PARAMETERS(
     float4x4 ObjectMatrix;
@@ -79,7 +84,7 @@ SHADER_PARAMETERS(
     float4x4 ProjectionMatrix;
 )
 
-[shader("vertex")]
+[Shader("vertex")]
 VSOutput Vertex(VSInput i)
 {
     VSOutput o;
@@ -92,7 +97,7 @@ VSOutput Vertex(VSInput i)
     return o;
 }
 
-[shader("fragment")]
+[Shader("fragment")]
 float4 Fragment(VSOutput i) : SV_Target
 {
     return float4(1, 1, 1, 1);
