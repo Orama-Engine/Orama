@@ -30,7 +30,10 @@ public sealed class ShaderParameter
 public class Shader
 {
     /// <summary> The name of the shader's pass. </summary>
-    public string Pass { get; private set; } = "None";
+    public string Pass { get; private set; }
+
+    /// <summary> The name of the shader. This is used to import this shader. </summary>
+    public string Name { get; private set; }
 
     /// <summary> The shader's raw ShaderLang source. </summary>
     public string Source
@@ -38,12 +41,9 @@ public class Shader
         get => field;
         set
         {
-
-            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.SlangToSpirV(value);
+            (byte[] Vert, byte[] Frag) spirv = ShaderBaker.SlangToSpirV(value, Name);
             VertexBytecode = spirv.Item1;
             FragmentBytecode = spirv.Item2;
-
-            Pass = "Opaque";
             
             field = value;
         }
@@ -61,5 +61,10 @@ public class Shader
     private readonly List<ShaderParameter> parameters = new List<ShaderParameter>();
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
-    public Shader(string shaderLangSource) => Source = shaderLangSource;
+    public Shader(string shaderLangSource, string name = "None", string pass = "None")
+    {
+        Name = name;
+        Source = shaderLangSource;
+        Pass = pass;
+    }
 }

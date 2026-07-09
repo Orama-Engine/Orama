@@ -41,12 +41,12 @@ public static class ShaderBaker
     }
 
     /// <summary> Compiles Slang source to SPIRV. </summary>
-    public static (byte[] Vert, byte[] Frag) SlangToSpirV(string source)
+    public static (byte[] Vert, byte[] Frag) SlangToSpirV(string source, string name)
     {
-        IModule? module = localSession.LoadModuleFromSourceString("shader", "shader.slang", source, out _);
+        IModule? module = localSession.LoadModuleFromSourceString(name, $"{name}.slang", source, out ISlangBlob? diagnostics);
         if (module == null)
-            throw new Exception("TBD");
-            
+            throw new Exception($"Failed to compile shader: {diagnostics?.AsString}");
+
         IEntryPoint? vertexEntry = null;
         IEntryPoint? fragmentEntry = null;
 

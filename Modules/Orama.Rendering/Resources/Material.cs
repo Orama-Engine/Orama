@@ -9,27 +9,10 @@ namespace Orama.Rendering.Resources;
 /// </summary>
 public class Material
 {
-private const string DEFAULT_SHADER = """
-struct GlobalData
-{
-    float4x4 ObjectMatrix;
-    float4x4 ViewMatrix;
-    float4x4 ProjectionMatrix;
-};
+    private const string DEFAULT_SHADER = """
+import Orama;
 
 ParameterBlock<GlobalData> Globals;
-
-struct VSInput
-{
-    float3 Position : POSITION;
-    float3 Normal : NORMAL;
-    float2 UV : TEXCOORD0;
-};
-
-struct VSOutput
-{
-    float4 Position : SV_Position;
-};
 
 [shader("vertex")]
 VSOutput Vertex(VSInput i)
@@ -51,14 +34,56 @@ float4 Fragment(VSOutput i) : SV_Target
 }
 """;
 
+    private const string ORAMA_SHADER = """
+public struct GlobalData
+{
+    public float4x4 ObjectMatrix;
+    public float4x4 ViewMatrix;
+    public float4x4 ProjectionMatrix;
+};
+
+public struct VSInput
+{
+    public float3 Position : POSITION;
+    public float3 Normal : NORMAL;
+    public float2 UV : TEXCOORD0;
+};
+
+public struct VSOutput
+{
+    public float4 Position : SV_Position;
+};
+
+[shader("vertex")]
+VSOutput Vertex(VSInput i)
+{
+    VSOutput o;
+    return o;
+}
+
+[shader("fragment")]
+float4 Fragment(VSOutput i) : SV_Target
+{
+    return float4(1, 1, 1, 1);
+}
+""";
+
+    static Material()
+    {
+        OramaModule = new Shader(ORAMA_SHADER, "Orama");
+        Default = new Material(new Shader(DEFAULT_SHADER, "Default", "Opaque"));
+    }
+
     /// <summary> The GPU <see cref="Resources.Shader"/> used by the material. </summary>
     public Shader Shader { get; set; }
 
     /// <summary> The name of the pass to which the material belongs. </summary>
     public string Pass { get; set; } = "Opaque";
 
+    public static Shader OramaModule { get; }
+
     /// <summary> A default material using a simple shader. </summary>
-    public static Material Default { get; } = new Material(new Shader(DEFAULT_SHADER));
+    public static Material Default { get; }
 
     private readonly Dictionary<string, object> properties = new();
 
