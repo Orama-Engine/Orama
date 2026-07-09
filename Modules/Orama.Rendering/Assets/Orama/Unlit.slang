@@ -17,9 +17,9 @@ SHADER_PARAMETERS(
 )
 
 [Shader("vertex")]
-VSOutput Vertex(VSInput i)
+VertexOutput Vertex(VertexInput i)
 {
-    VSOutput o;
+    VertexOutput o;
 
     float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
     float4 view = mul(Parameters.ViewMatrix, world);
@@ -30,7 +30,7 @@ VSOutput Vertex(VSInput i)
 }
 
 [Shader("fragment")]
-float4 Fragment(VSOutput i) : SV_Target
+float4 Fragment(VertexOutput i) : SV_Target
 {
     return float4(1, 1, 1, 1);
 }
