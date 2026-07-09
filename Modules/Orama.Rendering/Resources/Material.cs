@@ -30,7 +30,7 @@ public class Material
 
     static Material()
     {
-        Shader? def = Application.ResourceProvider.GetResource<Shader>("Assets/Default.slang");
+        Shader? def = Application.ResourceProvider.GetResource<Shader>("Assets/Orama.Unlit.slang");
         def?.Pass = "Opaque";
         if (def == null)
         {

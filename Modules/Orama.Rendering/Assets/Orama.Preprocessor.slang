@@ -6,10 +6,10 @@
 // -----------------------------------------------------------------------------
 
 // Defines a parameter block that can be read from the engine.
-#define SHADER_PARAMETERS(x)                                                                                           \
+#define SHADER_PARAMETERS(params)                                                                                           \
     struct ShaderParameters                                                                                            \
     {                                                                                                                  \
-        x                                                                                                              \
+        params                                                                                                              \
     };                                                                                                                 \
     ParameterBlock<ShaderParameters> Parameters;
 
