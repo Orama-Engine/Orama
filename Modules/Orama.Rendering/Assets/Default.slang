@@ -1,16 +1,22 @@
 import Orama;
 
-ParameterBlock<GlobalData> Globals;
+#include "Orama.Preprocessor.slang"
+
+SHADER_PARAMETERS(
+    float4x4 ObjectMatrix;
+    float4x4 ViewMatrix;
+    float4x4 ProjectionMatrix;
+)
 
 [shader("vertex")]
 VSOutput Vertex(VSInput i)
 {
     VSOutput o;
 
-    float4 world = mul(Globals.ObjectMatrix, float4(i.Position, 1));
-    float4 view = mul(Globals.ViewMatrix, world);
+    float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
+    float4 view = mul(Parameters.ViewMatrix, world);
 
-    o.Position = mul(Globals.ProjectionMatrix, view);
+    o.Position = mul(Parameters.ProjectionMatrix, view);
 
     return o;
 }

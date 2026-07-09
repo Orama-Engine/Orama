@@ -1,3 +1,9 @@
+// Orama.slang
+// Provides abstractions and datatypes used for Orama shaders.
+
+// -----------------------------------------------------------------------------
+// Shared Structures.
+// -----------------------------------------------------------------------------
 public struct GlobalData
 {
     public float4x4 ObjectMatrix;
@@ -16,3 +22,4 @@ public struct VSOutput
 {
     public float4 Position : SV_Position;
 };
+
