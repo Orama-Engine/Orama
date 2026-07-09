@@ -1,4 +1,4 @@
-// Orama.slang
+// Core.slang
 // Provides abstractions and datatypes used for Orama shaders.
 
 module Core;

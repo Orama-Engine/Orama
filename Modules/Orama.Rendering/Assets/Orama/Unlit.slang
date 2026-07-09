@@ -1,3 +1,6 @@
+// Unlit.slang
+// Default unlit shader.
+
 import Orama.Core;
 
 #include "Orama/Preprocessor.slang"

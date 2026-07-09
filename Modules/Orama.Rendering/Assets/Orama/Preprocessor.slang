@@ -1,4 +1,4 @@
-// Orama.Preprocessor.slang
+// Preprocessor.slang
 // Provides macros and definitions that can be included by Orama shaders.
 
 module Preprocessor;
