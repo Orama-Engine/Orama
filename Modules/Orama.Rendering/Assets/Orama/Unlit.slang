@@ -10,6 +10,11 @@ SHADER_ATTRIBUTES(
     [ShaderPass("Opaque")]
 )
 
+SHADER_PARAMETERS(
+    float Brightness;
+)
+
+
 [Shader("vertex")]
 VertexOutput Vertex(VertexInput i)
 {
@@ -26,5 +31,5 @@ VertexOutput Vertex(VertexInput i)
 [Shader("fragment")]
 float4 Fragment(VertexOutput i) : SV_Target
 {
-    return float4(1, 1, 1, 1);
+    return float4(Parameters.Brightness, Parameters.Brightness, Parameters.Brightness, 1);
 }

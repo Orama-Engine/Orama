@@ -23,10 +23,14 @@ public class OpaquePass : RenderPass
         Matrix4x4 view = frame.View;
         Matrix4x4 projection = frame.Projection;
 
+        GPUBuffer paramBuffer = new GPUBuffer();
+        paramBuffer.AddFloat(0.5f);
+        buffer.QueueGPUBuffer(paramBuffer, 0, 0);
+
         GPUBuffer cameraBuffer = new GPUBuffer();
         cameraBuffer.AddMatrix4x4(view);
         cameraBuffer.AddMatrix4x4(projection);
-        buffer.QueueGPUBuffer(cameraBuffer, 0, 0);
+        buffer.QueueGPUBuffer(cameraBuffer, 1, 0);
 
         buffer.ClearColor(Color.Black);
 
@@ -37,7 +41,7 @@ public class OpaquePass : RenderPass
 
                 GPUBuffer objectBuffer = new GPUBuffer();
                 objectBuffer.AddMatrix4x4(model);
-                buffer.QueueGPUBuffer(objectBuffer, 1, 0);
+                buffer.QueueGPUBuffer(objectBuffer, 2, 0);
 
                 buffer.DrawRenderable(renderable);
             }

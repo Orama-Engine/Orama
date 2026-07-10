@@ -12,8 +12,22 @@ public struct GPUBuffer
     /// <summary> The initial size of the internal buffer. </summary>
     public const int DEFAULT_SIZE = 256;
 
-    /// <summary> Raw data of the buffer. </summary>
-    public ReadOnlySpan<byte> Data => data.AsSpan(0, offset);
+    /// <summary> Padded data of the buffer. </summary>
+    public ReadOnlySpan<byte> Data
+    {
+        get
+        {
+            int paddedSize = Align(offset, 16);
+
+            if (paddedSize > offset)
+            {
+                EnsureCapacity(paddedSize);
+                data.AsSpan(offset, paddedSize - offset).Clear();
+            }
+
+            return data.AsSpan(0, paddedSize);
+        }
+    }
 
     private byte[] data = new byte[DEFAULT_SIZE];
     private int offset = 0;
