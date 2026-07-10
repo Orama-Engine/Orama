@@ -5,6 +5,7 @@ using Orama.Rendering.Veldrid;
 using System.Collections.Immutable;
 using System.Runtime.InteropServices;
 using NeoVeldrid;
+using Orama.Common.Utility;
 
 namespace Orama.Rendering.Device;
 
@@ -73,7 +74,10 @@ public class CommandBuffer : IDisposable
         foreach (ShaderResource resource in shader.Resources.OrderBy(x => x.Binding))
         {
             if (!gpuBufferQueue.TryGetValue(resource.Binding, out GPUBuffer gpuBuffer))
-                throw new Exception($"Missing buffer for shader resource {resource.Name} ({resource.Binding})");
+            {
+                EngineConsole.Warning($"Missing GPUBuffer for shader '{shader.Name}' resource {resource.Name} ({resource.Binding})");
+                continue;
+            }
 
             FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length,BufferUsage.UniformBuffer));
 

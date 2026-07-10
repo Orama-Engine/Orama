@@ -14,6 +14,6 @@ internal class DefaultResourceProvider : IResourceProvider
         }
 
         byte[] data = File.ReadAllBytes(path);
-        return ResourceLoader<T>.GetResourceLoader()?.LoadResource(data);
+        return ResourceLoader<T>.GetResourceLoader()?.LoadResource(data, Path.GetFileNameWithoutExtension(path));
     }
 }
