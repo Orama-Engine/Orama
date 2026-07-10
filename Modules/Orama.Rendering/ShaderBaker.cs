@@ -55,51 +55,12 @@ public static class ShaderBaker
         IEntryPoint? vertexEntry = null;
         IEntryPoint? fragmentEntry = null;
 
-        for (int i = 0; i < module.GetDefinedEntryPointCount(); i++)
-        {
-            module.GetDefinedEntryPoint(i, out var entryPoint);
-            ShaderReflection reflection = entryPoint.GetLayout(0, out _);
-            SlangStage stage = reflection.GetEntryPointByIndex(0).Stage;
+        var entryPoints = GetEntryPoints(module);
+        vertexEntry = entryPoints.FirstOrDefault(x => x.Stage == SlangStage.Vertex).EntryPoint;
+        fragmentEntry = entryPoints.FirstOrDefault(x => x.Stage == SlangStage.Fragment).EntryPoint;
 
-            switch (stage)
-            {
-                case SlangStage.Vertex:
-                    vertexEntry = entryPoint;
-                    break;
-
-                case SlangStage.Fragment:
-                    fragmentEntry = entryPoint;
-                    break;
-            }
-        }
-
-        List<AttributeReflection> attributes = new();
-
-        ShaderReflection layout = module.GetLayout(0, out _);
-        TypeReflection? attributesType = layout.FindTypeByName("ShaderAttributes");
-        if (attributesType != null)
-        {
-            var aCount = attributesType.Value.AttributeCount;
-
-            for (uint i = 0; i < aCount; i++)
-            {
-                var attribute = attributesType.Value.GetAttribute(i);
-                attributes.Add(attribute);
-            }
-        }
-
-        List<VariableReflection> parameters = new();
-        TypeReflection? parametersType = layout.FindTypeByName("ShaderParameters");
-        if (parametersType != null)
-        {
-            var pCount = parametersType.Value.FieldCount;
-
-            for (uint i = 0; i < pCount; i++)
-            {
-                var parameter = parametersType.Value.GetFieldByIndex(i);
-                parameters.Add(parameter);
-            }
-        }
+        List<AttributeReflection> attributes = GetAttributes(module);
+        List<VariableReflection> parameters = GetParameters(module);
 
         byte[] vert = Array.Empty<byte>();
         byte[] frag = Array.Empty<byte>();
@@ -148,6 +109,56 @@ public static class ShaderBaker
         }
 
         return new SlangCompilationResult() { FragmentBytes = frag, VertexBytes = vert, ShaderAttributes = attributes, ShaderParameters = parameters, Resources = resources };
+    }
+
+    private static IEnumerable<(IEntryPoint EntryPoint, SlangStage Stage)> GetEntryPoints(IModule module)
+    {
+        for (int i = 0; i < module.GetDefinedEntryPointCount(); i++)
+        {
+            module.GetDefinedEntryPoint(i, out var entryPoint);
+            ShaderReflection reflection = entryPoint.GetLayout(0, out _);
+            yield return (entryPoint, reflection.GetEntryPointByIndex(0).Stage);
+        }
+    }
+
+    private static List<AttributeReflection> GetAttributes(IModule module)
+    {
+        List<AttributeReflection> attributes = new();
+
+        ShaderReflection layout = module.GetLayout(0, out _);
+        TypeReflection? attributesType = layout.FindTypeByName("ShaderAttributes");
+        if (attributesType != null)
+        {
+            var aCount = attributesType.Value.AttributeCount;
+
+            for (uint i = 0; i < aCount; i++)
+            {
+                var attribute = attributesType.Value.GetAttribute(i);
+                attributes.Add(attribute);
+            }
+        }
+
+        return attributes;
+    }
+
+    private static List<VariableReflection> GetParameters(IModule module)
+    {
+        List<VariableReflection> parameters = new();
+
+        ShaderReflection layout = module.GetLayout(0, out _);
+        TypeReflection? parametersType = layout.FindTypeByName("ShaderParameters");
+        if (parametersType != null)
+        {
+            var pCount = parametersType.Value.FieldCount;
+
+            for (uint i = 0; i < pCount; i++)
+            {
+                var parameter = parametersType.Value.GetFieldByIndex(i);
+                parameters.Add(parameter);
+            }
+        }
+
+        return parameters;
     }
 }
 
