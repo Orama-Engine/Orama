@@ -37,7 +37,7 @@ public struct GPUBuffer
 
     public void AddInt(int value)
     {
-        EnsureAlignment(4);
+        EnsurePacking(4, 4);
         EnsureCapacity(offset + 4);
 
         Span<byte> dest = data.AsSpan(offset, 4);
@@ -48,7 +48,7 @@ public struct GPUBuffer
 
     public void AddFloat(float value)
     {
-        EnsureAlignment(4);
+        EnsurePacking(4, 4);
         EnsureCapacity(offset + 4);
 
         Span<byte> dest = data.AsSpan(offset, 4);
@@ -59,31 +59,40 @@ public struct GPUBuffer
 
     public void AddFloat2(float x, float y)
     {
-        AddFloat(x);
-        AddFloat(y);
+        EnsurePacking(8, 8);
+        EnsureCapacity(offset + 8);
+        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+        offset += 8;
     }
 
     public void AddFloat3(float x, float y, float z)
     {
-        AddFloat(x);
-        AddFloat(y);
-        AddFloat(z);
+        EnsurePacking(12, 16);
+        EnsureCapacity(offset + 12);
+        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
+        offset += 12;
     }
 
     public void AddFloat4(float x, float y, float z, float w)
     {
-        AddFloat(x);
-        AddFloat(y);
-        AddFloat(z);
-        AddFloat(w);
+        EnsurePacking(16, 16);
+        EnsureCapacity(offset + 16);
+        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
+        BitConverter.TryWriteBytes(data.AsSpan(offset + 12, 4), w);
+        offset += 16;
     }
 
     public void AddMatrix4x4(Matrix4x4 m)
     {
-        AddFloat(m.M11); AddFloat(m.M12); AddFloat(m.M13); AddFloat(m.M14);
-        AddFloat(m.M21); AddFloat(m.M22); AddFloat(m.M23); AddFloat(m.M24);
-        AddFloat(m.M31); AddFloat(m.M32); AddFloat(m.M33); AddFloat(m.M34);
-        AddFloat(m.M41); AddFloat(m.M42); AddFloat(m.M43); AddFloat(m.M44);
+        AddFloat4(m.M11, m.M12, m.M13, m.M14);
+        AddFloat4(m.M21, m.M22, m.M23, m.M24);
+        AddFloat4(m.M31, m.M32, m.M33, m.M34);
+        AddFloat4(m.M41, m.M42, m.M43, m.M44);
     }
 
     /// <summary> Adds raw bytes directly to the buffer (e.g. for structs via MemoryMarshal). </summary>
@@ -94,23 +103,17 @@ public struct GPUBuffer
         offset += bytes.Length;
     }
 
-    /// <summary> Adds a blittable struct as raw bytes, respecting its natural alignment. </summary>
-    public void AddStruct<T>(T value) where T : unmanaged
-    {
-        int size = Marshal.SizeOf<T>();
-        EnsureAlignment(size >= 16 ? 16 : (size >= 8 ? 8 : 4));
-
-        ReadOnlySpan<T> span = MemoryMarshal.CreateReadOnlySpan(ref value, 1);
-        AddBytes(MemoryMarshal.AsBytes(span));
-    }
-
     public void Reset() => offset = 0;
 
-    private void EnsureAlignment(int alignment)
-    {
-        int aligned = Align(offset, alignment);
-        EnsureCapacity(aligned);
 
+    private void EnsurePacking(int size, int baseAlign)
+    {
+        int aligned = Align(offset, baseAlign);
+
+        if ((aligned % 16) + size > 16)
+            aligned = Align(aligned, 16);
+
+        EnsureCapacity(aligned);
         while (offset < aligned)
         {
             data[offset] = 0;

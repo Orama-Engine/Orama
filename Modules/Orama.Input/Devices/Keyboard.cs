@@ -58,7 +58,6 @@ public sealed class Keyboard : IInputDevice
     private readonly Dictionary<Key, bool> previousState = new();
     private readonly Dictionary<Key, bool> currentState = new();
 
-
     /// <summary> The underlying Silk.NET <see cref="IKeyboard"/>. </summary>
     internal IKeyboard InternalKeyboard { get; }
 

@@ -14,6 +14,9 @@ SHADER_PARAMETERS(
     [DefaultFloat3(1, 1, 1)]
     float3 Color;
 
+    [DefaultFloat3(0.4, -1.0, 0.3)]
+    float3 SunDirection;
+
     [DefaultFloat(0.8f)]
     float SunIntensity;
 )
@@ -36,7 +39,7 @@ float4 Fragment(VertexOutput i) : SV_Target
 {
     float3 normal = normalize(i.Normal);
 
-    float3 sunDir = normalize(float3(0.4, -1.0, 0.3));
+    float3 sunDir = normalize(Parameters.SunDirection);
 
     float ambient = 0.1f;
 
