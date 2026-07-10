@@ -25,7 +25,7 @@ public class RenderingModule : BaseModule
         Application.OnRender += Render;
 
         RendererOptions options = new();
-        options.Culling = CullingMode.Back;
+        options.Culling = CullingMode.Front;
 
         Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
         Application.Window.Title += $" - [{Renderer.Backend}]";
@@ -36,10 +36,18 @@ public class RenderingModule : BaseModule
         if (Camera.Main == null)
             new Camera();
 
+        Matrix4x4 view = Camera.Main?.ViewMatrix ?? Matrix4x4.Identity;
+        Matrix4x4 projection = Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity;
+
+        GPUBuffer cameraBuffer = new GPUBuffer();
+        cameraBuffer.AddMatrix4x4(view);
+        cameraBuffer.AddMatrix4x4(projection);
+
         RenderFrame frame = new RenderFrame()
         {
-            View = Camera.Main?.ViewMatrix ?? Matrix4x4.Identity,
-            Projection = Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity
+            View = view,
+            Projection = projection,
+            CameraBuffer = cameraBuffer,
         };
 
         Pipeline.Render(in frame);

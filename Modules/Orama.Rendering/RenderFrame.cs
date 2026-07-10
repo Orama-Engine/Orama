@@ -9,4 +9,5 @@ public readonly ref struct RenderFrame
 {
     public Matrix4x4 View { get; init; }
     public Matrix4x4 Projection { get; init; }
+    public GPUBuffer CameraBuffer { get; init; }
 }

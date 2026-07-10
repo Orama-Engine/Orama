@@ -46,6 +46,12 @@ public class CommandBuffer : IDisposable
 
     public void DrawRenderable(IClientRenderable renderable)
     {
+        QueueGPUBuffer(renderable.Material.ParameterBuffer, "Parameters");
+
+        GPUBuffer objectBuffer = new GPUBuffer();
+        objectBuffer.AddMatrix4x4(renderable.Transform);
+        QueueGPUBuffer(objectBuffer, "Object");
+
         var gd = Renderer.Veldrid.GraphicsDevice;
 
         IEnumerable<ResourceLayoutDescription> layoutDesc = renderable.Material.Shader.CreateResourceLayouts();

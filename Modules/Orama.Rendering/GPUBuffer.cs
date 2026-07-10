@@ -1,7 +1,5 @@
-using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Device;
-using System.Runtime.InteropServices;
 
 namespace Orama.Rendering;
 
