@@ -23,7 +23,7 @@ public class CommandBuffer : IDisposable
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
-    private Dictionary<uint, GPUBuffer> gpuBufferQueue = new Dictionary<uint, GPUBuffer>();
+    private Dictionary<(uint Set, uint Binding), GPUBuffer> gpuBufferQueue = new();
 
     /// <inheritdoc/>
     public void Dispose() => CommandList.Dispose();
@@ -38,19 +38,19 @@ public class CommandBuffer : IDisposable
 
     public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
-    public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
+    public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint set, uint binding) => gpuBufferQueue[(set, binding)] = gpuBuffer;
 
     public void DrawRenderable(IClientRenderable renderable)
     {
         var gd = Renderer.Veldrid.GraphicsDevice;
 
-        ResourceLayoutDescription layoutDesc = renderable.Material.Shader.CreateResourceLayout();
+        IEnumerable<ResourceLayoutDescription> layoutDesc = renderable.Material.Shader.CreateResourceLayouts();
 
         PipelineKey pipelineDesc = new PipelineKey(
             PassName: renderable.Material.Shader.Pass,
             Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
             Outputs: gd.SwapchainFramebuffer.OutputDescription,
-            ResourceLayout: layoutDesc
+            ResourceLayouts: layoutDesc.ToImmutableArray()
         );
 
         FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
@@ -70,27 +70,29 @@ public class CommandBuffer : IDisposable
 
     public void UploadUniformBuffers(Resources.Shader shader)
     {
-        FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(shader.CreateResourceLayout().Elements.ToImmutableArray()));
-
-        List<DeviceBuffer> buffers = new();
-        foreach (ShaderResource resource in shader.Resources.OrderBy(x => x.Binding))
+        foreach (var group in shader.Resources.GroupBy(r => r.Set).OrderBy(g => g.Key))
         {
-            if (!gpuBufferQueue.TryGetValue(resource.Binding, out GPUBuffer gpuBuffer))
+            uint setIndex = group.Key;
+            var layoutDesc = new ResourceLayoutDescription(group.OrderBy(r => r.Binding).Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
+            var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+
+            List<DeviceBuffer> buffers = new();
+            foreach (var resource in group.OrderBy(r => r.Binding))
             {
-                EngineConsole.Warning($"Missing GPUBuffer for shader '{shader.Name}' resource {resource.Name} ({resource.Binding})");
-                continue;
+                if (!gpuBufferQueue.TryGetValue((resource.Set, resource.Binding), out GPUBuffer gpuBuffer))
+                {
+                    EngineConsole.Exception(new Exception($"No GPU buffer found for {resource.Name} in set {resource.Set} with binding {resource.Binding}."));
+                    continue;
+                }
+
+                var buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length, BufferUsage.UniformBuffer));
+                CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
+                buffers.Add(buffer.Resource);
             }
 
-            FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length,BufferUsage.UniformBuffer));
-
-            CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
-
-            buffers.Add(buffer.Resource);
+            var resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
+            CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
         }
-
-        FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
-
-        CommandList.SetGraphicsResourceSet(0, resourceSet.Resource);
     }
 
     public void SetPipeline(PipelineKey pipelineDesc)

@@ -130,17 +130,15 @@ public class Shader
     }
 
     // Hack
-    public ResourceLayoutDescription CreateResourceLayout()
+    public IEnumerable<ResourceLayoutDescription> CreateResourceLayouts()
     {
-        ResourceLayoutElementDescription[] elements = Resources
-            .OrderBy(x => x.Binding)
-            .Select(x => new ResourceLayoutElementDescription(
-                x.Name,
-                x.Kind,
-                ShaderStages.Vertex | ShaderStages.Fragment))
-            .ToArray();
-
-        return new ResourceLayoutDescription(elements);
+        return Resources
+            .GroupBy(x => x.Set)
+            .OrderBy(g => g.Key)
+            .Select(g => new ResourceLayoutDescription(
+                g.OrderBy(x => x.Binding)
+                 .Select(x => new ResourceLayoutElementDescription(x.Name, x.Kind, ShaderStages.Vertex | ShaderStages.Fragment))
+                 .ToArray()));
     }
 }
 
