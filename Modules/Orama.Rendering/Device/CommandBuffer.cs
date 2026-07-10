@@ -24,6 +24,7 @@ public class CommandBuffer : IDisposable
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
     private Dictionary<(uint Set, uint Binding), GPUBuffer> gpuBufferQueue = new();
+    private Dictionary<uint, GPUBuffer?[]> lastBoundBuffers = new();
 
     /// <inheritdoc/>
     public void Dispose() => CommandList.Dispose();
@@ -32,6 +33,7 @@ public class CommandBuffer : IDisposable
     {
         CommandList.Begin();
         gpuBufferQueue.Clear();
+        lastBoundBuffers.Clear();
     }
 
     public void End() => CommandList.End();
@@ -73,25 +75,48 @@ public class CommandBuffer : IDisposable
         foreach (var group in shader.Resources.GroupBy(r => r.Set).OrderBy(g => g.Key))
         {
             uint setIndex = group.Key;
-            var layoutDesc = new ResourceLayoutDescription(group.OrderBy(r => r.Binding).Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
-            var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+            var orderedResources = group.OrderBy(r => r.Binding).ToArray();
 
-            List<DeviceBuffer> buffers = new();
-            foreach (var resource in group.OrderBy(r => r.Binding))
+            GPUBuffer?[] queuedBuffers = new GPUBuffer?[orderedResources.Length];
+            bool missing = false;
+
+            for (int i = 0; i < orderedResources.Length; i++)
             {
+                var resource = orderedResources[i];
                 if (!gpuBufferQueue.TryGetValue((resource.Set, resource.Binding), out GPUBuffer gpuBuffer))
                 {
                     EngineConsole.Exception(new Exception($"No GPU buffer found for {resource.Name} in set {resource.Set} with binding {resource.Binding}."));
+                    missing = true;
                     continue;
                 }
 
-                var buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length, BufferUsage.UniformBuffer));
-                CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
+                queuedBuffers[i] = gpuBuffer;
+            }
+
+            if (missing)
+                continue;
+
+            if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer?[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffers))
+                continue;
+
+            var layoutDesc = new ResourceLayoutDescription(orderedResources.Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
+            var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+
+            List<DeviceBuffer> buffers = new();
+            foreach (GPUBuffer? gpuBuffer in queuedBuffers)
+            {
+                if (gpuBuffer == null)
+                    continue;
+
+                var buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Value.Data.Length, BufferUsage.UniformBuffer));
+                CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Value.Data);
                 buffers.Add(buffer.Resource);
             }
 
             var resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
             CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
+
+            lastBoundBuffers[setIndex] = queuedBuffers;
         }
     }
 
