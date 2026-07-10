@@ -30,7 +30,7 @@ public class FlyController : Entity
         if (Input == null)
             return;
         
-        if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.Escape) ?? false)
+        if (Input.PrimaryKeyboard?.IsKeyPressed(Keyboard.Key.Escape) ?? false)
         {
             cursorLocked = !cursorLocked;
             Input.PrimaryMouse?.CursorLocked = cursorLocked;

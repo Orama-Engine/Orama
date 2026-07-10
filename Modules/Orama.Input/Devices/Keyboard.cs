@@ -55,15 +55,40 @@ public sealed class Keyboard : IInputDevice
 
     #endregion
 
+    private readonly Dictionary<Key, bool> previousState = new();
+    private readonly Dictionary<Key, bool> currentState = new();
+
 
     /// <summary> The underlying Silk.NET <see cref="IKeyboard"/>. </summary>
     internal IKeyboard InternalKeyboard { get; }
 
-    public Keyboard(IKeyboard keyboard) => InternalKeyboard = keyboard;
+    public Keyboard(IKeyboard keyboard)
+    {
+        InternalKeyboard = keyboard;
+
+        foreach (var key in keyMap.Keys)
+        {
+            previousState[key] = false;
+            currentState[key] = false;
+        }
+    }
 
     /// <summary> Checks if the given <see cref="Key"/> is currently held down. </summary>
     public bool IsKeyDown(Key key) => InternalKeyboard.IsKeyPressed(keyMap[key]);
 
+    /// <summary> Checks if the given <see cref="Key"/> was pressed this frame. </summary>
+    public bool IsKeyPressed(Key key) => currentState[key] && !previousState[key];
+
+    /// <summary> Checks if the given <see cref="Key"/> was released this frame. </summary>
+    public bool IsKeyReleased(Key key) => !currentState[key] && previousState[key];
+
     /// <inheritdoc/>
-    public void Update() { }
+    public void Update()
+    {
+        foreach (var key in keyMap.Keys)
+        {
+            previousState[key] = currentState[key];
+            currentState[key] = InternalKeyboard.IsKeyPressed(keyMap[key]);
+        }
+    }
 }
