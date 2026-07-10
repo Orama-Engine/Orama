@@ -11,7 +11,8 @@ SHADER_ATTRIBUTES(
 )
 
 SHADER_PARAMETERS(
-    float Brightness;
+    float Brightness = 0.5f;
+    int Debug = 1;
 )
 
 
@@ -31,5 +32,10 @@ VertexOutput Vertex(VertexInput i)
 [Shader("fragment")]
 float4 Fragment(VertexOutput i) : SV_Target
 {
+    if (Parameters.Debug == 1)
+    {
+        return float4(1, 0, 0, 1);
+    }
+
     return float4(Parameters.Brightness, Parameters.Brightness, Parameters.Brightness, 1);
 }

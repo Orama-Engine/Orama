@@ -11,6 +11,7 @@ public sealed class ShaderParameter
     /// <remarks> Each value should match the relative Slang type. </remarks>
     public enum ParamType
     {
+        Int,
         Float,
         Float2,
         Float3,
@@ -82,6 +83,10 @@ public class Shader
                         case ShaderParameter.ParamType.Float:
                             parameter.GetDefaultValueFloat(out float dv);
                             defaultValue = dv;
+                            break;
+                        case ShaderParameter.ParamType.Int:
+                            parameter.GetDefaultValueInt(out long idv);
+                            defaultValue = idv;
                             break;
                     }
                 }

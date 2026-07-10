@@ -1,7 +1,8 @@
+using Orama.Common;
 using Orama.Math;
 using Orama.Rendering;
 using Orama.Rendering.Device;
-using Orama.Common;
+using Orama.Rendering.Resources;
 
 namespace Orama.Rendering.Pipelines.Forward;
 
@@ -23,10 +24,6 @@ public class OpaquePass : RenderPass
         Matrix4x4 view = frame.View;
         Matrix4x4 projection = frame.Projection;
 
-        GPUBuffer paramBuffer = new GPUBuffer();
-        paramBuffer.AddFloat(0.5f);
-        buffer.QueueGPUBuffer(paramBuffer, "Parameters");
-
         GPUBuffer cameraBuffer = new GPUBuffer();
         cameraBuffer.AddMatrix4x4(view);
         cameraBuffer.AddMatrix4x4(projection);
@@ -37,6 +34,8 @@ public class OpaquePass : RenderPass
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Shader.Pass == "Opaque")
             {
+                buffer.QueueGPUBuffer(GetParameterBuffer(renderable), "Parameters");
+
                 Matrix4x4 model = renderable.Transform;
 
                 GPUBuffer objectBuffer = new GPUBuffer();
@@ -49,5 +48,26 @@ public class OpaquePass : RenderPass
         buffer.End();
         Renderer.SubmitCommandBuffer(buffer);
         CommandBufferPool.Return(buffer);
+    }
+
+    public static GPUBuffer GetParameterBuffer(IClientRenderable renderable)
+    {
+        GPUBuffer buffer = new();
+
+        foreach (var param in renderable.Material.Shader.Parameters)
+        {
+            switch (param)
+            {
+                case { Type: ShaderParameter.ParamType.Float, DefaultValue: float f }:
+                    buffer.AddFloat(f);
+                    break;
+
+                case { Type: ShaderParameter.ParamType.Int, DefaultValue: long i }:
+                    buffer.AddInt((int)i);
+                    break;
+            }
+        }
+
+        return buffer;
     }
 }

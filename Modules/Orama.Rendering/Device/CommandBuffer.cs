@@ -3,7 +3,6 @@ using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Orama.Rendering.Veldrid;
 using System.Collections.Immutable;
-using System.Runtime.InteropServices;
 using NeoVeldrid;
 using Orama.Common.Utility;
 
@@ -40,6 +39,9 @@ public class CommandBuffer : IDisposable
 
     public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
+    /// <summary> Queues a <see cref="GPUBuffer"/> for upload. </summary>
+    /// <param name="gpuBuffer">The buffer to upload.</param>
+    /// <param name="name">The name of the shader parameter block.</param>
     public void QueueGPUBuffer(GPUBuffer gpuBuffer, string name) => gpuBufferQueue[name] = gpuBuffer;
 
     public void DrawRenderable(IClientRenderable renderable)

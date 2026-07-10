@@ -1,3 +1,4 @@
+using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Device;
 using System.Runtime.InteropServices;
@@ -33,6 +34,17 @@ public struct GPUBuffer
     private int offset = 0;
 
     public GPUBuffer() { }
+
+    public void AddInt(int value)
+    {
+        EnsureAlignment(4);
+        EnsureCapacity(offset + 4);
+
+        Span<byte> dest = data.AsSpan(offset, 4);
+        BitConverter.TryWriteBytes(dest, value);
+
+        offset += 4;
+    }
 
     public void AddFloat(float value)
     {
