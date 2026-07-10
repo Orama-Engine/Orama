@@ -104,7 +104,7 @@ public static class ShaderBaker
         byte[] vert = Array.Empty<byte>();
         byte[] frag = Array.Empty<byte>();
 
-        List<ShaderResource> resources = new();
+        List<VariableLayoutReflection> resources = new();
 
         if (vertexEntry == null && fragmentEntry == null)
             return new SlangCompilationResult() { ShaderAttributes = attributes, ShaderParameters = parameters, Resources = resources };
@@ -126,13 +126,7 @@ public static class ShaderBaker
                     VariableLayoutReflection variable = linkedLayout.GetParameterByIndex(i);
 
                     if (variable.Type.Kind == SlangTypeKind.ParameterBlock || variable.Type.Kind == SlangTypeKind.ConstantBuffer)
-                    {
-                        resources.Add(new ShaderResource(
-                            variable.Name,
-                            ResourceKind.UniformBuffer,
-                            variable.BindingIndex
-                        ));
-                    }
+                        resources.Add(variable);
                 }
 
                 vert = new byte[vertexBlob.GetBufferSize()];
@@ -183,5 +177,5 @@ public readonly ref struct SlangCompilationResult
     public List<VariableReflection> ShaderParameters { get; init; }
 
     /// <summary> All resources this shader requests. </summary>
-    public List<ShaderResource> Resources { get; init; }
+    public List<VariableLayoutReflection> Resources { get; init; }
 }

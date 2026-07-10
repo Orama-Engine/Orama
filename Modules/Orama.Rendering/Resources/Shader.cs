@@ -89,8 +89,13 @@ public class Shader
                 parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
             }
 
-            resources = comp.Resources;
+            List<ShaderResource> resources = new List<ShaderResource>();
+
+            foreach (var resource in comp.Resources)
+                resources.Add(new ShaderResource(resource.Name, ResourceKind.UniformBuffer, resource.BindingIndex));
+
             this.parameters = parameters;
+            this.resources = resources;
 
             foreach (var resource in resources)
                 EngineConsole.Log($"Resource: {resource.Name} ({resource.Kind}) ({resource.Binding})");
