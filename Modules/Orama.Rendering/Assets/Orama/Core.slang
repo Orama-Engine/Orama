@@ -6,14 +6,22 @@ module Core;
 // -----------------------------------------------------------------------------
 // Shared Structures.
 // -----------------------------------------------------------------------------
-public struct GlobalData
+
+
+public struct CameraData
 {
-    public float4x4 ObjectMatrix;
     public float4x4 ViewMatrix;
     public float4x4 ProjectionMatrix;
 };
 
-public ParameterBlock<GlobalData> Globals;
+public ParameterBlock<CameraData> Camera;
+
+public struct ObjectData
+{
+    public float4x4 ModelMatrix;
+};
+
+public ParameterBlock<ObjectData> Object;
 
 public struct VertexInput
 {

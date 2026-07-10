@@ -23,16 +23,20 @@ public class CommandBuffer : IDisposable
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
-    private static Dictionary<uint, GPUBuffer> gpuBufferQueue = new Dictionary<uint, GPUBuffer>();
+    private Dictionary<uint, GPUBuffer> gpuBufferQueue = new Dictionary<uint, GPUBuffer>();
 
     /// <inheritdoc/>
     public void Dispose() => CommandList.Dispose();
 
-    public void Begin() => CommandList.Begin();
+    public void Begin()
+    {
+        CommandList.Begin();
+        gpuBufferQueue.Clear();
+    }
 
     public void End() => CommandList.End();
 
-    public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new global::NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
+    public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
     public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint slot) => gpuBufferQueue[slot] = gpuBuffer;
 
@@ -60,8 +64,6 @@ public class CommandBuffer : IDisposable
         SetPipeline(pipelineDesc);
 
         UploadUniformBuffers(renderable.Material.Shader);
-
-        gpuBufferQueue.Clear();
 
         DrawItem(item.Resource);
     }

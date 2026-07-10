@@ -46,7 +46,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
             Outputs = key.Outputs,
         };
 
-        Pipeline pipeline = factory.CreateGraphicsPipeline(desc);
+        Pipeline pipeline = factory.CreateGraphicsPipeline(ref desc);
 
         return pipeline;
     }

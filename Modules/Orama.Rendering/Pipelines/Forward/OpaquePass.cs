@@ -20,20 +20,24 @@ public class OpaquePass : RenderPass
 
         buffer.CommandList.SetFramebuffer(gd.SwapchainFramebuffer);
 
+        Matrix4x4 view = frame.View;
+        Matrix4x4 projection = frame.Projection;
+
+        GPUBuffer cameraBuffer = new GPUBuffer();
+        cameraBuffer.AddMatrix4x4(view);
+        cameraBuffer.AddMatrix4x4(projection);
+        buffer.QueueGPUBuffer(cameraBuffer, 0);
+
         buffer.ClearColor(Color.Black);
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Shader.Pass == "Opaque")
             {
                 Matrix4x4 model = renderable.Transform;
-                Matrix4x4 view = frame.View;
-                Matrix4x4 projection = frame.Projection;
 
-                GPUBuffer globalBuffer = new GPUBuffer();
-                globalBuffer.AddMatrix4x4(model);
-                globalBuffer.AddMatrix4x4(view);
-                globalBuffer.AddMatrix4x4(projection);
-                buffer.QueueGPUBuffer(globalBuffer, 0);
+                GPUBuffer objectBuffer = new GPUBuffer();
+                objectBuffer.AddMatrix4x4(model);
+                buffer.QueueGPUBuffer(objectBuffer, 1);
 
                 buffer.DrawRenderable(renderable);
             }
