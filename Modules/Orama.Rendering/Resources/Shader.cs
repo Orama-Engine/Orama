@@ -34,14 +34,12 @@ public sealed class ShaderParameter
 // TODO: Should this live in the shader class? Might be too close to the GPU
 public sealed class ShaderResource
 {
-    public string Name { get; }
     public ResourceKind Kind { get; }
     public uint Binding { get; }
     public uint Set { get; }
 
-    public ShaderResource(string name, ResourceKind kind, uint binding, uint set)
+    public ShaderResource(ResourceKind kind, uint binding, uint set)
     {
-        Name = name;
         Kind = kind;
         Binding = binding;
         Set = set;
@@ -91,18 +89,16 @@ public class Shader
                 parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
             }
 
-            List<ShaderResource> resources = new List<ShaderResource>();
+            Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
 
             // We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
             // Be careful around BindingIndex & BindingSpace
             foreach (var resource in comp.Resources)
-                resources.Add(new ShaderResource(resource.Name, ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
+                resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
 
             this.parameters = parameters;
             this.resources = resources;
 
-            foreach (var resource in resources)
-                EngineConsole.Log($"Resource: {resource.Name} ({resource.Kind}) ({resource.Binding}) (set {resource.Set})");
             field = value;
         }
     }
@@ -116,11 +112,11 @@ public class Shader
     /// <summary> The shader's parameter definitions. </summary>
     public IReadOnlyList<ShaderParameter> Parameters => parameters;
 
-    /// <summary> The shader's resource definitions. </summary>
-    public IReadOnlyList<ShaderResource> Resources => resources;
+    /// <summary> The shader's resource definitions mapped to their names. </summary>
+    public IReadOnlyDictionary<string, ShaderResource> Resources => resources;
 
     private List<ShaderParameter> parameters = new List<ShaderParameter>();
-    private List<ShaderResource> resources = new List<ShaderResource>();
+    private Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
     public Shader(string shaderLangSource, string name = "None")
@@ -133,11 +129,14 @@ public class Shader
     public IEnumerable<ResourceLayoutDescription> CreateResourceLayouts()
     {
         return Resources
-            .GroupBy(x => x.Set)
+            .GroupBy(r => r.Value.Set)
             .OrderBy(g => g.Key)
             .Select(g => new ResourceLayoutDescription(
-                g.OrderBy(x => x.Binding)
-                 .Select(x => new ResourceLayoutElementDescription(x.Name, x.Kind, ShaderStages.Vertex | ShaderStages.Fragment))
+                g.OrderBy(r => r.Value.Binding)
+                 .Select(r => new ResourceLayoutElementDescription(
+                     r.Key,
+                     r.Value.Kind,
+                     ShaderStages.Vertex | ShaderStages.Fragment))
                  .ToArray()));
     }
 }

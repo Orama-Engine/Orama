@@ -23,7 +23,7 @@ public class CommandBuffer : IDisposable
     /// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
     public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
-    private Dictionary<(uint Set, uint Binding), GPUBuffer> gpuBufferQueue = new();
+    private Dictionary<string, GPUBuffer> gpuBufferQueue = new();
     private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
     /// <inheritdoc/>
@@ -40,7 +40,7 @@ public class CommandBuffer : IDisposable
 
     public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
 
-    public void QueueGPUBuffer(GPUBuffer gpuBuffer, uint set, uint binding) => gpuBufferQueue[(set, binding)] = gpuBuffer;
+    public void QueueGPUBuffer(GPUBuffer gpuBuffer, string name) => gpuBufferQueue[name] = gpuBuffer;
 
     public void DrawRenderable(IClientRenderable renderable)
     {
@@ -72,19 +72,19 @@ public class CommandBuffer : IDisposable
 
     public void UploadUniformBuffers(Resources.Shader shader)
     {
-        foreach (var group in shader.Resources.GroupBy(r => r.Set).OrderBy(g => g.Key))
+        foreach (var group in shader.Resources.GroupBy(r => r.Value.Set).OrderBy(g => g.Key))
         {
             uint setIndex = group.Key;
-            var orderedResources = group.OrderBy(r => r.Binding).ToArray();
+            var orderedResources = group.OrderBy(r => r.Value.Binding).ToArray();
 
             GPUBuffer[] queuedBuffers = new GPUBuffer[orderedResources.Length];
 
             for (int i = 0; i < orderedResources.Length; i++)
             {
                 var resource = orderedResources[i];
-                if (!gpuBufferQueue.TryGetValue((resource.Set, resource.Binding), out GPUBuffer gpuBuffer))
+                if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer gpuBuffer))
                 {
-                    EngineConsole.Exception(new Exception($"No GPU buffer available for '{resource.Name}' (Set: {resource.Set}, Binding: {resource.Binding})."));
+                    EngineConsole.Exception(new Exception($"No GPU buffer available for '{resource.Key}' (Set: {resource.Value.Set}, Binding: {resource.Value.Binding})."));
 
                     gpuBuffer = new GPUBuffer();
                     gpuBuffer.AddFloat(0f);
@@ -96,7 +96,7 @@ public class CommandBuffer : IDisposable
             if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffers))
                 continue;
 
-            var layoutDesc = new ResourceLayoutDescription(orderedResources.Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
+            var layoutDesc = new ResourceLayoutDescription(orderedResources.Select(r => new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
             var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
 
             List<DeviceBuffer> buffers = new();
