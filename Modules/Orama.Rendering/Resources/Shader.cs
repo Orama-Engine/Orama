@@ -15,7 +15,7 @@ public sealed class ShaderParameter
     {
         Int,
         Float,
-        Matrix4x4,
+        Matrix,
         Vector
     }
 

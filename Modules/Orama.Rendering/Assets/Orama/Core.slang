@@ -32,5 +32,6 @@ public struct VertexInput
 public struct VertexOutput
 {
     public float4 Position : SV_Position;
+    public float3 Normal : NORMAL;
 };
 

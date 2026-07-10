@@ -25,9 +25,9 @@ public class RenderingModule : BaseModule
         Application.OnRender += Render;
 
         RendererOptions options = new();
-        options.Culling = CullingMode.None;
+        options.Culling = CullingMode.Back;
 
-        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
+        Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Direct3D11, options);
         Application.Window.Title += $" - [{Renderer.Backend}]";
     }
 

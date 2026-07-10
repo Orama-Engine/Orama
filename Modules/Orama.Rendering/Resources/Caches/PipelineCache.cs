@@ -15,7 +15,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         global::NeoVeldrid.Shader[] shaders = factory.CreateFromSpirv(
             new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
             new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main"),
-            new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: Renderer.Veldrid.GraphicsDevice.IsClipSpaceYInverted)
+            new CrossCompileOptions()
         );
 
         VertexLayoutDescription vertexLayout = new(
@@ -29,7 +29,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         RasterizerStateDescription rasterizerState =
             Renderer.Options.Culling switch
             {
-                CullingMode.None => RasterizerStateDescription.CullNone,
+                CullingMode.None => new RasterizerStateDescription(FaceCullMode.None, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
                 CullingMode.Back => new RasterizerStateDescription(FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
                 CullingMode.Front => new RasterizerStateDescription(FaceCullMode.Front, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
 
@@ -39,7 +39,11 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
         GraphicsPipelineDescription desc = new()
         {
             BlendState = BlendStateDescription.SingleOverrideBlend,
-            DepthStencilState = DepthStencilStateDescription.Disabled,
+            DepthStencilState = new DepthStencilStateDescription(
+                depthTestEnabled: true,
+                depthWriteEnabled: true,
+                comparisonKind: ComparisonKind.LessEqual
+            ),
             RasterizerState = rasterizerState,
             PrimitiveTopology = PrimitiveTopology.TriangleList,
             ShaderSet = new ShaderSetDescription(new[] { vertexLayout }, shaders),

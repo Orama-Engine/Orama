@@ -28,7 +28,15 @@ internal class MeshLoader : ResourceLoader<Mesh>
         using var ms = new MemoryStream(data);
         using var importer = new AssimpContext();
 
-        var scene = importer.ImportFileFromStream(ms, PostProcessPreset.TargetRealTimeMaximumQuality);
+        var scene = importer.ImportFileFromStream(
+            ms,
+            PostProcessSteps.Triangulate |
+            PostProcessSteps.GenerateNormals |
+            PostProcessSteps.FlipUVs |
+            PostProcessSteps.JoinIdenticalVertices |
+            PostProcessSteps.ImproveCacheLocality |
+            PostProcessSteps.FlipWindingOrder
+        );
 
         if (scene == null || scene.MeshCount == 0)
             return null;
