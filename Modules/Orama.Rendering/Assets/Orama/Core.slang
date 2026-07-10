@@ -13,6 +13,8 @@ public struct GlobalData
     public float4x4 ProjectionMatrix;
 };
 
+public ParameterBlock<GlobalData> Globals;
+
 public struct VertexInput
 {
     public float3 Position : POSITION;

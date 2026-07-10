@@ -10,21 +10,15 @@ SHADER_ATTRIBUTES(
     [ShaderPass("Opaque")]
 )
 
-SHADER_PARAMETERS(
-    float4x4 ObjectMatrix;
-    float4x4 ViewMatrix;
-    float4x4 ProjectionMatrix;
-)
-
 [Shader("vertex")]
 VertexOutput Vertex(VertexInput i)
 {
     VertexOutput o;
 
-    float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
-    float4 view = mul(Parameters.ViewMatrix, world);
+    float4 world = mul(Globals.ObjectMatrix, float4(i.Position, 1));
+    float4 view = mul(Globals.ViewMatrix, world);
 
-    o.Position = mul(Parameters.ProjectionMatrix, view);
+    o.Position = mul(Globals.ProjectionMatrix, view);
 
     return o;
 }

@@ -1,12 +1,14 @@
+using NeoVeldrid;
 using Orama.Common.Resources.DefaultProvider;
-using Orama.Rendering;
-using SlangShaderSharp;
+using Orama.Common.Utility;
 using System.Text;
 
 namespace Orama.Rendering.Resources;
 
 public sealed class ShaderParameter
 {
+    /// <summary> The type of the parameter. </summary>
+    /// <remarks> Each value should match the relative Slang type. </remarks>
     public enum ParamType
     {
         Float,
@@ -18,13 +20,28 @@ public sealed class ShaderParameter
 
     public string Name { get; }
     public ParamType Type { get; }
-    public uint Binding { get; }
+    public object? DefaultValue { get; }
 
     /// <summary> Initializes a new instance of the <see cref="ShaderParameter"/> class. </summary>
-    public ShaderParameter(string name, ParamType type, uint binding)
+    public ShaderParameter(string name, ParamType type, object? defaultValue = null)
     {
         Name = name;
         Type = type;
+        DefaultValue = defaultValue;
+    }
+}
+
+// TODO: Should this live in the shader class? Might be too close to the GPU
+public sealed class ShaderResource
+{
+    public string Name { get; }
+    public ResourceKind Kind { get; }
+    public uint Binding { get; }
+
+    public ShaderResource(string name, ResourceKind kind, uint binding)
+    {
+        Name = name;
+        Kind = kind;
         Binding = binding;
     }
 }
@@ -37,7 +54,8 @@ public class Shader
     /// <summary> The name of the shader. This is used to import this shader. </summary>
     public string Name { get; internal set; }
 
-    /// <summary> The shader's raw ShaderLang source. </summary>
+    /// <summary> The shader's raw Slang source. </summary>
+    /// <remarks> Setting this value will recompile the shader and is a heavy operation. </remarks>
     public string Source
     {
         get => field;
@@ -51,6 +69,31 @@ public class Shader
                 if (attribute.Name == "ShaderPass")
                     Pass = attribute.GetArgumentValueString(0);
 
+            List<ShaderParameter> parameters = new List<ShaderParameter>();
+
+            foreach (var parameter in comp.ShaderParameters)
+            {
+                ShaderParameter.ParamType type = Enum.Parse<ShaderParameter.ParamType>(parameter.Type.Name, true);
+                object? defaultValue = null;
+                if (parameter.HasDefaultValue)
+                {
+                    switch (type)
+                    {
+                        case ShaderParameter.ParamType.Float:
+                            parameter.GetDefaultValueFloat(out float dv);
+                            defaultValue = dv;
+                            break;
+                    }
+                }
+
+                parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
+            }
+
+            resources = comp.Resources;
+            this.parameters = parameters;
+
+            foreach (var resource in resources)
+                EngineConsole.Log($"Resource: {resource.Name} ({resource.Kind}) ({resource.Binding})");
             field = value;
         }
     }
@@ -64,13 +107,31 @@ public class Shader
     /// <summary> The shader's parameter definitions. </summary>
     public IReadOnlyList<ShaderParameter> Parameters => parameters;
 
-    private readonly List<ShaderParameter> parameters = new List<ShaderParameter>();
+    /// <summary> The shader's resource definitions. </summary>
+    public IReadOnlyList<ShaderResource> Resources => resources;
+
+    private List<ShaderParameter> parameters = new List<ShaderParameter>();
+    private List<ShaderResource> resources = new List<ShaderResource>();
 
     /// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
     public Shader(string shaderLangSource, string name = "None")
     {
         Name = name;
         Source = shaderLangSource;
+    }
+
+    // Hack
+    public ResourceLayoutDescription CreateResourceLayout()
+    {
+        ResourceLayoutElementDescription[] elements = Resources
+            .OrderBy(x => x.Binding)
+            .Select(x => new ResourceLayoutElementDescription(
+                x.Name,
+                x.Kind,
+                ShaderStages.Vertex | ShaderStages.Fragment))
+            .ToArray();
+
+        return new ResourceLayoutDescription(elements);
     }
 }
 

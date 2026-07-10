@@ -8,10 +8,10 @@ module Preprocessor;
 // -----------------------------------------------------------------------------
 
 // Defines a parameter block that can be read from the engine.
-#define SHADER_PARAMETERS(params)                                                                                           \
+#define SHADER_PARAMETERS(params)                                                                                      \
     struct ShaderParameters                                                                                            \
     {                                                                                                                  \
-        params                                                                                                              \
+        params                                                                                                         \
     };                                                                                                                 \
     ParameterBlock<ShaderParameters> Parameters;
 
