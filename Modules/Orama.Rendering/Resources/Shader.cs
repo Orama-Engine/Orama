@@ -37,12 +37,14 @@ public sealed class ShaderResource
     public string Name { get; }
     public ResourceKind Kind { get; }
     public uint Binding { get; }
+    public uint Set { get; }
 
-    public ShaderResource(string name, ResourceKind kind, uint binding)
+    public ShaderResource(string name, ResourceKind kind, uint binding, uint set)
     {
         Name = name;
         Kind = kind;
         Binding = binding;
+        Set = set;
     }
 }
 
@@ -91,14 +93,16 @@ public class Shader
 
             List<ShaderResource> resources = new List<ShaderResource>();
 
+            // We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
+            // Be careful around BindingIndex & BindingSpace
             foreach (var resource in comp.Resources)
-                resources.Add(new ShaderResource(resource.Name, ResourceKind.UniformBuffer, resource.BindingIndex));
+                resources.Add(new ShaderResource(resource.Name, ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
 
             this.parameters = parameters;
             this.resources = resources;
 
             foreach (var resource in resources)
-                EngineConsole.Log($"Resource: {resource.Name} ({resource.Kind}) ({resource.Binding})");
+                EngineConsole.Log($"Resource: {resource.Name} ({resource.Kind}) ({resource.Binding}) (set {resource.Set})");
             field = value;
         }
     }

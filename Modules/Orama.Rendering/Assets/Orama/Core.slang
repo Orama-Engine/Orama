@@ -7,7 +7,6 @@ module Core;
 // Shared Structures.
 // -----------------------------------------------------------------------------
 
-
 public struct CameraData
 {
     public float4x4 ViewMatrix;
