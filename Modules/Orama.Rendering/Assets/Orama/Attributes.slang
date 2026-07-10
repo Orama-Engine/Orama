@@ -9,3 +9,37 @@ public struct ShaderPassAttribute
 {
     string passName;
 };
+
+// -----------------------------------------------------------------------------
+// Defaults.
+// -----------------------------------------------------------------------------
+[__AttributeUsage(_AttributeTargets.Var)]
+public struct DefaultFloatAttribute
+{
+	float value;
+};
+
+[__AttributeUsage(_AttributeTargets.Var)]
+public struct DefaultIntAttribute
+{
+	int value;
+};
+
+[__AttributeUsage(_AttributeTargets.Var)]
+public struct DefaultFloat2Attribute
+{
+    float x, y;
+};
+
+[__AttributeUsage(_AttributeTargets.Var)]
+public struct DefaultFloat3Attribute
+{
+    float x, y, z;
+};
+
+[__AttributeUsage(_AttributeTargets.Var)]
+public struct DefaultFloat4Attribute
+{
+    float x, y, z, w;
+};
+

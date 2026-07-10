@@ -1,6 +1,8 @@
 using NeoVeldrid;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
+using Orama.Math;
+using SlangShaderSharp;
 using System.Text;
 
 namespace Orama.Rendering.Resources;
@@ -13,10 +15,8 @@ public sealed class ShaderParameter
     {
         Int,
         Float,
-        Float2,
-        Float3,
-        Float4,
-        Matrix4x4
+        Matrix4x4,
+        Vector
     }
 
     public string Name { get; }
@@ -76,35 +76,66 @@ public class Shader
             {
                 ShaderParameter.ParamType type = Enum.Parse<ShaderParameter.ParamType>(parameter.Type.Name, true);
                 object? defaultValue = null;
-                if (parameter.HasDefaultValue)
+
+                uint attributeCount = parameter.AttributeCount;
+                for (uint i = 0; i < attributeCount; i++)
                 {
-                    switch (type)
+                    var attribute = parameter.GetAttribute(i);
+
+                    // Hacky
+                    switch (attribute.Name)
                     {
-                        case ShaderParameter.ParamType.Float:
-                            parameter.GetDefaultValueFloat(out float dv);
-                            defaultValue = dv;
+                        case "DefaultFloat":
+                            defaultValue = attribute.GetArgumentValueFloat(0);
                             break;
-                        case ShaderParameter.ParamType.Int:
-                            parameter.GetDefaultValueInt(out long idv);
-                            defaultValue = idv;
+
+                        case "DefaultInt":
+                            defaultValue = attribute.GetArgumentValueInt(0);
                             break;
+
+                        case "DefaultFloat2":
+                            defaultValue = new Vector2(
+                                attribute.GetArgumentValueFloat(0),
+                                attribute.GetArgumentValueFloat(1)
+                            );
+                            break;
+
+                        case "DefaultFloat3":
+                            defaultValue = new Vector3(
+                                attribute.GetArgumentValueFloat(0),
+                                attribute.GetArgumentValueFloat(1),
+                                attribute.GetArgumentValueFloat(2)
+                            );
+                            break;
+
+                        case "DefaultFloat4":
+                            defaultValue = new Vector4(
+                                attribute.GetArgumentValueFloat(0),
+                                attribute.GetArgumentValueFloat(1),
+                                attribute.GetArgumentValueFloat(2),
+                                attribute.GetArgumentValueFloat(3)
+                            );
+                            break;
+
+                        default:
+                            continue;
                     }
+
+                    parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
                 }
 
-                parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
+                Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
+
+                // We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
+                // Be careful around BindingIndex & BindingSpace
+                foreach (var resource in comp.Resources)
+                    resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
+
+                this.parameters = parameters;
+                this.resources = resources;
+
+                field = value;
             }
-
-            Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
-
-            // We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
-            // Be careful around BindingIndex & BindingSpace
-            foreach (var resource in comp.Resources)
-                resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
-
-            this.parameters = parameters;
-            this.resources = resources;
-
-            field = value;
         }
     }
 
