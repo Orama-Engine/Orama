@@ -79,20 +79,20 @@ SHADER_ATTRIBUTES(
 )
 
 SHADER_PARAMETERS(
-    float4x4 ObjectMatrix;
-    float4x4 ViewMatrix;
-    float4x4 ProjectionMatrix;
+    [DefaultFloat3(0, 1, 1)]
+    float3 Color;
 )
+
 
 [Shader("vertex")]
 VertexOutput Vertex(VertexInput i)
 {
     VertexOutput o;
 
-    float4 world = mul(Parameters.ObjectMatrix, float4(i.Position, 1));
-    float4 view = mul(Parameters.ViewMatrix, world);
+    float4 world = mul(Object.ModelMatrix, float4(i.Position, 1));
+    float4 view = mul(Camera.ViewMatrix, world);
 
-    o.Position = mul(Parameters.ProjectionMatrix, view);
+    o.Position = mul(Camera.ProjectionMatrix, view);
 
     return o;
 }
@@ -100,7 +100,7 @@ VertexOutput Vertex(VertexInput i)
 [Shader("fragment")]
 float4 Fragment(VertexOutput i) : SV_Target
 {
-    return float4(1, 1, 1, 1);
+    return float4(Parameters.Color, 1);
 }
 ```
 
