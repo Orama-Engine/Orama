@@ -8,6 +8,9 @@ namespace Orama.Rendering.Pipelines;
 /// </summary>
 public abstract class RenderPass
 {
+    /// <summary> The <see cref="RenderPipeline"/> that owns this <see cref="RenderPass"/>. </summary>
+    public RenderPipeline Pipeline { get; init; } = null!;
+
     /// <summary> Fully runs this <see cref="RenderPass"/>. </summary>
     public void Execute(in RenderFrame frame)
     {

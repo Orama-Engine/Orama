@@ -16,6 +16,6 @@ public class OpaquePass : RenderPass
 
         foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
             if (renderable.Material.Shader.Pass == "Opaque")
-                buffer.DrawRenderable(renderable);
+                buffer.DrawRenderable(renderable, Pipeline.ShaderDefaultsProvider);
     }
 }

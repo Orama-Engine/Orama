@@ -44,13 +44,10 @@ public class CommandBuffer : IDisposable
     /// <param name="name">The name of the shader parameter block.</param>
     public void QueueGPUBuffer(GPUBuffer gpuBuffer, string name) => gpuBufferQueue[name] = gpuBuffer;
 
-    public void DrawRenderable(IClientRenderable renderable)
+    public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
     {
         QueueGPUBuffer(renderable.Material.ParameterBuffer, "Parameters");
-
-        GPUBuffer objectBuffer = new GPUBuffer();
-        objectBuffer.AddMatrix4x4(renderable.Transform);
-        QueueGPUBuffer(objectBuffer, "Object");
+        QueueGPUBuffer(defaults.GetObjectBuffer(renderable), "Object");
 
         var gd = Renderer.Veldrid.GraphicsDevice;
 
