@@ -1,4 +1,7 @@
-﻿using Orama.Audio.Engines.OpenAL;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Orama.Audio.Engines.OpenAL;
 using Orama.Common;
 using Orama.Scenes;
 
@@ -9,64 +12,64 @@ namespace Orama.Audio;
 /// </summary>
 public class AudioModule : BaseModule, IAudioContext
 {
-    private readonly IAudioContext context;
+	private readonly IAudioContext context;
 
-    private readonly AudioPhysics audioPhysics = new();
+	private readonly AudioPhysics audioPhysics = new();
 
-    /// <inheritdoc/>
-    public IAudioSource CreateSource() => context.CreateSource();
+	/// <inheritdoc/>
+	public IAudioSource CreateSource() => context.CreateSource();
 
-    /// <inheritdoc/>
-    public void DestroySource(IAudioSource source) => context.DestroySource(source);
+	/// <inheritdoc/>
+	public void DestroySource(IAudioSource source) => context.DestroySource(source);
 
-    /// <inheritdoc/>
-    public IAudioListener CreateListener() => context.CreateListener();
+	/// <inheritdoc/>
+	public IAudioListener CreateListener() => context.CreateListener();
 
-    /// <inheritdoc/>
-    public void DestroyListener(IAudioListener listener) => context.DestroyListener(listener);
+	/// <inheritdoc/>
+	public void DestroyListener(IAudioListener listener) => context.DestroyListener(listener);
 
-    /// <inheritdoc/>
-    public void SetListener(IAudioListener? listener) => context.SetListener(listener);
+	/// <inheritdoc/>
+	public void SetListener(IAudioListener? listener) => context.SetListener(listener);
 
-    /// <inheritdoc/>
-    public void SetDistanceModel(AudioDistanceModel model) => context.SetDistanceModel(model); 
+	/// <inheritdoc/>
+	public void SetDistanceModel(AudioDistanceModel model) => context.SetDistanceModel(model);
 
-    /// <summary> Creates a new audio module with the given audio context. </summary>
-    /// <param name="context"> The audio context to use. </param>
-    public AudioModule(IAudioContext context) => this.context = context;
+	/// <summary> Creates a new audio module with the given audio context. </summary>
+	/// <param name="context"> The audio context to use. </param>
+	public AudioModule(IAudioContext context) => this.context = context;
 
-    /// <summary> Creates a new audio module with the default audio context. </summary>
-    public AudioModule() => this.context = new OpenALContext();
+	/// <summary> Creates a new audio module with the default audio context. </summary>
+	public AudioModule() => this.context = new OpenALContext();
 
-    /// <inheritdoc/>
-    public override void Initialize()
-    {
-        Application.OnUpdate += Update;
-    }
+	/// <inheritdoc/>
+	public override void Initialize()
+	{
+		Application.OnUpdate += Update;
+	}
 
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        base.Dispose();
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
 
-        Application.OnUpdate -= Update;
-    }
+		Application.OnUpdate -= Update;
+	}
 
-    public void Update()
-    {
-        var activeScene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
-        if (activeScene != null) audioPhysics.Update(activeScene);
-    }
+	public void Update()
+	{
+		var activeScene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
+		if (activeScene != null) audioPhysics.Update(activeScene);
+	}
 }
 
 /// <summary> Defines how audio source volume attenuates with distance from the listener. </summary>
 public enum AudioDistanceModel
 {
-    None,
-    InverseDistance,
-    InverseDistanceClamped,
-    LinearDistance,
-    LinearDistanceClamped,
-    ExponentDistance,
-    ExponentDistanceClamped
+	None,
+	InverseDistance,
+	InverseDistanceClamped,
+	LinearDistance,
+	LinearDistanceClamped,
+	ExponentDistance,
+	ExponentDistanceClamped
 }

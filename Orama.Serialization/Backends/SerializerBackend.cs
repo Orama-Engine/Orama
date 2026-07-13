@@ -1,4 +1,6 @@
-﻿
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 namespace Orama.Serialization.Backends;
 
 /// <summary>
@@ -7,18 +9,18 @@ namespace Orama.Serialization.Backends;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 internal class SerializerBackendAttribute : Attribute
 {
-    /// <summary> The serialization type this backend is for. </summary>
-    public SerializationType SerializationType { get; }
+	/// <summary> The serialization type this backend is for. </summary>
+	public SerializationType SerializationType { get; }
 
-    /// <summary> Initializes a new instance of the <see cref="SerializerBackendAttribute"/> class. </summary>
-    public SerializerBackendAttribute(SerializationType serializationType) => SerializationType = serializationType;
+	/// <summary> Initializes a new instance of the <see cref="SerializerBackendAttribute"/> class. </summary>
+	public SerializerBackendAttribute(SerializationType serializationType) => SerializationType = serializationType;
 }
 
 internal abstract class SerializerBackend
 {
-    /// <summary> Serializes the specified object. </summary>
-    public abstract byte[] Serialize(InstanceRepresentation obj);
+	/// <summary> Serializes the specified object. </summary>
+	public abstract byte[] Serialize(InstanceRepresentation obj);
 
-    /// <summary> Deserializes the specified data into an <see cref="InstanceRepresentation"/>. </summary>
-    public abstract InstanceRepresentation Deserialize(byte[] data);
+	/// <summary> Deserializes the specified data into an <see cref="InstanceRepresentation"/>. </summary>
+	public abstract InstanceRepresentation Deserialize(byte[] data);
 }

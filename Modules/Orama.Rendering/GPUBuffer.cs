@@ -1,3 +1,6 @@
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 using Orama.Math;
 using Orama.Rendering.Device;
 
@@ -8,128 +11,128 @@ namespace Orama.Rendering;
 /// </summary>
 public struct GPUBuffer
 {
-    /// <summary> The initial size of the internal buffer. </summary>
-    public const int DEFAULT_SIZE = 256;
+	/// <summary> The initial size of the internal buffer. </summary>
+	public const int DEFAULT_SIZE = 256;
 
-    /// <summary> Padded data of the buffer. </summary>
-    public ReadOnlySpan<byte> Data
-    {
-        get
-        {
-            int paddedSize = Align(offset, 16);
+	/// <summary> Padded data of the buffer. </summary>
+	public ReadOnlySpan<byte> Data
+	{
+		get
+		{
+			int paddedSize = Align(offset, 16);
 
-            if (paddedSize > offset)
-            {
-                EnsureCapacity(paddedSize);
-                data.AsSpan(offset, paddedSize - offset).Clear();
-            }
+			if (paddedSize > offset)
+			{
+				EnsureCapacity(paddedSize);
+				data.AsSpan(offset, paddedSize - offset).Clear();
+			}
 
-            return data.AsSpan(0, paddedSize);
-        }
-    }
+			return data.AsSpan(0, paddedSize);
+		}
+	}
 
-    private byte[] data = new byte[DEFAULT_SIZE];
-    private int offset = 0;
+	private byte[] data = new byte[DEFAULT_SIZE];
+	private int offset = 0;
 
-    public GPUBuffer() { }
+	public GPUBuffer() { }
 
-    public void AddInt(int value)
-    {
-        EnsurePacking(4, 4);
-        EnsureCapacity(offset + 4);
+	public void AddInt(int value)
+	{
+		EnsurePacking(4, 4);
+		EnsureCapacity(offset + 4);
 
-        Span<byte> dest = data.AsSpan(offset, 4);
-        BitConverter.TryWriteBytes(dest, value);
+		Span<byte> dest = data.AsSpan(offset, 4);
+		BitConverter.TryWriteBytes(dest, value);
 
-        offset += 4;
-    }
+		offset += 4;
+	}
 
-    public void AddFloat(float value)
-    {
-        EnsurePacking(4, 4);
-        EnsureCapacity(offset + 4);
+	public void AddFloat(float value)
+	{
+		EnsurePacking(4, 4);
+		EnsureCapacity(offset + 4);
 
-        Span<byte> dest = data.AsSpan(offset, 4);
-        BitConverter.TryWriteBytes(dest, value);
+		Span<byte> dest = data.AsSpan(offset, 4);
+		BitConverter.TryWriteBytes(dest, value);
 
-        offset += 4;
-    }
+		offset += 4;
+	}
 
-    public void AddFloat2(float x, float y)
-    {
-        EnsurePacking(8, 8);
-        EnsureCapacity(offset + 8);
-        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
-        offset += 8;
-    }
+	public void AddFloat2(float x, float y)
+	{
+		EnsurePacking(8, 8);
+		EnsureCapacity(offset + 8);
+		BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+		offset += 8;
+	}
 
-    public void AddFloat3(float x, float y, float z)
-    {
-        EnsurePacking(12, 16);
-        EnsureCapacity(offset + 12);
-        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
-        offset += 12;
-    }
+	public void AddFloat3(float x, float y, float z)
+	{
+		EnsurePacking(12, 16);
+		EnsureCapacity(offset + 12);
+		BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
+		offset += 12;
+	}
 
-    public void AddFloat4(float x, float y, float z, float w)
-    {
-        EnsurePacking(16, 16);
-        EnsureCapacity(offset + 16);
-        BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
-        BitConverter.TryWriteBytes(data.AsSpan(offset + 12, 4), w);
-        offset += 16;
-    }
+	public void AddFloat4(float x, float y, float z, float w)
+	{
+		EnsurePacking(16, 16);
+		EnsureCapacity(offset + 16);
+		BitConverter.TryWriteBytes(data.AsSpan(offset, 4), x);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 4, 4), y);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 8, 4), z);
+		BitConverter.TryWriteBytes(data.AsSpan(offset + 12, 4), w);
+		offset += 16;
+	}
 
-    public void AddMatrix4x4(Matrix4x4 m)
-    {
-        AddFloat4(m.M11, m.M12, m.M13, m.M14);
-        AddFloat4(m.M21, m.M22, m.M23, m.M24);
-        AddFloat4(m.M31, m.M32, m.M33, m.M34);
-        AddFloat4(m.M41, m.M42, m.M43, m.M44);
-    }
+	public void AddMatrix4x4(Matrix4x4 m)
+	{
+		AddFloat4(m.M11, m.M12, m.M13, m.M14);
+		AddFloat4(m.M21, m.M22, m.M23, m.M24);
+		AddFloat4(m.M31, m.M32, m.M33, m.M34);
+		AddFloat4(m.M41, m.M42, m.M43, m.M44);
+	}
 
-    /// <summary> Adds raw bytes directly to the buffer (e.g. for structs via MemoryMarshal). </summary>
-    public void AddBytes(ReadOnlySpan<byte> bytes)
-    {
-        EnsureCapacity(offset + bytes.Length);
-        bytes.CopyTo(data.AsSpan(offset));
-        offset += bytes.Length;
-    }
+	/// <summary> Adds raw bytes directly to the buffer (e.g. for structs via MemoryMarshal). </summary>
+	public void AddBytes(ReadOnlySpan<byte> bytes)
+	{
+		EnsureCapacity(offset + bytes.Length);
+		bytes.CopyTo(data.AsSpan(offset));
+		offset += bytes.Length;
+	}
 
-    public void Reset() => offset = 0;
+	public void Reset() => offset = 0;
 
 
-    private void EnsurePacking(int size, int baseAlign)
-    {
-        int aligned = Align(offset, baseAlign);
+	private void EnsurePacking(int size, int baseAlign)
+	{
+		int aligned = Align(offset, baseAlign);
 
-        if ((aligned % 16) + size > 16)
-            aligned = Align(aligned, 16);
+		if ((aligned % 16) + size > 16)
+			aligned = Align(aligned, 16);
 
-        EnsureCapacity(aligned);
-        while (offset < aligned)
-        {
-            data[offset] = 0;
-            offset++;
-        }
-    }
+		EnsureCapacity(aligned);
+		while (offset < aligned)
+		{
+			data[offset] = 0;
+			offset++;
+		}
+	}
 
-    private void EnsureCapacity(int required)
-    {
-        if (required <= data.Length)
-            return;
+	private void EnsureCapacity(int required)
+	{
+		if (required <= data.Length)
+			return;
 
-        int newSize = data.Length;
-        while (newSize < required)
-            newSize *= 2;
+		int newSize = data.Length;
+		while (newSize < required)
+			newSize *= 2;
 
-        Array.Resize(ref data, newSize);
-    }
+		Array.Resize(ref data, newSize);
+	}
 
-    private static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
+	private static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
 }

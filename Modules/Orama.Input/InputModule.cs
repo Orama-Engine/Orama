@@ -1,5 +1,9 @@
-﻿using Orama.Common;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Orama.Common;
 using Orama.Input.Devices;
+
 using Silk.NET.Input;
 
 namespace Orama.Input;
@@ -9,58 +13,58 @@ namespace Orama.Input;
 /// </summary>
 public class InputModule : BaseModule
 {
-    /// <summary> All currently connected input devices. </summary>
-    public IReadOnlyList<Devices.IInputDevice> Devices => devices;
+	/// <summary> All currently connected input devices. </summary>
+	public IReadOnlyList<Devices.IInputDevice> Devices => devices;
 
-    /// <summary> The primary (first connected) <see cref="Keyboard"/>. </summary>
-    public Keyboard? PrimaryKeyboard { get; private set; }
+	/// <summary> The primary (first connected) <see cref="Keyboard"/>. </summary>
+	public Keyboard? PrimaryKeyboard { get; private set; }
 
-    /// <summary> The primary (first connected) <see cref="Mouse"/>. </summary>
-    public Mouse? PrimaryMouse { get; private set; }
+	/// <summary> The primary (first connected) <see cref="Mouse"/>. </summary>
+	public Mouse? PrimaryMouse { get; private set; }
 
-    /// <summary> The primary (first connected) <see cref="Gamepad"/>. </summary>
-    public Gamepad? PrimaryGamepad { get; private set; }
+	/// <summary> The primary (first connected) <see cref="Gamepad"/>. </summary>
+	public Gamepad? PrimaryGamepad { get; private set; }
 
-    private List<Devices.IInputDevice> devices = new();
+	private List<Devices.IInputDevice> devices = new();
 
-    private IInputContext input = null!;
+	private IInputContext input = null!;
 
-    public void AddDevice(Devices.IInputDevice device) => devices.Add(device);
+	public void AddDevice(Devices.IInputDevice device) => devices.Add(device);
 
-    /// <inheritdoc/>
-    public override void Initialize()
-    {
-        Application.OnUpdate += Update;
+	/// <inheritdoc/>
+	public override void Initialize()
+	{
+		Application.OnUpdate += Update;
 
-        input = Application.Window.InternalWindow.CreateInput();
+		input = Application.Window.InternalWindow.CreateInput();
 
-        foreach (var keyboard in input.Keyboards)
-            devices.Add(new Keyboard(keyboard));
+		foreach (var keyboard in input.Keyboards)
+			devices.Add(new Keyboard(keyboard));
 
-        foreach (var mouse in input.Mice)
-            devices.Add(new Mouse(mouse));
+		foreach (var mouse in input.Mice)
+			devices.Add(new Mouse(mouse));
 
-        foreach (var gamepad in input.Gamepads)
-            devices.Add(new Gamepad(gamepad));
+		foreach (var gamepad in input.Gamepads)
+			devices.Add(new Gamepad(gamepad));
 
-        PrimaryKeyboard = devices.OfType<Keyboard>().FirstOrDefault();
-        PrimaryMouse = devices.OfType<Mouse>().FirstOrDefault();
-        PrimaryGamepad = devices.OfType<Gamepad>().FirstOrDefault();
-    }
+		PrimaryKeyboard = devices.OfType<Keyboard>().FirstOrDefault();
+		PrimaryMouse = devices.OfType<Mouse>().FirstOrDefault();
+		PrimaryGamepad = devices.OfType<Gamepad>().FirstOrDefault();
+	}
 
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        base.Dispose();
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
 
-        Application.OnUpdate -= Update;
+		Application.OnUpdate -= Update;
 
-        input.Dispose();
-    }
+		input.Dispose();
+	}
 
-    public void Update()
-    {
-        foreach (var device in devices)
-            device.Update();
-    }
+	public void Update()
+	{
+		foreach (var device in devices)
+			device.Update();
+	}
 }

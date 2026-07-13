@@ -1,4 +1,6 @@
-﻿
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 namespace Orama.Common;
 
 /// <summary>
@@ -10,8 +12,8 @@ namespace Orama.Common;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
 public class InitializeAfterAttribute : Attribute
 {
-    /// <summary> The <see cref="BaseModule"/> types to initialize after. </summary>
-    public Type[] Types { get; }
+	/// <summary> The <see cref="BaseModule"/> types to initialize after. </summary>
+	public Type[] Types { get; }
 
-    public InitializeAfterAttribute(params Type[] types) => Types = types;
+	public InitializeAfterAttribute(params Type[] types) => Types = types;
 }

@@ -1,5 +1,9 @@
-﻿using Orama.Scenes.Entities;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 using System.Numerics;
+
+using Orama.Scenes.Entities;
 
 namespace Orama.Physics;
 
@@ -8,25 +12,25 @@ namespace Orama.Physics;
 /// </summary>
 public interface IPhysicsWorld
 {
-    /// <summary> The amount of substeps to perform per step. A higher substep count results in a more accurate simulation, but is slower. </summary>
-    public uint SubstepCount { get; set; }
+	/// <summary> The amount of substeps to perform per step. A higher substep count results in a more accurate simulation, but is slower. </summary>
+	public uint SubstepCount { get; set; }
 
-    /// <summary> Creates a new physics body and adds it to the physics world. </summary>
-    /// <returns> The created physics body. </returns>
-    IPhysicsBody CreateBody(Entity? owner = null);
+	/// <summary> Creates a new physics body and adds it to the physics world. </summary>
+	/// <returns> The created physics body. </returns>
+	IPhysicsBody CreateBody(Entity? owner = null);
 
-    /// <summary> Destroys a physics body and removes it from the physics world. </summary>
-    /// <param name="body"> The physics body to remove. </param>
-    void DestroyBody(IPhysicsBody body);
+	/// <summary> Destroys a physics body and removes it from the physics world. </summary>
+	/// <param name="body"> The physics body to remove. </param>
+	void DestroyBody(IPhysicsBody body);
 
-    /// <summary> Steps the physics simulation forward by a given time delta. </summary>
-    /// <param name="delta"> The time in seconds to advance the simulation by. </param>
-    void Step(float delta);
+	/// <summary> Steps the physics simulation forward by a given time delta. </summary>
+	/// <param name="delta"> The time in seconds to advance the simulation by. </param>
+	void Step(float delta);
 
-    /// <summary> Tries to perform a raycast in the physics world and returns if it hits something. </summary>
-    /// <param name="origin"> The origin of the raycast. </param>
-    /// <param name="direction"> The direction of the raycast. </param>
-    /// <param name="maxDistance"> The maximum distance of the raycast. </param>
-    /// <param name="result"> The result data of the raycast. </param>
-    bool TryRaycast(Vector3 origin, Vector3 direction, float maxDistance, out RaycastResult result);
+	/// <summary> Tries to perform a raycast in the physics world and returns if it hits something. </summary>
+	/// <param name="origin"> The origin of the raycast. </param>
+	/// <param name="direction"> The direction of the raycast. </param>
+	/// <param name="maxDistance"> The maximum distance of the raycast. </param>
+	/// <param name="result"> The result data of the raycast. </param>
+	bool TryRaycast(Vector3 origin, Vector3 direction, float maxDistance, out RaycastResult result);
 }

@@ -1,4 +1,7 @@
-﻿using Orama.Audio.Components;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Orama.Audio.Components;
 using Orama.Common;
 using Orama.Math;
 using Orama.Physics;
@@ -11,59 +14,59 @@ namespace Orama.Audio;
 /// </summary>
 public class AudioPhysics
 {
-    private PhysicsModule? physicsModule;
+	private PhysicsModule? physicsModule;
 
-    /// <summary> Updates the audio physics state for all entities in the active scene. </summary>
-    /// <param name="activeScene"> The scene to process. </param>
-    public void Update(Scene activeScene)
-    {
-        physicsModule ??= ModuleManager.GetModule<PhysicsModule>();
-        if (physicsModule?.World == null) return;
+	/// <summary> Updates the audio physics state for all entities in the active scene. </summary>
+	/// <param name="activeScene"> The scene to process. </param>
+	public void Update(Scene activeScene)
+	{
+		physicsModule ??= ModuleManager.GetModule<PhysicsModule>();
+		if (physicsModule?.World == null) return;
 
-        AudioListener? listener = FindActiveListener(activeScene);
-        if (listener == null) return;
+		AudioListener? listener = FindActiveListener(activeScene);
+		if (listener == null) return;
 
-        ProcessAudioObstructions(activeScene, listener, physicsModule.World);
-    }
+		ProcessAudioObstructions(activeScene, listener, physicsModule.World);
+	}
 
-    private AudioListener? FindActiveListener(Scene scene)
-    {
-        foreach (var entity in scene.Entities)
-        {
-            if (!entity.Enabled) continue;
+	private AudioListener? FindActiveListener(Scene scene)
+	{
+		foreach (var entity in scene.Entities)
+		{
+			if (!entity.Enabled) continue;
 
-            var listener = entity.GetComponent<AudioListener>();
-            if (listener != null) return listener;
-        }
+			var listener = entity.GetComponent<AudioListener>();
+			if (listener != null) return listener;
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    private void ProcessAudioObstructions(Scene scene, AudioListener listener, IPhysicsWorld physicsWorld)
-    {
-        Vector3 listenerPos = listener.Entity.Transform.Position;
+	private void ProcessAudioObstructions(Scene scene, AudioListener listener, IPhysicsWorld physicsWorld)
+	{
+		Vector3 listenerPos = listener.Entity.Transform.Position;
 
-        foreach (var entity in scene.Entities)
-        {
-            if (!entity.Enabled) continue;
+		foreach (var entity in scene.Entities)
+		{
+			if (!entity.Enabled) continue;
 
-            var source = entity.GetComponent<AudioSource>();
-            if (source == null) continue;
+			var source = entity.GetComponent<AudioSource>();
+			if (source == null) continue;
 
-            source.Obstructed = EvaluateObstruction(source, listenerPos, physicsWorld);
-        }
-    }
+			source.Obstructed = EvaluateObstruction(source, listenerPos, physicsWorld);
+		}
+	}
 
-    private bool EvaluateObstruction(AudioSource source, Vector3 listenerPos, IPhysicsWorld physicsWorld)
-    {
-        Vector3 sourcePos = source.Entity.Transform.Position;
-        Vector3 direction = listenerPos - sourcePos;
-        float distance = direction.Length;
+	private bool EvaluateObstruction(AudioSource source, Vector3 listenerPos, IPhysicsWorld physicsWorld)
+	{
+		Vector3 sourcePos = source.Entity.Transform.Position;
+		Vector3 direction = listenerPos - sourcePos;
+		float distance = direction.Length;
 
-        if (distance <= 0.001f) return false;
+		if (distance <= 0.001f) return false;
 
-        Vector3 normalizedDir = direction / distance;
+		Vector3 normalizedDir = direction / distance;
 
-        return physicsWorld.TryRaycast(sourcePos, normalizedDir, distance, out _);
-    }
+		return physicsWorld.TryRaycast(sourcePos, normalizedDir, distance, out _);
+	}
 }

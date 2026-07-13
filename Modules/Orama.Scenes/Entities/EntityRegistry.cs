@@ -1,5 +1,9 @@
-﻿using Orama.Assemblies;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 using System.Reflection;
+
+using Orama.Assemblies;
 
 namespace Orama.Scenes.Entities;
 
@@ -8,46 +12,46 @@ namespace Orama.Scenes.Entities;
 /// </summary>
 public static class EntityRegistry
 {
-    private static readonly Dictionary<string, Func<Entity>> factories = new();
+	private static readonly Dictionary<string, Func<Entity>> factories = new();
 
-    public static void RegisterFactories()
-    {
-        foreach (var assembly in Reflection.GameAssemblies)
-        {
-            var entities = assembly.Types.Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
+	public static void RegisterFactories()
+	{
+		foreach (var assembly in Reflection.GameAssemblies)
+		{
+			var entities = assembly.Types.Where(t => typeof(Entity).IsAssignableFrom(t) && !t.IsAbstract);
 
-            foreach (var entity in entities)
-            {
-                var attribute = entity.GetCustomAttribute<EntityAttribute>(false);
-                if (attribute != null)
-                    RegisterFromType(attribute.Name, entity);
-            }
-        }
-    }
+			foreach (var entity in entities)
+			{
+				var attribute = entity.GetCustomAttribute<EntityAttribute>(false);
+				if (attribute != null)
+					RegisterFromType(attribute.Name, entity);
+			}
+		}
+	}
 
-    public static void Register<T>(string name) where T : Entity, new() => factories[name] = () => new T();
+	public static void Register<T>(string name) where T : Entity, new() => factories[name] = () => new T();
 
-    private static void RegisterFromType(string name, Type type)
-    {
-        if (!typeof(Entity).IsAssignableFrom(type))
-            return;
+	private static void RegisterFromType(string name, Type type)
+	{
+		if (!typeof(Entity).IsAssignableFrom(type))
+			return;
 
-        if (type.IsAbstract)
-            return;
+		if (type.IsAbstract)
+			return;
 
-        if (type.GetConstructor(Type.EmptyTypes) == null)
-            return;
+		if (type.GetConstructor(Type.EmptyTypes) == null)
+			return;
 
-        factories[name] = () => (Entity)Activator.CreateInstance(type)!;
-    }
+		factories[name] = () => (Entity)Activator.CreateInstance(type)!;
+	}
 
-    public static Entity CreateEntity(string name)
-    {
-        if (factories.TryGetValue(name, out var creator))
-            return creator();
+	public static Entity CreateEntity(string name)
+	{
+		if (factories.TryGetValue(name, out var creator))
+			return creator();
 
-        throw new Exception($"No entity registered for '{name}'.");
-    }
+		throw new Exception($"No entity registered for '{name}'.");
+	}
 
-    public static T CreateEntity<T>(string name) where T : Entity => (T)CreateEntity(name);
+	public static T CreateEntity<T>(string name) where T : Entity => (T)CreateEntity(name);
 }

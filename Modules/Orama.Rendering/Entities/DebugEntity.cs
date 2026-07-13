@@ -1,11 +1,14 @@
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 #if DEBUG
-using Orama.Rendering.Components;
+using Orama.Common;
+using Orama.Common.Utility;
 using Orama.Physics.Components;
 using Orama.Physics.Components.Colliders;
-using Orama.Scenes.Entities;
-using Orama.Common.Utility;
-using Orama.Common;
+using Orama.Rendering.Components;
 using Orama.Rendering.Resources;
+using Orama.Scenes.Entities;
 
 namespace Orama.Rendering.Entities;
 
@@ -15,28 +18,28 @@ namespace Orama.Rendering.Entities;
 [Entity("debug_entity")]
 public class DebugEntity : Entity
 {
-    [ImplicitComponent]
-    public MeshRenderer Renderer { get; private set; } = null!;
+	[ImplicitComponent]
+	public MeshRenderer Renderer { get; private set; } = null!;
 
-    [ImplicitComponent]
-    public RigidBody RigidBody { get; private set; } = null!;
+	[ImplicitComponent]
+	public RigidBody RigidBody { get; private set; } = null!;
 
-    /// <inheritdoc/>
-    public override void Start()
-    {
-        base.Start();
+	/// <inheritdoc/>
+	public override void Start()
+	{
+		base.Start();
 
-        BoxCollider col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
-        col.Start();
+		BoxCollider col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
+		col.Start();
 
-        RigidBody.IsStatic = true;
+		RigidBody.IsStatic = true;
 
-        var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+		var mesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
 
-        Renderer.Mesh = mesh;
-        Renderer.Mesh?.Material = Material.Default;
+		Renderer.Mesh = mesh;
+		Renderer.Mesh?.Material = Material.Default;
 
-        EngineConsole.Log("Debug entity started.");
-    }
+		EngineConsole.Log("Debug entity started.");
+	}
 }
 #endif

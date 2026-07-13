@@ -1,4 +1,7 @@
-﻿using Orama.Common;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Orama.Common;
 using Orama.GUI.Widgets;
 
 namespace Orama.GUI;
@@ -8,27 +11,27 @@ namespace Orama.GUI;
 /// </summary>
 public class GUIModule : BaseModule
 {
-    public PaintEngine PaintEngine { get; set; } = new();
+	public PaintEngine PaintEngine { get; set; } = new();
 
-    public Widget RootWidget { get; set; } = new Widget();
+	public Widget RootWidget { get; set; } = new Widget();
 
-    /// <inheritdoc/>
-    public override void Initialize()
-    {
-        Application.OnUpdate += Update;
-    }
+	/// <inheritdoc/>
+	public override void Initialize()
+	{
+		Application.OnUpdate += Update;
+	}
 
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        base.Dispose();
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
 
-        Application.OnUpdate -= Update;
-    }
+		Application.OnUpdate -= Update;
+	}
 
-    public void Update()
-    {
-        RootWidget.Update();
-        RootWidget.Draw(PaintEngine);
-    }
+	public void Update()
+	{
+		RootWidget.Update();
+		RootWidget.Draw(PaintEngine);
+	}
 }

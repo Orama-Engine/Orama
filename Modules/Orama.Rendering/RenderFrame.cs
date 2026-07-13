@@ -1,3 +1,6 @@
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 using Orama.Math;
 
 namespace Orama.Rendering;
@@ -7,7 +10,7 @@ namespace Orama.Rendering;
 /// </summary>
 public readonly ref struct RenderFrame
 {
-    public Matrix4x4 View { get; init; }
-    public Matrix4x4 Projection { get; init; }
-    public GPUBuffer CameraBuffer { get; init; }
+	public Matrix4x4 View { get; init; }
+	public Matrix4x4 Projection { get; init; }
+	public GPUBuffer CameraBuffer { get; init; }
 }

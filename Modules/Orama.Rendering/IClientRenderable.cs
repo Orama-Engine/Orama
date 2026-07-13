@@ -1,6 +1,8 @@
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Resources;
 using Orama.Math;
+using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
 
@@ -9,10 +11,10 @@ namespace Orama.Rendering;
 /// </summary>
 public interface IClientRenderable
 {
-    Matrix4x4 Transform { get; }
-    Vector3[] Vertices { get; }
-    Vector3[] Normals { get; }
-    Vector2[] UVs { get; }
-    uint[] Indices { get; }
-    Material Material { get; }
+	Matrix4x4 Transform { get; }
+	Vector3[] Vertices { get; }
+	Vector3[] Normals { get; }
+	Vector2[] UVs { get; }
+	uint[] Indices { get; }
+	Material Material { get; }
 }

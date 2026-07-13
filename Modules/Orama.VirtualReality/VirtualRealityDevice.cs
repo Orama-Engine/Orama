@@ -1,4 +1,6 @@
-﻿
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 namespace Orama.VirtualReality;
 
 /// <summary>
@@ -10,8 +12,8 @@ namespace Orama.VirtualReality;
 /// </remarks>
 public abstract class VirtualRealityDevice
 {
-    public string Name { get; set; } = "Unknown VR Device";
+	public string Name { get; set; } = "Unknown VR Device";
 
-    public abstract void Initialize();
-    public virtual void Update() { }
+	public abstract void Initialize();
+	public virtual void Update() { }
 }

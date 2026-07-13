@@ -1,4 +1,7 @@
-﻿namespace Orama.Scenes.Entities;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+namespace Orama.Scenes.Entities;
 
 /// <summary>
 /// Registers a class inherting from <see cref="Entity"/> into the Entity system.
@@ -6,14 +9,14 @@
 [AttributeUsage(AttributeTargets.Class)]
 public class EntityAttribute : Attribute
 {
-    /// <summary> The text name of the entity. (i.e. "my_awesome_entity") </summary>
-    public string Name { get; }
+	/// <summary> The text name of the entity. (i.e. "my_awesome_entity") </summary>
+	public string Name { get; }
 
-    /// <summary> Initializes a new instance of the <see cref="EntityAttribute"/> class. </summary>
-    public EntityAttribute(string name)
-    {
-        Name = name;
-    }
+	/// <summary> Initializes a new instance of the <see cref="EntityAttribute"/> class. </summary>
+	public EntityAttribute(string name)
+	{
+		Name = name;
+	}
 }
 
 

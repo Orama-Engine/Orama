@@ -1,4 +1,6 @@
-﻿
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 namespace Orama.Serialization;
 
 /// <summary>
@@ -14,6 +16,6 @@ internal record struct FieldRepresentation(string Name, string Value);
 /// </remarks>
 internal struct InstanceRepresentation
 {
-    /// <summary> All serialized fields of the instance. </summary>
-    public FieldRepresentation[] Fields { get; set; }
+	/// <summary> All serialized fields of the instance. </summary>
+	public FieldRepresentation[] Fields { get; set; }
 }

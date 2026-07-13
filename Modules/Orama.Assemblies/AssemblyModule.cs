@@ -1,6 +1,10 @@
-﻿using Orama.Common;
-using Orama.Common.Utility;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
 using System.Runtime.Loader;
+
+using Orama.Common;
+using Orama.Common.Utility;
 
 namespace Orama.Assemblies;
 
@@ -9,42 +13,42 @@ namespace Orama.Assemblies;
 /// </summary>
 public class AssemblyModule : BaseModule
 {
-    /// <inheritdoc/>
-    public override void Dispose()
-    {
-        base.Dispose();
+	/// <inheritdoc/>
+	public override void Dispose()
+	{
+		base.Dispose();
 
-        UnloadAll();
-    }
+		UnloadAll();
+	}
 
-    /// <inheritdoc/>
-    public override void Initialize()
-    {
-        foreach (var loadedAssembly in Reflection.GameAssemblies)
-            OnAssemblyLoadAttribute.RunOnAssembly(loadedAssembly);
-    }
+	/// <inheritdoc/>
+	public override void Initialize()
+	{
+		foreach (var loadedAssembly in Reflection.GameAssemblies)
+			OnAssemblyLoadAttribute.RunOnAssembly(loadedAssembly);
+	}
 
-    /// <summary> Loads an assembly from the specified path. </summary>
-    public OramaAssembly LoadFromPath(string path)
-    {
-        string absolutePath = System.IO.Path.GetFullPath(path);
+	/// <summary> Loads an assembly from the specified path. </summary>
+	public OramaAssembly LoadFromPath(string path)
+	{
+		string absolutePath = System.IO.Path.GetFullPath(path);
 
-        var context = new AssemblyLoadContext("OramaPlugin", true);
-        var assembly = context.LoadFromAssemblyPath(absolutePath);
+		var context = new AssemblyLoadContext("OramaPlugin", true);
+		var assembly = context.LoadFromAssemblyPath(absolutePath);
 
-        OramaAssembly asm = new(absolutePath, context, assembly);
-        Reflection.GameAssemblies.Add(asm);
-        asm.Unloaded += (a) => Reflection.GameAssemblies.Remove(a);
+		OramaAssembly asm = new(absolutePath, context, assembly);
+		Reflection.GameAssemblies.Add(asm);
+		asm.Unloaded += (a) => Reflection.GameAssemblies.Remove(a);
 
-        OnAssemblyLoadAttribute.RunOnAssembly(assembly);
+		OnAssemblyLoadAttribute.RunOnAssembly(assembly);
 
-        return asm;
-    }
+		return asm;
+	}
 
-    /// <summary> Unloads all currently loaded assemblies. </summary>
-    public void UnloadAll()
-    {
-        foreach (var asm in Reflection.GameAssemblies)
-            asm.TryUnload();
-    }
+	/// <summary> Unloads all currently loaded assemblies. </summary>
+	public void UnloadAll()
+	{
+		foreach (var asm in Reflection.GameAssemblies)
+			asm.TryUnload();
+	}
 }

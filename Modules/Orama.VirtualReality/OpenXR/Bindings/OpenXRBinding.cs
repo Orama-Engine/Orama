@@ -1,4 +1,7 @@
-﻿using Silk.NET.OpenXR;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR.Bindings;
 
@@ -7,10 +10,10 @@ namespace Orama.VirtualReality.OpenXR.Bindings;
 /// </summary>
 internal class OpenXRBinding
 {
-    public XR OpenXR { get; }
+	public XR OpenXR { get; }
 
-    public OpenXRBinding(XR openXR)
-    {
-        OpenXR = openXR;
-    }
+	public OpenXRBinding(XR openXR)
+	{
+		OpenXR = openXR;
+	}
 }

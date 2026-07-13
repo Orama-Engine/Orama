@@ -1,4 +1,7 @@
-﻿using Orama.Math;
+// This file is part of the Orama Game Engine.
+// Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+
+using Orama.Math;
 
 namespace Orama.GUI.Widgets;
 
@@ -7,15 +10,15 @@ namespace Orama.GUI.Widgets;
 /// </summary>
 public class Widget
 {
-    public Rect Rect { get; set; }
+	public Rect Rect { get; set; }
 
-    public virtual void Update()
-    {
+	public virtual void Update()
+	{
 
-    }
+	}
 
-    public virtual void Draw(PaintEngine pEngine)
-    {
-        pEngine.DrawRect(Rect, Color.White);
-    }
+	public virtual void Draw(PaintEngine pEngine)
+	{
+		pEngine.DrawRect(Rect, Color.White);
+	}
 }
