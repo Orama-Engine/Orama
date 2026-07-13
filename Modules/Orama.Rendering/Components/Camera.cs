@@ -10,7 +10,7 @@ namespace Orama.Rendering.Components;
 public class Camera : Component
 {
 	/// <summary> The field of view. </summary>
-	public float FOV { get; set; } = MathF.PI / 3f;
+	public float FOV { get; set; } = Math.Math.PI / 3f;
 
 	/// <summary> The aspect ratio. </summary>
 	public float AspectRatio { get; set; } = 16f / 9f;
@@ -45,7 +45,7 @@ public class Camera : Component
 	{
 		get
 		{
-			float f = 1f / MathF.Tan(FOV / 2f);
+			float f = 1f / Math.Math.Tan(FOV / 2f);
 			float yScale = Renderer.Veldrid.GraphicsDevice.IsClipSpaceYInverted ? -f : f; // Hacky, ideally ProjectionMatrix should be the same no matter the backend
 
 			float zRange = ZFar - ZNear;

@@ -118,7 +118,7 @@ public class OpenALSource : IAudioSource
 	public void Update(Vector3 position)
 	{
 		al.SetSourceProperty(source, SourceVector3.Position, position.X, position.Y, position.Z);
-		float gainHF = 1.0f - MathF.Min(1.0f, MathF.Max(0f, Obstruction));
+		float gainHF = 1.0f - Math.Math.Min(1.0f, Math.Math.Max(0f, Obstruction));
 
 		efx.SetFilterProperty(filter, FilterFloat.LowpassGain, 1.0f);
 		efx.SetFilterProperty(filter, FilterFloat.LowpassGainHF, gainHF);

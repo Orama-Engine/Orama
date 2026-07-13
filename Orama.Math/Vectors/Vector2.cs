@@ -15,7 +15,7 @@ public struct Vector2 : IEquatable<Vector2>
 	public float Y { get; set; }
 
 	/// <summary> The length of the <see cref="Vector2"/>. </summary>
-	public float Length => MathF.Sqrt(X * X + Y * Y);
+	public float Length => Math.Sqrt(X * X + Y * Y);
 
 	/// <summary> Creates a new instance of <see cref="Vector2"/> with the specified components. </summary>
 	public Vector2(float x, float y)
@@ -48,8 +48,8 @@ public struct Vector2 : IEquatable<Vector2>
 	/// <summary> Rotates a vector by the specified angle (in radians). </summary>
 	public static Vector2 Rotate(Vector2 vector, float radians)
 	{
-		float cos = MathF.Cos(radians);
-		float sin = MathF.Sin(radians);
+		float cos = Math.Cos(radians);
+		float sin = Math.Sin(radians);
 		return new Vector2(
 			vector.X * cos - vector.Y * sin,
 			vector.X * sin + vector.Y * cos

@@ -21,7 +21,7 @@ public struct Vector4 : IEquatable<Vector4>
 	public float W { get; set; }
 
 	/// <summary> The length of the <see cref="Vector4"/>. </summary>
-	public float Length => MathF.Sqrt(X * X + Y * Y + Z * Z + W * W);
+	public float Length => Math.Sqrt(X * X + Y * Y + Z * Z + W * W);
 
 	/// <summary> Creates a new instance of <see cref="Vector4"/> with the specified components. </summary>
 	public Vector4(float x, float y, float z, float w)

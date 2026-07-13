@@ -36,8 +36,8 @@ public struct Quaternion : IEquatable<Quaternion>
 	{
 		axis = axis.Normalize();
 		float halfAngle = angle * 0.5f;
-		float sin = MathF.Sin(halfAngle);
-		float cos = MathF.Cos(halfAngle);
+		float sin = Math.Sin(halfAngle);
+		float cos = Math.Cos(halfAngle);
 
 		return new Quaternion(
 			axis.X * sin,
@@ -55,19 +55,19 @@ public struct Quaternion : IEquatable<Quaternion>
 		// Pitch (X-axis rotation)
 		float sinr_cosp = 2f * (W * X + Y * Z);
 		float cosr_cosp = 1f - 2f * (X * X + Y * Y);
-		angles.X = MathF.Atan2(sinr_cosp, cosr_cosp);
+		angles.X = Math.ATan2(sinr_cosp, cosr_cosp);
 
 		// Yaw (Y-axis rotation)
 		float sinp = 2f * (W * Y - Z * X);
-		if (MathF.Abs(sinp) >= 1f)
-			angles.Y = MathF.CopySign(MathF.PI / 2f, sinp); // use 90 degrees if out of range
+		if (Math.Abs(sinp) >= 1f)
+			angles.Y = Math.CopySign(Math.PI / 2f, sinp); // use 90 degrees if out of range
 		else
-			angles.Y = MathF.Asin(sinp);
+			angles.Y = Math.Asin(sinp);
 
 		// Roll (Z-axis rotation)
 		float siny_cosp = 2f * (W * Z + X * Y);
 		float cosy_cosp = 1f - 2f * (Y * Y + Z * Z);
-		angles.Z = MathF.Atan2(siny_cosp, cosy_cosp);
+		angles.Z = Math.ATan2(siny_cosp, cosy_cosp);
 
 		return angles;
 	}
@@ -75,12 +75,12 @@ public struct Quaternion : IEquatable<Quaternion>
 	/// <summary> Creates a <see cref="Quaternion"/> from Euler angles (pitch, yaw, roll) in radians. </summary>
 	public static Quaternion FromEulerAngles(float x, float y, float z)
 	{
-		float cy = MathF.Cos(z * 0.5f);
-		float sy = MathF.Sin(z * 0.5f);
-		float cp = MathF.Cos(y * 0.5f);
-		float sp = MathF.Sin(y * 0.5f);
-		float cr = MathF.Cos(x * 0.5f);
-		float sr = MathF.Sin(x * 0.5f);
+		float cy = Math.Cos(z * 0.5f);
+		float sy = Math.Sin(z * 0.5f);
+		float cp = Math.Cos(y * 0.5f);
+		float sp = Math.Sin(y * 0.5f);
+		float cr = Math.Cos(x * 0.5f);
+		float sr = Math.Sin(x * 0.5f);
 
 		return new Quaternion(
 			sr * cp * cy - cr * sp * sy,

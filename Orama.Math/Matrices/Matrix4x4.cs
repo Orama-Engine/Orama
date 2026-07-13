@@ -118,8 +118,8 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	/// <summary> Creates a rotation matrix around the X axis. </summary>
 	public static Matrix4x4 CreateRotationX(float r)
 	{
-		float c = MathF.Cos(r);
-		float s = MathF.Sin(r);
+		float c = Math.Cos(r);
+		float s = Math.Sin(r);
 
 		return new Matrix4x4(
 			1, 0, 0, 0,
@@ -132,8 +132,8 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	/// <summary> Creates a rotation matrix around the Y axis. </summary>
 	public static Matrix4x4 CreateRotationY(float r)
 	{
-		float c = MathF.Cos(r);
-		float s = MathF.Sin(r);
+		float c = Math.Cos(r);
+		float s = Math.Sin(r);
 
 		return new Matrix4x4(
 			c, 0, -s, 0,
@@ -146,8 +146,8 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	/// <summary> Creates a rotation matrix around the Z axis. </summary>
 	public static Matrix4x4 CreateRotationZ(float r)
 	{
-		float c = MathF.Cos(r);
-		float s = MathF.Sin(r);
+		float c = Math.Cos(r);
+		float s = Math.Sin(r);
 
 		return new Matrix4x4(
 			c, s, 0, 0,
