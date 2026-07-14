@@ -22,8 +22,7 @@ public enum SamplerFilter
 public enum TextureWrapMode
 {
 	Repeat,
-	Clamp,
-	Wrap
+	Clamp
 }
 
 
