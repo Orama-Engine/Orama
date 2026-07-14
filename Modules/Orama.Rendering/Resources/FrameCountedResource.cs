@@ -37,7 +37,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 	/// <summary> The underlying resource. </summary>
 	public T Resource
 	{
-		get { Touch(); return field;}
+		get { Touch(); return field; }
 		private set => field = value;
 	}
 

@@ -51,7 +51,7 @@ public class CommandBuffer : IDisposable
 
 	public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
 	{
-		QueueGPUBuffer(renderable.Material.ParameterBuffer, "Parameters");
+		QueueGPUBuffer(GPUBuffer.ConstructFromMaterial(renderable.Material), "Parameters");
 		QueueGPUBuffer(defaults.GetObjectBuffer(renderable), "Object");
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
