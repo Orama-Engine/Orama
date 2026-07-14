@@ -18,7 +18,7 @@ public abstract class RenderPass
 	/// <summary> Fully runs this <see cref="RenderPass"/>. </summary>
 	public void Execute(in RenderFrame frame)
 	{
-		var buffer = CommandBufferPool.Rent();
+		var buffer = CommandBufferPool.Instance.Rent();
 		buffer.Begin();
 
 		buffer.CommandList.SetFramebuffer(TargetBuffer);
@@ -28,7 +28,7 @@ public abstract class RenderPass
 
 		buffer.End();
 		Renderer.SubmitCommandBuffer(buffer);
-		CommandBufferPool.Return(buffer);
+		CommandBufferPool.Instance.Return(buffer);
 	}
 
 	/// <summary> Performs rendering operations. </summary>

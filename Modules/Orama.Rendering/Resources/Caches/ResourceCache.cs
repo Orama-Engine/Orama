@@ -8,7 +8,7 @@ namespace Orama.Rendering.Resources.Caches;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : ResourceCache<TSingletonOwner, TKey, TResource>, new() where TKey : notnull where TResource : IDisposable
+public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : new() where TKey : notnull where TResource : IDisposable
 {
 	/// <summary> Singleton instance. </summary>
 	public static TSingletonOwner Instance { get; } = new TSingletonOwner();
