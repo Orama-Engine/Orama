@@ -92,7 +92,7 @@ public class CommandBuffer : IDisposable
 			for (int i = 0; i < orderedResources.Length; i++)
 			{
 				var resource = orderedResources[i];
-				if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer gpuBuffer))
+				if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
 				{
 					EngineConsole.Exception(new Exception($"No GPU buffer available for '{resource.Key}' (Set: {resource.Value.Set}, Binding: {resource.Value.Binding})."));
 

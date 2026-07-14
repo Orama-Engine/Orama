@@ -27,7 +27,8 @@ public static class Serialization
 	}
 
 	/// <summary> Deserializes a byte array to an object. </summary>
-	public static T Deserialize<T>(byte[] data, SerializationType type = DefaultType) where T : new()
+	/// <returns> The deserialized <typeparamref name="T"/> or <see langword="null"/> if deserialization failed. </returns>
+	public static T? Deserialize<T>(byte[] data, SerializationType type = DefaultType) where T : new()
 	{
 		Type? backendType = typeof(SerializerBackend).Assembly.GetTypes().FirstOrDefault(t => t.IsSubclassOf(typeof(SerializerBackend)) && ((SerializerBackendAttribute)Attribute.GetCustomAttribute(t, typeof(SerializerBackendAttribute))!).SerializationType == type);
 		if (backendType == null)
