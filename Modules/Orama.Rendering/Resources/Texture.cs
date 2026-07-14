@@ -1,6 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Resources.DefaultProvider;
+
+using StbImageSharp;
+
 namespace Orama.Rendering.Resources;
 
 public enum TextureFormat
@@ -46,7 +50,7 @@ public class Texture
 	public Texture(int width, int height, TextureFormat format, byte[]? initialData = null, Sampler sampler = default)
 	{
 		Format = format;
-		Data = initialData ?? new byte[width * height];
+		Data = initialData ?? new byte[width * height * GetPixelSize(format)];
 		Width = width;
 		Height = height;
 
@@ -107,4 +111,16 @@ public struct Sampler
 	public TextureWrapMode WrapV { get; set; } = TextureWrapMode.Repeat;
 
 	public Sampler() { }
+}
+
+[ResourceLoader]
+internal class TextureLoader : ResourceLoader<Texture>
+{
+	/// <inheritdoc/>
+	public override Texture? LoadResource(byte[] data, string? name = null)
+	{
+		var image = ImageResult.FromMemory(data, ColorComponents.RedGreenBlueAlpha);
+
+		return new Texture(image.Width, image.Height, TextureFormat.RGBA8, image.Data, new Sampler());
+	}
 }
