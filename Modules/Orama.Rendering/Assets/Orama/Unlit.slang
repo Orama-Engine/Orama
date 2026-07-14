@@ -15,7 +15,6 @@ SHADER_PARAMETERS(
     float3 Color;
 )
 
-
 [Shader("vertex")]
 VertexOutput Vertex(VertexInput i)
 {

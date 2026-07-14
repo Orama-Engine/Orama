@@ -9,33 +9,55 @@ public enum TextureFormat
 	RGB8
 }
 
+public enum SamplerFilter
+{
+	Nearest,
+	Linear
+}
+
+public enum TextureWrapMode
+{
+	Repeat,
+	Clamp,
+	Wrap
+}
+
+
 /// <summary>
-/// Represents a texture used in a material.
+/// Represents an image used in a material.
 /// </summary>
 public class Texture
 {
+	public TextureFormat Format { get; }
+
 	public int Width { get; }
 	public int Height { get; }
 
 	public byte[] Data { get; private set; }
+
+	/// <summary> Sampler settings used when sampling this <see cref="Texture"/>. </summary>
+	public Sampler Sampler { get; }
 
 	/// <summary> Creates a new <see cref="Texture"/> with optional pixel data. </summary>
 	/// <param name="width">Texture width in pixels.</param>
 	/// <param name="height">Texture height in pixels.</param>
 	/// <param name="format">Pixel format.</param>
 	/// <param name="initialData">Optional initial pixel data.</param>
-	public Texture(int width, int height, TextureFormat format, byte[]? initialData = null)
+	public Texture(int width, int height, TextureFormat format, byte[]? initialData = null, Sampler sampler = default)
 	{
+		Format = format;
 		Data = initialData ?? new byte[width * height];
 		Width = width;
 		Height = height;
+
+		Sampler = sampler;
 	}
 
 	/// <summary> Sets the raw pixel data. </summary>
 	/// <param name="data">Byte array of pixel data matching texture format.</param>
 	public void SetData(byte[] data)
 	{
-		if (data.Length != data.Length)
+		if (data.Length != Data.Length)
 			throw new ArgumentException("Data length does not match texture size.");
 
 		Data = data;
@@ -52,7 +74,7 @@ public class Texture
 	/// <summary> Clears the texture to a specific color. </summary>
 	public void Clear(byte r, byte g, byte b, byte a = 255)
 	{
-		int pixelSize = 4; // HACK: Assume RGBA8
+		int pixelSize = GetPixelSize(TextureFormat.RGBA8);
 
 		for (int i = 0; i < Data.Length; i += pixelSize)
 		{
@@ -62,4 +84,27 @@ public class Texture
 			Data[i + 3] = a;
 		}
 	}
+
+	private static int GetPixelSize(TextureFormat format)
+	{
+		switch (format)
+		{
+			case TextureFormat.RGBA8:
+				return 4;
+			case TextureFormat.RGB8:
+				return 3;
+			default:
+				throw new ArgumentException("Invalid texture format.");
+		}
+	}
+}
+
+
+public struct Sampler
+{
+	public SamplerFilter Filter { get; set; } = SamplerFilter.Linear;
+	public TextureWrapMode WrapU { get; set; } = TextureWrapMode.Repeat;
+	public TextureWrapMode WrapV { get; set; } = TextureWrapMode.Repeat;
+
+	public Sampler() { }
 }

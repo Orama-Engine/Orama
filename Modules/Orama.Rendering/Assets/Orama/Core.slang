@@ -38,13 +38,15 @@ public struct VertexInput
 public struct VertexOutput
 {
     public float4 Position : SV_Position;
-    public float3 WorldPosition : TEXCOORD0;
     public float3 Normal : NORMAL;
+    public float2 UV : TEXCOORD0;
+
+    public float3 WorldPosition : TEXCOORD0;
 };
 
 // Wrapper for Two-Dimensional Textures and Samplers.
 public struct SampledTexture2D<T> where T : ITexelElement
 {
-    Texture2D<T> Texture;
-    SamplerState Sampler;
+    public Texture2D<T> Texture;
+    public SamplerState Sampler;
 };
