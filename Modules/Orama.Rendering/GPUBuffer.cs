@@ -9,7 +9,7 @@ namespace Orama.Rendering;
 /// <summary>
 /// Buffer that assembles data in a format readable by a <see cref="CommandBuffer"/>.
 /// </summary>
-public struct GPUBuffer
+public sealed class GPUBuffer
 {
 	/// <summary> The initial size of the internal buffer. </summary>
 	public const int DEFAULT_SIZE = 256;
