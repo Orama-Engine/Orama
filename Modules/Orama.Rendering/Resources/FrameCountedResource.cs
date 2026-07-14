@@ -32,7 +32,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 	public uint FrameDisposalBuffer { get; init; } = 200;
 
 	/// <summary> The last frame the resource was used or <see langword="null"/> if never used. </summary>
-	internal ulong? LastUsedFrame { get; set; } = null;
+	internal ulong? LastUsedFrame { get; private set; } = null;
 
 	/// <summary> The underlying resource. </summary>
 	public T Resource
