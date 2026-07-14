@@ -19,6 +19,8 @@ SHADER_PARAMETERS(
 
     [DefaultFloat3(0, 5, 3)]
     float3 Position;
+
+    SampledTexture2D<float4> Albedo;
 )
 
 [Shader("vertex")]

@@ -22,7 +22,8 @@ public sealed class ShaderParameter
 		Int,
 		Float,
 		Matrix,
-		Vector
+		Vector,
+		SampledTexture2D
 	}
 
 	public string Name { get; }
@@ -80,7 +81,12 @@ public class Shader
 
 			foreach (var parameter in comp.ShaderParameters)
 			{
-				ShaderParameter.ParamType type = Enum.Parse<ShaderParameter.ParamType>(parameter.Type.Name, true);
+				if (!Enum.TryParse<ShaderParameter.ParamType>(parameter.Type.Name, true, out ShaderParameter.ParamType type))
+				{
+					EngineConsole.Warning($"Unsupported shader parameter type '{parameter.Type.Name}'.");
+					continue;
+				}
+
 				object? defaultValue = null;
 
 				uint attributeCount = parameter.AttributeCount;

@@ -4,7 +4,7 @@
 module Core;
 
 // -----------------------------------------------------------------------------
-// Shared Structures.
+// Shared (Global) Parameters.
 // -----------------------------------------------------------------------------
 
 public struct CameraData
@@ -13,6 +13,7 @@ public struct CameraData
     public float4x4 ProjectionMatrix;
 };
 
+// Information about the rendering camera.
 public ParameterBlock<CameraData> Camera;
 
 public struct ObjectData
@@ -20,7 +21,12 @@ public struct ObjectData
     public float4x4 ModelMatrix;
 };
 
+// Information about this object.
 public ParameterBlock<ObjectData> Object;
+
+// -----------------------------------------------------------------------------
+// Shared Structs.
+// -----------------------------------------------------------------------------
 
 public struct VertexInput
 {
@@ -36,3 +42,9 @@ public struct VertexOutput
     public float3 Normal : NORMAL;
 };
 
+// Wrapper for Two-Dimensional Textures and Samplers.
+public struct SampledTexture2D<T> where T : ITexelElement
+{
+    Texture2D<T> Texture;
+    SamplerState Sampler;
+};
