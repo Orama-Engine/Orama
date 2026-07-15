@@ -39,9 +39,10 @@ public sealed class GPUBuffer
 	public GPUBuffer() { }
 
 	/// <summary> Constructs a <see cref="GPUBuffer"/> from a <see cref="Material"/>s parameters. </summary>
+	/// <remarks> <see cref="GPUBuffer"/>s created via this method should be returned to the pool via <c>GPUBufferPool.Instance.Return()</c> when no longer in use. </remarks>
 	public static GPUBuffer ConstructFromMaterial(Material mat)
 	{
-		GPUBuffer buffer = new();
+		GPUBuffer buffer = GPUBufferPool.Instance.Rent();
 
 		foreach (var param in mat.Shader.Parameters)
 			switch (param)

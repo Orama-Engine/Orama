@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Buffers;
 using System.Collections.Immutable;
 
 using NeoVeldrid;
@@ -30,14 +31,30 @@ public class CommandBuffer : IDisposable
 	private Dictionary<string, GPUBuffer> gpuBufferQueue = new();
 	private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
+	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
+
 	/// <inheritdoc/>
-	public void Dispose() => CommandList.Dispose();
+	public void Dispose()
+	{
+		ClearFrameBuffers();
+		CommandList.Dispose();
+	}
 
 	public void Begin()
 	{
 		CommandList.Begin();
+		ClearFrameBuffers();
+	}
+
+	private void ClearFrameBuffers()
+	{
 		gpuBufferQueue.Clear();
 		lastBoundBuffers.Clear();
+
+		for (int i = 0; i < rentedBuffersThisFrame.Count; i++)
+			GPUBufferPool.Instance.Return(rentedBuffersThisFrame[i]);
+
+		rentedBuffersThisFrame.Clear();
 	}
 
 	public void End() => CommandList.End();
@@ -51,7 +68,10 @@ public class CommandBuffer : IDisposable
 
 	public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
 	{
-		QueueGPUBuffer(GPUBuffer.ConstructFromMaterial(renderable.Material), "Parameters");
+		GPUBuffer materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
+		rentedBuffersThisFrame.Add(materialBuffer);
+
+		QueueGPUBuffer(materialBuffer, "Parameters");
 		QueueGPUBuffer(defaults.GetObjectBuffer(renderable), "Object");
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
@@ -112,7 +132,8 @@ public class CommandBuffer : IDisposable
 
 	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
 	{
-		GPUBuffer[] queuedBuffers = new GPUBuffer[orderedResources.Count];
+		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(orderedResources.Count);
+		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, orderedResources.Count);
 
 		for (int i = 0; i < orderedResources.Count; i++)
 		{
@@ -122,15 +143,21 @@ public class CommandBuffer : IDisposable
 			{
 				OramaConsole.Exception(new Exception($"Could not find buffer for resource {resource.Key}"));
 
-				gpuBuffer = new GPUBuffer();
-				gpuBuffer.AddFloat(0f);
+				using (var pooledFallback = GPUBufferPool.Instance.RentAuto())
+				{
+					pooledFallback.Object.AddFloat(0f);
+					gpuBuffer = pooledFallback.Object;
+				}
 			}
 
-			queuedBuffers[i] = gpuBuffer;
+			queuedBuffersSpan[i] = gpuBuffer;
 		}
 
-		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffers))
+		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffersSpan))
+		{
+			ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
 			return;
+		}
 
 		ResourceLayoutDescription layoutDesc = new(
 			orderedResources
@@ -144,11 +171,11 @@ public class CommandBuffer : IDisposable
 
 		List<DeviceBuffer> buffers = new(orderedResources.Count);
 
-		for (int i = 0; i < queuedBuffers.Length; i++)
+		for (int i = 0; i < orderedResources.Count; i++)
 		{
-			GPUBuffer gpuBuffer = queuedBuffers[i];
+			GPUBuffer gpuBuffer = queuedBuffersSpan[i];
 
-			FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length,BufferUsage.UniformBuffer));
+			FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length, BufferUsage.UniformBuffer));
 
 			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
@@ -159,7 +186,11 @@ public class CommandBuffer : IDisposable
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
-		lastBoundBuffers[setIndex] = queuedBuffers;
+		GPUBuffer[] persistentSnapshot = new GPUBuffer[orderedResources.Count];
+		queuedBuffersSpan.CopyTo(persistentSnapshot);
+		lastBoundBuffers[setIndex] = persistentSnapshot;
+
+		ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
 	}
 
 	public void SetPipeline(PipelineKey pipelineDesc)
