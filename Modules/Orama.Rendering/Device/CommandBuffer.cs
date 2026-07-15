@@ -54,6 +54,10 @@ public class CommandBuffer : IDisposable
 	private void ClearFrameBuffers()
 	{
 		gpuBufferQueue.Clear();
+
+		foreach (var kvp in lastBoundBuffers)
+			ArrayPool<GPUBuffer>.Shared.Return(kvp.Value);
+
 		lastBoundBuffers.Clear();
 
 		for (int i = 0; i < rentedBuffersThisFrame.Count; i++)
@@ -200,7 +204,10 @@ public class CommandBuffer : IDisposable
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
-		GPUBuffer[] persistentSnapshot = new GPUBuffer[resourceCount];
+		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? oldArray))
+			ArrayPool<GPUBuffer>.Shared.Return(oldArray);
+
+		GPUBuffer[] persistentSnapshot = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
 		queuedBuffersSpan.CopyTo(persistentSnapshot);
 		lastBoundBuffers[setIndex] = persistentSnapshot;
 
