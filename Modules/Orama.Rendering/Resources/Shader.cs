@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Collections.Immutable;
 using System.Text;
 
 using NeoVeldrid;
@@ -145,7 +146,7 @@ public class Shader
 				foreach (var resource in comp.Resources)
 					resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
 
-				this.parameters = parameters;
+				this.Parameters = parameters.ToImmutableArray();
 				this.resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value);
 
 				this.Layouts = resources
@@ -172,7 +173,7 @@ public class Shader
 	internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
 
 	/// <summary> The shader's parameter definitions. </summary>
-	public IReadOnlyList<ShaderParameter> Parameters => parameters;
+	public ImmutableArray<ShaderParameter> Parameters { get; private set; }
 
 	/// <summary> The shader's resource definitions mapped to their names. </summary>
 	public IReadOnlyDictionary<string, ShaderResource> Resources => resources;
@@ -182,7 +183,6 @@ public class Shader
 	/// <summary> The shader's resource layouts. </summary>
 	internal ResourceLayoutDescription[] Layouts = Array.Empty<ResourceLayoutDescription>();
 
-	private List<ShaderParameter> parameters = new List<ShaderParameter>();
 	private Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
 
 	/// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>

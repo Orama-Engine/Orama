@@ -2,6 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 using Orama.Common;
 using Orama.Scenes;
@@ -23,7 +24,7 @@ public class Entity
 		{
 			field = value;
 
-			foreach (var component in Components)
+			foreach (var component in components)
 				component.Enabled = value;
 		}
 	} = true;
@@ -81,7 +82,9 @@ public class Entity
 	/// <remarks> The base implementation starts all components. </remarks>
 	public virtual void Start()
 	{
-		foreach (var component in Components)
+		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
+
+		foreach (var component in componentSpan)
 		{
 			if (component.Enabled)
 				component.Start();
@@ -92,7 +95,9 @@ public class Entity
 	/// <remarks> The base implementation updates all components. </remarks>
 	public virtual void Update()
 	{
-		foreach (var component in Components)
+		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
+
+		foreach (var component in componentSpan)
 		{
 			if (component.Enabled)
 				component.Update();
@@ -104,7 +109,9 @@ public class Entity
 	{
 		Enabled = false;
 
-		foreach (var component in Components.ToList()) // ToList for enumeration issues
+		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
+
+		foreach (var component in componentSpan)
 		{
 			component.Enabled = false;
 			component.Destroy();

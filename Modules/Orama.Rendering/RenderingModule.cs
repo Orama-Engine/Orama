@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Runtime.InteropServices;
+
 using Orama.Common;
 using Orama.Math;
 using Orama.Rendering;
@@ -48,7 +50,8 @@ public class RenderingModule : BaseModule
 		{
 			View = view,
 			Projection = projection,
-			CameraBuffer = cameraBuffer
+			CameraBuffer = cameraBuffer,
+			Renderables = CollectionsMarshal.AsSpan(Renderables),
 		};
 
 		Pipeline.Render(in frame);
