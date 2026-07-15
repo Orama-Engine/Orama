@@ -23,8 +23,9 @@ public class CommandBuffer : IDisposable
 	/// <summary> The low-level Veldrid command list. </summary>
 	public CommandList CommandList { get; }
 
-	/// <summary> The current pipeline in use. </summary>
-	public PipelineKey Pipeline { get; set; }
+	// Hacky
+	/// <summary> The current pipeline hash in use. </summary>
+	public int ActivePipelineHash { get; private set; }
 
 	/// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
 	public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
@@ -49,6 +50,7 @@ public class CommandBuffer : IDisposable
 	{
 		CommandList.Begin();
 		ClearFrameBuffers();
+		ActivePipelineHash = 0;
 	}
 
 	private void ClearFrameBuffers()
@@ -90,20 +92,9 @@ public class CommandBuffer : IDisposable
 
 		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
 
-		PipelineKey pipelineDesc = new PipelineKey(
-			PassName: renderable.Material.Shader.Pass,
-			Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
-			Outputs: gd.SwapchainFramebuffer.OutputDescription,
-			ResourceLayouts: layoutDesc
-		);
+		PipelineKey pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, layoutDesc);
 
-		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-			VertexPositions: renderable.Vertices,
-			VertexNormals: renderable.Normals,
-			VertexUVs: renderable.UVs,
-			Indices: renderable.Indices,
-			Pipeline: pipelineDesc
-		));
+		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, pipelineDesc));
 
 		SetPipeline(pipelineDesc);
 
@@ -184,7 +175,7 @@ public class CommandBuffer : IDisposable
 			);
 		}
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(layoutElementCache.AsSpan(0, resourceCount));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount)));
 
 		if (resourceCount > deviceBufferCache.Length)
 			Array.Resize(ref deviceBufferCache, resourceCount * 2);
@@ -200,7 +191,7 @@ public class CommandBuffer : IDisposable
 			deviceBufferCache[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount));
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount)));
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
@@ -216,10 +207,12 @@ public class CommandBuffer : IDisposable
 
 	public void SetPipeline(PipelineKey pipelineDesc)
 	{
-		Pipeline = pipelineDesc;
+		if (ActivePipelineHash == pipelineDesc.Hash)
+			return;
+
+		ActivePipelineHash = pipelineDesc.Hash;
 
 		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-
 		CommandList.SetPipeline(pipeline.Resource);
 	}
 

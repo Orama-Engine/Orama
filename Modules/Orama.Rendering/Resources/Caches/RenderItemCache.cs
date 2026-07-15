@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System;
 using System.Collections.Immutable;
 
 using NeoVeldrid;
@@ -34,12 +35,11 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 		BufferDescription vbDesc = new BufferDescription((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer);
 		BufferDescription ibDesc = new BufferDescription((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer);
 
-		// We dont have to get these via FrameCountedResources since RenderItem.Dispose() Disposes the vb and ib
 		DeviceBuffer vb = factory.CreateBuffer(vbDesc);
 		gd.UpdateBuffer(vb, 0, vertexData);
 
 		DeviceBuffer ib = factory.CreateBuffer(ibDesc);
-		gd.UpdateBuffer(ib, 0, key.Indices.AsSpan());
+		gd.UpdateBuffer(ib, 0, key.Indices);
 
 		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
@@ -47,35 +47,42 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	}
 }
 
-public readonly record struct RenderItemKey(Vector3[] VertexPositions, Vector3[] VertexNormals, Vector2[] VertexUVs, uint[] Indices, PipelineKey Pipeline)
+public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineKey pipeline) : IResourceKey
 {
+	public readonly ReadOnlySpan<Vector3> VertexPositions = vertexPositions;
+	public readonly ReadOnlySpan<Vector3> VertexNormals = vertexNormals;
+	public readonly ReadOnlySpan<Vector2> VertexUVs = vertexUVs;
+	public readonly ReadOnlySpan<uint> Indices = indices;
+	public readonly PipelineKey Pipeline = pipeline;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
 	public bool Equals(RenderItemKey other)
 	{
-		return VertexPositions.SequenceEqual(other.VertexPositions)
-			&& VertexNormals.SequenceEqual(other.VertexNormals)
-			&& VertexUVs.SequenceEqual(other.VertexUVs)
-			&& Indices.SequenceEqual(other.Indices)
-			&& Pipeline.Equals(other.Pipeline);
+		if (!VertexPositions.SequenceEqual(other.VertexPositions)) return false;
+		if (!VertexNormals.SequenceEqual(other.VertexNormals)) return false;
+		if (!VertexUVs.SequenceEqual(other.VertexUVs)) return false;
+		if (!Indices.SequenceEqual(other.Indices)) return false;
+		if (!Pipeline.Equals(other.Pipeline)) return false;
+
+		return true;
 	}
 
+	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
-		HashCode hc = new();
+		unchecked
+		{
+			int hash = 17;
 
-		foreach (var v in VertexPositions)
-			hc.Add(v);
+			foreach (var v in VertexPositions) hash = hash * 31 + v.GetHashCode();
+			foreach (var v in VertexNormals) hash = hash * 31 + v.GetHashCode();
+			foreach (var v in VertexUVs) hash = hash * 31 + v.GetHashCode();
+			foreach (var i in Indices) hash = hash * 31 + (int)i;
 
-		foreach (var v in VertexNormals)
-			hc.Add(v);
-
-		foreach (var v in VertexUVs)
-			hc.Add(v);
-
-		foreach (var i in Indices)
-			hc.Add(i);
-
-		hc.Add(Pipeline);
-
-		return hc.ToHashCode();
+			hash = hash * 31 + Pipeline.Hash;
+			return hash;
+		}
 	}
 }

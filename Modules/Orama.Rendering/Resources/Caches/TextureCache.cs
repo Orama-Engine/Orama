@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -13,21 +14,7 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, NeoVe
 
 		NeoVeldrid.Texture texture = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateTexture(desc);
 
-		ReadOnlySpan<byte> data = key.Data.AsSpan();
-
-		Renderer.Veldrid.GraphicsDevice.UpdateTexture(
-			texture,
-			data,
-			0,
-			0,
-			0,
-			key.Width,
-			key.Height,
-			1,
-			0,
-			0
-		);
-
+		Renderer.Veldrid.GraphicsDevice.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
 
 		return texture;
 	}
@@ -38,23 +25,41 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, NeoVe
 		{
 			TextureFormat.RGB8 => NeoVeldrid.PixelFormat.R8_G8_B8_A8_UNorm,
 			TextureFormat.RGBA8 => NeoVeldrid.PixelFormat.R8_G8_B8_A8_UNorm,
-
 			_ => throw new NotSupportedException($"Unsupported texture format: {format}")
 		};
 	}
 }
 
-
-public readonly record struct TextureKey(uint Width, uint Height, TextureFormat Format, byte[] Data)
+public readonly ref struct TextureKey(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey
 {
+	public readonly uint Width = width;
+	public readonly uint Height = height;
+	public readonly TextureFormat Format = format;
+	public readonly ReadOnlySpan<byte> Data = data;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
 	public bool Equals(TextureKey other)
 	{
-		return Width == other.Width
-			&& Height == other.Height
-			&& Format == other.Format
-			&& Data.SequenceEqual(other.Data);
+		if (Width != other.Width) return false;
+		if (Height != other.Height) return false;
+		if (Format != other.Format) return false;
+		if (!Data.SequenceEqual(other.Data)) return false;
+		return true;
 	}
 
 	/// <inheritdoc/>
-	public override int GetHashCode() => HashCode.Combine(Width, Height, Format, Data);
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hash = 17;
+			hash = hash * 31 + (int)Width;
+			hash = hash * 31 + (int)Height;
+			hash = hash * 31 + (int)Format;
+			foreach (var b in Data) hash = hash * 31 + b;
+			return hash;
+		}
+	}
 }

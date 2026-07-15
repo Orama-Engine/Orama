@@ -17,8 +17,8 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
 
 		global::NeoVeldrid.Shader[] shaders = factory.CreateFromSpirv(
-			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode, "main"),
-			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode, "main"),
+			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main"),
+			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main"),
 			new CrossCompileOptions()
 		);
 
@@ -28,7 +28,12 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
 		);
 
-		ResourceLayout[] layouts = key.ResourceLayouts.Select(layoutDesc => ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements)).Resource).ToArray();
+		ResourceLayout[] layouts = new ResourceLayout[key.ResourceLayouts.Length];
+		for (int i = 0; i < key.ResourceLayouts.Length; i++)
+		{
+			var layoutDesc = key.ResourceLayouts[i];
+			layouts[i] = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements)).Resource;
+		}
 
 		RasterizerStateDescription rasterizerState =
 			Renderer.Options.Culling switch
@@ -60,42 +65,95 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		return pipeline;
 	}
 }
-
-public readonly record struct PipelineKey(string PassName, ShaderKey Shader, OutputDescription Outputs, ResourceLayoutDescription[] ResourceLayouts)
+public readonly ref struct PipelineKey(string passName, ShaderKey shader,  OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
 {
+	public readonly string PassName = passName;
+	public readonly ShaderKey Shader = shader;
+	public readonly OutputDescription Outputs = outputs;
+	
+	public readonly ReadOnlySpan<ResourceLayoutDescription> ResourceLayouts = resourceLayouts;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
 	public bool Equals(PipelineKey other)
 	{
-		return PassName == other.PassName
-			&& Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode)
-			&& Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode)
-			&& Outputs.Equals(other.Outputs)
-			&& ResourceLayouts.SequenceEqual(other.ResourceLayouts);
+		if (PassName != other.PassName) return false;
+		if (!Outputs.Equals(other.Outputs)) return false;
+
+		if (!Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode)) return false;
+		if (!Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode)) return false;
+
+		if (ResourceLayouts.Length != other.ResourceLayouts.Length) return false;
+
+		for (int i = 0; i < ResourceLayouts.Length; i++)
+		{
+			var leftLayout = ResourceLayouts[i];
+			var rightLayout = other.ResourceLayouts[i];
+
+			if (leftLayout.Elements.Length != rightLayout.Elements.Length) return false;
+
+			for (int j = 0; j < leftLayout.Elements.Length; j++)
+			{
+				if (!leftLayout.Elements[j].Equals(rightLayout.Elements[j])) return false;
+			}
+		}
+
+		return true;
 	}
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
-		HashCode hash = new();
-		hash.Add(PassName);
+		unchecked
+		{
+			int hash = 17;
 
-		foreach (byte b in Shader.VertexBytecode)
-			hash.Add(b);
-		foreach (byte b in Shader.FragmentBytecode)
-			hash.Add(b);
+			hash = hash * 31 + (PassName?.GetHashCode() ?? 0);
 
-		hash.Add(Outputs);
+			hash = hash * 31 + Shader.Hash;
 
-		foreach (var layout in ResourceLayouts)
-			foreach (var element in layout.Elements)
+			hash = hash * 31 + Outputs.GetHashCode();
+
+			foreach (var layout in ResourceLayouts)
 			{
-				hash.Add(element.Name);
-				hash.Add(element.Kind);
-				hash.Add(element.Stages);
-				hash.Add(element.Options);
+				if (layout.Elements == null) continue;
+				
+				foreach (var element in layout.Elements)
+				{
+					hash = hash * 31 + (element.Name?.GetHashCode() ?? 0);
+					hash = hash * 31 + (int)element.Kind;
+					hash = hash * 31 + (int)element.Stages;
+					hash = hash * 31 + (int)element.Options;
+				}
 			}
 
-		return hash.ToHashCode();
+			return hash;
+		}
 	}
 }
 
-public readonly record struct ShaderKey(byte[] VertexBytecode, byte[] FragmentBytecode);
+public readonly ref struct ShaderKey(ReadOnlySpan<byte> vertexBytecode, ReadOnlySpan<byte> fragmentBytecode) : IResourceKey
+{
+	public readonly ReadOnlySpan<byte> VertexBytecode = vertexBytecode;
+	public readonly ReadOnlySpan<byte> FragmentBytecode = fragmentBytecode;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hash = 17;
+
+			foreach (byte b in VertexBytecode)
+				hash = hash * 31 + b;
+
+			foreach (byte b in FragmentBytecode)
+				hash = hash * 31 + b;
+
+			return hash;
+		}
+	}
+}
