@@ -34,6 +34,7 @@ public class CommandBuffer : IDisposable
 
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
 	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
+	private DeviceBuffer[] deviceBufferCache = new DeviceBuffer[16];
 
 	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
 
@@ -181,7 +182,8 @@ public class CommandBuffer : IDisposable
 
 		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(layoutElementCache.AsSpan(0, resourceCount));
 
-		DeviceBuffer[] buffers = new DeviceBuffer[resourceCount];
+		if (resourceCount > deviceBufferCache.Length)
+			Array.Resize(ref deviceBufferCache, resourceCount * 2);
 
 		for (int i = 0; i < resourceCount; i++)
 		{
@@ -191,10 +193,10 @@ public class CommandBuffer : IDisposable
 
 			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
-			buffers[i] = buffer.Resource;
+			deviceBufferCache[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers));
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount));
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
