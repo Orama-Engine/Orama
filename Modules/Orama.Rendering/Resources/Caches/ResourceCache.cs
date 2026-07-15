@@ -8,7 +8,7 @@ namespace Orama.Rendering.Resources.Caches;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : ResourceCache<TSingletonOwner, TKey, TResource>, new() where TKey : notnull where TResource : IDisposable
+public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : new() where TKey : notnull where TResource : IDisposable
 {
 	/// <summary> Singleton instance. </summary>
 	public static TSingletonOwner Instance { get; } = new TSingletonOwner();
@@ -23,14 +23,14 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 	{
 		if (Cache.TryGetValue(key, out FrameCountedResource<TResource>? existing))
 		{
-			existing.LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+			existing.Touch();
 			return existing;
 		}
 
 		TResource created = Create(key);
 
 		FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
-		value.LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+		value.Touch();
 		value.Disposed += () => Cache.Remove(key);
 
 		Cache[key] = value;

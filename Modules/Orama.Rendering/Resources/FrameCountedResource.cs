@@ -8,15 +8,18 @@ namespace Orama.Rendering.Resources;
 public interface IFrameCountedResource
 {
 	/// <summary> Called when the resource is disposed. </summary>
-	public event Action? Disposed;
+	event Action? Disposed;
 
 	/// <summary> Tries to dispose the resource. </summary>
 	/// <param name="currentFrame">The current frame. </param>
 	/// <returns> True if the resource was disposed. </returns>
-	public bool TryDispose(ulong currentFrame);
+	bool TryDispose(ulong currentFrame);
 
 	/// <summary> Force releases the GPU resource. </summary>
-	public void ReleaseGPUResource();
+	void ReleaseGPUResource();
+
+	/// <summary> Force marks the resource as being used this frame. </summary>
+	void Touch();
 }
 
 /// <summary>
@@ -29,10 +32,14 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 	public uint FrameDisposalBuffer { get; init; } = 200;
 
 	/// <summary> The last frame the resource was used or <see langword="null"/> if never used. </summary>
-	internal ulong? LastUsedFrame { get; set; } = null;
+	internal ulong? LastUsedFrame { get; private set; } = null;
 
 	/// <summary> The underlying resource. </summary>
-	public T Resource { get; }
+	public T Resource
+	{
+		get { Touch(); return field; }
+		private set => field = value;
+	}
 
 	/// <inheritdoc/>
 	public event Action? Disposed;
@@ -63,4 +70,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 
 	/// <inheritdoc/>
 	public void ReleaseGPUResource() => Resource.Dispose();
+
+	/// <inheritdoc/>
+	public void Touch() => LastUsedFrame = Renderer.Veldrid.CurrentFrame;
 }

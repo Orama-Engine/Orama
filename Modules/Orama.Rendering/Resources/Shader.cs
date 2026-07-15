@@ -9,8 +9,6 @@ using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
 
-using SlangShaderSharp;
-
 namespace Orama.Rendering.Resources;
 
 public sealed class ShaderParameter
@@ -39,7 +37,6 @@ public sealed class ShaderParameter
 	}
 }
 
-// TODO: Should this live in the shader class? Might be too close to the GPU
 public sealed class ShaderResource
 {
 	public ResourceKind Kind { get; }

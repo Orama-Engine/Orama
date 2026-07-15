@@ -42,10 +42,15 @@ internal class OpenXRInstance : OpenXRBinding
 			SystemGetInfo systemInfo = new()
 			{
 				Type = StructureType.SystemGetInfo,
-				FormFactor = FormFactor.HeadMountedDisplay // TODO: Support handhelds?
+				FormFactor = FormFactor.HeadMountedDisplay
 			};
 
-			OpenXR.GetSystem(Native, ref systemInfo, ref systemID).VerifySuccess();
+			Result res = OpenXR.GetSystem(Native, ref systemInfo, ref systemID);
+			if (res != Result.Success)
+			{
+				systemInfo.FormFactor = FormFactor.HandheldDisplay;
+				OpenXR.GetSystem(Native, ref systemInfo, ref systemID).VerifySuccess();
+			}
 
 			return systemID;
 		}

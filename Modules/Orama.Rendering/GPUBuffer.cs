@@ -1,8 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Device;
+using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
 
@@ -35,6 +37,42 @@ public sealed class GPUBuffer
 	private int offset = 0;
 
 	public GPUBuffer() { }
+
+	/// <summary> Constructs a <see cref="GPUBuffer"/> from a <see cref="Material"/>s parameters. </summary>
+	public static GPUBuffer ConstructFromMaterial(Material mat)
+	{
+		GPUBuffer buffer = new();
+
+		foreach (var param in mat.Shader.Parameters)
+			switch (param)
+			{
+				case { Type: ShaderParameter.ParamType.Float, DefaultValue: float f }:
+					buffer.AddFloat(f);
+					break;
+
+				case { Type: ShaderParameter.ParamType.Int, DefaultValue: long i }:
+					buffer.AddInt((int)i);
+					break;
+
+				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector3 v }:
+					buffer.AddFloat3(v.X, v.Y, v.Z);
+					break;
+
+				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector2 v }:
+					buffer.AddFloat2(v.X, v.Y);
+					break;
+
+				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector4 v }:
+					buffer.AddFloat4(v.X, v.Y, v.Z, v.W);
+					break;
+
+				default:
+					EngineConsole.Warning($"Unsupported parameter type: {param.Type}");
+					break;
+			}
+
+		return buffer;
+	}
 
 	public void AddInt(int value)
 	{

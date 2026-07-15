@@ -44,9 +44,6 @@ public class VeldridDevice
 
 		switch (backend)
 		{
-			case RendererBackend.OpenGL:
-				// TODO... Maybe?
-				throw new NotImplementedException();
 			case RendererBackend.Vulkan:
 			case RendererBackend.Direct3D11:
 				{
