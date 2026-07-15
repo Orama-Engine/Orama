@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Runtime.CompilerServices;
+
 namespace Orama.Rendering.Resources.Caches;
 
 /// <summary>
@@ -27,10 +29,18 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 			return existing;
 		}
 
+		// We need to do lambda stuff in a seperate execution block to avoid allocations because lambda allocations will always happen if a method contains a lambda
+		// (even if returning early)
+		return InitializeNewCacheEntry(key);
+	}
+
+	private FrameCountedResource<TResource> InitializeNewCacheEntry(TKey key)
+	{
 		TResource created = Create(key);
 
 		FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
 		value.Touch();
+
 		value.Disposed += () => Cache.Remove(key);
 
 		Cache[key] = value;
