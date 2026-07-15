@@ -79,7 +79,7 @@ public class CommandBuffer : IDisposable
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
 
-		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.CreateResourceLayouts().ToArray();
+		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
 
 		PipelineKey pipelineDesc = new PipelineKey(
 			PassName: renderable.Material.Shader.Pass,

@@ -148,6 +148,18 @@ public class Shader
 				this.parameters = parameters;
 				this.resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value);
 
+				this.Layouts = resources
+					.GroupBy(r => r.Value.Set)
+					.OrderBy(g => g.Key)
+					.Select(g => new ResourceLayoutDescription(
+						g.OrderBy(r => r.Value.Binding)
+						 .Select(r => new ResourceLayoutElementDescription(
+							 r.Key,
+							 r.Value.Kind,
+							 ShaderStages.Vertex | ShaderStages.Fragment))
+						 .ToArray()))
+					.ToArray();
+
 				field = value;
 			}
 		}
@@ -165,6 +177,11 @@ public class Shader
 	/// <summary> The shader's resource definitions mapped to their names. </summary>
 	public IReadOnlyDictionary<string, ShaderResource> Resources => resources;
 
+	// HACK: This is definitely too close to the GPU
+	// We should move this ASAP
+	/// <summary> The shader's resource layouts. </summary>
+	internal ResourceLayoutDescription[] Layouts = Array.Empty<ResourceLayoutDescription>();
+
 	private List<ShaderParameter> parameters = new List<ShaderParameter>();
 	private Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
 
@@ -173,21 +190,6 @@ public class Shader
 	{
 		Name = name;
 		Source = shaderLangSource;
-	}
-
-	// Hack
-	public IEnumerable<ResourceLayoutDescription> CreateResourceLayouts()
-	{
-		return Resources
-			.GroupBy(r => r.Value.Set)
-			.OrderBy(g => g.Key)
-			.Select(g => new ResourceLayoutDescription(
-				g.OrderBy(r => r.Value.Binding)
-				 .Select(r => new ResourceLayoutElementDescription(
-					 r.Key,
-					 r.Value.Kind,
-					 ShaderStages.Vertex | ShaderStages.Fragment))
-				 .ToArray()));
 	}
 }
 
