@@ -13,25 +13,20 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, NeoVe
 
 		NeoVeldrid.Texture texture = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateTexture(desc);
 
-		unsafe
-		{
-			fixed (byte* ptr = key.Data)
-			{
-				Renderer.Veldrid.GraphicsDevice.UpdateTexture(
-					texture,
-					(IntPtr)ptr,
-					(uint)key.Data.Length * sizeof(byte),
-					0,
-					0,
-					0,
-					key.Width,
-					key.Height,
-					1,
-					0,
-					0
-				);
-			}
-		}
+		ReadOnlySpan<byte> data = key.Data.AsSpan();
+
+		Renderer.Veldrid.GraphicsDevice.UpdateTexture(
+			texture,
+			data,
+			0,
+			0,
+			0,
+			key.Width,
+			key.Height,
+			1,
+			0,
+			0
+		);
 
 
 		return texture;

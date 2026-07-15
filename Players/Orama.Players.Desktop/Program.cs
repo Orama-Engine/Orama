@@ -50,6 +50,7 @@ internal class Program
 			floor.Transform.Position = new Vector3(0, 0, 0);
 
 			DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
+
 			cube.Transform.Position = new Vector3(0, 1, 0);
 
 			for (int i = 0; i < 1000; i++)

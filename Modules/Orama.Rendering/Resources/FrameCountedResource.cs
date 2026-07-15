@@ -48,7 +48,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 	public FrameCountedResource(T resource)
 	{
 		Resource = resource;
-		FrameDisposalQueue.ActiveResources.AddLast(this);
+		FrameDisposalQueue.ActiveResources.Add(this);
 	}
 
 	/// <inheritdoc/>
