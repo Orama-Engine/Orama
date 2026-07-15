@@ -11,7 +11,7 @@ namespace Orama.Rendering;
 /// Base class for managed objects that can be shared via renting and returning.
 /// </summary>
 /// <typeparam name="TObject">The object this pool manages.</typeparam>
-public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner : new() where TObject : class
+public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner : ObjectPool<TSingletonOwner, TObject>, new() where TObject : class
 {
 	/// <summary> The maximum size of the pool before overflowing. </summary>
 	public const int MAX_POOL_SIZE = 256;
@@ -38,6 +38,10 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 		return obj;
 	}
 
+	/// <summary> Rents an object and wraps it in an allocation-free disposable structure. </summary>
+	/// <remarks> <see cref="PooledObject{TObject, TPool}"/>s obtained via this method should be disposed when no longer in use. </remarks>
+	public PooledObject<TObject, TSingletonOwner> RentAuto() => new PooledObject<TObject, TSingletonOwner>(Rent());
+
 	/// <summary> Returns the given <typeparamref name="TObject"/> to the pool. </summary>
 	public void Return(TObject obj)
 	{
@@ -49,4 +53,21 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 		else
 			OramaConsole.Warning($"Object Pool for {typeof(TObject).Name} is full! Discarding instance.");
 	}
+}
+
+public readonly ref struct PooledObject<TObject, TPool> where TObject : class where TPool : ObjectPool<TPool, TObject>, new()
+{
+	/// <summary> The underlying rented object. </summary>
+	public TObject Object { get; }
+
+	public PooledObject(TObject obj) => Object = obj;
+
+	/// <summary> Returns the held object back to the <typeparamref name="TPool"/> </summary>
+	public void Dispose()
+	{
+		if (Object != null)
+			ObjectPool<TPool, TObject>.Instance.Return(Object);
+	}
+
+	public static implicit operator TObject(PooledObject<TObject, TPool> wrapper) => wrapper.Object;
 }

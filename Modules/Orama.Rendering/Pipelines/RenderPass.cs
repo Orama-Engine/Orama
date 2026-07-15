@@ -18,17 +18,16 @@ public abstract class RenderPass
 	/// <summary> Fully runs this <see cref="RenderPass"/>. </summary>
 	public void Execute(in RenderFrame frame)
 	{
-		var buffer = CommandBufferPool.Instance.Rent();
-		buffer.Begin();
+		using var buffer = CommandBufferPool.Instance.RentAuto();
+		buffer.Object.Begin();
 
-		buffer.CommandList.SetFramebuffer(TargetBuffer);
-		buffer.QueueGPUBuffer(frame.CameraBuffer, "Camera");
+		buffer.Object.CommandList.SetFramebuffer(TargetBuffer);
+		buffer.Object.QueueGPUBuffer(frame.CameraBuffer, "Camera");
 
 		Render(in frame, buffer);
 
-		buffer.End();
+		buffer.Object.End();
 		Renderer.SubmitCommandBuffer(buffer);
-		CommandBufferPool.Instance.Return(buffer);
 	}
 
 	/// <summary> Performs rendering operations. </summary>
