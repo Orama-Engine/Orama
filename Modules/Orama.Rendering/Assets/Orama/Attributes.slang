@@ -1,4 +1,4 @@
-﻿// Attributes.slang
+// Attributes.slang
 // Provides definitions for custom engine shader attributes.
 
 module Attributes;
@@ -13,33 +13,41 @@ public struct ShaderPassAttribute
 // -----------------------------------------------------------------------------
 // Defaults.
 // -----------------------------------------------------------------------------
-[__AttributeUsage(_AttributeTargets.Var)]
+
+#define DEFAULT_USAGE [__AttributeUsage(_AttributeTargets.Var)]
+
+DEFAULT_USAGE
 public struct DefaultFloatAttribute
 {
 	float value;
 };
 
-[__AttributeUsage(_AttributeTargets.Var)]
+DEFAULT_USAGE
 public struct DefaultIntAttribute
 {
 	int value;
 };
 
-[__AttributeUsage(_AttributeTargets.Var)]
+DEFAULT_USAGE
 public struct DefaultFloat2Attribute
 {
     float x, y;
 };
 
-[__AttributeUsage(_AttributeTargets.Var)]
+DEFAULT_USAGE
 public struct DefaultFloat3Attribute
 {
     float x, y, z;
 };
 
-[__AttributeUsage(_AttributeTargets.Var)]
+DEFAULT_USAGE
 public struct DefaultFloat4Attribute
 {
     float x, y, z, w;
 };
 
+DEFAULT_USAGE
+public struct DefaultTextureAttribute
+{
+    string path;
+};
