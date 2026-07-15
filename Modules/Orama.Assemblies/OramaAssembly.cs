@@ -52,13 +52,13 @@ public sealed class OramaAssembly
 			{
 				foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
 				{
+					if (!method.IsDefined(typeof(OnAssemblyLoadAttribute), false))
+						continue;
+
 					if (method.GetParameters().Length != 0)
 						continue;
 
 					if (method.ReturnType != typeof(void))
-						continue;
-
-					if (!method.CustomAttributes.Any(a => a.AttributeType == typeof(OnAssemblyLoadAttribute)))
 						continue;
 
 					Delegate del = method.CreateDelegate(typeof(Action));

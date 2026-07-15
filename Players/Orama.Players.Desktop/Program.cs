@@ -22,7 +22,7 @@ internal class Program
 {
 	static void Main(string[] args)
 	{
-		// REGISTER MODULES
+		// Register all Modules our game wants to use
 		ModuleManager.RegisterModule<InputModule>();
 		ModuleManager.RegisterModule<AssemblyModule>();
 		ModuleManager.RegisterModule<PhysicsModule>();
@@ -39,6 +39,7 @@ internal class Program
 		{
 			ModuleManager.InitializeAll();
 
+			// Setup debug scene
 			Entity flyController = EntityRegistry.CreateEntity("fly_controller");
 			flyController.Name = "Camera";
 			flyController.Transform.Position = new Vector3(0, 0, 0);
@@ -52,9 +53,7 @@ internal class Program
 			cube.Transform.Position = new Vector3(0, 1, 0);
 
 			for (int i = 0; i < 1000; i++)
-			{
 				OramaConsole.Log($"Running loop {i} times.");
-			}
 
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};
