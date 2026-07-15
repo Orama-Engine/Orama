@@ -71,8 +71,11 @@ public class CommandBuffer : IDisposable
 		GPUBuffer materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
 		rentedBuffersThisFrame.Add(materialBuffer);
 
+		GPUBuffer objectBuffer = defaults.GetObjectBuffer(renderable);
+		rentedBuffersThisFrame.Add(objectBuffer);
+
 		QueueGPUBuffer(materialBuffer, "Parameters");
-		QueueGPUBuffer(defaults.GetObjectBuffer(renderable), "Object");
+		QueueGPUBuffer(objectBuffer, "Object");
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
 
