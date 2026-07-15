@@ -82,46 +82,84 @@ public class CommandBuffer : IDisposable
 
 	public void UploadUniformBuffers(Resources.Shader shader)
 	{
-		foreach (var group in shader.Resources.GroupBy(r => r.Value.Set).OrderBy(g => g.Key))
+		int totalCount = shader.Resources.Count;
+		if (totalCount == 0)
+			return;
+
+		// Hacky way to avoid massive heap allocations
+		uint currentSet = uint.MaxValue;
+		List<KeyValuePair<string, ShaderResource>> orderedResources = new();
+
+		foreach (var resource in shader.Resources)
 		{
-			uint setIndex = group.Key;
-			var orderedResources = group.OrderBy(r => r.Value.Binding).ToArray();
-
-			GPUBuffer[] queuedBuffers = new GPUBuffer[orderedResources.Length];
-
-			for (int i = 0; i < orderedResources.Length; i++)
+			if (resource.Value.Set != currentSet)
 			{
-				var resource = orderedResources[i];
-				if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
+				if (orderedResources.Count > 0)
 				{
-					OramaConsole.Exception(new Exception($"No GPU buffer available for '{resource.Key}' (Set: {resource.Value.Set}, Binding: {resource.Value.Binding})."));
-
-					gpuBuffer = new GPUBuffer();
-					gpuBuffer.AddFloat(0f);
+					UploadSet(currentSet, orderedResources);
+					orderedResources.Clear();
 				}
 
-				queuedBuffers[i] = gpuBuffer;
+				currentSet = resource.Value.Set;
 			}
 
-			if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffers))
-				continue;
-
-			var layoutDesc = new ResourceLayoutDescription(orderedResources.Select(r => new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToArray());
-			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
-
-			List<DeviceBuffer> buffers = new();
-			foreach (GPUBuffer gpuBuffer in queuedBuffers)
-			{
-				var buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length, BufferUsage.UniformBuffer));
-				CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
-				buffers.Add(buffer.Resource);
-			}
-
-			var resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
-			CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
-
-			lastBoundBuffers[setIndex] = queuedBuffers;
+			orderedResources.Add(resource);
 		}
+
+		if (orderedResources.Count > 0)
+			UploadSet(currentSet, orderedResources);
+	}
+
+	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
+	{
+		GPUBuffer[] queuedBuffers = new GPUBuffer[orderedResources.Count];
+
+		for (int i = 0; i < orderedResources.Count; i++)
+		{
+			var resource = orderedResources[i];
+
+			if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
+			{
+				OramaConsole.Exception(new Exception($"Could not find buffer for resource {resource.Key}"));
+
+				gpuBuffer = new GPUBuffer();
+				gpuBuffer.AddFloat(0f);
+			}
+
+			queuedBuffers[i] = gpuBuffer;
+		}
+
+		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffers))
+			return;
+
+		ResourceLayoutDescription layoutDesc = new(
+			orderedResources
+				.Select(r => new ResourceLayoutElementDescription(
+					r.Key,
+					r.Value.Kind,
+					ShaderStages.Vertex | ShaderStages.Fragment))
+				.ToArray());
+
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+
+		List<DeviceBuffer> buffers = new(orderedResources.Count);
+
+		for (int i = 0; i < queuedBuffers.Length; i++)
+		{
+			GPUBuffer gpuBuffer = queuedBuffers[i];
+
+			FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length,BufferUsage.UniformBuffer));
+
+			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
+
+			buffers.Add(buffer.Resource);
+		}
+
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
+
+		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
+
+		lastBoundBuffers[setIndex] = queuedBuffers;
 	}
 
 	public void SetPipeline(PipelineKey pipelineDesc)
