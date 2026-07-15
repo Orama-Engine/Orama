@@ -33,6 +33,7 @@ public class CommandBuffer : IDisposable
 	private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
+	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
 
 	/// <inheritdoc/>
 	public void Dispose()
@@ -136,10 +137,11 @@ public class CommandBuffer : IDisposable
 
 	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
 	{
-		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(orderedResources.Count);
-		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, orderedResources.Count);
+		int resourceCount = orderedResources.Count;
+		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
+		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, resourceCount);
 
-		for (int i = 0; i < orderedResources.Count; i++)
+		for (int i = 0; i < resourceCount; i++)
 		{
 			var resource = orderedResources[i];
 
@@ -163,19 +165,26 @@ public class CommandBuffer : IDisposable
 			return;
 		}
 
-		ResourceLayoutDescription layoutDesc = new(
-			orderedResources
-				.Select(r => new ResourceLayoutElementDescription(
-					r.Key,
-					r.Value.Kind,
-					ShaderStages.Vertex | ShaderStages.Fragment))
-				.ToArray());
+		if (resourceCount > layoutElementCache.Length)
+			Array.Resize(ref layoutElementCache, resourceCount * 2);
+
+		for (int i = 0; i < resourceCount; i++)
+		{
+			var r = orderedResources[i];
+			layoutElementCache[i] = new ResourceLayoutElementDescription(
+				r.Key,
+				r.Value.Kind,
+				ShaderStages.Vertex | ShaderStages.Fragment
+			);
+		}
+
+		ResourceLayoutDescription layoutDesc = new(layoutElementCache.AsSpan(0, resourceCount).ToArray());
 
 		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements));
 
-		DeviceBuffer[] buffers = new DeviceBuffer[orderedResources.Count];
+		DeviceBuffer[] buffers = new DeviceBuffer[resourceCount];
 
-		for (int i = 0; i < orderedResources.Count; i++)
+		for (int i = 0; i < resourceCount; i++)
 		{
 			GPUBuffer gpuBuffer = queuedBuffersSpan[i];
 
@@ -190,7 +199,7 @@ public class CommandBuffer : IDisposable
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
-		GPUBuffer[] persistentSnapshot = new GPUBuffer[orderedResources.Count];
+		GPUBuffer[] persistentSnapshot = new GPUBuffer[resourceCount];
 		queuedBuffersSpan.CopyTo(persistentSnapshot);
 		lastBoundBuffers[setIndex] = persistentSnapshot;
 
