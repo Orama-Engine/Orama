@@ -66,8 +66,16 @@ public sealed class GPUBuffer
 					buffer.AddFloat4(v.X, v.Y, v.Z, v.W);
 					break;
 
+				case { Type: ShaderParameter.ParamType.SampledTexture2D, DefaultValue: Texture text }:
+					// TODO
+					break;
+
+				case { DefaultValue: null }:
+					EngineConsole.Warning($"Parameter has no default value: {param.Name} ({param.Type})");
+					break;
+
 				default:
-					EngineConsole.Warning($"Unsupported parameter type: {param.Type}");
+					EngineConsole.Warning($"Unsupported GPUBuffer solver for parameter: {param.Name} ({param.Type})");
 					break;
 			}
 

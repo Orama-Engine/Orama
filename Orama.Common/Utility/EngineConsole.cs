@@ -14,12 +14,14 @@ public static class EngineConsole
 	public static List<string> Output { get; set; } = new();
 
 	/// <summary> Output an exception. </summary>
-	public static void Exception(Exception ex)
+	public static void Exception(Exception ex, [CallerFilePath] string origin = "Exception", [CallerMemberName] string member = "Unknown")
 	{
 		var prevColor = Console.ForegroundColor;
 		Console.ForegroundColor = ConsoleColor.Red;
 
-		string output = "[Exception] " + ex;
+		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+
+		string output = $"[Exception ({parsedOrigin}.{member})] {ex.Message}";
 		Console.Error.WriteLine(output);
 
 		Console.ForegroundColor = prevColor;
@@ -44,12 +46,14 @@ public static class EngineConsole
 	}
 
 	/// <summary> Output a warning. </summary>
-	public static void Warning(string message)
+	public static void Warning(string message, [CallerFilePath] string origin = "Warning", [CallerMemberName] string member = "Unknown")
 	{
 		var prevColor = Console.ForegroundColor;
 		Console.ForegroundColor = ConsoleColor.Yellow;
 
-		string output = "[Warning] " + message;
+		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+
+		string output = $"[Warning ({parsedOrigin}.{member})] {message}";
 		Console.WriteLine(output);
 
 		Console.ForegroundColor = prevColor;

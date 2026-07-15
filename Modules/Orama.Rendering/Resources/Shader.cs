@@ -5,6 +5,7 @@ using System.Text;
 
 using NeoVeldrid;
 
+using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
@@ -78,9 +79,9 @@ public class Shader
 
 			foreach (var parameter in comp.ShaderParameters)
 			{
-				if (!Enum.TryParse<ShaderParameter.ParamType>(parameter.Type.Name, true, out ShaderParameter.ParamType type))
+				if (!Enum.TryParse(parameter.Type.Name, true, out ShaderParameter.ParamType type))
 				{
-					EngineConsole.Warning($"Unsupported shader parameter type '{parameter.Type.Name}'.");
+					EngineConsole.Warning($"Unsupported or invalid shader parameter type '{parameter.Type.Name}'.");
 					continue;
 				}
 
@@ -124,6 +125,10 @@ public class Shader
 								attribute.GetArgumentValueFloat(2),
 								attribute.GetArgumentValueFloat(3)
 							);
+							break;
+
+						case "DefaultTexture":
+							defaultValue = Application.ResourceProvider.GetResource<Texture>(attribute.GetArgumentValueString(0));
 							break;
 
 						default:
