@@ -76,20 +76,20 @@ public class CommandBuffer : IDisposable
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
 
-		IEnumerable<ResourceLayoutDescription> layoutDesc = renderable.Material.Shader.CreateResourceLayouts();
+		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.CreateResourceLayouts().ToArray();
 
 		PipelineKey pipelineDesc = new PipelineKey(
 			PassName: renderable.Material.Shader.Pass,
 			Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
 			Outputs: gd.SwapchainFramebuffer.OutputDescription,
-			ResourceLayouts: layoutDesc.ToImmutableArray()
+			ResourceLayouts: layoutDesc
 		);
 
 		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-			VertexPositions: renderable.Vertices.ToImmutableArray(),
-			VertexNormals: renderable.Normals.ToImmutableArray(),
-			VertexUVs: renderable.UVs.ToImmutableArray(),
-			Indices: renderable.Indices.ToImmutableArray(),
+			VertexPositions: renderable.Vertices,
+			VertexNormals: renderable.Normals,
+			VertexUVs: renderable.UVs,
+			Indices: renderable.Indices,
 			Pipeline: pipelineDesc
 		));
 
@@ -167,9 +167,9 @@ public class CommandBuffer : IDisposable
 					ShaderStages.Vertex | ShaderStages.Fragment))
 				.ToArray());
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements));
 
-		List<DeviceBuffer> buffers = new(orderedResources.Count);
+		DeviceBuffer[] buffers = new DeviceBuffer[orderedResources.Count];
 
 		for (int i = 0; i < orderedResources.Count; i++)
 		{
@@ -179,10 +179,10 @@ public class CommandBuffer : IDisposable
 
 			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
-			buffers.Add(buffer.Resource);
+			buffers[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers));
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 

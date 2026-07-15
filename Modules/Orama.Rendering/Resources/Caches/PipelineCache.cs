@@ -28,7 +28,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
 		);
 
-		ResourceLayout[] layouts = key.ResourceLayouts.Select(layoutDesc => ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray())).Resource).ToArray();
+		ResourceLayout[] layouts = key.ResourceLayouts.Select(layoutDesc => ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements)).Resource).ToArray();
 
 		RasterizerStateDescription rasterizerState =
 			Renderer.Options.Culling switch
@@ -61,7 +61,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 	}
 }
 
-public readonly record struct PipelineKey(string PassName, ShaderKey Shader, OutputDescription Outputs, ImmutableArray<ResourceLayoutDescription> ResourceLayouts)
+public readonly record struct PipelineKey(string PassName, ShaderKey Shader, OutputDescription Outputs, ResourceLayoutDescription[] ResourceLayouts)
 {
 	public bool Equals(PipelineKey other)
 	{
@@ -69,35 +69,7 @@ public readonly record struct PipelineKey(string PassName, ShaderKey Shader, Out
 			&& Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode)
 			&& Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode)
 			&& Outputs.Equals(other.Outputs)
-			&& ResourceLayoutsEqual(ResourceLayouts, other.ResourceLayouts);
-	}
-
-	private static bool ResourceLayoutsEqual(ImmutableArray<ResourceLayoutDescription> a, ImmutableArray<ResourceLayoutDescription> b)
-	{
-		if (a.Length != b.Length)
-			return false;
-
-		for (int i = 0; i < a.Length; i++)
-			if (!ElementsEqual(a[i].Elements, b[i].Elements))
-				return false;
-
-		return true;
-	}
-
-	private static bool ElementsEqual(ResourceLayoutElementDescription[] a, ResourceLayoutElementDescription[] b)
-	{
-		if (a.Length != b.Length)
-			return false;
-
-		for (int i = 0; i < a.Length; i++)
-		{
-			var x = a[i];
-			var y = b[i];
-			if (x.Name != y.Name || x.Kind != y.Kind || x.Stages != y.Stages || x.Options != y.Options)
-				return false;
-		}
-
-		return true;
+			&& ResourceLayouts.SequenceEqual(other.ResourceLayouts);
 	}
 
 	/// <inheritdoc/>

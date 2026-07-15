@@ -13,9 +13,9 @@ public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, Res
 	protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
 }
 
-public readonly record struct ResourceLayoutKey(ImmutableArray<ResourceLayoutElementDescription> Elements)
+public readonly record struct ResourceLayoutKey(ResourceLayoutElementDescription[] Elements)
 {
-	public bool Equals(ResourceLayoutKey other) => Elements.AsSpan().SequenceEqual(other.Elements.AsSpan());
+	public bool Equals(ResourceLayoutKey other) => Elements.SequenceEqual(other.Elements);
 
 	/// <inheritdoc/>
 	public override int GetHashCode()

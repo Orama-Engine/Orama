@@ -14,9 +14,9 @@ public sealed class ResourceSetCache : ResourceCache<ResourceSetCache, ResourceS
 	protected override ResourceSet Create(ResourceSetKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(key.ResourceLayout, key.BoundResources.ToArray()));
 }
 
-public readonly record struct ResourceSetKey(ResourceLayout ResourceLayout, ImmutableArray<BindableResource> BoundResources)
+public readonly record struct ResourceSetKey(ResourceLayout ResourceLayout, BindableResource[] BoundResources)
 {
-	public bool Equals(ResourceSetKey other) => BoundResources.SequenceEqual<BindableResource>(other.BoundResources);
+	public bool Equals(ResourceSetKey other) => BoundResources.SequenceEqual(other.BoundResources);
 
 	/// <inheritdoc/>
 	public override int GetHashCode()

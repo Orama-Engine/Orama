@@ -47,7 +47,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	}
 }
 
-public readonly record struct RenderItemKey(ImmutableArray<Vector3> VertexPositions, ImmutableArray<Vector3> VertexNormals, ImmutableArray<Vector2> VertexUVs, ImmutableArray<uint> Indices, PipelineKey Pipeline)
+public readonly record struct RenderItemKey(Vector3[] VertexPositions, Vector3[] VertexNormals, Vector2[] VertexUVs, uint[] Indices, PipelineKey Pipeline)
 {
 	public bool Equals(RenderItemKey other)
 	{
