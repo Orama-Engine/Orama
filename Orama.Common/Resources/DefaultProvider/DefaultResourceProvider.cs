@@ -12,7 +12,7 @@ internal class DefaultResourceProvider : IResourceProvider
 	{
 		if (!File.Exists(path))
 		{
-			EngineConsole.Warning($"Requested resource '{path}' does not exist.");
+			OramaConsole.Warning($"Requested resource '{path}' does not exist.");
 			return null;
 		}
 

@@ -71,11 +71,11 @@ public sealed class GPUBuffer
 					break;
 
 				case { DefaultValue: null }:
-					EngineConsole.Warning($"Parameter has no default value: {param.Name} ({param.Type})");
+					OramaConsole.Warning($"Parameter has no default value: {param.Name} ({param.Type})");
 					break;
 
 				default:
-					EngineConsole.Warning($"Unsupported GPUBuffer solver for parameter: {param.Name} ({param.Type})");
+					OramaConsole.Warning($"Unsupported GPUBuffer solver for parameter: {param.Name} ({param.Type})");
 					break;
 			}
 

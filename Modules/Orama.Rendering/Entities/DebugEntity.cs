@@ -39,7 +39,7 @@ public class DebugEntity : Entity
 		Renderer.Mesh = mesh;
 		Renderer.Mesh?.Material = Material.Default;
 
-		EngineConsole.Log("Debug entity started.");
+		OramaConsole.Log("Debug entity started.");
 	}
 }
 #endif

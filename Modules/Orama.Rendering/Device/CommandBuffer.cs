@@ -94,7 +94,7 @@ public class CommandBuffer : IDisposable
 				var resource = orderedResources[i];
 				if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
 				{
-					EngineConsole.Exception(new Exception($"No GPU buffer available for '{resource.Key}' (Set: {resource.Value.Set}, Binding: {resource.Value.Binding})."));
+					OramaConsole.Exception(new Exception($"No GPU buffer available for '{resource.Key}' (Set: {resource.Value.Set}, Binding: {resource.Value.Binding})."));
 
 					gpuBuffer = new GPUBuffer();
 					gpuBuffer.AddFloat(0f);

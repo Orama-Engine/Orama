@@ -81,7 +81,7 @@ public class Shader
 			{
 				if (!Enum.TryParse(parameter.Type.Name, true, out ShaderParameter.ParamType type))
 				{
-					EngineConsole.Warning($"Unsupported or invalid shader parameter type '{parameter.Type.Name}'.");
+					OramaConsole.Warning($"Unsupported or invalid shader parameter type '{parameter.Type.Name}'.");
 					continue;
 				}
 

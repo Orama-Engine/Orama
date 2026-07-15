@@ -27,7 +27,7 @@ public class Scene
 			}
 			catch (Exception ex)
 			{
-				EngineConsole.Exception(ex);
+				OramaConsole.Exception(ex);
 			}
 		}
 	}
@@ -45,7 +45,7 @@ public class Scene
 			}
 			catch (Exception ex)
 			{
-				EngineConsole.Exception(ex);
+				OramaConsole.Exception(ex);
 			}
 		}
 	}

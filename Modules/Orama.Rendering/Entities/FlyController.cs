@@ -40,7 +40,7 @@ public class FlyController : Entity
 		}
 
 		if (Input.PrimaryGamepad?.IsButtonPressed(Gamepad.Button.ActionLeft) ?? false)
-			EngineConsole.Log("Action left pressed.");
+			OramaConsole.Log("Action left pressed.");
 
 		// Movement
 		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.W) ?? false) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;

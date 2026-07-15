@@ -144,7 +144,7 @@ internal class OpenXRInstance : OpenXRBinding
 
 		if (!found)
 		{
-			EngineConsole.Warning($"Required OpenXR extension not supported: {requiredExtension}");
+			OramaConsole.Warning($"Required OpenXR extension not supported: {requiredExtension}");
 			return null;
 		}
 

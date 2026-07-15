@@ -23,12 +23,12 @@ public class VirtualRealityModule : BaseModule
 		{
 			Device.Initialize();
 
-			EngineConsole.Log($"Connected Virtual Reality device: {Device.Name}");
+			OramaConsole.Log($"Connected Virtual Reality device: {Device.Name}");
 		}
 		catch (Exception ex)
 		{
-			EngineConsole.Exception(ex);
-			EngineConsole.Warning("Exception occured during Virtual Reality device initialization, switching to emulation.");
+			OramaConsole.Exception(ex);
+			OramaConsole.Warning("Exception occured during Virtual Reality device initialization, switching to emulation.");
 		}
 	}
 

@@ -66,7 +66,7 @@ public static class ModuleManager
 
 				if (dependency == null)
 				{
-					EngineConsole.Warning($"Module {module.GetType().Name} depends on {dependencyType.Name} which is not registered.");
+					OramaConsole.Warning($"Module {module.GetType().Name} depends on {dependencyType.Name} which is not registered.");
 					return;
 				}
 
@@ -77,7 +77,7 @@ public static class ModuleManager
 		module.Initialize();
 		module.IsInitialized = true;
 
-		EngineConsole.Log($"Initialized {module.GetType().Name}");
+		OramaConsole.Log($"Initialized {module.GetType().Name}");
 	}
 
 	/// <summary> Disposes all <see cref="BaseModule"/>s currently registered. </summary>
@@ -88,7 +88,7 @@ public static class ModuleManager
 			module.IsInitialized = false;
 			module.Dispose();
 
-			EngineConsole.Log($"Disposed module {module.GetType().Name}");
+			OramaConsole.Log($"Disposed module {module.GetType().Name}");
 		}
 	}
 }

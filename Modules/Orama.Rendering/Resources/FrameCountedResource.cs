@@ -59,7 +59,7 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 
 		if (currentFrame - LastUsedFrame.Value > FrameDisposalBuffer)
 		{
-			EngineConsole.Log($"Disposing {typeof(T).Name} ({Resource})");
+			OramaConsole.Log($"Disposing {typeof(T).Name} ({Resource})");
 			FrameDisposalQueue.DisposalQueue.Enqueue(this);
 			Disposed?.Invoke();
 			return true;

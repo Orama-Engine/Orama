@@ -28,7 +28,7 @@ public abstract class ResourceLoader<T> where T : class
 
 		if (loaderType == null)
 		{
-			EngineConsole.Warning($"No resource loader found for type '{typeof(T).Name}'.");
+			OramaConsole.Warning($"No resource loader found for type '{typeof(T).Name}'.");
 			return null;
 		}
 

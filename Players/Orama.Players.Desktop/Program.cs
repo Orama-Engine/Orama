@@ -51,6 +51,11 @@ internal class Program
 			DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
 			cube.Transform.Position = new Vector3(0, 1, 0);
 
+			for (int i = 0; i < 1000; i++)
+			{
+				OramaConsole.Log($"Running loop {i} times.");
+			}
+
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};
 
