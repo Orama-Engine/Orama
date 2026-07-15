@@ -179,7 +179,7 @@ public class CommandBuffer : IDisposable
 			);
 		}
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount).ToArray()));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(layoutElementCache.AsSpan(0, resourceCount));
 
 		DeviceBuffer[] buffers = new DeviceBuffer[resourceCount];
 
