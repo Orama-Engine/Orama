@@ -35,6 +35,8 @@ public class CommandBuffer : IDisposable
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
 	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
 
+	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
+
 	/// <inheritdoc/>
 	public void Dispose()
 	{
@@ -113,26 +115,25 @@ public class CommandBuffer : IDisposable
 
 		// Hacky way to avoid massive heap allocations
 		uint currentSet = uint.MaxValue;
-		List<KeyValuePair<string, ShaderResource>> orderedResources = new();
+
+		orderedResourcesCache.Clear();
 
 		foreach (var resource in shader.Resources)
 		{
 			if (resource.Value.Set != currentSet)
 			{
-				if (orderedResources.Count > 0)
+				if (orderedResourcesCache.Count > 0)
 				{
-					UploadSet(currentSet, orderedResources);
-					orderedResources.Clear();
+					UploadSet(currentSet, orderedResourcesCache);
+					orderedResourcesCache.Clear();
 				}
-
 				currentSet = resource.Value.Set;
 			}
-
-			orderedResources.Add(resource);
+			orderedResourcesCache.Add(resource);
 		}
 
-		if (orderedResources.Count > 0)
-			UploadSet(currentSet, orderedResources);
+		if (orderedResourcesCache.Count > 0)
+			UploadSet(currentSet, orderedResourcesCache);
 	}
 
 	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
@@ -178,9 +179,7 @@ public class CommandBuffer : IDisposable
 			);
 		}
 
-		ResourceLayoutDescription layoutDesc = new(layoutElementCache.AsSpan(0, resourceCount).ToArray());
-
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount).ToArray()));
 
 		DeviceBuffer[] buffers = new DeviceBuffer[resourceCount];
 
