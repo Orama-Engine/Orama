@@ -147,7 +147,7 @@ public class Shader
 					resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
 
 				this.Parameters = parameters.ToImmutableArray();
-				this.resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value);
+				this.Resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value).ToImmutableDictionary();
 
 				this.Layouts = resources
 					.GroupBy(r => r.Value.Set)
@@ -176,14 +176,12 @@ public class Shader
 	public ImmutableArray<ShaderParameter> Parameters { get; private set; }
 
 	/// <summary> The shader's resource definitions mapped to their names. </summary>
-	public IReadOnlyDictionary<string, ShaderResource> Resources => resources;
+	public ImmutableDictionary<string, ShaderResource> Resources { get; private set; } = ImmutableDictionary<string, ShaderResource>.Empty;
 
 	// HACK: This is definitely too close to the GPU
 	// We should move this ASAP
 	/// <summary> The shader's resource layouts. </summary>
 	internal ResourceLayoutDescription[] Layouts = Array.Empty<ResourceLayoutDescription>();
-
-	private Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
 
 	/// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
 	public Shader(string shaderLangSource, string name = "None")

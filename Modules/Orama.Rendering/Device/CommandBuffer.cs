@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 
 using NeoVeldrid;
 

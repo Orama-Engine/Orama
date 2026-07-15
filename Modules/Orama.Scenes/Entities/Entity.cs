@@ -24,7 +24,7 @@ public class Entity
 		{
 			field = value;
 
-			foreach (var component in components)
+			foreach (var component in CollectionsMarshal.AsSpan(components))
 				component.Enabled = value;
 		}
 	} = true;
@@ -82,9 +82,7 @@ public class Entity
 	/// <remarks> The base implementation starts all components. </remarks>
 	public virtual void Start()
 	{
-		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
-
-		foreach (var component in componentSpan)
+		foreach (var component in CollectionsMarshal.AsSpan(components))
 		{
 			if (component.Enabled)
 				component.Start();
@@ -95,9 +93,7 @@ public class Entity
 	/// <remarks> The base implementation updates all components. </remarks>
 	public virtual void Update()
 	{
-		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
-
-		foreach (var component in componentSpan)
+		foreach (var component in CollectionsMarshal.AsSpan(components))
 		{
 			if (component.Enabled)
 				component.Update();
@@ -107,11 +103,9 @@ public class Entity
 	/// <summary> Destroys the specified entity and releases any associated resources. </summary>
 	public void Destroy()
 	{
-		Enabled = false;
+		Enabled = false;;
 
-		Span<Component> componentSpan = CollectionsMarshal.AsSpan(components);
-
-		foreach (var component in componentSpan)
+		foreach (var component in CollectionsMarshal.AsSpan(components))
 		{
 			component.Enabled = false;
 			component.Destroy();
