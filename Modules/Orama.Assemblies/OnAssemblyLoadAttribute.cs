@@ -13,19 +13,7 @@ public class OnAssemblyLoadAttribute : Attribute
 {
 	public static void RunOnAssembly(OramaAssembly assembly)
 	{
-		foreach (var type in assembly.Types)
-			foreach (var method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-			{
-				if (method.GetParameters().Length != 0)
-					continue;
-
-				if (method.ReturnType != typeof(void))
-					continue;
-
-				if (!method.IsDefined(typeof(OnAssemblyLoadAttribute), false))
-					continue;
-
-				method.Invoke(null, null);
-			}
+		foreach (Action del in assembly.AssemblyLoadDelegates)
+			del();
 	}
 }

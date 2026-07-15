@@ -37,6 +37,40 @@ public sealed class OramaAssembly
 		}
 	}
 
+	/// <summary> All static methods in the <see cref="OramaAssembly"/> marked with <see cref="OnAssemblyLoadAttribute"/>. </summary>
+	/// <remarks> This is a cached property. </remarks>
+	public Action[] AssemblyLoadDelegates
+	{
+		get
+		{
+			if (field is not null)
+				return field;
+
+			List<Action> delegates = new();
+
+			foreach (Type type in Types)
+			{
+				foreach (MethodInfo method in type.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+				{
+					if (method.GetParameters().Length != 0)
+						continue;
+
+					if (method.ReturnType != typeof(void))
+						continue;
+
+					if (!method.CustomAttributes.Any(a => a.AttributeType == typeof(OnAssemblyLoadAttribute)))
+						continue;
+
+					Delegate del = method.CreateDelegate(typeof(Action));
+					delegates.Add((Action)del);
+				}
+			}
+
+			field = delegates.ToArray();
+			return field;
+		}
+	}
+
 	/// <summary> Initializes a new instance of <see cref="OramaAssembly"/>. </summary>
 	internal OramaAssembly(string path, AssemblyLoadContext? loadContext, Assembly assembly)
 	{
