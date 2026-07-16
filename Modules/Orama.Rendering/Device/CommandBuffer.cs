@@ -69,6 +69,8 @@ public class CommandBuffer : IDisposable
 
 	public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new Veldrith.RgbaFloat(color.R, color.G, color.B, color.A));
 
+	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
+
 	/// <summary> Queues a <see cref="GPUBuffer"/> for upload. </summary>
 	/// <param name="gpuBuffer">The buffer to upload.</param>
 	/// <param name="name">The name of the shader parameter block.</param>
@@ -209,8 +211,14 @@ public class CommandBuffer : IDisposable
 
 		ActivePipelineHash = pipelineDesc.Hash;
 
-		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-		CommandList.SetPipeline(pipeline.Resource);
+		try
+		{
+			FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
+			CommandList.SetPipeline(pipeline.Resource);
+		} catch (VeldridException ex)
+		{
+			OramaConsole.Exception(ex);
+		}
 	}
 
 	public void DrawItem(RenderItem item)

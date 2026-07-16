@@ -11,7 +11,7 @@ SHADER_ATTRIBUTES(
 )
 
 SHADER_PARAMETERS(
-    [DefaultFloat3(0, 1, 1)]
+    [DefaultFloat3(1, 1, 1)]
     float3 Color;
 )
 
@@ -25,11 +25,14 @@ VertexOutput Vertex(VertexInput i)
 
     o.Position = mul(Camera.ProjectionMatrix, view);
 
+    o.Normal = 0;
+    o.UV = 0;
+
     return o;
 }
 
 [Shader("fragment")]
 float4 Fragment(VertexOutput i) : SV_Target
 {
-    return float4(Parameters.Color, 1);
+    return float4(1, 1, 1, 1);
 }

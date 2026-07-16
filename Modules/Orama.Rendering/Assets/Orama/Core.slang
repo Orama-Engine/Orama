@@ -41,7 +41,7 @@ public struct VertexOutput
     public float3 Normal : NORMAL;
     public float2 UV : TEXCOORD0;
 
-    public float3 WorldPosition : TEXCOORD0;
+    public float3 WorldPosition;
 };
 
 // Wrapper for Two-Dimensional Textures and Samplers.

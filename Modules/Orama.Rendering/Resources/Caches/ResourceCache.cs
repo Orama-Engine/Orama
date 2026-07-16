@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Utility;
+
 namespace Orama.Rendering.Resources.Caches;
 
 /// <summary>
@@ -35,17 +37,24 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 
 	protected FrameCountedResource<TResource> InitializeNewCacheEntry(TKey key)
 	{
-		TResource created = Create(key);
+		try
+		{
+			TResource created = Create(key);
 
-		FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
-		value.Touch();
+			FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
+			value.Touch();
 
-		int hash = key.Hash;
-		value.Disposed += () => Cache.Remove(hash);
+			int hash = key.Hash;
+			value.Disposed += () => Cache.Remove(hash);
 
-		Cache[hash] = value;
+			Cache[hash] = value;
 
-		return value;
+			return value;
+		} catch(Exception ex)
+		{
+			OramaConsole.Exception(ex);
+			return default!;
+		}
 	}
 }
 

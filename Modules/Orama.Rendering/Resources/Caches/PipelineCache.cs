@@ -1,9 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Collections.Immutable;
-using System.Xml.Linq;
-
 using Veldrith;
 using Veldrith.SPIRV;
 
@@ -19,12 +16,12 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		global::Veldrith.Shader[] shaders = factory.CreateFromSpirv(
 			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main"),
 			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main"),
-			new CrossCompileOptions()
+			new CrossCompileOptions(fixClipSpaceZ: false, invertVertexOutputY: false, normalizeResourceNames: false)
 		);
 
 		VertexLayoutDescription vertexLayout = new(
-			new VertexElementDescription("POSITION", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
-			new VertexElementDescription("NORMAL", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
+			new VertexElementDescription("POSITION", VertexElementSemantic.Position, VertexElementFormat.Float3),
+			new VertexElementDescription("NORMAL", VertexElementSemantic.Normal, VertexElementFormat.Float3),
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
 		);
 

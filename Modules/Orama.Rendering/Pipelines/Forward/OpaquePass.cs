@@ -14,6 +14,7 @@ public class OpaquePass : RenderPass
 	/// <inheritdoc/>
 	public override void Render(in RenderFrame frame, CommandBuffer buffer)
 	{
+		buffer.ClearDepth(1.0f);
 		buffer.ClearColor(Color.Black);
 
 		foreach (IClientRenderable renderable in frame.Renderables)

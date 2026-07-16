@@ -7,6 +7,7 @@ using Orama.Rendering.Device;
 
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
+using Orama.Common.Utility;
 
 namespace Orama.Rendering;
 
@@ -47,7 +48,7 @@ public class VeldrithDevice
 
 		SwapchainSource source = CreateSwapchainSource(native);
 
-		SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
+		SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, PixelFormat.D32FloatS8UInt, window.VSync);
 
 		switch (backend)
 		{
@@ -58,6 +59,7 @@ public class VeldrithDevice
 				GraphicsDevice = GraphicsDevice.CreateD3D12(options, desc);
 				break;
 		}
+
 	}
 
 	public void SubmitCommands(CommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
