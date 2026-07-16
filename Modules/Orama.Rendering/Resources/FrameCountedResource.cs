@@ -72,5 +72,5 @@ public class FrameCountedResource<T> : IFrameCountedResource where T : IDisposab
 	public void ReleaseGPUResource() => Resource.Dispose();
 
 	/// <inheritdoc/>
-	public void Touch() => LastUsedFrame = Renderer.Veldrid.CurrentFrame;
+	public void Touch() => LastUsedFrame = Renderer.Veldrith.CurrentFrame;
 }

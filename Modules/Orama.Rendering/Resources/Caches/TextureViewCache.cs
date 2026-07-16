@@ -6,15 +6,15 @@ using System.Runtime.CompilerServices;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class TextureViewCache : ResourceCache<TextureViewCache, TextureViewKey, NeoVeldrid.TextureView>
+public sealed class TextureViewCache : ResourceCache<TextureViewCache, TextureViewKey, Veldrith.TextureView>
 {
 	/// <inheritdoc/>
-	protected override NeoVeldrid.TextureView Create(TextureViewKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateTextureView(key.Texture);
+	protected override Veldrith.TextureView Create(TextureViewKey key) => Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateTextureView(key.Texture);
 }
 
-public readonly ref struct TextureViewKey(NeoVeldrid.Texture texture) : IResourceKey
+public readonly ref struct TextureViewKey(Veldrith.Texture texture) : IResourceKey
 {
-	public readonly NeoVeldrid.Texture Texture = texture;
+	public readonly Veldrith.Texture Texture = texture;
 
 	/// <inheritdoc/>
 	public int Hash => GetHashCode();

@@ -3,7 +3,7 @@
 
 using System.Numerics;
 
-using NeoVeldrid;
+using Veldrith;
 
 namespace Orama.Rendering.Resources;
 

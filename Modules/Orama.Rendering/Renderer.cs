@@ -1,11 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Rendering.Device;
 using Orama.Rendering.Resources;
-using Orama.Rendering.Veldrid;
 
 using Silk.NET.Windowing;
 
@@ -14,7 +13,7 @@ namespace Orama.Rendering;
 public enum RendererBackend
 {
 	Vulkan,
-	Direct3D11
+	Direct3D12
 }
 
 public static class Renderer
@@ -25,8 +24,8 @@ public static class Renderer
 	/// <summary> The renderer backend in use. </summary>
 	public static RendererBackend Backend { get; private set; }
 
-	/// <summary> The lower-level <see cref="VeldridDevice"/>. </summary>
-	public static VeldridDevice Veldrid { get; private set; } = null!;
+	/// <summary> The lower-level <see cref="VeldrithDevice"/>. </summary>
+	public static VeldrithDevice Veldrith { get; private set; } = null!;
 
 	/// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
 	/// <param name="window"> The window to initialize the backend for. </param>
@@ -40,7 +39,7 @@ public static class Renderer
 			backend = true switch
 			{
 				_ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
-				_ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D11) => RendererBackend.Direct3D11,
+				_ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D12) => RendererBackend.Direct3D12,
 
 				_ => throw new InvalidOperationException("No supported graphics backend found.")
 			};
@@ -48,29 +47,29 @@ public static class Renderer
 
 		Backend = backend.Value;
 
-		Veldrid = new VeldridDevice(Backend);
-		Veldrid.Initialize(window);
+		Veldrith = new VeldrithDevice(Backend);
+		Veldrith.Initialize(window);
 	}
 
 	/// <summary> Presents the current frame. </summary>
 	public static void Present()
 	{
-		Veldrid.GraphicsDevice.SwapBuffers();
-		Veldrid.CurrentFrame++;
+		Veldrith.GraphicsDevice.SwapBuffers();
+		Veldrith.CurrentFrame++;
 
-		FrameDisposalQueue.DisposeResources(Veldrid.CurrentFrame);
+		FrameDisposalQueue.DisposeResources(Veldrith.CurrentFrame);
 	}
 
 	/// <summary> Submits the given <see cref="CommandBuffer"/> to be ran. </summary>
-	public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrid.SubmitCommands(commandBuffer);
+	public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrith.SubmitCommands(commandBuffer);
 
 	/// <summary> Resizes the renderer. </summary>
-	public static void Resize(int width, int height) => Veldrid.Resize(width, height);
+	public static void Resize(int width, int height) => Veldrith.Resize(width, height);
 
 	/// <summary> Cleans up the renderer. </summary>
 	public static void Dispose()
 	{
 		FrameDisposalQueue.DisposeResources(ulong.MaxValue);
-		Veldrid.GraphicsDevice.Dispose();
+		Veldrith.GraphicsDevice.Dispose();
 	}
 }

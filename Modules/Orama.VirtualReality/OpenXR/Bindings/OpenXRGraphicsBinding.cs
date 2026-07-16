@@ -33,21 +33,21 @@ internal class OpenXRGraphicsBinding : OpenXRBinding
 					{
 						Type = StructureType.GraphicsBindingVulkanKhr,
 
-						Instance = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().Instance),
-						PhysicalDevice = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
-						Device = new VkHandle(Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().Device),
+						Instance = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().Instance),
+						PhysicalDevice = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
+						Device = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().Device),
 
-						QueueFamilyIndex = Renderer.Veldrid.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
+						QueueFamilyIndex = Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
 						QueueIndex = 0
 					};
 					Native = (IntPtr)Unsafe.AsPointer(ref vulkanBinding);
 					break;
 
-				case RendererBackend.Direct3D11:
+				case RendererBackend.Direct3D12:
 					d3d11Binding = new GraphicsBindingD3D11KHR()
 					{
 						Type = StructureType.GraphicsBindingD3D11Khr,
-						Device = (void*)Renderer.Veldrid.GraphicsDevice.GetD3D11Info().Device,
+						Device = (void*)Renderer.Veldrith.GraphicsDevice.GetD3D12Info().Device,
 					};
 					Native = (IntPtr)Unsafe.AsPointer(ref d3d11Binding);
 					break;

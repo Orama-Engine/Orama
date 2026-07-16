@@ -1,7 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Common.Utility;
 using Orama.Rendering.Resources;

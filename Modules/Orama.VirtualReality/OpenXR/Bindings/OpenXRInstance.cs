@@ -110,7 +110,7 @@ internal class OpenXRInstance : OpenXRBinding
 		string requiredExtension = Renderer.Backend switch
 		{
 			RendererBackend.Vulkan => "XR_KHR_vulkan_enable",
-			RendererBackend.Direct3D11 => "XR_KHR_D3D11_enable",
+			RendererBackend.Direct3D12 => "XR_KHR_D3D11_enable",
 			_ => throw new NotSupportedException("Unsupported renderer backend for OpenXR")
 		};
 
@@ -156,7 +156,7 @@ internal class OpenXRInstance : OpenXRBinding
 	{
 		switch (Renderer.Backend)
 		{
-			case RendererBackend.Direct3D11:
+			case RendererBackend.Direct3D12:
 				{
 					PfnVoidFunction fnPtr = new();
 					OpenXR.GetInstanceProcAddr(Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr).VerifySuccess();

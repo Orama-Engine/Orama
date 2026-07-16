@@ -1,20 +1,20 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using NeoVeldrid;
+using Veldrith;
 
 namespace Orama.Rendering.Resources.Caches;
 
 public sealed class ResourceSetCache : ResourceCache<ResourceSetCache, ResourceSetKey, ResourceSet>
 {
 	/// <inheritdoc/>
-	protected override ResourceSet Create(ResourceSetKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(key.ResourceLayout, key.BoundResources.ToArray()));
+	protected override ResourceSet Create(ResourceSetKey key) => Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(key.ResourceLayout, key.BoundResources.ToArray()));
 }
 
-public readonly ref struct ResourceSetKey(ResourceLayout resourceLayout, ReadOnlySpan<BindableResource> boundResources) : IResourceKey
+public readonly ref struct ResourceSetKey(ResourceLayout resourceLayout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey
 {
 	public readonly ResourceLayout ResourceLayout = resourceLayout;
-	public readonly ReadOnlySpan<BindableResource> BoundResources = boundResources;
+	public readonly ReadOnlySpan<IBindableResource> BoundResources = boundResources;
 
 	/// <inheritdoc/>
 	public int Hash => GetHashCode();
