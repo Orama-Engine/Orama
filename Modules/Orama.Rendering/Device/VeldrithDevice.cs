@@ -42,21 +42,21 @@ public class VeldrithDevice
 			SyncToVerticalBlank = window.VSync,
 		};
 
+		if (native is null)
+			throw new NullReferenceException(nameof(native));
+
+		SwapchainSource source = CreateSwapchainSource(native);
+
+		SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
+
 		switch (backend)
 		{
 			case RendererBackend.Vulkan:
+				GraphicsDevice = GraphicsDevice.CreateVulkan(options, desc);
+				break;
 			case RendererBackend.Direct3D12:
-				{
-					if (native is null)
-						throw new NullReferenceException(nameof(native));
-
-					SwapchainSource source = CreateSwapchainSource(native);
-
-					SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
-					GraphicsDevice = backend == RendererBackend.Vulkan ? GraphicsDevice.CreateVulkan(options, desc) : GraphicsDevice.CreateD3D12(options, desc);
-
-					break;
-				}
+				GraphicsDevice = GraphicsDevice.CreateD3D12(options, desc);
+				break;
 		}
 	}
 
