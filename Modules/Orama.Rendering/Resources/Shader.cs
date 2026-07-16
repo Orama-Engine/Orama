@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Collections.Immutable;
 using System.Text;
 
 using NeoVeldrid;
@@ -145,8 +146,20 @@ public class Shader
 				foreach (var resource in comp.Resources)
 					resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
 
-				this.parameters = parameters;
-				this.resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value);
+				this.Parameters = parameters.ToImmutableArray();
+				this.Resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value).ToImmutableDictionary();
+
+				this.Layouts = resources
+					.GroupBy(r => r.Value.Set)
+					.OrderBy(g => g.Key)
+					.Select(g => new ResourceLayoutDescription(
+						g.OrderBy(r => r.Value.Binding)
+						 .Select(r => new ResourceLayoutElementDescription(
+							 r.Key,
+							 r.Value.Kind,
+							 ShaderStages.Vertex | ShaderStages.Fragment))
+						 .ToArray()))
+					.ToArray();
 
 				field = value;
 			}
@@ -160,34 +173,21 @@ public class Shader
 	internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
 
 	/// <summary> The shader's parameter definitions. </summary>
-	public IReadOnlyList<ShaderParameter> Parameters => parameters;
+	public ImmutableArray<ShaderParameter> Parameters { get; private set; }
 
 	/// <summary> The shader's resource definitions mapped to their names. </summary>
-	public IReadOnlyDictionary<string, ShaderResource> Resources => resources;
+	public ImmutableDictionary<string, ShaderResource> Resources { get; private set; } = ImmutableDictionary<string, ShaderResource>.Empty;
 
-	private List<ShaderParameter> parameters = new List<ShaderParameter>();
-	private Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
+	// HACK: This is definitely too close to the GPU
+	// We should move this ASAP
+	/// <summary> The shader's resource layouts. </summary>
+	internal ResourceLayoutDescription[] Layouts = Array.Empty<ResourceLayoutDescription>();
 
 	/// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
 	public Shader(string shaderLangSource, string name = "None")
 	{
 		Name = name;
 		Source = shaderLangSource;
-	}
-
-	// Hack
-	public IEnumerable<ResourceLayoutDescription> CreateResourceLayouts()
-	{
-		return Resources
-			.GroupBy(r => r.Value.Set)
-			.OrderBy(g => g.Key)
-			.Select(g => new ResourceLayoutDescription(
-				g.OrderBy(r => r.Value.Binding)
-				 .Select(r => new ResourceLayoutElementDescription(
-					 r.Key,
-					 r.Value.Kind,
-					 ShaderStages.Vertex | ShaderStages.Fragment))
-				 .ToArray()));
 	}
 }
 

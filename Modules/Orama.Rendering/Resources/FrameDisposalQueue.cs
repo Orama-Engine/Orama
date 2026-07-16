@@ -1,6 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using System.Runtime.InteropServices;
+
+using Orama.Common.Utility;
+
 namespace Orama.Rendering.Resources;
 
 /// <summary>
@@ -8,14 +12,20 @@ namespace Orama.Rendering.Resources;
 /// </summary>
 internal static class FrameDisposalQueue
 {
-	public static LinkedList<IFrameCountedResource> ActiveResources { get; } = new LinkedList<IFrameCountedResource>();
+	public static List<IFrameCountedResource> ActiveResources { get; } = new List<IFrameCountedResource>();
 	public static Queue<IFrameCountedResource> DisposalQueue { get; } = new Queue<IFrameCountedResource>();
 
 	/// <summary> Releases <see cref="FrameCountedResource{T}"/>s that are safe to dispose. </summary>
 	public static void DisposeResources(ulong currentFrame)
 	{
-		foreach (var resource in ActiveResources.ToArray())
+		foreach (var resource in CollectionsMarshal.AsSpan(ActiveResources))
 		{
+			if (resource == null)
+			{
+				OramaConsole.Warning($"Tried to dispose FrameCountedResource that was null.");
+				continue;
+			}
+
 			if (resource.TryDispose(currentFrame))
 			{
 				ActiveResources.Remove(resource);

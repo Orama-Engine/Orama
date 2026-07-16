@@ -3,6 +3,7 @@
 
 using System.Buffers;
 using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 
 using NeoVeldrid;
 
@@ -22,8 +23,9 @@ public class CommandBuffer : IDisposable
 	/// <summary> The low-level Veldrid command list. </summary>
 	public CommandList CommandList { get; }
 
-	/// <summary> The current pipeline in use. </summary>
-	public PipelineKey Pipeline { get; set; }
+	// Hacky
+	/// <summary> The current pipeline hash in use. </summary>
+	public int ActivePipelineHash { get; private set; }
 
 	/// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
 	public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
@@ -32,6 +34,10 @@ public class CommandBuffer : IDisposable
 	private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
+	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
+	private DeviceBuffer[] deviceBufferCache = new DeviceBuffer[16];
+
+	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
 
 	/// <inheritdoc/>
 	public void Dispose()
@@ -44,11 +50,16 @@ public class CommandBuffer : IDisposable
 	{
 		CommandList.Begin();
 		ClearFrameBuffers();
+		ActivePipelineHash = 0;
 	}
 
 	private void ClearFrameBuffers()
 	{
 		gpuBufferQueue.Clear();
+
+		foreach (var kvp in lastBoundBuffers)
+			ArrayPool<GPUBuffer>.Shared.Return(kvp.Value);
+
 		lastBoundBuffers.Clear();
 
 		for (int i = 0; i < rentedBuffersThisFrame.Count; i++)
@@ -71,27 +82,19 @@ public class CommandBuffer : IDisposable
 		GPUBuffer materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
 		rentedBuffersThisFrame.Add(materialBuffer);
 
+		GPUBuffer objectBuffer = defaults.GetObjectBuffer(renderable);
+		rentedBuffersThisFrame.Add(objectBuffer);
+
 		QueueGPUBuffer(materialBuffer, "Parameters");
-		QueueGPUBuffer(defaults.GetObjectBuffer(renderable), "Object");
+		QueueGPUBuffer(objectBuffer, "Object");
 
 		var gd = Renderer.Veldrid.GraphicsDevice;
 
-		IEnumerable<ResourceLayoutDescription> layoutDesc = renderable.Material.Shader.CreateResourceLayouts();
+		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
 
-		PipelineKey pipelineDesc = new PipelineKey(
-			PassName: renderable.Material.Shader.Pass,
-			Shader: new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode),
-			Outputs: gd.SwapchainFramebuffer.OutputDescription,
-			ResourceLayouts: layoutDesc.ToImmutableArray()
-		);
+		PipelineKey pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, layoutDesc);
 
-		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(
-			VertexPositions: renderable.Vertices.ToImmutableArray(),
-			VertexNormals: renderable.Normals.ToImmutableArray(),
-			VertexUVs: renderable.UVs.ToImmutableArray(),
-			Indices: renderable.Indices.ToImmutableArray(),
-			Pipeline: pipelineDesc
-		));
+		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, pipelineDesc));
 
 		SetPipeline(pipelineDesc);
 
@@ -108,34 +111,34 @@ public class CommandBuffer : IDisposable
 
 		// Hacky way to avoid massive heap allocations
 		uint currentSet = uint.MaxValue;
-		List<KeyValuePair<string, ShaderResource>> orderedResources = new();
+
+		orderedResourcesCache.Clear();
 
 		foreach (var resource in shader.Resources)
 		{
 			if (resource.Value.Set != currentSet)
 			{
-				if (orderedResources.Count > 0)
+				if (orderedResourcesCache.Count > 0)
 				{
-					UploadSet(currentSet, orderedResources);
-					orderedResources.Clear();
+					UploadSet(currentSet, orderedResourcesCache);
+					orderedResourcesCache.Clear();
 				}
-
 				currentSet = resource.Value.Set;
 			}
-
-			orderedResources.Add(resource);
+			orderedResourcesCache.Add(resource);
 		}
 
-		if (orderedResources.Count > 0)
-			UploadSet(currentSet, orderedResources);
+		if (orderedResourcesCache.Count > 0)
+			UploadSet(currentSet, orderedResourcesCache);
 	}
 
 	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
 	{
-		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(orderedResources.Count);
-		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, orderedResources.Count);
+		int resourceCount = orderedResources.Count;
+		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
+		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, resourceCount);
 
-		for (int i = 0; i < orderedResources.Count; i++)
+		for (int i = 0; i < resourceCount; i++)
 		{
 			var resource = orderedResources[i];
 
@@ -159,19 +162,25 @@ public class CommandBuffer : IDisposable
 			return;
 		}
 
-		ResourceLayoutDescription layoutDesc = new(
-			orderedResources
-				.Select(r => new ResourceLayoutElementDescription(
-					r.Key,
-					r.Value.Kind,
-					ShaderStages.Vertex | ShaderStages.Fragment))
-				.ToArray());
+		if (resourceCount > layoutElementCache.Length)
+			Array.Resize(ref layoutElementCache, resourceCount * 2);
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutDesc.Elements.ToImmutableArray()));
+		for (int i = 0; i < resourceCount; i++)
+		{
+			var r = orderedResources[i];
+			layoutElementCache[i] = new ResourceLayoutElementDescription(
+				r.Key,
+				r.Value.Kind,
+				ShaderStages.Vertex | ShaderStages.Fragment
+			);
+		}
 
-		List<DeviceBuffer> buffers = new(orderedResources.Count);
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount)));
 
-		for (int i = 0; i < orderedResources.Count; i++)
+		if (resourceCount > deviceBufferCache.Length)
+			Array.Resize(ref deviceBufferCache, resourceCount * 2);
+
+		for (int i = 0; i < resourceCount; i++)
 		{
 			GPUBuffer gpuBuffer = queuedBuffersSpan[i];
 
@@ -179,14 +188,17 @@ public class CommandBuffer : IDisposable
 
 			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
-			buffers.Add(buffer.Resource);
+			deviceBufferCache[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, buffers.ToImmutableArray<BindableResource>()));
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount)));
 
 		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
-		GPUBuffer[] persistentSnapshot = new GPUBuffer[orderedResources.Count];
+		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? oldArray))
+			ArrayPool<GPUBuffer>.Shared.Return(oldArray);
+
+		GPUBuffer[] persistentSnapshot = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
 		queuedBuffersSpan.CopyTo(persistentSnapshot);
 		lastBoundBuffers[setIndex] = persistentSnapshot;
 
@@ -195,10 +207,12 @@ public class CommandBuffer : IDisposable
 
 	public void SetPipeline(PipelineKey pipelineDesc)
 	{
-		Pipeline = pipelineDesc;
+		if (ActivePipelineHash == pipelineDesc.Hash)
+			return;
+
+		ActivePipelineHash = pipelineDesc.Hash;
 
 		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-
 		CommandList.SetPipeline(pipeline.Resource);
 	}
 

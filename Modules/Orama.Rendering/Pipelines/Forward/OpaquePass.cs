@@ -1,7 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Common;
 using Orama.Math;
 using Orama.Rendering.Device;
 
@@ -17,7 +16,7 @@ public class OpaquePass : RenderPass
 	{
 		buffer.ClearColor(Color.Black);
 
-		foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
+		foreach (IClientRenderable renderable in frame.Renderables)
 			if (renderable.Material.Shader.Pass == "Opaque")
 				buffer.DrawRenderable(renderable, Pipeline.ShaderDefaultsProvider);
 	}

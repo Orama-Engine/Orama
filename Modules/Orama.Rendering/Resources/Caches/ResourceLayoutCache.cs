@@ -1,7 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Collections.Immutable;
+using System;
+using System.Xml.Linq;
 
 using NeoVeldrid;
 
@@ -13,17 +14,34 @@ public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, Res
 	protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
 }
 
-public readonly record struct ResourceLayoutKey(ImmutableArray<ResourceLayoutElementDescription> Elements)
+public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey
 {
-	public bool Equals(ResourceLayoutKey other) => Elements.AsSpan().SequenceEqual(other.Elements.AsSpan());
+	public readonly ReadOnlySpan<ResourceLayoutElementDescription> Elements = elements;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
+	public bool Equals(ResourceLayoutKey other)
+	{
+		if (Elements.Length != other.Elements.Length) return false;
+		for (int i = 0; i < Elements.Length; i++) if (!Elements[i].Equals(other.Elements[i])) return false;
+		return true;
+	}
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
-		var hash = new HashCode();
-		foreach (var e in Elements)
-			hash.Add(e);
-
-		return hash.ToHashCode();
+		unchecked
+		{
+			int hash = 17;
+			foreach (var e in Elements)
+			{
+				hash = hash * 31 + (e.Name?.GetHashCode() ?? 0);
+				hash = hash * 31 + (int)e.Kind;
+				hash = hash * 31 + (int)e.Stages;
+				hash = hash * 31 + (int)e.Options;
+			}
+			return hash;
+		}
 	}
 }

@@ -6,10 +6,10 @@ namespace Orama.Rendering;
 public sealed class GPUBufferPool : ObjectPool<GPUBufferPool, GPUBuffer>
 {
 	/// <inheritdoc/>
-	public override GPUBuffer CreateObject() => new();
+	protected override GPUBuffer CreateObject() => new();
 
 	/// <inheritdoc/>
-	public override void ResetObject(GPUBuffer obj)
+	protected override void ResetObject(GPUBuffer obj)
 	{
 		base.ResetObject(obj);
 

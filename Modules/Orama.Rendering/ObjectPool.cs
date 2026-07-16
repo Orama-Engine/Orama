@@ -22,10 +22,10 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 	private readonly ConcurrentQueue<TObject> pool = new();
 
 	/// <summary> Creates a new instance of <typeparamref name="TObject"/>. </summary>
-	public abstract TObject CreateObject();
+	protected abstract TObject CreateObject();
 
 	/// <summary> Resets the given <typeparamref name="TObject"/> to it's default state for reuse. </summary>
-	public virtual void ResetObject(TObject obj) { }
+	protected virtual void ResetObject(TObject obj) { }
 
 	/// <summary> Borrows a <typeparamref name="TObject"/> from the pool or creates a new one if pool has none free. </summary>
 	/// <remarks> <typeparamref name="TObject"/>s obtained via this method should be returned via <see cref="Return"/> when no longer in use. </remarks>
