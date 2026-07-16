@@ -18,17 +18,13 @@ internal static class FrameDisposalQueue
 	/// <summary> Releases <see cref="FrameCountedResource{T}"/>s that are safe to dispose. </summary>
 	public static void DisposeResources(ulong currentFrame)
 	{
-		foreach (var resource in CollectionsMarshal.AsSpan(ActiveResources))
+		for (int i = ActiveResources.Count - 1; i >= 0; i--)
 		{
-			if (resource == null)
-			{
-				OramaConsole.Warning($"Tried to dispose FrameCountedResource that was null.");
-				continue;
-			}
+			var resource = ActiveResources[i];
 
 			if (resource.TryDispose(currentFrame))
 			{
-				ActiveResources.Remove(resource);
+				ActiveResources.RemoveAt(i);
 				DisposalQueue.Enqueue(resource);
 			}
 		}
@@ -36,9 +32,6 @@ internal static class FrameDisposalQueue
 		// TODO: We need to wait for the GPU to finish using the resources before disposing them
 		// This is somewhat safe because we wait so many frames before running this but obviously we need to implement actual fencing
 		while (DisposalQueue.Count > 0)
-		{
-			var resource = DisposalQueue.Dequeue();
-			resource.ReleaseGPUResource();
-		}
+			DisposalQueue.Dequeue().ReleaseGPUResource();
 	}
 }
