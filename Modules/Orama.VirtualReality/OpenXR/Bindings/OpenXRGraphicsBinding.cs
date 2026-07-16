@@ -20,7 +20,7 @@ internal class OpenXRGraphicsBinding : OpenXRBinding
 
 	// We use these as lifetime storage
 	private GraphicsBindingVulkanKHR vulkanBinding;
-	private GraphicsBindingD3D11KHR d3d11Binding;
+	private GraphicsBindingD3D12KHR d3d12Binding;
 
 	public OpenXRGraphicsBinding(XR openXR, RendererBackend target) : base(openXR)
 	{
@@ -44,12 +44,12 @@ internal class OpenXRGraphicsBinding : OpenXRBinding
 					break;
 
 				case RendererBackend.Direct3D12:
-					d3d11Binding = new GraphicsBindingD3D11KHR()
+					d3d12Binding = new GraphicsBindingD3D12KHR()
 					{
-						Type = StructureType.GraphicsBindingD3D11Khr,
+						Type = StructureType.GraphicsBindingD3D12Khr,
 						Device = (void*)Renderer.Veldrith.GraphicsDevice.GetD3D12Info().Device,
 					};
-					Native = (IntPtr)Unsafe.AsPointer(ref d3d11Binding);
+					Native = (IntPtr)Unsafe.AsPointer(ref d3d12Binding);
 					break;
 
 				default:
