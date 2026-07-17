@@ -57,27 +57,27 @@ public static class OramaConsole
 
 	/// <summary> Output an exception. </summary>
 	/// <remarks> Wrapper for <see cref="StackLog(ReadOnlySpan{char}, ConsoleColor, TextWriter)"/>. </remarks>
-	public static void Exception(Exception ex, [CallerFilePath] string origin = "Exception", [CallerMemberName] string member = "Unknown")
+	public static void Exception(Exception ex, [CallerFilePath] ReadOnlySpan<char> origin = "Exception", [CallerMemberName] ReadOnlySpan<char> member = "Unknown")
 	{
-		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin);
 		ReadOnlySpan<char> output = $"[{parsedOrigin}.{member}] {ex}";
 		StackLog(output, ConsoleColor.Red, Console.Error);
 	}
 
 	/// <summary> Output a message. </summary>
 	/// <remarks> Wrapper for <see cref="StackLog(ReadOnlySpan{char}, ConsoleColor, TextWriter)"/>. </remarks>
-	public static void Log(string message, [CallerFilePath] string origin = "Log")
+	public static void Log(ReadOnlySpan<char> message, [CallerFilePath] ReadOnlySpan<char> origin = "Log")
 	{
-		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin);
 		ReadOnlySpan<char> output = $"[{parsedOrigin}] {message}";
 		StackLog(output, ConsoleColor.White, Console.Out);
 	}
 
 	/// <summary> Output a warning. </summary>
 	/// <remarks> Wrapper for <see cref="StackLog(ReadOnlySpan{char}, ConsoleColor, TextWriter)"/>. </remarks>
-	public static void Warning(string message, [CallerFilePath] string origin = "Warning", [CallerMemberName] string member = "Unknown")
+	public static void Warning(ReadOnlySpan<char> message, [CallerFilePath] ReadOnlySpan<char> origin = "Warning", [CallerMemberName] ReadOnlySpan<char> member = "Unknown")
 	{
-		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
+		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin);
 		ReadOnlySpan<char> output = $"[{parsedOrigin}.{member}] {message}";
 		StackLog(output, ConsoleColor.Yellow, Console.Out);
 	}
