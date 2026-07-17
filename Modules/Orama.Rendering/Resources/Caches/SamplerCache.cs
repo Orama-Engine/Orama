@@ -2,6 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using System;
+
 using NeoVeldrid;
 
 namespace Orama.Rendering.Resources.Caches;
