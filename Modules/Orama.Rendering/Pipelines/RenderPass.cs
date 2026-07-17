@@ -22,7 +22,7 @@ public abstract class RenderPass
 		buffer.Object.Begin();
 
 		buffer.Object.CommandList.SetFramebuffer(TargetBuffer);
-		buffer.Object.QueueGPUBuffer(frame.CameraBuffer, "Camera");
+		buffer.Object.ResourceBinder.QueueGPUBuffer(frame.CameraBuffer, "Camera");
 
 		Render(in frame, buffer);
 

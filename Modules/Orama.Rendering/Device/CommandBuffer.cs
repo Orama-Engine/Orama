@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Buffers;
-
 using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
@@ -17,30 +15,32 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public class CommandBuffer : IDisposable
 {
-	/// <summary> The low-level Veldrith command list. </summary>
+	/// <summary> The low-level Veldrith <see cref="Veldrith.CommandList"/> </summary>
 	public CommandList CommandList { get; }
+
+	/// <summary> The <see cref="Device.ResourceBinder"/> that orchestrates resource uploading and binding for this <see cref="CommandBuffer"/>. </summary>
+	public ResourceBinder ResourceBinder { get; }
 
 	// Hacky
 	/// <summary> The current pipeline hash in use. </summary>
 	public int ActivePipelineHash { get; private set; }
 
 	/// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
-	public CommandBuffer(VeldrithDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
+	public CommandBuffer(VeldrithDevice device)
+	{
+		CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
+		ResourceBinder = new ResourceBinder(CommandList);
+	}
 
-	private readonly Dictionary<string, GPUBuffer> gpuBufferQueue = new();
-	private readonly Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
-	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
-	private DeviceBuffer[] deviceBufferCache = new DeviceBuffer[16];
-
-	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
 
 	/// <inheritdoc/>
 	public void Dispose()
 	{
 		ClearFrameBuffers();
 		CommandList.Dispose();
+		ResourceBinder.Dispose();
 	}
 
 	public void Begin()
@@ -52,12 +52,7 @@ public class CommandBuffer : IDisposable
 
 	private void ClearFrameBuffers()
 	{
-		gpuBufferQueue.Clear();
-
-		foreach (var kvp in lastBoundBuffers)
-			ArrayPool<GPUBuffer>.Shared.Return(kvp.Value);
-
-		lastBoundBuffers.Clear();
+		ResourceBinder.Clear();
 
 		for (int i = 0; i < rentedBuffersThisFrame.Count; i++)
 			GPUBufferPool.Instance.Return(rentedBuffersThisFrame[i]);
@@ -71,11 +66,6 @@ public class CommandBuffer : IDisposable
 
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
-	/// <summary> Queues a <see cref="GPUBuffer"/> for upload. </summary>
-	/// <param name="gpuBuffer">The buffer to upload.</param>
-	/// <param name="name">The name of the shader parameter block.</param>
-	public void QueueGPUBuffer(GPUBuffer gpuBuffer, string name) => gpuBufferQueue[name] = gpuBuffer;
-
 	public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
 	{
 		var materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
@@ -84,8 +74,8 @@ public class CommandBuffer : IDisposable
 		GPUBuffer objectBuffer = defaults.GetObjectBuffer(renderable);
 		rentedBuffersThisFrame.Add(objectBuffer);
 
-		QueueGPUBuffer(materialBuffer, "Parameters");
-		QueueGPUBuffer(objectBuffer, "Object");
+		ResourceBinder.QueueGPUBuffer(materialBuffer, "Parameters");
+		ResourceBinder.QueueGPUBuffer(objectBuffer, "Object");
 
 		var gd = Renderer.Veldrith.GraphicsDevice;
 
@@ -97,111 +87,9 @@ public class CommandBuffer : IDisposable
 
 		SetPipeline(pipelineDesc);
 
-		UploadUniformBuffers(renderable.Material.Shader);
+		ResourceBinder.BindShaderResources(renderable.Material.Shader);
 
 		DrawItem(item.Resource);
-	}
-
-	public void UploadUniformBuffers(Resources.Shader shader)
-	{
-		int totalCount = shader.Resources.Count;
-		if (totalCount == 0)
-			return;
-
-		// Hacky way to avoid massive heap allocations
-		uint currentSet = uint.MaxValue;
-
-		orderedResourcesCache.Clear();
-
-		foreach (var resource in shader.Resources)
-		{
-			if (resource.Value.Set != currentSet)
-			{
-				if (orderedResourcesCache.Count > 0)
-				{
-					UploadSet(currentSet, orderedResourcesCache);
-					orderedResourcesCache.Clear();
-				}
-				currentSet = resource.Value.Set;
-			}
-			orderedResourcesCache.Add(resource);
-		}
-
-		if (orderedResourcesCache.Count > 0)
-			UploadSet(currentSet, orderedResourcesCache);
-	}
-
-	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
-	{
-		int resourceCount = orderedResources.Count;
-		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
-		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, resourceCount);
-
-		for (int i = 0; i < resourceCount; i++)
-		{
-			var resource = orderedResources[i];
-
-			if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
-			{
-				OramaConsole.Exception(new Exception($"Could not find buffer for resource {resource.Key}"));
-
-				using (var pooledFallback = GPUBufferPool.Instance.RentAuto())
-				{
-					pooledFallback.Object.AddFloat(0f);
-					gpuBuffer = pooledFallback.Object;
-				}
-			}
-
-			queuedBuffersSpan[i] = gpuBuffer;
-		}
-
-		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffersSpan))
-		{
-			ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
-			return;
-		}
-
-		if (resourceCount > layoutElementCache.Length)
-			Array.Resize(ref layoutElementCache, resourceCount * 2);
-
-		for (int i = 0; i < resourceCount; i++)
-		{
-			var r = orderedResources[i];
-			layoutElementCache[i] = new ResourceLayoutElementDescription(
-				r.Key,
-				r.Value.Kind,
-				ShaderStages.Vertex | ShaderStages.Fragment
-			);
-		}
-
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount)));
-
-		if (resourceCount > deviceBufferCache.Length)
-			Array.Resize(ref deviceBufferCache, resourceCount * 2);
-
-		for (int i = 0; i < resourceCount; i++)
-		{
-			GPUBuffer gpuBuffer = queuedBuffersSpan[i];
-
-			FrameCountedResource<DeviceBuffer> buffer = DeviceBufferCache.Instance.GetOrCreate(new DeviceBufferKey((uint)gpuBuffer.Data.Length, BufferUsage.UniformBuffer));
-
-			CommandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
-
-			deviceBufferCache[i] = buffer.Resource;
-		}
-
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount)));
-
-		CommandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
-
-		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? oldArray))
-			ArrayPool<GPUBuffer>.Shared.Return(oldArray);
-
-		GPUBuffer[] persistentSnapshot = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
-		queuedBuffersSpan.CopyTo(persistentSnapshot);
-		lastBoundBuffers[setIndex] = persistentSnapshot;
-
-		ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
 	}
 
 	public void SetPipeline(PipelineKey pipelineDesc)

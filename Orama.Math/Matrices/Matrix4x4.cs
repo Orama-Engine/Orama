@@ -84,7 +84,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	}
 
 	/// <summary> Creates a translation matrix from a <see cref="Vector3"/>. </summary>
-	public static Matrix4x4 CreateTranslation(Vector3 pos) => new Matrix4x4(
+	public static Matrix4x4 CreateTranslation(Vector3 pos) => new(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
@@ -92,7 +92,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 		);
 
 	/// <summary> Creates a translation matrix from the specified components. </summary>
-	public static Matrix4x4 CreateTranslation(float x, float y, float z) => new Matrix4x4(
+	public static Matrix4x4 CreateTranslation(float x, float y, float z) => new(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
@@ -100,7 +100,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 		);
 
 	/// <summary> Creates a scaling matrix from a <see cref="Vector3"/>. </summary>
-	public static Matrix4x4 CreateScale(Vector3 scale) => new Matrix4x4(
+	public static Matrix4x4 CreateScale(Vector3 scale) => new(
 			scale.X, 0, 0, 0,
 			0, scale.Y, 0, 0,
 			0, 0, scale.Z, 0,
@@ -108,7 +108,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 		);
 
 	/// <summary> Creates a scaling matrix from the specified components. </summary>
-	public static Matrix4x4 CreateScale(float x, float y, float z) => new Matrix4x4(
+	public static Matrix4x4 CreateScale(float x, float y, float z) => new(
 			x, 0, 0, 0,
 			0, y, 0, 0,
 			0, 0, z, 0,
@@ -210,7 +210,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	#region Operations
 
 	/// <summary> Returns the transposed version of this matrix. </summary>
-	public Matrix4x4 Transpose() => new Matrix4x4(
+	public Matrix4x4 Transpose() => new(
 			M11, M21, M31, M41,
 			M12, M22, M32, M42,
 			M13, M23, M33, M43,
@@ -236,7 +236,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	}
 
 	/// <summary> Transforms a <see cref="Vector3"/> by this matrix. </summary>
-	public Vector3 Transform(Vector3 v) => new Vector3(
+	public Vector3 Transform(Vector3 v) => new(
 			v.X * M11 + v.Y * M21 + v.Z * M31 + M41,
 			v.X * M12 + v.Y * M22 + v.Z * M32 + M42,
 			v.X * M13 + v.Y * M23 + v.Z * M33 + M43

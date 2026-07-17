@@ -35,7 +35,8 @@ public sealed class Mouse : IInputDevice
 
 	/// <summary> Checks if this mouse's cursor is currently locked. </summary>
 	public bool CursorLocked
-	{ get => InternalMouse.Cursor.CursorMode == CursorMode.Raw && InternalMouse.Cursor.IsConfined; set => InternalMouse.Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal;
+	{
+		get => InternalMouse.Cursor.CursorMode == CursorMode.Raw && InternalMouse.Cursor.IsConfined; set => InternalMouse.Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal;
 	}
 
 	/// <summary> The change in mouse position since the last update. </summary>
