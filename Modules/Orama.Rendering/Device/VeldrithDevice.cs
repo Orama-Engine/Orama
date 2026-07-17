@@ -1,21 +1,22 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Rendering.Device;
 
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
+using Orama.Common.Utility;
 
-namespace Orama.Rendering.Veldrid;
+namespace Orama.Rendering;
 
 /// <summary>
-/// Interface into low-level Veldrid rendering.
+/// Interface into low-level Veldrith rendering.
 /// </summary>
-public class VeldridDevice
+public class VeldrithDevice
 {
-	/// <summary> The underlying Veldrid <see cref="global::Veldrid.GraphicsDevice"/>. </summary>
+	/// <summary> The underlying Veldrith <see cref="global::Veldrith.GraphicsDevice"/>. </summary>
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
 	/// <summary> The current frame number. </summary>
@@ -23,8 +24,8 @@ public class VeldridDevice
 
 	private RendererBackend backend;
 
-	/// <summary> Initializes a new instance of the <see cref="VeldridDevice"/> class. </summary>
-	public VeldridDevice(RendererBackend backend)
+	/// <summary> Initializes a new instance of the <see cref="VeldrithDevice"/> class. </summary>
+	public VeldrithDevice(RendererBackend backend)
 	{
 		this.backend = backend;
 	}
@@ -42,22 +43,23 @@ public class VeldridDevice
 			SyncToVerticalBlank = window.VSync,
 		};
 
+		if (native is null)
+			throw new NullReferenceException(nameof(native));
+
+		SwapchainSource source = CreateSwapchainSource(native);
+
+		SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, PixelFormat.D32FloatS8UInt, window.VSync);
+
 		switch (backend)
 		{
 			case RendererBackend.Vulkan:
-			case RendererBackend.Direct3D11:
-				{
-					if (native is null)
-						throw new NullReferenceException(nameof(native));
-
-					SwapchainSource source = CreateSwapchainSource(native);
-
-					SwapchainDescription desc = new(source, (uint)window.Size.X, (uint)window.Size.Y, null, window.VSync);
-					GraphicsDevice = backend == RendererBackend.Vulkan ? GraphicsDevice.CreateVulkan(options, desc) : GraphicsDevice.CreateD3D11(options, desc);
-
-					break;
-				}
+				GraphicsDevice = GraphicsDevice.CreateVulkan(options, desc);
+				break;
+			case RendererBackend.Direct3D12:
+				GraphicsDevice = GraphicsDevice.CreateD3D12(options, desc);
+				break;
 		}
+
 	}
 
 	public void SubmitCommands(CommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);

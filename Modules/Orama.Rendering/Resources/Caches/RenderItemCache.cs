@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Immutable;
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Math;
 
@@ -15,8 +15,8 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	/// <inheritdoc/>
 	protected override RenderItem Create(RenderItemKey key)
 	{
-		var gd = Renderer.Veldrid.GraphicsDevice;
-		var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
+		var gd = Renderer.Veldrith.GraphicsDevice;
+		var factory = Renderer.Veldrith.GraphicsDevice.ResourceFactory;
 
 		int vertCount = key.VertexPositions.Length;
 		float[] vertexData = new float[vertCount * 8];

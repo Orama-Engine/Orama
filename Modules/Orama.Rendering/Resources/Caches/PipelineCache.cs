@@ -1,11 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Collections.Immutable;
-using System.Xml.Linq;
-
-using NeoVeldrid;
-using NeoVeldrid.SPIRV;
+using Veldrith;
+using Veldrith.SPIRV;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -14,17 +11,17 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 	/// <inheritdoc/>
 	protected override Pipeline Create(PipelineKey key)
 	{
-		var factory = Renderer.Veldrid.GraphicsDevice.ResourceFactory;
+		var factory = Renderer.Veldrith.GraphicsDevice.ResourceFactory;
 
-		global::NeoVeldrid.Shader[] shaders = factory.CreateFromSpirv(
+		global::Veldrith.Shader[] shaders = factory.CreateFromSpirv(
 			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main"),
 			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main"),
-			new CrossCompileOptions()
+			new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: true, normalizeResourceNames: false)
 		);
 
 		VertexLayoutDescription vertexLayout = new(
-			new VertexElementDescription("POSITION", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
-			new VertexElementDescription("NORMAL", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float3),
+			new VertexElementDescription("POSITION", VertexElementSemantic.Position, VertexElementFormat.Float3),
+			new VertexElementDescription("NORMAL", VertexElementSemantic.Normal, VertexElementFormat.Float3),
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
 		);
 
@@ -42,12 +39,12 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 				CullingMode.Back => new RasterizerStateDescription(FaceCullMode.Back, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
 				CullingMode.Front => new RasterizerStateDescription(FaceCullMode.Front, PolygonFillMode.Solid, FrontFace.CounterClockwise, true, true),
 
-				_ => RasterizerStateDescription.CullNone
+				_ => RasterizerStateDescription.CULL_NONE
 			};
 
 		GraphicsPipelineDescription desc = new()
 		{
-			BlendState = BlendStateDescription.SingleOverrideBlend,
+			BlendState = BlendStateDescription.SINGLE_OVERRIDE_BLEND,
 			DepthStencilState = new DepthStencilStateDescription(
 				depthTestEnabled: true,
 				depthWriteEnabled: true,

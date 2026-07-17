@@ -4,14 +4,14 @@
 using System;
 using System.Xml.Linq;
 
-using NeoVeldrid;
+using Veldrith;
 
 namespace Orama.Rendering.Resources.Caches;
 
 public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, ResourceLayoutKey, ResourceLayout>
 {
 	/// <inheritdoc/>
-	protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
+	protected override ResourceLayout Create(ResourceLayoutKey key) => Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateResourceLayout(new ResourceLayoutDescription(key.Elements.ToArray()));
 }
 
 public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey

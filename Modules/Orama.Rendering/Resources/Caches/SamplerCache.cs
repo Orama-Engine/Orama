@@ -3,41 +3,42 @@
 
 using System;
 
-using NeoVeldrid;
+using Veldrith;
+
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, NeoVeldrid.Sampler>
+public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, Veldrith.Sampler>
 {
 	/// <inheritdoc/>
-	protected override NeoVeldrid.Sampler Create(SamplerKey key)
+	protected override Veldrith.Sampler Create(SamplerKey key)
 	{
 		SamplerDescription desc = new SamplerDescription()
 		{
-			Filter = GetVeldridFilter(key.Sampler.Filter),
-			AddressModeU = GetVeldridAddressMode(key.Sampler.WrapU),
-			AddressModeV = GetVeldridAddressMode(key.Sampler.WrapV)
+			Filter = GetVeldrithFilter(key.Sampler.Filter),
+			AddressModeU = GetVeldrithAddressMode(key.Sampler.WrapU),
+			AddressModeV = GetVeldrithAddressMode(key.Sampler.WrapV)
 		};
 
-		return Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateSampler(desc);
+		return Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateSampler(desc);
 	}
 
-	private static NeoVeldrid.SamplerFilter GetVeldridFilter(SamplerFilter filter)
+	private static Veldrith.SamplerFilter GetVeldrithFilter(SamplerFilter filter)
 	{
 		return filter switch
 		{
-			SamplerFilter.Nearest => NeoVeldrid.SamplerFilter.MinPoint_MagPoint_MipPoint,
-			SamplerFilter.Linear => NeoVeldrid.SamplerFilter.MinLinear_MagLinear_MipPoint,
+			SamplerFilter.Nearest => Veldrith.SamplerFilter.MinPointMagPointMipPoint,
+			SamplerFilter.Linear => Veldrith.SamplerFilter.MinLinearMagLinearMipPoint,
 			_ => throw new NotSupportedException()
 		};
 	}
 
-	private static NeoVeldrid.SamplerAddressMode GetVeldridAddressMode(TextureWrapMode mode)
+	private static Veldrith.SamplerAddressMode GetVeldrithAddressMode(TextureWrapMode mode)
 	{
 		return mode switch
 		{
-			TextureWrapMode.Clamp => NeoVeldrid.SamplerAddressMode.Clamp,
-			TextureWrapMode.Repeat => NeoVeldrid.SamplerAddressMode.Wrap,
+			TextureWrapMode.Clamp => Veldrith.SamplerAddressMode.Clamp,
+			TextureWrapMode.Repeat => Veldrith.SamplerAddressMode.Wrap,
 			_ => throw new NotSupportedException()
 		};
 	}

@@ -4,7 +4,7 @@
 using System.Collections.Immutable;
 using System.Text;
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;

@@ -23,7 +23,7 @@ if (Input.PrimaryHandLeft.IsButtonPressed(VirtualRealityController.Button.Action
 Logic is built around Entities and Components. Components are the reusable building blocks of the engine whilst Entities orchestrate their attached components to make more specific logic occur. For instance, a Button Entity would consist of `MeshRenderer`, `RigidBody`, and `Collider` components and contain logic that fires an output when an interaction ray hits the `Collider`.
 
 ### Vulkan Renderer
-Rendering is built on a Veldrid-based descriptor defined Vulkan-first engine with DirectX11 for compatibility. 'Descriptor Defined' means all CPU/GPU heterogeneous resources are built around a 'Descriptor' that defines their data and is then mapped to the GPU sided resource, allowing every resource to reuse buffers from eachother when possible.
+Rendering is built on a Veldrid-based descriptor defined Vulkan-first engine with DirectX12 for compatibility. 'Descriptor Defined' means all CPU/GPU heterogeneous resources are built around a 'Descriptor' that defines their data and is then mapped to the GPU sided resource, allowing every resource to reuse buffers from eachother when possible.
 
 ```csharp
 

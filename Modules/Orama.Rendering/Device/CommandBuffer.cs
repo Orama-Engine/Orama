@@ -2,16 +2,13 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using System.Buffers;
-using System.Collections.Immutable;
-using System.Runtime.InteropServices;
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
-using Orama.Rendering.Veldrid;
 
 namespace Orama.Rendering.Device;
 
@@ -20,7 +17,7 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public class CommandBuffer : IDisposable
 {
-	/// <summary> The low-level Veldrid command list. </summary>
+	/// <summary> The low-level Veldrith command list. </summary>
 	public CommandList CommandList { get; }
 
 	// Hacky
@@ -28,7 +25,7 @@ public class CommandBuffer : IDisposable
 	public int ActivePipelineHash { get; private set; }
 
 	/// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
-	public CommandBuffer(VeldridDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
+	public CommandBuffer(VeldrithDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
 	private Dictionary<string, GPUBuffer> gpuBufferQueue = new();
 	private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
@@ -70,7 +67,9 @@ public class CommandBuffer : IDisposable
 
 	public void End() => CommandList.End();
 
-	public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new NeoVeldrid.RgbaFloat(color.R, color.G, color.B, color.A));
+	public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new Veldrith.RgbaFloat(color.R, color.G, color.B, color.A));
+
+	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
 	/// <summary> Queues a <see cref="GPUBuffer"/> for upload. </summary>
 	/// <param name="gpuBuffer">The buffer to upload.</param>
@@ -88,7 +87,7 @@ public class CommandBuffer : IDisposable
 		QueueGPUBuffer(materialBuffer, "Parameters");
 		QueueGPUBuffer(objectBuffer, "Object");
 
-		var gd = Renderer.Veldrid.GraphicsDevice;
+		var gd = Renderer.Veldrith.GraphicsDevice;
 
 		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
 
@@ -212,8 +211,14 @@ public class CommandBuffer : IDisposable
 
 		ActivePipelineHash = pipelineDesc.Hash;
 
-		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-		CommandList.SetPipeline(pipeline.Resource);
+		try
+		{
+			FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
+			CommandList.SetPipeline(pipeline.Resource);
+		} catch (VeldridException ex)
+		{
+			OramaConsole.Exception(ex);
+		}
 	}
 
 	public void DrawItem(RenderItem item)

@@ -5,26 +5,26 @@ using System;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, NeoVeldrid.Texture>
+public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldrith.Texture>
 {
 	/// <inheritdoc/>
-	protected override NeoVeldrid.Texture Create(TextureKey key)
+	protected override Veldrith.Texture Create(TextureKey key)
 	{
-		NeoVeldrid.TextureDescription desc = new NeoVeldrid.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldridFormat(key.Format), NeoVeldrid.TextureUsage.Sampled, NeoVeldrid.TextureType.Texture2D);
+		Veldrith.TextureDescription desc = new Veldrith.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldrithFormat(key.Format), Veldrith.TextureUsage.Sampled, Veldrith.TextureType.Texture2D);
 
-		NeoVeldrid.Texture texture = Renderer.Veldrid.GraphicsDevice.ResourceFactory.CreateTexture(desc);
+		Veldrith.Texture texture = Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateTexture(desc);
 
-		Renderer.Veldrid.GraphicsDevice.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
+		Renderer.Veldrith.GraphicsDevice.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
 
 		return texture;
 	}
 
-	private static NeoVeldrid.PixelFormat GetVeldridFormat(TextureFormat format)
+	private static Veldrith.PixelFormat GetVeldrithFormat(TextureFormat format)
 	{
 		return format switch
 		{
-			TextureFormat.RGB8 => NeoVeldrid.PixelFormat.R8_G8_B8_A8_UNorm,
-			TextureFormat.RGBA8 => NeoVeldrid.PixelFormat.R8_G8_B8_A8_UNorm,
+			TextureFormat.RGB8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
+			TextureFormat.RGBA8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
 			_ => throw new NotSupportedException($"Unsupported texture format: {format}")
 		};
 	}

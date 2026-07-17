@@ -1,7 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using NeoVeldrid;
+using Veldrith;
 
 using Orama.Rendering.Device;
 
@@ -35,5 +35,5 @@ public abstract class RenderPass
 	public abstract void Render(in RenderFrame frame, CommandBuffer buffer);
 
 	/// <summary> The target <see cref="Framebuffer"/> this pass is rendering to. </summary>
-	protected virtual Framebuffer TargetBuffer => Renderer.Veldrid.GraphicsDevice.SwapchainFramebuffer;
+	protected virtual Framebuffer TargetBuffer => Renderer.Veldrith.GraphicsDevice.SwapchainFramebuffer;
 }

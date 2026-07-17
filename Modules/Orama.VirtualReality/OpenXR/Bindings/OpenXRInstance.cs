@@ -18,7 +18,7 @@ namespace Orama.VirtualReality.OpenXR.Bindings;
 internal class OpenXRInstance : OpenXRBinding
 {
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-	private unsafe delegate Result pfnGetD3D11GraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsD3D11KHR* req);
+	private unsafe delegate Result pfnGetD3D12GraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsD3D12KHR* req);
 
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	private unsafe delegate Result pfnGetVulkanGraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsVulkanKHR* req);
@@ -110,7 +110,7 @@ internal class OpenXRInstance : OpenXRBinding
 		string requiredExtension = Renderer.Backend switch
 		{
 			RendererBackend.Vulkan => "XR_KHR_vulkan_enable",
-			RendererBackend.Direct3D11 => "XR_KHR_D3D11_enable",
+			RendererBackend.Direct3D12 => "XR_KHR_D3D12_enable",
 			_ => throw new NotSupportedException("Unsupported renderer backend for OpenXR")
 		};
 
@@ -156,16 +156,16 @@ internal class OpenXRInstance : OpenXRBinding
 	{
 		switch (Renderer.Backend)
 		{
-			case RendererBackend.Direct3D11:
+			case RendererBackend.Direct3D12:
 				{
 					PfnVoidFunction fnPtr = new();
-					OpenXR.GetInstanceProcAddr(Native, "xrGetD3D11GraphicsRequirementsKHR", ref fnPtr).VerifySuccess();
+					OpenXR.GetInstanceProcAddr(Native, "xrGetD3D12GraphicsRequirementsKHR", ref fnPtr).VerifySuccess();
 
-					var fn = Marshal.GetDelegateForFunctionPointer<pfnGetD3D11GraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
+					var fn = Marshal.GetDelegateForFunctionPointer<pfnGetD3D12GraphicsRequirementsKHR>((IntPtr)fnPtr.Handle);
 
-					GraphicsRequirementsD3D11KHR requirements = new()
+					GraphicsRequirementsD3D12KHR requirements = new()
 					{
-						Type = StructureType.GraphicsRequirementsD3D11Khr
+						Type = StructureType.GraphicsRequirementsD3D12Khr
 					};
 
 					fn(Native, SystemID, &requirements);
