@@ -1,10 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Veldrith;
+using System.Text;
 
 using Orama.Common.Utility;
-using Orama.Rendering.Resources;
 
 using SlangShaderSharp;
 
@@ -39,7 +38,7 @@ public static class ShaderBaker
 
 		SessionDesc sesDesc = new()
 		{
-			Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv }],
+			Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv, Profile = globalSession.FindProfile("spirv_1_6") }],
 			SearchPaths = ["Assets"], // Hacky
 			CompilerOptionEntries = options,
 		};
@@ -67,56 +66,49 @@ public static class ShaderBaker
 		List<AttributeReflection> attributes = GetAttributes(module);
 		List<VariableReflection> parameters = GetParameters(module);
 
-		byte[] vert = Array.Empty<byte>();
-		byte[] frag = Array.Empty<byte>();
+		ReadOnlySpan<byte> vert = Span<byte>.Empty;
+		ReadOnlySpan<byte> frag = Span<byte>.Empty;
 
 		List<VariableLayoutReflection> resources = new();
 
 		if (vertexEntry == null && fragmentEntry == null)
 			return new SlangCompilationResult() { ShaderAttributes = attributes, ShaderParameters = parameters, Resources = resources };
 
+		List<IComponentType> components = [module];
+
+		if (vertexEntry != null)
+			components.Add(vertexEntry);
+
+		if (fragmentEntry != null)
+			components.Add(fragmentEntry);
+
+		localSession.CreateCompositeComponentType(components.ToArray(), out IComponentType program, out _);
+		program.Link(out IComponentType linkedProgram, out _);
+
+		var linkedLayout = linkedProgram.GetLayout(0, out _);
+
+		for (uint i = 0; i < linkedLayout.ParameterCount; i++)
+		{
+			VariableLayoutReflection variable = linkedLayout.GetParameterByIndex(i);
+
+			if (variable.Type.Kind == SlangTypeKind.ParameterBlock || variable.Type.Kind == SlangTypeKind.ConstantBuffer)
+				resources.Add(variable);
+		}
+
 		if (vertexEntry != null)
 		{
-			IComponentType[] components = { module, vertexEntry };
-			localSession.CreateCompositeComponentType(components, out IComponentType vertexProgram, out _);
-			vertexProgram.Link(out IComponentType linkedVertex, out _);
-			linkedVertex.GetEntryPointCode(0, 0, out ISlangBlob vertexBlob, out _);
+			linkedProgram.GetEntryPointCode(0, 0, out ISlangBlob vertBlob, out _);
+			int vertBufferSize = (int)vertBlob.GetBufferSize();
 
-			var linkedLayout = linkedVertex.GetLayout(0, out _);
-
-			for (uint i = 0; i < linkedLayout.ParameterCount; i++)
-			{
-				VariableLayoutReflection variable = linkedLayout.GetParameterByIndex(i);
-
-				if (variable.Type.Kind == SlangTypeKind.ParameterBlock || variable.Type.Kind == SlangTypeKind.ConstantBuffer)
-					resources.Add(variable);
-			}
-
-			int bufferSize = (int)vertexBlob.GetBufferSize();
-			vert = new byte[bufferSize];
-
-			unsafe
-			{
-				var sourceSpan = new ReadOnlySpan<byte>(vertexBlob.GetBufferPointer(), bufferSize);
-				sourceSpan.CopyTo(vert);
-			}
+			unsafe { vert = new ReadOnlySpan<byte>(vertBlob.GetBufferPointer(), vertBufferSize); }
 		}
 
 		if (fragmentEntry != null)
 		{
-			IComponentType[] components = { module, fragmentEntry };
-			localSession.CreateCompositeComponentType(components, out IComponentType fragmentProgram, out _);
-			fragmentProgram.Link(out IComponentType linkedFragment, out _);
-			linkedFragment.GetEntryPointCode(0, 0, out ISlangBlob fragmentBlob, out _);
+			linkedProgram.GetEntryPointCode(1, 0, out ISlangBlob fragBlob, out _);
+			int fragBufferSize = (int)fragBlob.GetBufferSize();
 
-			int bufferSize = (int)fragmentBlob.GetBufferSize();
-			frag = new byte[bufferSize];
-
-			unsafe
-			{
-				var sourceSpan = new ReadOnlySpan<byte>(fragmentBlob.GetBufferPointer(), bufferSize);
-				sourceSpan.CopyTo(frag);
-			}
+			unsafe { frag = new ReadOnlySpan<byte>(fragBlob.GetBufferPointer(), fragBufferSize); }
 		}
 
 		return new SlangCompilationResult() { FragmentBytes = frag, VertexBytes = vert, ShaderAttributes = attributes, ShaderParameters = parameters, Resources = resources };
@@ -179,10 +171,10 @@ public static class ShaderBaker
 public readonly ref struct SlangCompilationResult
 {
 	/// <summary> SPIRV Vertex bytes. </summary>
-	public byte[] VertexBytes { get; init; }
+	public ReadOnlySpan<byte> VertexBytes { get; init; }
 
 	/// <summary> SPIRV Fragment bytes. </summary>
-	public byte[] FragmentBytes { get; init; }
+	public ReadOnlySpan<byte> FragmentBytes { get; init; }
 
 	/// <summary> All attributes inside of a <c>SHADER_ATTRIBUTES()</c> block. </summary>
 	/// <example>

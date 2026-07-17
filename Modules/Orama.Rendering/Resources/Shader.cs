@@ -69,8 +69,8 @@ public class Shader
 		set
 		{
 			SlangCompilationResult comp = ShaderBaker.SlangToSpirV(value, Name);
-			VertexBytecode = comp.VertexBytes;
-			FragmentBytecode = comp.FragmentBytes;
+			VertexBytecode = comp.VertexBytes.ToArray();
+			FragmentBytecode = comp.FragmentBytes.ToArray();
 
 			foreach (var attribute in comp.ShaderAttributes)
 				if (attribute.Name == "ShaderPass")
