@@ -4,12 +4,12 @@
 using System.Collections.Immutable;
 using System.Text;
 
-using Veldrith;
-
 using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
+
+using Veldrith;
 
 namespace Orama.Rendering.Resources;
 

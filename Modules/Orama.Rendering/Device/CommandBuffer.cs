@@ -3,12 +3,12 @@
 
 using System.Buffers;
 
-using Veldrith;
-
 using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
+
+using Veldrith;
 
 namespace Orama.Rendering.Device;
 
@@ -215,7 +215,8 @@ public class CommandBuffer : IDisposable
 		{
 			FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
 			CommandList.SetPipeline(pipeline.Resource);
-		} catch (VeldridException ex)
+		}
+		catch (VeldridException ex)
 		{
 			OramaConsole.Exception(ex);
 		}

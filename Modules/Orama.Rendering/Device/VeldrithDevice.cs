@@ -1,13 +1,13 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Veldrith;
-
+using Orama.Common.Utility;
 using Orama.Rendering.Device;
 
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
-using Orama.Common.Utility;
+
+using Veldrith;
 
 namespace Orama.Rendering;
 

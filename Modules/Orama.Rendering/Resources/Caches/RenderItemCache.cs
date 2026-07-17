@@ -4,9 +4,9 @@
 using System;
 using System.Collections.Immutable;
 
-using Veldrith;
-
 using Orama.Math;
+
+using Veldrith;
 
 namespace Orama.Rendering.Resources.Caches;
 

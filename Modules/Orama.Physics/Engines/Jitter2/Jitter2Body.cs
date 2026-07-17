@@ -65,35 +65,35 @@ public class Jitter2Body : IPhysicsBody
 	public float Friction
 	{
 		get => body != null ? body.Friction : 0f;
-		set => body?.Friction = value; 
+		set => body?.Friction = value;
 	}
 
 	/// <inheritdoc/>
 	public bool AffectedByGravity
 	{
 		get => body?.AffectedByGravity ?? false;
-		set => body?.AffectedByGravity = value; 
+		set => body?.AffectedByGravity = value;
 	}
 
 	/// <inheritdoc/>
 	public float Restitution
 	{
 		get => body != null ? body.Restitution : 0f;
-		set => body?.Restitution = value; 
+		set => body?.Restitution = value;
 	}
 
 	/// <inheritdoc/>
 	public Vector3 AngularVelocity
 	{
 		get => body != null ? new Vector3(body.AngularVelocity.X, body.AngularVelocity.Y, body.AngularVelocity.Z) : Vector3.Zero;
-		set => body?.AngularVelocity = new JVector(value.X, value.Y, value.Z); 
+		set => body?.AngularVelocity = new JVector(value.X, value.Y, value.Z);
 	}
 
 	/// <inheritdoc/>
 	public Vector2 Damping
 	{
 		get => body != null ? new Vector2(body.Damping.linear, body.Damping.angular) : Vector2.Zero;
-		set => body?.Damping = (value.X, value.Y); 
+		set => body?.Damping = (value.X, value.Y);
 	}
 
 	/// <inheritdoc/>

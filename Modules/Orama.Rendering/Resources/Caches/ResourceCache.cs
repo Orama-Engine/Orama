@@ -50,7 +50,8 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 			Cache[hash] = value;
 
 			return value;
-		} catch(Exception ex)
+		}
+		catch (Exception ex)
 		{
 			OramaConsole.Exception(ex);
 			return default!;

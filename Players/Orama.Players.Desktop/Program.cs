@@ -47,7 +47,6 @@ internal class Program
 			DebugEntity floor = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
 			floor.Name = "Floor";
 			floor.Transform.Scale = new Vector3(10, 1, 10);
-			floor.Transform.Position = new Vector3(0, 0, 0);
 
 			DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
 
