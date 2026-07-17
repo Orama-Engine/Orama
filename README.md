@@ -1,5 +1,5 @@
 # Orama
-![PreRelease](https://img.shields.io/badge/Version-Pre--Release-orange) ![MIT](https://img.shields.io/badge/License-MIT-blue)
+![PreRelease](https://img.shields.io/badge/Version-Pre--Release-orange) ![MIT](https://img.shields.io/badge/License-MIT-green) [![Commit Activity](https://img.shields.io/github/commit-activity/w/Orama-Engine/Orama?label=Commit%20Activity&logo=github)](https://github.com/Orama-Engine/Orama)
 
 The C# 14 Virtual-Reality Game Engine built around the modern .NET ecosystem.
 
