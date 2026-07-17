@@ -32,7 +32,7 @@ public class RenderingModule : BaseModule
 		RendererOptions options = new();
 		options.Culling = CullingMode.Back;
 
-		Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Direct3D12, options);
+		Renderer.Initialize(Application.Window.InternalWindow, RendererBackend.Vulkan, options);
 		Application.Window.Title += $" - [{Renderer.Backend}]";
 	}
 
