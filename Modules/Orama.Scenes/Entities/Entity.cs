@@ -103,7 +103,7 @@ public class Entity
 	/// <summary> Destroys the specified entity and releases any associated resources. </summary>
 	public void Destroy()
 	{
-		Enabled = false;;
+		Enabled = false; ;
 
 		foreach (var component in CollectionsMarshal.AsSpan(components))
 		{

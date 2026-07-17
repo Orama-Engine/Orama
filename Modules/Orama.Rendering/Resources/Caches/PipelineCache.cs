@@ -62,12 +62,12 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		return pipeline;
 	}
 }
-public readonly ref struct PipelineKey(string passName, ShaderKey shader,  OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
+public readonly ref struct PipelineKey(string passName, ShaderKey shader, OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
 {
 	public readonly string PassName = passName;
 	public readonly ShaderKey Shader = shader;
 	public readonly OutputDescription Outputs = outputs;
-	
+
 	public readonly ReadOnlySpan<ResourceLayoutDescription> ResourceLayouts = resourceLayouts;
 
 	/// <inheritdoc/>
@@ -115,7 +115,7 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader,  Outpu
 			foreach (var layout in ResourceLayouts)
 			{
 				if (layout.Elements == null) continue;
-				
+
 				foreach (var element in layout.Elements)
 				{
 					hash = hash * 31 + (element.Name?.GetHashCode() ?? 0);
