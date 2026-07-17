@@ -60,7 +60,7 @@ public static class OramaConsole
 	public static void Exception(Exception ex, [CallerFilePath] string origin = "Exception", [CallerMemberName] string member = "Unknown")
 	{
 		ReadOnlySpan<char> parsedOrigin = Path.GetFileNameWithoutExtension(origin.AsSpan());
-		ReadOnlySpan<char> output = $"[{parsedOrigin}.{member}] {ex.Message}";
+		ReadOnlySpan<char> output = $"[{parsedOrigin}.{member}] {ex}";
 		StackLog(output, ConsoleColor.Red, Console.Error);
 	}
 

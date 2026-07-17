@@ -11,8 +11,8 @@ SHADER_ATTRIBUTES(
 )
 
 SHADER_PARAMETERS(
-    [DefaultFloat3(1, 1, 1)]
-    float3 Color;
+    [DefaultFloat4(1, 1, 1, 1)]
+    float4 Color;
 )
 
 [Shader("vertex")]
