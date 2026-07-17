@@ -13,9 +13,15 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 	{
 		var factory = Renderer.Veldrith.GraphicsDevice.ResourceFactory;
 
+#if DEBUG
+		bool shouldDebug = true;
+#else
+		bool shouldDebug = false;
+#endif
+
 		global::Veldrith.Shader[] shaders = factory.CreateFromSpirv(
-			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main"),
-			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main"),
+			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main", debug: shouldDebug),
+			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main", debug: shouldDebug),
 			new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: true, normalizeResourceNames: false)
 		);
 
