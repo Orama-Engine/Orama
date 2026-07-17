@@ -16,7 +16,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		global::Veldrith.Shader[] shaders = factory.CreateFromSpirv(
 			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main"),
 			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main"),
-			new CrossCompileOptions(fixClipSpaceZ: false, invertVertexOutputY: false, normalizeResourceNames: false)
+			new CrossCompileOptions(fixClipSpaceZ: false, invertVertexOutputY: false, normalizeResourceNames: true)
 		);
 
 		VertexLayoutDescription vertexLayout = new(

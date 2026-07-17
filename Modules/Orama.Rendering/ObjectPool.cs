@@ -14,7 +14,7 @@ namespace Orama.Rendering;
 public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner : ObjectPool<TSingletonOwner, TObject>, new() where TObject : class
 {
 	/// <summary> The maximum size of the pool before overflowing. </summary>
-	public const int MAX_POOL_SIZE = 256;
+	protected virtual int MaxPoolSize => 256;
 
 	/// <summary> Singleton instance. </summary>
 	public static TSingletonOwner Instance { get; } = new TSingletonOwner();
@@ -48,21 +48,21 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 		if (obj == null)
 			return;
 
-		if (pool.Count < MAX_POOL_SIZE)
+		if (pool.Count < MaxPoolSize)
 			pool.Enqueue(obj);
 		else
 			OramaConsole.Warning($"Object Pool for {typeof(TObject).Name} is full! Discarding instance.");
 	}
 }
 
-public readonly ref struct PooledObject<TObject, TPool> where TObject : class where TPool : ObjectPool<TPool, TObject>, new()
+public readonly ref struct PooledObject<TObject, TPool> : IDisposable where TObject : class where TPool : ObjectPool<TPool, TObject>, new()
 {
 	/// <summary> The underlying rented object. </summary>
 	public TObject Object { get; }
 
 	public PooledObject(TObject obj) => Object = obj;
 
-	/// <summary> Returns the held object back to the <typeparamref name="TPool"/> </summary>
+	/// <summary> Returns the held object back to the <typeparamref name="TPool"/>. </summary>
 	public void Dispose()
 	{
 		if (Object != null)

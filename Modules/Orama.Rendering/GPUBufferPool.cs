@@ -6,6 +6,9 @@ namespace Orama.Rendering;
 public sealed class GPUBufferPool : ObjectPool<GPUBufferPool, GPUBuffer>
 {
 	/// <inheritdoc/>
+	protected override int MaxPoolSize => 2048;
+
+	/// <inheritdoc/>
 	protected override GPUBuffer CreateObject() => new();
 
 	/// <inheritdoc/>
