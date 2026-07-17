@@ -15,7 +15,7 @@ public static class ModuleManager
 	/// <summary> All registered <see cref="BaseModule"/>s. </summary>
 	public static IReadOnlyList<BaseModule> Modules => modules.Values.ToList();
 
-	private static Dictionary<Type, BaseModule> modules = new();
+	private static readonly Dictionary<Type, BaseModule> modules = new();
 
 	/// <summary> Registers a new <see cref="BaseModule"/> of type <typeparamref name="T"/>. If this is called after <see cref="InitializeAll"/> the <see cref="BaseModule"/> will need to manually call <see cref="BaseModule.Initialize"/>.</summary>
 	/// <returns> The registered <see cref="BaseModule"/> instance. </returns>

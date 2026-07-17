@@ -16,10 +16,7 @@ public class GUIModule : BaseModule
 	public Widget RootWidget { get; set; } = new Widget();
 
 	/// <inheritdoc/>
-	public override void Initialize()
-	{
-		Application.OnUpdate += Update;
-	}
+	public override void Initialize() => Application.OnUpdate += Update;
 
 	/// <inheritdoc/>
 	public override void Dispose()

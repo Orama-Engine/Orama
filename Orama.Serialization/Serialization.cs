@@ -22,7 +22,7 @@ public static class Serialization
 		if (backendType == null)
 			throw new Exception($"No serializer backend found for type {type}.");
 
-		SerializerBackend backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
+		var backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
 		return backend.Serialize(rep);
 	}
 
@@ -34,7 +34,7 @@ public static class Serialization
 		if (backendType == null)
 			throw new Exception($"No serializer backend found for type {type}.");
 
-		SerializerBackend backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
+		var backend = (SerializerBackend)Activator.CreateInstance(backendType)!;
 		InstanceRepresentation rep = backend.Deserialize(data);
 		return DataConstructor.Deconstruct<T>(rep);
 	}

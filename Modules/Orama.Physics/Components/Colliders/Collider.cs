@@ -12,6 +12,7 @@ public class Collider : Component
 	public override void Destroy()
 	{
 		var rb = Entity.GetComponent<RigidBody>();
-		if (rb != null && shapeId != -1) rb.RemoveCollider(shapeId);
+		if (rb != null && shapeId != -1)
+			rb.RemoveCollider(shapeId);
 	}
 }

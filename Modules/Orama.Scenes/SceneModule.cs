@@ -33,8 +33,5 @@ public class SceneModule : BaseModule
 		Application.OnUpdate -= Update;
 	}
 
-	public void Update()
-	{
-		CurrentScene.UpdateAll();
-	}
+	public void Update() => CurrentScene.UpdateAll();
 }

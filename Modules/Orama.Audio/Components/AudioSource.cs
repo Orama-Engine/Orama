@@ -3,7 +3,6 @@
 
 using Orama.Audio.Resources;
 using Orama.Common;
-using Orama.Math;
 using Orama.Scenes.Components;
 
 namespace Orama.Audio.Components;
@@ -56,7 +55,8 @@ public class AudioSource : Component
 			source.MinDistance = MinDistance;
 			source.MaxDistance = MaxDistance;
 			source.RolloffFactor = RolloffFactor;
-			if (Clip != null) source.SetClip(Clip);
+			if (Clip != null)
+				source.SetClip(Clip);
 		}
 	}
 
@@ -69,7 +69,8 @@ public class AudioSource : Component
 	/// <inheritdoc/>
 	public override void Update()
 	{
-		if (source == null) return;
+		if (source == null)
+			return;
 		source.Obstruction = Obstructed ? 0.6f : 0f;
 		source.Update(Entity.Transform.Position);
 	}
@@ -79,6 +80,7 @@ public class AudioSource : Component
 	{
 		base.Destroy();
 		var audio = ModuleManager.GetModule<AudioModule>();
-		if (source != null) audio?.DestroySource(source);
+		if (source != null)
+			audio?.DestroySource(source);
 	}
 }

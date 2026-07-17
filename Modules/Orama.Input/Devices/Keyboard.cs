@@ -21,7 +21,7 @@ public sealed class Keyboard : IInputDevice
 
 	#region Silk.NET Mappings
 
-	private static Dictionary<Key, Silk.NET.Input.Key> keyMap = new()
+	private static readonly Dictionary<Key, Silk.NET.Input.Key> keyMap = new()
 	{
 		{ Key.A, Silk.NET.Input.Key.A },
 		{ Key.B, Silk.NET.Input.Key.B },

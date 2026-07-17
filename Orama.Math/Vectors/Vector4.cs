@@ -33,22 +33,22 @@ public struct Vector4 : IEquatable<Vector4>
 	}
 
 	/// <summary> A Vector with all components set to zero. </summary>
-	public static Vector4 Zero => new Vector4(0, 0, 0, 0);
+	public static Vector4 Zero => new(0, 0, 0, 0);
 
 	/// <summary> A Vector with all components set to one. </summary>
-	public static Vector4 One => new Vector4(1, 1, 1, 1);
+	public static Vector4 One => new(1, 1, 1, 1);
 
 	/// <summary> A Vector with X set to one. </summary>
-	public static Vector4 UnitX => new Vector4(1, 0, 0, 0);
+	public static Vector4 UnitX => new(1, 0, 0, 0);
 
 	/// <summary> A Vector with Y set to one. </summary>
-	public static Vector4 UnitY => new Vector4(0, 1, 0, 0);
+	public static Vector4 UnitY => new(0, 1, 0, 0);
 
 	/// <summary> A Vector with Z set to one. </summary>
-	public static Vector4 UnitZ => new Vector4(0, 0, 1, 0);
+	public static Vector4 UnitZ => new(0, 0, 1, 0);
 
 	/// <summary> A Vector with W set to one. </summary>
-	public static Vector4 UnitW => new Vector4(0, 0, 0, 1);
+	public static Vector4 UnitW => new(0, 0, 0, 1);
 
 	/// <summary> Returns the dot product of the two vectors. </summary>
 	public static float Dot(Vector4 v1, Vector4 v2) => v1.Dot(v2);
@@ -105,8 +105,8 @@ public struct Vector4 : IEquatable<Vector4>
 
 	#region Casts
 
-	public static implicit operator System.Numerics.Vector4(Vector4 v) => new System.Numerics.Vector4(v.X, v.Y, v.Z, v.W);
-	public static implicit operator Vector4(System.Numerics.Vector4 v) => new Vector4(v.X, v.Y, v.Z, v.W);
+	public static implicit operator System.Numerics.Vector4(Vector4 v) => new(v.X, v.Y, v.Z, v.W);
+	public static implicit operator Vector4(System.Numerics.Vector4 v) => new(v.X, v.Y, v.Z, v.W);
 
 	#endregion
 

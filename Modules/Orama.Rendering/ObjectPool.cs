@@ -40,7 +40,7 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 
 	/// <summary> Rents an object and wraps it in an allocation-free disposable structure. </summary>
 	/// <remarks> <see cref="PooledObject{TObject, TPool}"/>s obtained via this method should be disposed when no longer in use. </remarks>
-	public PooledObject<TObject, TSingletonOwner> RentAuto() => new PooledObject<TObject, TSingletonOwner>(Rent());
+	public PooledObject<TObject, TSingletonOwner> RentAuto() => new(Rent());
 
 	/// <summary> Returns the given <typeparamref name="TObject"/> to the pool. </summary>
 	public void Return(TObject obj)

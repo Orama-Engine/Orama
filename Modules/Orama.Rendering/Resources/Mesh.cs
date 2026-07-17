@@ -24,7 +24,7 @@ public class Mesh
 
 
 [ResourceLoader]
-internal class MeshLoader : ResourceLoader<Mesh>
+internal sealed class MeshLoader : ResourceLoader<Mesh>
 {
 	/// <inheritdoc/>
 	public override Mesh? LoadResource(byte[] data, string? name = null)

@@ -5,7 +5,6 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 using Orama.Common;
-using Orama.Scenes;
 using Orama.Scenes.Components;
 using Orama.Serialization.Attributes;
 
@@ -39,7 +38,7 @@ public class Entity
 	public IReadOnlyList<Component> Components => components;
 
 	[AlwaysSerialize]
-	private List<Component> components = new();
+	private readonly List<Component> components = new();
 
 	/// <summary> Initializes a new instance of the <see cref="Entity"/> class. </summary>
 	public Entity()
@@ -103,7 +102,8 @@ public class Entity
 	/// <summary> Destroys the specified entity and releases any associated resources. </summary>
 	public void Destroy()
 	{
-		Enabled = false; ;
+		Enabled = false;
+		;
 
 		foreach (var component in CollectionsMarshal.AsSpan(components))
 		{

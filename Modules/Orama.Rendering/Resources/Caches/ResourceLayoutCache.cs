@@ -1,9 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System;
-using System.Xml.Linq;
-
 using Veldrith;
 
 namespace Orama.Rendering.Resources.Caches;
@@ -23,8 +20,14 @@ public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementD
 
 	public bool Equals(ResourceLayoutKey other)
 	{
-		if (Elements.Length != other.Elements.Length) return false;
-		for (int i = 0; i < Elements.Length; i++) if (!Elements[i].Equals(other.Elements[i])) return false;
+		if (Elements.Length != other.Elements.Length)
+			return false;
+		for (int i = 0; i < Elements.Length; i++)
+		{
+			if (!Elements[i].Equals(other.Elements[i]))
+				return false;
+		}
+
 		return true;
 	}
 

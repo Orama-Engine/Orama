@@ -28,7 +28,7 @@ public class DebugEntity : Entity
 	{
 		base.Start();
 
-		BoxCollider col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
+		var col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
 		col.Start();
 
 		RigidBody.IsStatic = true;

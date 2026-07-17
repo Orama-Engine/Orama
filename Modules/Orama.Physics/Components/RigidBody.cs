@@ -121,7 +121,7 @@ public class RigidBody : Component
 		if (body == null)
 			return 0;
 
-		var id = body.AddBoxCollider(width, height, depth);
+		int id = body.AddBoxCollider(width, height, depth);
 
 		if (IsStatic)
 			Orientation = Entity.Transform.Rotation;
@@ -135,7 +135,7 @@ public class RigidBody : Component
 		if (body == null)
 			return 0;
 
-		var id = body.AddSphereCollider(radius);
+		int id = body.AddSphereCollider(radius);
 
 		if (IsStatic)
 			Orientation = Entity.Transform.Rotation;

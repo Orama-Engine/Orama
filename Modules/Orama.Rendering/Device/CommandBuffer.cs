@@ -27,8 +27,8 @@ public class CommandBuffer : IDisposable
 	/// <summary> Initializes a new instance of the <see cref="CommandBuffer"/> class. </summary>
 	public CommandBuffer(VeldrithDevice device) => CommandList = device.GraphicsDevice.ResourceFactory.CreateCommandList();
 
-	private Dictionary<string, GPUBuffer> gpuBufferQueue = new();
-	private Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
+	private readonly Dictionary<string, GPUBuffer> gpuBufferQueue = new();
+	private readonly Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
 	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
@@ -78,7 +78,7 @@ public class CommandBuffer : IDisposable
 
 	public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
 	{
-		GPUBuffer materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
+		var materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
 		rentedBuffersThisFrame.Add(materialBuffer);
 
 		GPUBuffer objectBuffer = defaults.GetObjectBuffer(renderable);
@@ -91,7 +91,7 @@ public class CommandBuffer : IDisposable
 
 		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
 
-		PipelineKey pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, layoutDesc);
+		var pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, layoutDesc);
 
 		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, pipelineDesc));
 

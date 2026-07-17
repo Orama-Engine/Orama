@@ -31,7 +31,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2)
 		);
 
-		ResourceLayout[] layouts = new ResourceLayout[key.ResourceLayouts.Length];
+		var layouts = new ResourceLayout[key.ResourceLayouts.Length];
 		for (int i = 0; i < key.ResourceLayouts.Length; i++)
 		{
 			var layoutDesc = key.ResourceLayouts[i];
@@ -81,24 +81,31 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader, Output
 
 	public bool Equals(PipelineKey other)
 	{
-		if (PassName != other.PassName) return false;
-		if (!Outputs.Equals(other.Outputs)) return false;
+		if (PassName != other.PassName)
+			return false;
+		if (!Outputs.Equals(other.Outputs))
+			return false;
 
-		if (!Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode)) return false;
-		if (!Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode)) return false;
+		if (!Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode))
+			return false;
+		if (!Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode))
+			return false;
 
-		if (ResourceLayouts.Length != other.ResourceLayouts.Length) return false;
+		if (ResourceLayouts.Length != other.ResourceLayouts.Length)
+			return false;
 
 		for (int i = 0; i < ResourceLayouts.Length; i++)
 		{
 			var leftLayout = ResourceLayouts[i];
 			var rightLayout = other.ResourceLayouts[i];
 
-			if (leftLayout.Elements.Length != rightLayout.Elements.Length) return false;
+			if (leftLayout.Elements.Length != rightLayout.Elements.Length)
+				return false;
 
 			for (int j = 0; j < leftLayout.Elements.Length; j++)
 			{
-				if (!leftLayout.Elements[j].Equals(rightLayout.Elements[j])) return false;
+				if (!leftLayout.Elements[j].Equals(rightLayout.Elements[j]))
+					return false;
 			}
 		}
 
@@ -120,7 +127,8 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader, Output
 
 			foreach (var layout in ResourceLayouts)
 			{
-				if (layout.Elements == null) continue;
+				if (layout.Elements == null)
+					continue;
 
 				foreach (var element in layout.Elements)
 				{

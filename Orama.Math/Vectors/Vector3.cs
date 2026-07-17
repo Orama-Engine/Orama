@@ -29,28 +29,28 @@ public struct Vector3 : IEquatable<Vector3>
 	}
 
 	/// <summary> A Vector with all components set to zero. </summary>
-	public static Vector3 Zero => new Vector3(0, 0, 0);
+	public static Vector3 Zero => new(0, 0, 0);
 
 	/// <summary> A Vector with all components set to one. </summary>
-	public static Vector3 One => new Vector3(1, 1, 1);
+	public static Vector3 One => new(1, 1, 1);
 
 	/// <summary> A Vector set to the world's up direction. </summary>
-	public static Vector3 Up => new Vector3(0, 1, 0);
+	public static Vector3 Up => new(0, 1, 0);
 
 	/// <summary> A Vector set to the world's right direction. </summary>
-	public static Vector3 Right => new Vector3(1, 0, 0);
+	public static Vector3 Right => new(1, 0, 0);
 
 	/// <summary> A Vector set to the world's forward direction. </summary>
-	public static Vector3 Forward => new Vector3(0, 0, 1);
+	public static Vector3 Forward => new(0, 0, 1);
 
 	/// <summary> A Vector with X set to one. </summary>
-	public static Vector3 UnitX => new Vector3(1, 0, 0);
+	public static Vector3 UnitX => new(1, 0, 0);
 
 	/// <summary> A Vector with Y set to one. </summary>
-	public static Vector3 UnitY => new Vector3(0, 1, 0);
+	public static Vector3 UnitY => new(0, 1, 0);
 
 	/// <summary> A Vector with Z set to one. </summary>
-	public static Vector3 UnitZ => new Vector3(0, 0, 1);
+	public static Vector3 UnitZ => new(0, 0, 1);
 
 	/// <summary> Returns the dot product of the two vectors. </summary>
 	public static float Dot(Vector3 v1, Vector3 v2) => v1.Dot(v2);
@@ -90,7 +90,7 @@ public struct Vector3 : IEquatable<Vector3>
 	public Vector3 Normalize() => this / Length;
 
 	/// <summary> Returns the cross product of the two vectors. </summary>
-	public Vector3 Cross(Vector3 v) => new Vector3(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
+	public Vector3 Cross(Vector3 v) => new(Y * v.Z - Z * v.Y, Z * v.X - X * v.Z, X * v.Y - Y * v.X);
 
 	/// <inheritdoc/>
 	public override bool Equals(object? obj)
@@ -112,8 +112,8 @@ public struct Vector3 : IEquatable<Vector3>
 
 	#region Casts
 
-	public static implicit operator System.Numerics.Vector3(Vector3 v) => new System.Numerics.Vector3(v.X, v.Y, v.Z);
-	public static implicit operator Vector3(System.Numerics.Vector3 v) => new Vector3(v.X, v.Y, v.Z);
+	public static implicit operator System.Numerics.Vector3(Vector3 v) => new(v.X, v.Y, v.Z);
+	public static implicit operator Vector3(System.Numerics.Vector3 v) => new(v.X, v.Y, v.Z);
 
 	#endregion
 

@@ -21,10 +21,12 @@ public class AudioPhysics
 	public void Update(Scene activeScene)
 	{
 		physicsModule ??= ModuleManager.GetModule<PhysicsModule>();
-		if (physicsModule?.World == null) return;
+		if (physicsModule?.World == null)
+			return;
 
 		AudioListener? listener = FindActiveListener(activeScene);
-		if (listener == null) return;
+		if (listener == null)
+			return;
 
 		ProcessAudioObstructions(activeScene, listener, physicsModule.World);
 	}
@@ -33,10 +35,12 @@ public class AudioPhysics
 	{
 		foreach (var entity in scene.Entities)
 		{
-			if (!entity.Enabled) continue;
+			if (!entity.Enabled)
+				continue;
 
 			var listener = entity.GetComponent<AudioListener>();
-			if (listener != null) return listener;
+			if (listener != null)
+				return listener;
 		}
 
 		return null;
@@ -48,10 +52,12 @@ public class AudioPhysics
 
 		foreach (var entity in scene.Entities)
 		{
-			if (!entity.Enabled) continue;
+			if (!entity.Enabled)
+				continue;
 
 			var source = entity.GetComponent<AudioSource>();
-			if (source == null) continue;
+			if (source == null)
+				continue;
 
 			source.Obstructed = EvaluateObstruction(source, listenerPos, physicsWorld);
 		}
@@ -63,7 +69,8 @@ public class AudioPhysics
 		Vector3 direction = listenerPos - sourcePos;
 		float distance = direction.Length;
 
-		if (distance <= 0.001f) return false;
+		if (distance <= 0.001f)
+			return false;
 
 		Vector3 normalizedDir = direction / distance;
 

@@ -17,8 +17,5 @@ public class Widget
 
 	}
 
-	public virtual void Draw(PaintEngine pEngine)
-	{
-		pEngine.DrawRect(Rect, Color.White);
-	}
+	public virtual void Draw(PaintEngine pEngine) => pEngine.DrawRect(Rect, Color.White);
 }

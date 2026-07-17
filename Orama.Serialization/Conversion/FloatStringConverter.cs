@@ -4,7 +4,7 @@
 namespace Orama.Serialization.Conversion;
 
 [StringConverter(typeof(float))]
-internal class FloatStringConverter : StringConverter<float>
+internal sealed class FloatStringConverter : StringConverter<float>
 {
 	/// <inheritdoc/>
 	public override float ConvertFromString(string value) => float.Parse(value);

@@ -1,9 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System;
-using System.Collections.Immutable;
-
 using Orama.Math;
 
 using Veldrith;
@@ -32,8 +29,8 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 			vertexData[i * 8 + 7] = i < key.VertexUVs.Length ? key.VertexUVs[i].Y : 0f;
 		}
 
-		BufferDescription vbDesc = new BufferDescription((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer);
-		BufferDescription ibDesc = new BufferDescription((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer);
+		var vbDesc = new BufferDescription((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer);
+		var ibDesc = new BufferDescription((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer);
 
 		DeviceBuffer vb = factory.CreateBuffer(vbDesc);
 		gd.UpdateBuffer(vb, 0, vertexData);
@@ -60,11 +57,16 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 
 	public bool Equals(RenderItemKey other)
 	{
-		if (!VertexPositions.SequenceEqual(other.VertexPositions)) return false;
-		if (!VertexNormals.SequenceEqual(other.VertexNormals)) return false;
-		if (!VertexUVs.SequenceEqual(other.VertexUVs)) return false;
-		if (!Indices.SequenceEqual(other.Indices)) return false;
-		if (!Pipeline.Equals(other.Pipeline)) return false;
+		if (!VertexPositions.SequenceEqual(other.VertexPositions))
+			return false;
+		if (!VertexNormals.SequenceEqual(other.VertexNormals))
+			return false;
+		if (!VertexUVs.SequenceEqual(other.VertexUVs))
+			return false;
+		if (!Indices.SequenceEqual(other.Indices))
+			return false;
+		if (!Pipeline.Equals(other.Pipeline))
+			return false;
 
 		return true;
 	}
@@ -76,10 +78,14 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 		{
 			int hash = 17;
 
-			foreach (var v in VertexPositions) hash = hash * 31 + v.GetHashCode();
-			foreach (var v in VertexNormals) hash = hash * 31 + v.GetHashCode();
-			foreach (var v in VertexUVs) hash = hash * 31 + v.GetHashCode();
-			foreach (var i in Indices) hash = hash * 31 + (int)i;
+			foreach (var v in VertexPositions)
+				hash = hash * 31 + v.GetHashCode();
+			foreach (var v in VertexNormals)
+				hash = hash * 31 + v.GetHashCode();
+			foreach (var v in VertexUVs)
+				hash = hash * 31 + v.GetHashCode();
+			foreach (uint i in Indices)
+				hash = hash * 31 + (int)i;
 
 			hash = hash * 31 + Pipeline.Hash;
 			return hash;

@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System;
-
 namespace Orama.Rendering.Resources.Caches;
 
 public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldrith.Texture>
@@ -10,7 +8,7 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldr
 	/// <inheritdoc/>
 	protected override Veldrith.Texture Create(TextureKey key)
 	{
-		Veldrith.TextureDescription desc = new Veldrith.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldrithFormat(key.Format), Veldrith.TextureUsage.Sampled, Veldrith.TextureType.Texture2D);
+		var desc = new Veldrith.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldrithFormat(key.Format), Veldrith.TextureUsage.Sampled, Veldrith.TextureType.Texture2D);
 
 		Veldrith.Texture texture = Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateTexture(desc);
 
@@ -19,15 +17,12 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldr
 		return texture;
 	}
 
-	private static Veldrith.PixelFormat GetVeldrithFormat(TextureFormat format)
+	private static Veldrith.PixelFormat GetVeldrithFormat(TextureFormat format) => format switch
 	{
-		return format switch
-		{
-			TextureFormat.RGB8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
-			TextureFormat.RGBA8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
-			_ => throw new NotSupportedException($"Unsupported texture format: {format}")
-		};
-	}
+		TextureFormat.RGB8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
+		TextureFormat.RGBA8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
+		_ => throw new NotSupportedException($"Unsupported texture format: {format}")
+	};
 }
 
 public readonly ref struct TextureKey(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey
@@ -42,10 +37,14 @@ public readonly ref struct TextureKey(uint width, uint height, TextureFormat for
 
 	public bool Equals(TextureKey other)
 	{
-		if (Width != other.Width) return false;
-		if (Height != other.Height) return false;
-		if (Format != other.Format) return false;
-		if (!Data.SequenceEqual(other.Data)) return false;
+		if (Width != other.Width)
+			return false;
+		if (Height != other.Height)
+			return false;
+		if (Format != other.Format)
+			return false;
+		if (!Data.SequenceEqual(other.Data))
+			return false;
 		return true;
 	}
 
@@ -58,7 +57,8 @@ public readonly ref struct TextureKey(uint width, uint height, TextureFormat for
 			hash = hash * 31 + (int)Width;
 			hash = hash * 31 + (int)Height;
 			hash = hash * 31 + (int)Format;
-			foreach (var b in Data) hash = hash * 31 + b;
+			foreach (byte b in Data)
+				hash = hash * 31 + b;
 			return hash;
 		}
 	}

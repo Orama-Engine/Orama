@@ -2,8 +2,6 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common;
-using Orama.Common.Utility;
-using Orama.Math;
 
 namespace Orama.Rendering.Resources;
 

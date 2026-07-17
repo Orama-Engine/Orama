@@ -18,6 +18,7 @@ public class BoxCollider : Collider
 	public override void Start()
 	{
 		var rb = Entity.GetComponent<RigidBody>();
-		if (rb != null) shapeId = rb.AddBoxCollider(Width, Height, Depth);
+		if (rb != null)
+			shapeId = rb.AddBoxCollider(Width, Height, Depth);
 	}
 }

@@ -34,16 +34,16 @@ internal static class DataConstructor
 		// Properties
 		foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.GetCustomAttribute<DontSerializeAttribute>() == null && p.GetIndexParameters().Length == 0 && (p.CanWrite && p.CanRead || p.GetCustomAttribute<AlwaysSerializeAttribute>() != null)))
 		{
-			var value = prop.GetValue(instance);
-			var fullName = prefix == null ? prop.Name : $"{prefix}.{prop.Name}";
+			object? value = prop.GetValue(instance);
+			string fullName = prefix == null ? prop.Name : $"{prefix}.{prop.Name}";
 			fields.AddRange(SerializeValue(prop.PropertyType, value, fullName, visited));
 		}
 
 		// Fields
 		foreach (var field in type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(f => f.GetCustomAttribute<AlwaysSerializeAttribute>() != null && f.GetCustomAttribute<DontSerializeAttribute>() == null))
 		{
-			var value = field.GetValue(instance);
-			var fullName = prefix == null ? field.Name : $"{prefix}.{field.Name}";
+			object? value = field.GetValue(instance);
+			string fullName = prefix == null ? field.Name : $"{prefix}.{field.Name}";
 			fields.AddRange(SerializeValue(field.FieldType, value, fullName, visited));
 		}
 
@@ -54,7 +54,7 @@ internal static class DataConstructor
 	{
 		try
 		{
-			var converter = StringConverterAttribute.GetConverter(type);
+			object converter = StringConverterAttribute.GetConverter(type);
 			var method = converter.GetType().GetMethod("ConvertToString")!;
 			result = (string)method.Invoke(converter, new[] { value })!;
 			return true;
@@ -64,7 +64,7 @@ internal static class DataConstructor
 
 	private static object? DeconstructObject(Type type, FieldRepresentation[] fields)
 	{
-		var instance = Activator.CreateInstance(type);
+		object? instance = Activator.CreateInstance(type);
 
 		var flat = fields.Where(f => !f.Name.Contains('.')).ToArray();
 		var nested = fields.Where(f => f.Name.Contains('.')).GroupBy(f => f.Name.Split('.')[0]).ToDictionary(g => g.Key, g => g.Select(f => new FieldRepresentation(f.Name[(f.Name.IndexOf('.') + 1)..], f.Value)).ToArray());
@@ -88,7 +88,7 @@ internal static class DataConstructor
 			yield break;
 		}
 
-		if (TryConvertToString(type, value, out var stringValue))
+		if (TryConvertToString(type, value, out string? stringValue))
 		{
 			yield return new FieldRepresentation(fullName, stringValue!);
 		}
@@ -107,11 +107,12 @@ internal static class DataConstructor
 	{
 		if (flat.FirstOrDefault(f => f.Name == name) is { Name: not null } field)
 		{
-			if (string.IsNullOrEmpty(field.Value)) return;
+			if (string.IsNullOrEmpty(field.Value))
+				return;
 
 			try
 			{
-				var converter = StringConverterAttribute.GetConverter(memberType);
+				object converter = StringConverterAttribute.GetConverter(memberType);
 				var method = converter.GetType().GetMethod("ConvertFromString")!;
 				setValue(method.Invoke(converter, new object[] { field.Value }));
 			}

@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Runtime.InteropServices;
-
 using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Device;
@@ -49,6 +47,7 @@ public sealed class GPUBuffer
 		ReadOnlySpan<ShaderParameter> paramSpan = mat.Shader.Parameters.AsSpan();
 
 		foreach (ref readonly var param in paramSpan)
+		{
 			switch (param)
 			{
 				case { Type: ShaderParameter.ParamType.Float, DefaultValue: float f }:
@@ -83,6 +82,7 @@ public sealed class GPUBuffer
 					OramaConsole.Warning($"Unsupported GPUBuffer solver for parameter: {param.Name} ({param.Type})");
 					break;
 			}
+		}
 
 		return buffer;
 	}
@@ -156,7 +156,6 @@ public sealed class GPUBuffer
 	}
 
 	public void Reset() => offset = 0;
-
 
 	private void EnsurePacking(int size, int baseAlign)
 	{

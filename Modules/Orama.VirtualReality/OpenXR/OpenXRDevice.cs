@@ -13,7 +13,7 @@ namespace Orama.VirtualReality.OpenXR;
 /// <summary>
 /// A <see cref="VirtualRealityDevice"/> that uses OpenXR.
 /// </summary>
-internal class OpenXRDevice : VirtualRealityDevice
+internal sealed class OpenXRDevice : VirtualRealityDevice
 {
 	/// <summary> Current renderers Graphics Binding. </summary>
 	public static OpenXRGraphicsBinding GraphicsBinding { get; private set; } = null!;

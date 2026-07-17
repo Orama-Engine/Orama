@@ -25,19 +25,19 @@ public struct Vector2I : IEquatable<Vector2I>
 	}
 
 	/// <summary> A Vector with all components set to zero. </summary>
-	public static Vector2I Zero => new Vector2I(0, 0);
+	public static Vector2I Zero => new(0, 0);
 
 	/// <summary> A Vector with all components set to one. </summary>
-	public static Vector2I One => new Vector2I(1, 1);
+	public static Vector2I One => new(1, 1);
 
 	/// <summary> A Vector set to the world's up direction. </summary>
-	public static Vector2I Up => new Vector2I(0, 1);
+	public static Vector2I Up => new(0, 1);
 
 	/// <summary> A Vector with X set to 1. </summary>
-	public static Vector2I UnitX => new Vector2I(1, 0);
+	public static Vector2I UnitX => new(1, 0);
 
 	/// <summary> A Vector with Y set to 1. </summary>
-	public static Vector2I UnitY => new Vector2I(0, 1);
+	public static Vector2I UnitY => new(0, 1);
 
 	/// <summary> Returns the dot product of the two vectors. </summary>
 	public static int Dot(Vector2I v1, Vector2I v2) => v1.Dot(v2);

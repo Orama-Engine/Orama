@@ -25,19 +25,19 @@ public struct Vector2 : IEquatable<Vector2>
 	}
 
 	/// <summary> A Vector with all components set to zero. </summary>
-	public static Vector2 Zero => new Vector2(0, 0);
+	public static Vector2 Zero => new(0, 0);
 
 	/// <summary> A Vector with all components set to one. </summary>
-	public static Vector2 One => new Vector2(1, 1);
+	public static Vector2 One => new(1, 1);
 
 	/// <summary> A Vector set to the world's up direction. </summary>
-	public static Vector2 Up => new Vector2(0, 1);
+	public static Vector2 Up => new(0, 1);
 
 	/// <summary> A Vector with X set to 1. </summary>
-	public static Vector2 UnitX => new Vector2(1, 0);
+	public static Vector2 UnitX => new(1, 0);
 
 	/// <summary> A Vector with Y set to 1. </summary>
-	public static Vector2 UnitY => new Vector2(0, 1);
+	public static Vector2 UnitY => new(0, 1);
 
 	/// <summary> Returns the dot product of the two vectors. </summary>
 	public static float Dot(Vector2 v1, Vector2 v2) => v1.Dot(v2);
@@ -82,8 +82,8 @@ public struct Vector2 : IEquatable<Vector2>
 
 	#region Casts
 
-	public static implicit operator System.Numerics.Vector2(Vector2 v) => new System.Numerics.Vector2(v.X, v.Y);
-	public static implicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X, v.Y);
+	public static implicit operator System.Numerics.Vector2(Vector2 v) => new(v.X, v.Y);
+	public static implicit operator Vector2(System.Numerics.Vector2 v) => new(v.X, v.Y);
 
 	#endregion
 

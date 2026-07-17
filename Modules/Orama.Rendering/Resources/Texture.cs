@@ -69,7 +69,7 @@ public class Texture
 	/// <summary> Gets a copy of the raw pixel data. </summary>
 	public byte[] GetData()
 	{
-		var copy = new byte[Data.Length];
+		byte[] copy = new byte[Data.Length];
 		Array.Copy(Data, copy, Data.Length);
 		return copy;
 	}
@@ -113,7 +113,7 @@ public struct Sampler
 }
 
 [ResourceLoader]
-internal class TextureLoader : ResourceLoader<Texture>
+internal sealed class TextureLoader : ResourceLoader<Texture>
 {
 	/// <inheritdoc/>
 	public override Texture? LoadResource(byte[] data, string? name = null)

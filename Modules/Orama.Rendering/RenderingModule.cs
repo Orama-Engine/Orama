@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 using Orama.Common;
 using Orama.Math;
-using Orama.Rendering;
 using Orama.Rendering.Components;
 using Orama.Rendering.Pipelines;
 using Orama.Rendering.Pipelines.Forward;
@@ -46,7 +45,7 @@ public class RenderingModule : BaseModule
 
 		GPUBuffer cameraBuffer = Pipeline.ShaderDefaultsProvider.GetCameraBuffer(Camera.Main!);
 
-		RenderFrame frame = new RenderFrame()
+		var frame = new RenderFrame()
 		{
 			View = view,
 			Projection = projection,

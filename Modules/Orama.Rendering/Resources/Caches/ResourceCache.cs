@@ -41,7 +41,7 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 		{
 			TResource created = Create(key);
 
-			FrameCountedResource<TResource> value = new FrameCountedResource<TResource>(created);
+			var value = new FrameCountedResource<TResource>(created);
 			value.Touch();
 
 			int hash = key.Hash;

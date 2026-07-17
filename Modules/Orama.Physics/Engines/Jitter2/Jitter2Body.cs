@@ -6,7 +6,6 @@ using Jitter2.Dynamics;
 using Jitter2.LinearMath;
 
 using Orama.Math;
-using Orama.Physics;
 using Orama.Scenes.Entities;
 
 namespace Orama.Physics.Engines.Jitter2;
@@ -120,7 +119,8 @@ public class Jitter2Body : IPhysicsBody
 	/// <inheritdoc/>
 	public int AddBoxCollider(float width, float height, float depth)
 	{
-		if (body == null) return -1;
+		if (body == null)
+			return -1;
 
 		RigidBodyShape shape = new BoxShape(width * 2, height * 2, depth * 2);
 		body.AddShape(shape);
@@ -131,7 +131,8 @@ public class Jitter2Body : IPhysicsBody
 	/// <inheritdoc/>
 	public int AddSphereCollider(float radius)
 	{
-		if (body == null) return -1;
+		if (body == null)
+			return -1;
 
 		RigidBodyShape shape = new SphereShape(radius);
 		body.AddShape(shape);
@@ -150,10 +151,7 @@ public class Jitter2Body : IPhysicsBody
 	}
 
 	/// <inheritdoc/>
-	public void AddForce(Vector3 force)
-	{
-		body?.AddForce(new JVector(force.X, force.Y, force.Z));
-	}
+	public void AddForce(Vector3 force) => body?.AddForce(new JVector(force.X, force.Y, force.Z));
 
 	/// <inheritdoc/>
 	public event Action<IPhysicsBody>? OnCollisionEnter;

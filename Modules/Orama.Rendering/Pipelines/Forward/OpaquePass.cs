@@ -18,7 +18,9 @@ public class OpaquePass : RenderPass
 		buffer.ClearColor(Color.Black);
 
 		foreach (IClientRenderable renderable in frame.Renderables)
+		{
 			if (renderable.Material.Shader.Pass == "Opaque")
 				buffer.DrawRenderable(renderable, Pipeline.ShaderDefaultsProvider);
+		}
 	}
 }

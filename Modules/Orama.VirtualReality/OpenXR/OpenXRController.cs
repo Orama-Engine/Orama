@@ -3,9 +3,9 @@
 
 namespace Orama.VirtualReality.OpenXR;
 
-internal class OpenXRController : VirtualRealityController
+internal sealed class OpenXRController : VirtualRealityController
 {
-	private OpenXRDevice owner;
+	private readonly OpenXRDevice owner;
 
 	public OpenXRController(OpenXRDevice owner, HandType handness)
 	{

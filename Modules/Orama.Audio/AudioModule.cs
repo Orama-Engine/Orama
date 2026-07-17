@@ -42,10 +42,7 @@ public class AudioModule : BaseModule, IAudioContext
 	public AudioModule() => this.context = new OpenALContext();
 
 	/// <inheritdoc/>
-	public override void Initialize()
-	{
-		Application.OnUpdate += Update;
-	}
+	public override void Initialize() => Application.OnUpdate += Update;
 
 	/// <inheritdoc/>
 	public override void Dispose()
@@ -58,7 +55,8 @@ public class AudioModule : BaseModule, IAudioContext
 	public void Update()
 	{
 		var activeScene = ModuleManager.GetModule<SceneModule>()?.CurrentScene;
-		if (activeScene != null) audioPhysics.Update(activeScene);
+		if (activeScene != null)
+			audioPhysics.Update(activeScene);
 	}
 }
 

@@ -8,8 +8,6 @@ using Jitter2.Collision;
 using Jitter2.Collision.Shapes;
 using Jitter2.Dynamics;
 using Jitter2.LinearMath;
-
-using Orama.Physics;
 using Orama.Scenes.Entities;
 
 namespace Orama.Physics.Engines.Jitter2;
@@ -68,7 +66,7 @@ public class Jitter2World : IPhysicsWorld
 			return false;
 		}
 
-		JVector jDirectionNorm = JVector.Multiply(jDirection, 1f / dirLength);
+		var jDirectionNorm = JVector.Multiply(jDirection, 1f / dirLength);
 
 		bool didHit = world.DynamicTree.RayCast(
 			jOrigin,

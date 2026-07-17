@@ -21,9 +21,16 @@ public readonly ref struct ResourceSetKey(ResourceLayout resourceLayout, ReadOnl
 
 	public bool Equals(ResourceSetKey other)
 	{
-		if (ResourceLayout != other.ResourceLayout) return false;
-		if (BoundResources.Length != other.BoundResources.Length) return false;
-		for (int i = 0; i < BoundResources.Length; i++) if (!BoundResources[i].Equals(other.BoundResources[i])) return false;
+		if (ResourceLayout != other.ResourceLayout)
+			return false;
+		if (BoundResources.Length != other.BoundResources.Length)
+			return false;
+		for (int i = 0; i < BoundResources.Length; i++)
+		{
+			if (!BoundResources[i].Equals(other.BoundResources[i]))
+				return false;
+		}
+
 		return true;
 	}
 
@@ -34,7 +41,8 @@ public readonly ref struct ResourceSetKey(ResourceLayout resourceLayout, ReadOnl
 		{
 			int hash = 17;
 			hash = hash * 31 + (ResourceLayout?.GetHashCode() ?? 0);
-			foreach (var e in BoundResources) hash = hash * 31 + (e?.GetHashCode() ?? 0);
+			foreach (var e in BoundResources)
+				hash = hash * 31 + (e?.GetHashCode() ?? 0);
 			return hash;
 		}
 	}

@@ -28,17 +28,11 @@ public class Camera : Component
 	public static Camera? Main { get; private set; }
 
 	/// <summary> Gets the view <see cref="Matrix4x4"/> for this Camera. </summary>
-	public Matrix4x4 ViewMatrix
-	{
-		get
-		{
-			return Matrix4x4.LookAt(
+	public Matrix4x4 ViewMatrix => Matrix4x4.LookAt(
 				Entity.Transform.Position,
 				Entity.Transform.Position + Entity.Transform.Forward,
 				Vector3.Up
 			);
-		}
-	}
 
 	/// <summary> Gets the projection <see cref="Matrix4x4"/> for this Camera. </summary>
 	public Matrix4x4 ProjectionMatrix

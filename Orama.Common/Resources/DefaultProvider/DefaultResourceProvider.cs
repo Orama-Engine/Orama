@@ -5,7 +5,7 @@ using Orama.Common.Utility;
 
 namespace Orama.Common.Resources.DefaultProvider;
 
-internal class DefaultResourceProvider : IResourceProvider
+internal sealed class DefaultResourceProvider : IResourceProvider
 {
 	/// <inheritdoc/>
 	public T? GetResource<T>(string path) where T : class

@@ -13,8 +13,8 @@ public class OpenALSource : IAudioSource
 {
 	private readonly AL al;
 	private readonly EffectExtension efx;
-	private uint source;
-	private uint filter;
+	private readonly uint source;
+	private readonly uint filter;
 
 	public OpenALSource(AL al, EffectExtension efx)
 	{
@@ -128,7 +128,7 @@ public class OpenALSource : IAudioSource
 	/// <inheritdoc/>
 	public void SetClip(AudioClip clip)
 	{
-		var buffer = al.GenBuffer();
+		uint buffer = al.GenBuffer();
 		var format = clip.Channels == 1
 			? clip.BitsPerSample == 8 ? BufferFormat.Mono8 : BufferFormat.Mono16
 			: clip.BitsPerSample == 8 ? BufferFormat.Stereo8 : BufferFormat.Stereo16;

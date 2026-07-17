@@ -73,10 +73,12 @@ public class Shader
 			FragmentBytecode = comp.FragmentBytes.ToArray();
 
 			foreach (var attribute in comp.ShaderAttributes)
+			{
 				if (attribute.Name == "ShaderPass")
 					Pass = attribute.GetArgumentValueString(0);
+			}
 
-			List<ShaderParameter> parameters = new List<ShaderParameter>();
+			var parameters = new List<ShaderParameter>();
 
 			foreach (var parameter in comp.ShaderParameters)
 			{
@@ -139,7 +141,7 @@ public class Shader
 					parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
 				}
 
-				Dictionary<string, ShaderResource> resources = new Dictionary<string, ShaderResource>();
+				var resources = new Dictionary<string, ShaderResource>();
 
 				// We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
 				// Be careful around BindingIndex & BindingSpace
@@ -192,8 +194,8 @@ public class Shader
 }
 
 [ResourceLoader]
-internal class ShaderLoader : ResourceLoader<Shader>
+internal sealed class ShaderLoader : ResourceLoader<Shader>
 {
 	/// <inheritdoc/>
-	public override Shader? LoadResource(byte[] data, string? name = null) => new Shader(Encoding.UTF8.GetString(data), name ?? "None");
+	public override Shader? LoadResource(byte[] data, string? name = null) => new(Encoding.UTF8.GetString(data), name ?? "None");
 }

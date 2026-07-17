@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System;
-
 using Veldrith;
 
 
@@ -13,7 +11,7 @@ public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, Veldr
 	/// <inheritdoc/>
 	protected override Veldrith.Sampler Create(SamplerKey key)
 	{
-		SamplerDescription desc = new SamplerDescription()
+		var desc = new SamplerDescription()
 		{
 			Filter = GetVeldrithFilter(key.Sampler.Filter),
 			AddressModeU = GetVeldrithAddressMode(key.Sampler.WrapU),
@@ -23,25 +21,19 @@ public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, Veldr
 		return Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateSampler(desc);
 	}
 
-	private static Veldrith.SamplerFilter GetVeldrithFilter(SamplerFilter filter)
+	private static Veldrith.SamplerFilter GetVeldrithFilter(SamplerFilter filter) => filter switch
 	{
-		return filter switch
-		{
-			SamplerFilter.Nearest => Veldrith.SamplerFilter.MinPointMagPointMipPoint,
-			SamplerFilter.Linear => Veldrith.SamplerFilter.MinLinearMagLinearMipPoint,
-			_ => throw new NotSupportedException()
-		};
-	}
+		SamplerFilter.Nearest => Veldrith.SamplerFilter.MinPointMagPointMipPoint,
+		SamplerFilter.Linear => Veldrith.SamplerFilter.MinLinearMagLinearMipPoint,
+		_ => throw new NotSupportedException()
+	};
 
-	private static Veldrith.SamplerAddressMode GetVeldrithAddressMode(TextureWrapMode mode)
+	private static Veldrith.SamplerAddressMode GetVeldrithAddressMode(TextureWrapMode mode) => mode switch
 	{
-		return mode switch
-		{
-			TextureWrapMode.Clamp => Veldrith.SamplerAddressMode.Clamp,
-			TextureWrapMode.Repeat => Veldrith.SamplerAddressMode.Wrap,
-			_ => throw new NotSupportedException()
-		};
-	}
+		TextureWrapMode.Clamp => Veldrith.SamplerAddressMode.Clamp,
+		TextureWrapMode.Repeat => Veldrith.SamplerAddressMode.Wrap,
+		_ => throw new NotSupportedException()
+	};
 }
 
 public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey
@@ -53,9 +45,12 @@ public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey
 
 	public bool Equals(SamplerKey other)
 	{
-		if (Sampler.Filter != other.Sampler.Filter) return false;
-		if (Sampler.WrapU != other.Sampler.WrapU) return false;
-		if (Sampler.WrapV != other.Sampler.WrapV) return false;
+		if (Sampler.Filter != other.Sampler.Filter)
+			return false;
+		if (Sampler.WrapU != other.Sampler.WrapU)
+			return false;
+		if (Sampler.WrapV != other.Sampler.WrapV)
+			return false;
 		return true;
 	}
 

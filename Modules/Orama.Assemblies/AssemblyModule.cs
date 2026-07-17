@@ -4,7 +4,6 @@
 using System.Runtime.Loader;
 
 using Orama.Common;
-using Orama.Common.Utility;
 
 namespace Orama.Assemblies;
 

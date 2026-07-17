@@ -6,5 +6,5 @@ namespace Orama.Rendering.Device;
 public class CommandBufferPool : ObjectPool<CommandBufferPool, CommandBuffer>
 {
 	/// <inheritdoc/>
-	protected override CommandBuffer CreateObject() => new CommandBuffer(Renderer.Veldrith);
+	protected override CommandBuffer CreateObject() => new(Renderer.Veldrith);
 }

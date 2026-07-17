@@ -6,7 +6,6 @@ using Orama.Common.Utility;
 using Orama.Input;
 using Orama.Input.Devices;
 using Orama.Math;
-using Orama.Physics;
 using Orama.Rendering.Components;
 using Orama.Scenes.Entities;
 
@@ -17,8 +16,8 @@ public class FlyController : Entity
 {
 	[ImplicitComponent] public Camera Camera { get; set; } = null!;
 
-	private float mouseSensitivity = 0.0025f;
-	private float moveSpeed = 8.0f;
+	private readonly float mouseSensitivity = 0.0025f;
+	private readonly float moveSpeed = 8.0f;
 
 	private float pitch;
 	private float yaw;
@@ -43,10 +42,14 @@ public class FlyController : Entity
 			OramaConsole.Log("Action left pressed.");
 
 		// Movement
-		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.W) ?? false) Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
-		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.S) ?? false) Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
-		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.A) ?? false) Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
-		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.D) ?? false) Transform.Position += Transform.Right * moveSpeed * Time.Delta;
+		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.W) ?? false)
+			Transform.Position += Transform.Forward * moveSpeed * Time.Delta;
+		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.S) ?? false)
+			Transform.Position -= Transform.Forward * moveSpeed * Time.Delta;
+		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.A) ?? false)
+			Transform.Position -= Transform.Right * moveSpeed * Time.Delta;
+		if (Input.PrimaryKeyboard?.IsKeyDown(Keyboard.Key.D) ?? false)
+			Transform.Position += Transform.Right * moveSpeed * Time.Delta;
 
 		if (!cursorLocked)
 			return;
@@ -59,10 +62,10 @@ public class FlyController : Entity
 
 		pitch = Math.Math.Clamp(pitch, -1.55f, 1.55f);
 
-		Quaternion yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
+		var yawRot = Quaternion.CreateFromAxisAngle(Vector3.Up, yaw);
 
-		Vector3 right = Vector3.Transform(Vector3.Right, yawRot);
-		Quaternion pitchRot = Quaternion.CreateFromAxisAngle(right, pitch);
+		var right = Vector3.Transform(Vector3.Right, yawRot);
+		var pitchRot = Quaternion.CreateFromAxisAngle(right, pitch);
 
 		Transform.Rotation = pitchRot * yawRot;
 	}

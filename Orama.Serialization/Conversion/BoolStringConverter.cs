@@ -4,7 +4,7 @@
 namespace Orama.Serialization.Conversion;
 
 [StringConverter(typeof(bool))]
-internal class BoolStringConverter : StringConverter<bool>
+internal sealed class BoolStringConverter : StringConverter<bool>
 {
 	/// <inheritdoc/>
 	public override bool ConvertFromString(string value) => value == "true";

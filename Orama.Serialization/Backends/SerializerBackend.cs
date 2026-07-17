@@ -7,7 +7,7 @@ namespace Orama.Serialization.Backends;
 /// Marks a class as a serializer backend.
 /// </summary>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-internal class SerializerBackendAttribute : Attribute
+internal sealed class SerializerBackendAttribute : Attribute
 {
 	/// <summary> The serialization type this backend is for. </summary>
 	public SerializationType SerializationType { get; }

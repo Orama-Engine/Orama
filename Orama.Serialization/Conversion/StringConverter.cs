@@ -41,7 +41,7 @@ public class StringConverterAttribute : Attribute
 			}
 		}
 
-		if (converters.TryGetValue(type, out var converterType))
+		if (converters.TryGetValue(type, out object? converterType))
 			return CreateInstance(converterType, type);
 
 		if (type.IsEnum && converters.TryGetValue(typeof(Enum), out converterType))
@@ -89,7 +89,7 @@ internal abstract class StringConverter<T>
 }
 
 [StringConverter(typeof(string))]
-internal class StringStringConverter : StringConverter<string>
+internal sealed class StringStringConverter : StringConverter<string>
 {
 	/// <inheritdoc/>
 	public override string ConvertToString(string value) => value;

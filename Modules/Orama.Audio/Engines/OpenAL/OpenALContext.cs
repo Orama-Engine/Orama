@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Audio;
-
 using Silk.NET.OpenAL;
 using Silk.NET.OpenAL.Extensions.Creative;
 
@@ -49,18 +47,15 @@ public class OpenALContext : IAudioContext
 	public void SetListener(IAudioListener? listener) => activeListener = listener;
 
 	/// <inheritdoc/>
-	public void SetDistanceModel(AudioDistanceModel model)
+	public void SetDistanceModel(AudioDistanceModel model) => al.DistanceModel(model switch
 	{
-		al.DistanceModel(model switch
-		{
-			AudioDistanceModel.None => DistanceModel.None,
-			AudioDistanceModel.InverseDistance => DistanceModel.InverseDistance,
-			AudioDistanceModel.InverseDistanceClamped => DistanceModel.InverseDistanceClamped,
-			AudioDistanceModel.LinearDistance => DistanceModel.LinearDistance,
-			AudioDistanceModel.LinearDistanceClamped => DistanceModel.LinearDistanceClamped,
-			AudioDistanceModel.ExponentDistance => DistanceModel.ExponentDistance,
-			AudioDistanceModel.ExponentDistanceClamped => DistanceModel.ExponentDistanceClamped,
-			_ => throw new ArgumentOutOfRangeException(nameof(model))
-		});
-	}
+		AudioDistanceModel.None => DistanceModel.None,
+		AudioDistanceModel.InverseDistance => DistanceModel.InverseDistance,
+		AudioDistanceModel.InverseDistanceClamped => DistanceModel.InverseDistanceClamped,
+		AudioDistanceModel.LinearDistance => DistanceModel.LinearDistance,
+		AudioDistanceModel.LinearDistanceClamped => DistanceModel.LinearDistanceClamped,
+		AudioDistanceModel.ExponentDistance => DistanceModel.ExponentDistance,
+		AudioDistanceModel.ExponentDistanceClamped => DistanceModel.ExponentDistanceClamped,
+		_ => throw new ArgumentOutOfRangeException(nameof(model))
+	});
 }

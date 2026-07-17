@@ -22,7 +22,8 @@ public class AudioListener : Component
 
 	public override void Update()
 	{
-		if (listener == null) return;
+		if (listener == null)
+			return;
 
 		var transform = Entity.Transform;
 		listener.Position = transform.Position;
@@ -37,7 +38,8 @@ public class AudioListener : Component
 		var audio = ModuleManager.GetModule<AudioModule>();
 		if (audio != null)
 		{
-			if (listener != null) audio.DestroyListener(listener);
+			if (listener != null)
+				audio.DestroyListener(listener);
 			audio.SetListener(null);
 		}
 	}

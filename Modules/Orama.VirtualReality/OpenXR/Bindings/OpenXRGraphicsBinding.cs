@@ -13,7 +13,7 @@ namespace Orama.VirtualReality.OpenXR.Bindings;
 /// <summary>
 /// Managed bindings for <see cref="GraphicsBinding"/>.
 /// </summary>
-internal class OpenXRGraphicsBinding : OpenXRBinding
+internal sealed class OpenXRGraphicsBinding : OpenXRBinding
 {
 	/// <summary> Pointer to the native graphics binding. </summary>
 	public IntPtr Native { get; }

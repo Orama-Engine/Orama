@@ -1,10 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Text;
-
-using Orama.Common.Utility;
-
 using SlangShaderSharp;
 
 namespace Orama.Rendering;
@@ -14,8 +10,8 @@ namespace Orama.Rendering;
 /// </summary>
 public static class ShaderBaker
 {
-	private static IGlobalSession globalSession;
-	private static ISession localSession;
+	private static readonly IGlobalSession globalSession;
+	private static readonly ISession localSession;
 
 	static ShaderBaker()
 	{
@@ -100,7 +96,8 @@ public static class ShaderBaker
 			linkedProgram.GetEntryPointCode(0, 0, out ISlangBlob vertBlob, out _);
 			int vertBufferSize = (int)vertBlob.GetBufferSize();
 
-			unsafe { vert = new ReadOnlySpan<byte>(vertBlob.GetBufferPointer(), vertBufferSize); }
+			unsafe
+			{ vert = new ReadOnlySpan<byte>(vertBlob.GetBufferPointer(), vertBufferSize); }
 		}
 
 		if (fragmentEntry != null)
@@ -108,7 +105,8 @@ public static class ShaderBaker
 			linkedProgram.GetEntryPointCode(1, 0, out ISlangBlob fragBlob, out _);
 			int fragBufferSize = (int)fragBlob.GetBufferSize();
 
-			unsafe { frag = new ReadOnlySpan<byte>(fragBlob.GetBufferPointer(), fragBufferSize); }
+			unsafe
+			{ frag = new ReadOnlySpan<byte>(fragBlob.GetBufferPointer(), fragBufferSize); }
 		}
 
 		return new SlangCompilationResult() { FragmentBytes = frag, VertexBytes = vert, ShaderAttributes = attributes, ShaderParameters = parameters, Resources = resources };
@@ -132,7 +130,7 @@ public static class ShaderBaker
 		TypeReflection? attributesType = layout.FindTypeByName("ShaderAttributes");
 		if (attributesType != null)
 		{
-			var aCount = attributesType.Value.AttributeCount;
+			uint aCount = attributesType.Value.AttributeCount;
 
 			for (uint i = 0; i < aCount; i++)
 			{
@@ -152,7 +150,7 @@ public static class ShaderBaker
 		TypeReflection? parametersType = layout.FindTypeByName("ShaderParameters");
 		if (parametersType != null)
 		{
-			var pCount = parametersType.Value.FieldCount;
+			uint pCount = parametersType.Value.FieldCount;
 
 			for (uint i = 0; i < pCount; i++)
 			{

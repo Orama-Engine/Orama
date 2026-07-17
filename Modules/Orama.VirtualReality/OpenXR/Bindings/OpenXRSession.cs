@@ -1,8 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Common.Utility;
-
 using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR.Bindings;
@@ -10,7 +8,7 @@ namespace Orama.VirtualReality.OpenXR.Bindings;
 /// <summary>
 /// Managed bindings for <see cref="Session"/>.
 /// </summary>
-internal class OpenXRSession : OpenXRBinding
+internal sealed class OpenXRSession : OpenXRBinding
 {
 	/// <summary> The native <see cref="Session"/>. </summary>
 	public Session Native { get; }

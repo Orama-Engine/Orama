@@ -1,10 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Runtime.InteropServices;
-
-using Orama.Common.Utility;
-
 namespace Orama.Rendering.Resources;
 
 /// <summary>

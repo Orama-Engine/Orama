@@ -15,7 +15,7 @@ namespace Orama.VirtualReality.OpenXR.Bindings;
 /// <summary>
 /// Managed bindings for <see cref="Instance"/>.
 /// </summary>
-internal class OpenXRInstance : OpenXRBinding
+internal sealed class OpenXRInstance : OpenXRBinding
 {
 	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 	private unsafe delegate Result pfnGetD3D12GraphicsRequirementsKHR(Instance instance, ulong systemId, GraphicsRequirementsD3D12KHR* req);
@@ -56,27 +56,27 @@ internal class OpenXRInstance : OpenXRBinding
 		}
 	}
 
-	private List<string> extensions = new();
+	private readonly List<string> extensions = new();
 
 	public OpenXRInstance(XR openXR) : base(openXR)
 	{
 		extensions = GetRequiredExtensions() ?? new List<string>();
 		IntPtr extensionsPtr = SilkMarshal.StringArrayToPtr((IReadOnlyList<string>)Extensions);
 
-		ApplicationInfo appInfo = new ApplicationInfo()
+		var appInfo = new ApplicationInfo()
 		{
 			ApiVersion = new Version64(1, 0, 0)
 		};
 
 		unsafe
 		{
-			Span<byte> appNameSpan = new Span<byte>(appInfo.ApplicationName, 128);
-			Span<byte> engineNameSpan = new Span<byte>(appInfo.EngineName, 128);
+			var appNameSpan = new Span<byte>(appInfo.ApplicationName, 128);
+			var engineNameSpan = new Span<byte>(appInfo.EngineName, 128);
 
 			SilkMarshal.StringIntoSpan("Orama", appNameSpan);
 			SilkMarshal.StringIntoSpan("None", engineNameSpan);
 
-			InstanceCreateInfo createInfo = new InstanceCreateInfo
+			var createInfo = new InstanceCreateInfo
 			{
 				Type = StructureType.InstanceCreateInfo,
 				ApplicationInfo = appInfo,

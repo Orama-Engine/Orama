@@ -25,7 +25,7 @@ public class InputModule : BaseModule
 	/// <summary> The primary (first connected) <see cref="Gamepad"/>. </summary>
 	public Gamepad? PrimaryGamepad { get; private set; }
 
-	private List<Devices.IInputDevice> devices = new();
+	private readonly List<Devices.IInputDevice> devices = new();
 
 	private IInputContext input = null!;
 

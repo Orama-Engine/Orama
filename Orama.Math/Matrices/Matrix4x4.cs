@@ -40,10 +40,22 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 		float m31, float m32, float m33, float m34,
 		float m41, float m42, float m43, float m44)
 	{
-		M11 = m11; M12 = m12; M13 = m13; M14 = m14;
-		M21 = m21; M22 = m22; M23 = m23; M24 = m24;
-		M31 = m31; M32 = m32; M33 = m33; M34 = m34;
-		M41 = m41; M42 = m42; M43 = m43; M44 = m44;
+		M11 = m11;
+		M12 = m12;
+		M13 = m13;
+		M14 = m14;
+		M21 = m21;
+		M22 = m22;
+		M23 = m23;
+		M24 = m24;
+		M31 = m31;
+		M32 = m32;
+		M33 = m33;
+		M34 = m34;
+		M41 = m41;
+		M42 = m42;
+		M43 = m43;
+		M44 = m44;
 	}
 
 	/// <summary> An identity matrix, this is comparable to <see cref="Vector3.One"/> but for matrices. </summary>
@@ -72,48 +84,36 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	}
 
 	/// <summary> Creates a translation matrix from a <see cref="Vector3"/>. </summary>
-	public static Matrix4x4 CreateTranslation(Vector3 pos)
-	{
-		return new Matrix4x4(
+	public static Matrix4x4 CreateTranslation(Vector3 pos) => new Matrix4x4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			pos.X, pos.Y, pos.Z, 1
 		);
-	}
 
 	/// <summary> Creates a translation matrix from the specified components. </summary>
-	public static Matrix4x4 CreateTranslation(float x, float y, float z)
-	{
-		return new Matrix4x4(
+	public static Matrix4x4 CreateTranslation(float x, float y, float z) => new Matrix4x4(
 			1, 0, 0, 0,
 			0, 1, 0, 0,
 			0, 0, 1, 0,
 			x, y, z, 1
 		);
-	}
 
 	/// <summary> Creates a scaling matrix from a <see cref="Vector3"/>. </summary>
-	public static Matrix4x4 CreateScale(Vector3 scale)
-	{
-		return new Matrix4x4(
+	public static Matrix4x4 CreateScale(Vector3 scale) => new Matrix4x4(
 			scale.X, 0, 0, 0,
 			0, scale.Y, 0, 0,
 			0, 0, scale.Z, 0,
 			0, 0, 0, 1
 		);
-	}
 
 	/// <summary> Creates a scaling matrix from the specified components. </summary>
-	public static Matrix4x4 CreateScale(float x, float y, float z)
-	{
-		return new Matrix4x4(
+	public static Matrix4x4 CreateScale(float x, float y, float z) => new Matrix4x4(
 			x, 0, 0, 0,
 			0, y, 0, 0,
 			0, 0, z, 0,
 			0, 0, 0, 1
 		);
-	}
 
 	/// <summary> Creates a rotation matrix around the X axis. </summary>
 	public static Matrix4x4 CreateRotationX(float r)
@@ -190,9 +190,9 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	/// <summary> Creates a right-handed LookAt view matrix. </summary>
 	public static Matrix4x4 LookAt(Vector3 eye, Vector3 target, Vector3 up)
 	{
-		Vector3 zAxis = Vector3.Normalize(target - eye); // Forward
-		Vector3 xAxis = Vector3.Normalize(Vector3.Cross(up, zAxis)); // Right
-		Vector3 yAxis = Vector3.Cross(zAxis, xAxis); // True up
+		var zAxis = Vector3.Normalize(target - eye); // Forward
+		var xAxis = Vector3.Normalize(Vector3.Cross(up, zAxis)); // Right
+		var yAxis = Vector3.Cross(zAxis, xAxis); // True up
 
 		return new Matrix4x4(
 			xAxis.X, yAxis.X, zAxis.X, 0,
@@ -210,15 +210,12 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	#region Operations
 
 	/// <summary> Returns the transposed version of this matrix. </summary>
-	public Matrix4x4 Transpose()
-	{
-		return new Matrix4x4(
+	public Matrix4x4 Transpose() => new Matrix4x4(
 			M11, M21, M31, M41,
 			M12, M22, M32, M42,
 			M13, M23, M33, M43,
 			M14, M24, M34, M44
 		);
-	}
 
 	/// <summary> Returns the determinant of this matrix. </summary>
 	public float Determinant()
@@ -239,34 +236,27 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	}
 
 	/// <summary> Transforms a <see cref="Vector3"/> by this matrix. </summary>
-	public Vector3 Transform(Vector3 v)
-	{
-		return new Vector3(
+	public Vector3 Transform(Vector3 v) => new Vector3(
 			v.X * M11 + v.Y * M21 + v.Z * M31 + M41,
 			v.X * M12 + v.Y * M22 + v.Z * M32 + M42,
 			v.X * M13 + v.Y * M23 + v.Z * M33 + M43
 		);
-	}
 
 	/// <inheritdoc/>
 	public override bool Equals([NotNullWhen(true)] object? obj) => obj is Matrix4x4 other && Equals(other);
 
 	/// <inheritdoc/>
-	public bool Equals(Matrix4x4 other)
-	{
-		return
-			M11 == other.M11 && M12 == other.M12 && M13 == other.M13 && M14 == other.M14 &&
+	public bool Equals(Matrix4x4 other) => M11 == other.M11 && M12 == other.M12 && M13 == other.M13 && M14 == other.M14 &&
 			M21 == other.M21 && M22 == other.M22 && M23 == other.M23 && M24 == other.M24 &&
 			M31 == other.M31 && M32 == other.M32 && M33 == other.M33 && M34 == other.M34 &&
 			M41 == other.M41 && M42 == other.M42 && M43 == other.M43 && M44 == other.M44;
-	}
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
 		unchecked
 		{
-			var hashCode = M11.GetHashCode();
+			int hashCode = M11.GetHashCode();
 			hashCode = (hashCode * 397) ^ M12.GetHashCode();
 			hashCode = (hashCode * 397) ^ M13.GetHashCode();
 			hashCode = (hashCode * 397) ^ M14.GetHashCode();
@@ -320,7 +310,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 	#region Casts
 
 	public static explicit operator System.Numerics.Matrix4x4(Matrix4x4 m)
-		=> new System.Numerics.Matrix4x4(
+		=> new(
 			m.M11, m.M12, m.M13, m.M14,
 			m.M21, m.M22, m.M23, m.M24,
 			m.M31, m.M32, m.M33, m.M34,
@@ -328,7 +318,7 @@ public struct Matrix4x4 : IEquatable<Matrix4x4>
 		);
 
 	public static explicit operator Matrix4x4(System.Numerics.Matrix4x4 m)
-		=> new Matrix4x4(
+		=> new(
 			m.M11, m.M12, m.M13, m.M14,
 			m.M21, m.M22, m.M23, m.M24,
 			m.M31, m.M32, m.M33, m.M34,

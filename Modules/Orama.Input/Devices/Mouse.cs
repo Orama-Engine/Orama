@@ -21,7 +21,7 @@ public sealed class Mouse : IInputDevice
 
 	#region Silk.NET Mappings
 
-	private static Dictionary<Button, Silk.NET.Input.MouseButton> buttonMap = new()
+	private static readonly Dictionary<Button, Silk.NET.Input.MouseButton> buttonMap = new()
 	{
 		{ Button.Left, Silk.NET.Input.MouseButton.Left },
 		{ Button.Right, Silk.NET.Input.MouseButton.Right },
@@ -35,9 +35,7 @@ public sealed class Mouse : IInputDevice
 
 	/// <summary> Checks if this mouse's cursor is currently locked. </summary>
 	public bool CursorLocked
-	{
-		get { return InternalMouse.Cursor.CursorMode == CursorMode.Raw && InternalMouse.Cursor.IsConfined; }
-		set { InternalMouse.Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal; }
+	{ get => InternalMouse.Cursor.CursorMode == CursorMode.Raw && InternalMouse.Cursor.IsConfined; set => InternalMouse.Cursor.CursorMode = value ? CursorMode.Raw : CursorMode.Normal;
 	}
 
 	/// <summary> The change in mouse position since the last update. </summary>

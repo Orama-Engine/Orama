@@ -6,14 +6,14 @@ using System.Text;
 namespace Orama.Serialization.Backends;
 
 [SerializerBackend(SerializationType.YAML)]
-internal class YAMLBackend : SerializerBackend
+internal sealed class YAMLBackend : SerializerBackend
 {
 	/// <inheritdoc/>
 	public override InstanceRepresentation Deserialize(byte[] data)
 	{
-		List<FieldRepresentation> fields = new List<FieldRepresentation>();
+		var fields = new List<FieldRepresentation>();
 
-		StringReader reader = new StringReader(Encoding.UTF8.GetString(data));
+		var reader = new StringReader(Encoding.UTF8.GetString(data));
 
 		while (reader.Peek() != -1)
 		{
@@ -23,7 +23,8 @@ internal class YAMLBackend : SerializerBackend
 				continue;
 
 			string[] parts = line.Split(':', 2);
-			if (parts.Length < 2) continue;
+			if (parts.Length < 2)
+				continue;
 
 			string name = parts[0].Trim();
 			string value = parts[1].Trim();
@@ -38,7 +39,7 @@ internal class YAMLBackend : SerializerBackend
 	/// <inheritdoc/>
 	public override byte[] Serialize(InstanceRepresentation obj)
 	{
-		StringBuilder sb = new StringBuilder();
+		var sb = new StringBuilder();
 
 		foreach (var field in obj.Fields)
 			sb.AppendLine($"{field.Name}: {field.Value}");

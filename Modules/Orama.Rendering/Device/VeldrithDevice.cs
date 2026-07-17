@@ -1,7 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Common.Utility;
 using Orama.Rendering.Device;
 
 using Silk.NET.Core.Contexts;
@@ -22,7 +21,7 @@ public class VeldrithDevice
 	/// <summary> The current frame number. </summary>
 	public ulong CurrentFrame { get; internal set; }
 
-	private RendererBackend backend;
+	private readonly RendererBackend backend;
 
 	/// <summary> Initializes a new instance of the <see cref="VeldrithDevice"/> class. </summary>
 	public VeldrithDevice(RendererBackend backend)

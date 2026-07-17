@@ -6,27 +6,50 @@ end_of_line = lf
 insert_final_newline = true
 
 [*.cs]
-# File Header
-file_header_template = This file is part of the Orama Game Engine.\nLicensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
-dotnet_diagnostic.IDE0073.severity = warning
-
 indent_style = tab
 tab_width = 4
 
-dotnet_sort_system_directives_first = true
+# File Header
+file_header_template = This file is part of the Orama Game Engine.\nLicensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
+dotnet_diagnostic.IDE0073.severity = error
 
+# Naming
+dotnet_naming_rule.public_members_must_be_pascal_case.symbols = public_symbols
+dotnet_naming_rule.public_members_must_be_pascal_case.style = pascal_case_style
+dotnet_naming_rule.public_members_must_be_pascal_case.severity = error
 
-csharp_new_line_before_open_brace = all
-csharp_indent_case_contents = true
-csharp_indent_switch_labels = true
+dotnet_naming_symbols.public_symbols.applicable_kinds = method, property, event, field
+dotnet_naming_symbols.public_symbols.applicable_accessibilities = public
 
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
 
-csharp_space_after_keywords_in_control_flow_statements = true
-csharp_space_around_binary_operators = before_and_after
-
-
+# Styles
+csharp_prefer_braces = when_multiline:error
+dotnet_style_readonly_field = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_for_built_in_types = false:error
+csharp_style_expression_bodied_methods = false:error
+csharp_style_implicit_object_creation_when_type_is_apparent = true:error
+csharp_style_prefer_utf8_string_literals = true:error
 csharp_preserve_single_line_blocks = true
-csharp_preserve_single_line_statements = true
+csharp_preserve_single_line_statements = false
 
+csharp_style_expression_bodied_methods = true:error
+csharp_style_expression_bodied_properties = true:error
+csharp_style_expression_bodied_accessors = true:error
 
-dotnet_separate_import_directive_groups = true
+# Nullability
+csharp_style_null_check_over_type_check = true:error
+dotnet_style_null_check_over_type_check = true:error
+dotnet_diagnostic.CS8600.severity = error
+dotnet_diagnostic.CS8602.severity = error
+dotnet_diagnostic.CS8603.severity = error
+
+# Performance
+dotnet_diagnostic.CA1821.severity = error
+dotnet_diagnostic.CA1834.severity = error
+dotnet_diagnostic.CA1852.severity = error
+
+dotnet_diagnostic.IDE0005.severity = error
+dotnet_diagnostic.IDE0051.severity = error
+dotnet_diagnostic.IDE0052.severity = error

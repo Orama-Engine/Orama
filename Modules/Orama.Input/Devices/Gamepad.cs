@@ -62,8 +62,10 @@ public sealed class Gamepad : IInputDevice
 		var silkButtonName = buttonMap[button];
 
 		foreach (var silkButton in InternalGamepad.Buttons)
+		{
 			if (silkButton.Name == silkButtonName)
 				return silkButton.Pressed;
+		}
 
 		return false;
 	}
