@@ -13,6 +13,15 @@ namespace Orama.Rendering;
 /// </summary>
 public sealed class GPUBuffer
 {
+	public enum AlignmentFormat : byte
+	{
+		/// <summary> Rigid layout with strict 16-byte alignment and padding. </summary>
+		std140,
+
+		/// <summary> Tightly packed layout using natural data type sizes. </summary>
+		std430,
+	}
+
 	/// <summary> The initial size of the internal buffer. </summary>
 	public const int DEFAULT_SIZE = 256;
 
@@ -21,7 +30,8 @@ public sealed class GPUBuffer
 	{
 		get
 		{
-			int paddedSize = Align(offset, 16);
+			int globalAlignment = Alignment == AlignmentFormat.std140 ? 16 : 4;
+			int paddedSize = Align(offset, globalAlignment);
 
 			if (paddedSize > offset)
 			{
@@ -33,10 +43,13 @@ public sealed class GPUBuffer
 		}
 	}
 
+	/// <summary> The <see cref="AlignmentFormat"/> used to construct <see cref="Data"/>. </summary>
+	/// <remarks> This should be set before adding data to the buffer. </remarks>
+	public AlignmentFormat Alignment { get; set; }
+
 	private byte[] data = new byte[DEFAULT_SIZE];
 	private int offset = 0;
 
-	public GPUBuffer() { }
 
 	/// <summary> Constructs a <see cref="GPUBuffer"/> from a <see cref="Material"/>s parameters. </summary>
 	/// <remarks> <see cref="GPUBuffer"/>s created via this method should be returned to the pool via <c>GPUBufferPool.Instance.Return()</c> when no longer in use. </remarks>
@@ -155,13 +168,18 @@ public sealed class GPUBuffer
 		offset += bytes.Length;
 	}
 
-	public void Reset() => offset = 0;
+	/// <summary> Resets the buffer to it's default state. </summary>
+	public void Reset()
+	{
+		offset = 0;
+		Alignment = default;
+	}
 
 	private void EnsurePacking(int size, int baseAlign)
 	{
 		int aligned = Align(offset, baseAlign);
 
-		if ((aligned % 16) + size > 16)
+		if (Alignment == AlignmentFormat.std140 && (aligned % 16) + size > 16)
 			aligned = Align(aligned, 16);
 
 		EnsureCapacity(aligned);
