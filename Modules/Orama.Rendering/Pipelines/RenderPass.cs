@@ -26,6 +26,8 @@ public abstract class RenderPass
 
 		Render(in frame, buffer);
 
+		buffer.Object.DrawQueue();
+
 		buffer.Object.End();
 		Renderer.SubmitCommandBuffer(buffer);
 	}

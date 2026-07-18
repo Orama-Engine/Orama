@@ -21,6 +21,9 @@ public class CommandBuffer : IDisposable
 	/// <summary> The <see cref="Device.ResourceBinder"/> that orchestrates resource uploading and binding for this <see cref="CommandBuffer"/>. </summary>
 	public ResourceBinder ResourceBinder { get; }
 
+	/// <summary> All <see cref="IClientRenderable"/>s queued for rendering. </summary>
+	public List<IClientRenderable> RenderQueue { get; } = new();
+
 	// Hacky
 	/// <summary> The current pipeline hash in use. </summary>
 	public int ActivePipelineHash { get; private set; }
@@ -66,7 +69,20 @@ public class CommandBuffer : IDisposable
 
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
-	public void DrawRenderable(IClientRenderable renderable)
+	public void QueueRenderable(IClientRenderable renderable) => RenderQueue.Add(renderable);
+
+	/// <summary> Draws all <see cref="IClientRenderable"/> that have been queued through <see cref="QueueRenderable(IClientRenderable)"/>. </summary>
+	public void DrawQueue()
+	{
+		foreach (var renderable in RenderQueue)
+			DrawRenderableImmediate(renderable);
+
+		RenderQueue.Clear();
+	}
+
+	/// <summary> Draws a single <see cref="IClientRenderable"/> immediately. </summary>
+	/// <remarks> This is a less performant but immediate version of <see cref="QueueRenderable(IClientRenderable)"/> and <see cref="DrawQueue"/>. </remarks>
+	public void DrawRenderableImmediate(IClientRenderable renderable)
 	{
 		var materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
 		rentedBuffersThisFrame.Add(materialBuffer);
