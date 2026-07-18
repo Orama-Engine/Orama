@@ -22,7 +22,7 @@ public class CommandBuffer : IDisposable
 	public ResourceBinder ResourceBinder { get; }
 
 	/// <summary> All <see cref="IClientRenderable"/>s queued for rendering. </summary>
-	public List<IClientRenderable> RenderQueue { get; } = new();
+	public Queue<IClientRenderable> RenderQueue { get; } = new();
 
 	// Hacky
 	/// <summary> The current pipeline hash in use. </summary>
@@ -69,15 +69,13 @@ public class CommandBuffer : IDisposable
 
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
-	public void QueueRenderable(IClientRenderable renderable) => RenderQueue.Add(renderable);
+	public void QueueRenderable(IClientRenderable renderable) => RenderQueue.Enqueue(renderable);
 
 	/// <summary> Draws all <see cref="IClientRenderable"/> that have been queued through <see cref="QueueRenderable(IClientRenderable)"/>. </summary>
 	public void DrawQueue()
 	{
-		foreach (var renderable in RenderQueue)
-			DrawRenderableImmediate(renderable);
-
-		RenderQueue.Clear();
+		while (RenderQueue.Count > 0)
+			DrawRenderableImmediate(RenderQueue.Dequeue());
 	}
 
 	/// <summary> Draws a single <see cref="IClientRenderable"/> immediately. </summary>
