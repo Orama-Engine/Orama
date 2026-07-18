@@ -5,6 +5,7 @@ using Orama.Common.Utility;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using System.Buffers;
+using System.Runtime.InteropServices;
 using Veldrith;
 
 using Shader = Orama.Rendering.Resources.Shader;
@@ -59,7 +60,7 @@ public sealed class ResourceBinder : IDisposable
 			{
 				if (orderedResourcesCache.Count > 0)
 				{
-					UploadSet(currentSet, orderedResourcesCache);
+					UploadSet(currentSet, CollectionsMarshal.AsSpan(orderedResourcesCache));
 					orderedResourcesCache.Clear();
 				}
 
@@ -71,12 +72,12 @@ public sealed class ResourceBinder : IDisposable
 
 
 		if (orderedResourcesCache.Count > 0)
-			UploadSet(currentSet, orderedResourcesCache);
+			UploadSet(currentSet, CollectionsMarshal.AsSpan(orderedResourcesCache));
 	}
 
-	private void UploadSet(uint setIndex, IReadOnlyList<KeyValuePair<string, ShaderResource>> orderedResources)
+	private void UploadSet(uint setIndex, ReadOnlySpan<KeyValuePair<string, ShaderResource>> orderedResources)
 	{
-		int resourceCount = orderedResources.Count;
+		int resourceCount = orderedResources.Length;
 		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
 		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, resourceCount);
 
