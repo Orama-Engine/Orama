@@ -2,10 +2,9 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using System.Collections.Concurrent;
-
 using Orama.Common.Utility;
 
-namespace Orama.Rendering;
+namespace Orama.Common.Datatypes;
 
 /// <summary>
 /// Base class for managed objects that can be shared via renting and returning.

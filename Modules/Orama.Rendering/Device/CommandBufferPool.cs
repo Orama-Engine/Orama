@@ -3,6 +3,8 @@
 
 namespace Orama.Rendering.Device;
 
+using Orama.Common.Datatypes;
+
 public class CommandBufferPool : ObjectPool<CommandBufferPool, CommandBuffer>
 {
 	/// <inheritdoc/>

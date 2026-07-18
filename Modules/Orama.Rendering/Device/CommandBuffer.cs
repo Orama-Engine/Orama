@@ -34,7 +34,6 @@ public class CommandBuffer : IDisposable
 		ResourceBinder = new ResourceBinder(CommandList);
 	}
 
-
 	private readonly List<GPUBuffer> rentedBuffersThisFrame = new(64);
 
 	/// <inheritdoc/>

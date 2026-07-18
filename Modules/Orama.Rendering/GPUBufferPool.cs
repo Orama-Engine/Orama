@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Datatypes;
+
 namespace Orama.Rendering;
 
 public sealed class GPUBufferPool : ObjectPool<GPUBufferPool, GPUBuffer>
