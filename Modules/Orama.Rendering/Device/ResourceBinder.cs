@@ -17,12 +17,12 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public sealed class ResourceBinder : IDisposable
 {
+	public Dictionary<string, GPUBuffer> GPUBufferQueue { get; } = new();
+
 	private readonly CommandList commandList;
 
-	private readonly Dictionary<string, GPUBuffer> gpuBufferQueue = new();
 	private readonly Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
-	private ResourceLayoutElementDescription[] layoutElementCache = new ResourceLayoutElementDescription[16];
 	private DeviceBuffer[] deviceBufferCache = new DeviceBuffer[16];
 
 	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
@@ -32,11 +32,11 @@ public sealed class ResourceBinder : IDisposable
 	/// <summary> Queues a <see cref="GPUBuffer"/> for binding. </summary>
 	/// <param name="buffer">The buffer to upload.</param>
 	/// <param name="name">The name of the shader parameter block to bind to.</param>
-	public void QueueGPUBuffer(GPUBuffer buffer, string name) => gpuBufferQueue[name] = buffer;
+	public void QueueGPUBuffer(GPUBuffer buffer, string name) => GPUBufferQueue[name] = buffer;
 
 	public void Clear()
 	{
-		gpuBufferQueue.Clear();
+		GPUBufferQueue.Clear();
 
 		foreach (var kvp in lastBoundBuffers)
 			ArrayPool<GPUBuffer>.Shared.Return(kvp.Value);
@@ -85,7 +85,7 @@ public sealed class ResourceBinder : IDisposable
 		{
 			var resource = orderedResources[i];
 
-			if (!gpuBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
+			if (!GPUBufferQueue.TryGetValue(resource.Key, out GPUBuffer? gpuBuffer))
 			{
 				OramaConsole.Exception(new Exception($"Could not find buffer for resource {resource.Key}"));
 
@@ -105,20 +105,16 @@ public sealed class ResourceBinder : IDisposable
 			return;
 		}
 
-		if (resourceCount > layoutElementCache.Length)
-			Array.Resize(ref layoutElementCache, resourceCount * 2);
-
+		ResourceLayoutElementDescription[] layoutElementCache = ArrayPool<ResourceLayoutElementDescription>.Shared.Rent(resourceCount);
 		for (int i = 0; i < resourceCount; i++)
 		{
 			var r = orderedResources[i];
-			layoutElementCache[i] = new ResourceLayoutElementDescription(
-				r.Key,
-				r.Value.Kind,
-				ShaderStages.Vertex | ShaderStages.Fragment
-			);
+			layoutElementCache[i] = new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment);
 		}
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache.AsSpan(0, resourceCount)));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache));
+
+		ArrayPool<ResourceLayoutElementDescription>.Shared.Return(layoutElementCache);
 
 		if (resourceCount > deviceBufferCache.Length)
 			Array.Resize(ref deviceBufferCache, resourceCount * 2);
