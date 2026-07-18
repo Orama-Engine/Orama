@@ -1,7 +1,6 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
@@ -69,6 +68,7 @@ public class CommandBuffer : IDisposable
 
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
+	/// <summary> Queues a <see cref="IClientRenderable"/> for rendering during the next <see cref="DrawQueue"/> call. </summary>
 	public void QueueRenderable(IClientRenderable renderable) => RenderQueue.Enqueue(renderable);
 
 	/// <summary> Draws all <see cref="IClientRenderable"/> that have been queued through <see cref="QueueRenderable(IClientRenderable)"/>. </summary>
@@ -93,9 +93,7 @@ public class CommandBuffer : IDisposable
 
 		var gd = Renderer.Veldrith.GraphicsDevice;
 
-		ResourceLayoutDescription[] layoutDesc = renderable.Material.Shader.Layouts;
-
-		var pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, layoutDesc);
+		var pipelineDesc = new PipelineKey(renderable.Material.Shader.Pass, new ShaderKey(renderable.Material.Shader.VertexBytecode, renderable.Material.Shader.FragmentBytecode), gd.SwapchainFramebuffer.OutputDescription, renderable.Material.Shader.Layouts);
 
 		FrameCountedResource<RenderItem> item = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, pipelineDesc));
 
@@ -113,15 +111,8 @@ public class CommandBuffer : IDisposable
 
 		ActivePipelineHash = pipelineDesc.Hash;
 
-		try
-		{
-			FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
-			CommandList.SetPipeline(pipeline.Resource);
-		}
-		catch (VeldridException ex)
-		{
-			OramaConsole.Exception(ex);
-		}
+		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(pipelineDesc);
+		CommandList.SetPipeline(pipeline.Resource);
 	}
 
 	public void DrawItem(RenderItem item)

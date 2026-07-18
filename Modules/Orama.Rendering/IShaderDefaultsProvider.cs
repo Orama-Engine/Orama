@@ -11,9 +11,11 @@ namespace Orama.Rendering;
 public interface IShaderDefaultsProvider
 {
 	/// <summary> Gets a <see cref="GPUBuffer"/> with data from <paramref name="camera"/>. </summary>
+	/// <remarks> <see cref="GPUBuffer"/>s obtained with this method must be manually returned to the <see cref="GPUBufferPool"/> when no longer in use. </remarks>
 	GPUBuffer GetCameraBuffer(Camera camera);
 
 	/// <summary> Gets a <see cref="GPUBuffer"/> with data from <paramref name="renderable"/>. </summary>
+	/// <remarks> <see cref="GPUBuffer"/>s obtained with this method must be manually returned to the <see cref="GPUBufferPool"/> when no longer in use. </remarks>
 	GPUBuffer GetObjectBuffer(IClientRenderable renderable);
 }
 
