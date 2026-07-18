@@ -5,7 +5,6 @@ using Orama.Common.Utility;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using System.Buffers;
-using System.Runtime.InteropServices;
 using Veldrith;
 
 using Shader = Orama.Rendering.Resources.Shader;
@@ -22,8 +21,6 @@ public sealed class ResourceBinder : IDisposable
 	private readonly CommandList commandList;
 
 	private readonly Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
-
-	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
 
 	public ResourceBinder(CommandList commandList) => this.commandList = commandList;
 
@@ -50,27 +47,30 @@ public sealed class ResourceBinder : IDisposable
 
 		uint currentSet = uint.MaxValue;
 
-		orderedResourcesCache.Clear();
-
+		KeyValuePair<string, ShaderResource>[] orderedResources = ArrayPool<KeyValuePair<string, ShaderResource>>.Shared.Rent(totalCount);
+		
+		int count = 0;
 		foreach (var resource in shader.Resources)
 		{
 			if (resource.Value.Set != currentSet)
 			{
-				if (orderedResourcesCache.Count > 0)
+				if (count > 0)
 				{
-					UploadSet(currentSet, CollectionsMarshal.AsSpan(orderedResourcesCache));
-					orderedResourcesCache.Clear();
+					UploadSet(currentSet, orderedResources.AsSpan(0, count));
+					count = 0;
 				}
 
 				currentSet = resource.Value.Set;
 			}
 
-			orderedResourcesCache.Add(resource);
+			orderedResources[count++] = resource;
 		}
 
 
-		if (orderedResourcesCache.Count > 0)
-			UploadSet(currentSet, CollectionsMarshal.AsSpan(orderedResourcesCache));
+		if (count > 0)
+			UploadSet(currentSet, orderedResources.AsSpan(0, count));
+
+		ArrayPool<KeyValuePair<string, ShaderResource>>.Shared.Return(orderedResources);
 	}
 
 	private void UploadSet(uint setIndex, ReadOnlySpan<KeyValuePair<string, ShaderResource>> orderedResources)
