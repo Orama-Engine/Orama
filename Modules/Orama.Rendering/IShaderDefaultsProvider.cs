@@ -24,7 +24,7 @@ public class ShaderDefaultsProvider : IShaderDefaultsProvider
 	/// <inheritdoc/>
 	public GPUBuffer GetCameraBuffer(Camera camera)
 	{
-		GPUBuffer cameraBuffer = GPUBufferPool.Instance.Rent();
+		GPUBuffer cameraBuffer = GPUBufferPool.Shared.Rent();
 		cameraBuffer.AddMatrix4x4(camera.ViewMatrix);
 		cameraBuffer.AddMatrix4x4(camera.ProjectionMatrix);
 
@@ -34,7 +34,7 @@ public class ShaderDefaultsProvider : IShaderDefaultsProvider
 	/// <inheritdoc/>
 	public GPUBuffer GetObjectBuffer(IClientRenderable renderable)
 	{
-		GPUBuffer objectBuffer = GPUBufferPool.Instance.Rent();
+		GPUBuffer objectBuffer = GPUBufferPool.Shared.Rent();
 		objectBuffer.AddMatrix4x4(renderable.Transform);
 		return objectBuffer;
 	}

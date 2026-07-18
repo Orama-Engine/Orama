@@ -56,7 +56,7 @@ public class CommandBuffer : IDisposable
 		ResourceBinder.Clear();
 
 		for (int i = 0; i < rentedBuffersThisFrame.Count; i++)
-			GPUBufferPool.Instance.Return(rentedBuffersThisFrame[i]);
+			GPUBufferPool.Shared.Return(rentedBuffersThisFrame[i]);
 
 		rentedBuffersThisFrame.Clear();
 	}

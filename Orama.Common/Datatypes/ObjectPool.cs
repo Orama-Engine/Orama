@@ -15,8 +15,8 @@ public abstract class ObjectPool<TSingletonOwner, TObject> where TSingletonOwner
 	/// <summary> The maximum size of the pool before overflowing. </summary>
 	protected virtual int MaxPoolSize => 256;
 
-	/// <summary> Singleton instance. </summary>
-	public static TSingletonOwner Instance { get; } = new TSingletonOwner();
+	/// <summary> Shared <see cref="ObjectPool{TSingletonOwner, TObject}"/> instance. </summary>
+	public static TSingletonOwner Shared { get; } = new TSingletonOwner();
 
 	private readonly ConcurrentQueue<TObject> pool = new();
 
@@ -65,7 +65,7 @@ public readonly ref struct PooledObject<TObject, TPool> : IDisposable where TObj
 	public void Dispose()
 	{
 		if (Object != null)
-			ObjectPool<TPool, TObject>.Instance.Return(Object);
+			ObjectPool<TPool, TObject>.Shared.Return(Object);
 	}
 
 	public static implicit operator TObject(PooledObject<TObject, TPool> wrapper) => wrapper.Object;

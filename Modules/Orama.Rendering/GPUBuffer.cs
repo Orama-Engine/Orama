@@ -55,7 +55,7 @@ public sealed class GPUBuffer
 	/// <remarks> <see cref="GPUBuffer"/>s created via this method should be returned to the pool via <c>GPUBufferPool.Instance.Return()</c> when no longer in use. </remarks>
 	public static GPUBuffer ConstructFromMaterial(Material mat)
 	{
-		GPUBuffer buffer = GPUBufferPool.Instance.Rent();
+		GPUBuffer buffer = GPUBufferPool.Shared.Rent();
 
 		ReadOnlySpan<ShaderParameter> paramSpan = mat.Shader.Parameters.AsSpan();
 

@@ -18,7 +18,7 @@ public abstract class RenderPass
 	/// <summary> Fully runs this <see cref="RenderPass"/>. </summary>
 	public void Execute(in RenderFrame frame)
 	{
-		using var buffer = CommandBufferPool.Instance.RentAuto();
+		using var buffer = CommandBufferPool.Shared.RentAuto();
 		buffer.Object.Begin();
 
 		buffer.Object.CommandList.SetFramebuffer(TargetBuffer);

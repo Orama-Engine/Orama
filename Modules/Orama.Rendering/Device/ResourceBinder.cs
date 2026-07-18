@@ -88,7 +88,7 @@ public sealed class ResourceBinder : IDisposable
 			{
 				OramaConsole.Exception(new Exception($"Could not find buffer for resource {resource.Key}"));
 
-				using (var pooledFallback = GPUBufferPool.Instance.RentAuto())
+				using (var pooledFallback = GPUBufferPool.Shared.RentAuto())
 				{
 					pooledFallback.Object.AddFloat(0f);
 					gpuBuffer = pooledFallback.Object;

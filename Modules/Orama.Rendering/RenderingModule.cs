@@ -57,7 +57,7 @@ public class RenderingModule : BaseModule
 		Pipeline.Render(in frame);
 		Renderables.Clear();
 
-		GPUBufferPool.Instance.Return(cameraBuffer);
+		GPUBufferPool.Shared.Return(cameraBuffer);
 
 		Renderer.Present();
 	}
