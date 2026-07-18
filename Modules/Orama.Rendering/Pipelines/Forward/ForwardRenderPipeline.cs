@@ -10,6 +10,6 @@ public class ForwardRenderPipeline : RenderPipeline
 
 	public ForwardRenderPipeline()
 	{
-		Passes = [new OpaquePass() { Pipeline = this }]; // Hack
+		Passes = [new OpaquePass()];
 	}
 }

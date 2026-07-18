@@ -168,17 +168,21 @@ public class Shader
 		}
 	}
 
-	/// <summary> The shader's raw SPIR-V bytecode. </summary>
-	internal byte[] VertexBytecode { get; private set; } = Array.Empty<byte>();
-
-	/// <summary> The shader's raw SPIR-V bytecode. </summary>
-	internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
+	/// <summary> The <see cref="IShaderDefaultsProvider"/> used by shaders. </summary>
+	/// <remarks> Defaults to <see cref="Rendering.ShaderDefaultsProvider"/>. </remarks>
+	public static IShaderDefaultsProvider DefaultsProvider { get; } = new ShaderDefaultsProvider();
 
 	/// <summary> The shader's parameter definitions. </summary>
 	public ImmutableArray<ShaderParameter> Parameters { get; private set; }
 
 	/// <summary> The shader's resource definitions mapped to their names. </summary>
 	public ImmutableDictionary<string, ShaderResource> Resources { get; private set; } = ImmutableDictionary<string, ShaderResource>.Empty;
+
+	/// <summary> The shader's raw SPIR-V bytecode. </summary>
+	internal byte[] VertexBytecode { get; private set; } = Array.Empty<byte>();
+
+	/// <summary> The shader's raw SPIR-V bytecode. </summary>
+	internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
 
 	// HACK: This is definitely too close to the GPU
 	// We should move this ASAP

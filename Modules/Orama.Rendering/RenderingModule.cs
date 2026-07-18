@@ -8,6 +8,7 @@ using Orama.Math;
 using Orama.Rendering.Components;
 using Orama.Rendering.Pipelines;
 using Orama.Rendering.Pipelines.Forward;
+using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
 
@@ -43,7 +44,7 @@ public class RenderingModule : BaseModule
 		Matrix4x4 view = Camera.Main?.ViewMatrix ?? Matrix4x4.Identity;
 		Matrix4x4 projection = Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity;
 
-		GPUBuffer cameraBuffer = Pipeline.ShaderDefaultsProvider.GetCameraBuffer(Camera.Main!);
+		GPUBuffer cameraBuffer = Shader.DefaultsProvider.GetCameraBuffer(Camera.Main!);
 
 		var frame = new RenderFrame()
 		{

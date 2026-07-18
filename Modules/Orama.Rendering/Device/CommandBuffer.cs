@@ -66,12 +66,12 @@ public class CommandBuffer : IDisposable
 
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(1f, 0);
 
-	public void DrawRenderable(IClientRenderable renderable, IShaderDefaultsProvider defaults)
+	public void DrawRenderable(IClientRenderable renderable)
 	{
 		var materialBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
 		rentedBuffersThisFrame.Add(materialBuffer);
 
-		GPUBuffer objectBuffer = defaults.GetObjectBuffer(renderable);
+		GPUBuffer objectBuffer = Resources.Shader.DefaultsProvider.GetObjectBuffer(renderable);
 		rentedBuffersThisFrame.Add(objectBuffer);
 
 		ResourceBinder.QueueGPUBuffer(materialBuffer, "Parameters");
