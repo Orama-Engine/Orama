@@ -23,8 +23,6 @@ public sealed class ResourceBinder : IDisposable
 
 	private readonly Dictionary<uint, GPUBuffer[]> lastBoundBuffers = new();
 
-	private DeviceBuffer[] deviceBufferCache = new DeviceBuffer[16];
-
 	private readonly List<KeyValuePair<string, ShaderResource>> orderedResourcesCache = new(32);
 
 	public ResourceBinder(CommandList commandList) => this.commandList = commandList;
@@ -105,19 +103,18 @@ public sealed class ResourceBinder : IDisposable
 			return;
 		}
 
-		ResourceLayoutElementDescription[] layoutElementCache = ArrayPool<ResourceLayoutElementDescription>.Shared.Rent(resourceCount);
+		ResourceLayoutElementDescription[] layoutElements = ArrayPool<ResourceLayoutElementDescription>.Shared.Rent(resourceCount);
 		for (int i = 0; i < resourceCount; i++)
 		{
 			var r = orderedResources[i];
-			layoutElementCache[i] = new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment);
+			layoutElements[i] = new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment);
 		}
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElementCache));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElements.AsSpan(0, resourceCount)));
 
-		ArrayPool<ResourceLayoutElementDescription>.Shared.Return(layoutElementCache);
+		ArrayPool<ResourceLayoutElementDescription>.Shared.Return(layoutElements);
 
-		if (resourceCount > deviceBufferCache.Length)
-			Array.Resize(ref deviceBufferCache, resourceCount * 2);
+		DeviceBuffer[] deviceBuffers = ArrayPool<DeviceBuffer>.Shared.Rent(resourceCount);
 
 		for (int i = 0; i < resourceCount; i++)
 		{
@@ -127,10 +124,12 @@ public sealed class ResourceBinder : IDisposable
 
 			commandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
-			deviceBufferCache[i] = buffer.Resource;
+			deviceBuffers[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBufferCache.AsSpan(0, resourceCount)));
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBuffers.AsSpan(0, resourceCount)));
+
+		ArrayPool<DeviceBuffer>.Shared.Return(deviceBuffers);
 
 		commandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
