@@ -53,11 +53,14 @@ public class InputModule : BaseModule
 		PrimaryGamepad = devices.OfType<Gamepad>().FirstOrDefault();
 	}
 
+	/// <summary> Registers an <see cref="InputAction"/> so it's updated each frame and can be looked up by name. </summary>
 	public InputAction RegisterAction(InputAction action)
 	{
 		actions[action.Name] = action;
 		return action;
 	}
+
+	/// <summary> Gets a previously registered <see cref="InputAction"/> by name. </summary>
 	public InputAction GetAction(string name) => actions[name];
 
 	/// <inheritdoc/>

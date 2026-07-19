@@ -4,7 +4,7 @@
 namespace Orama.Input;
 
 /// <summary>
-/// A single physical input source (a key, button, or axis) that can drive an <see cref="InputAction"/>.
+/// A single physical input source that can drive an <see cref="InputAction"/>.
 /// </summary>
 public interface IInputBinding
 {
