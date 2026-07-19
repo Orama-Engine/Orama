@@ -7,6 +7,7 @@ using Orama.Common;
 using Orama.Common.Utility;
 using Orama.GUI;
 using Orama.Input;
+using Orama.Input.Bindings;
 using Orama.Math;
 using Orama.Physics;
 using Orama.Rendering;
@@ -55,6 +56,10 @@ internal sealed class Program
 			for (int i = 0; i < 1000; i++)
 				OramaConsole.Log($"Logging {i} times.");
 
+			var testAction = new InputAction("TestAction");
+			testAction.AddBinding(new KeyBinding(Input.Devices.Keyboard.Key.Space));
+			testAction.AddBinding(new GamepadButtonBinding(Input.Devices.Gamepad.Button.ActionDown));
+			ModuleManager.GetModule<InputModule>()?.RegisterAction(testAction);
 
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};
@@ -66,6 +71,10 @@ internal sealed class Program
 
 		Application.OnUpdate += () =>
 		{
+			var input = ModuleManager.GetModule<InputModule>();
+			if (input!.GetAction("TestAction").Triggered)
+				OramaConsole.Log("Test action triggered");
+
 
 		};
 

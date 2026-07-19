@@ -26,6 +26,7 @@ public class InputModule : BaseModule
 	public Gamepad? PrimaryGamepad { get; private set; }
 
 	private readonly List<Devices.IInputDevice> devices = new();
+	private readonly Dictionary<string, InputAction> actions = new();
 
 	private IInputContext input = null!;
 
@@ -52,6 +53,16 @@ public class InputModule : BaseModule
 		PrimaryGamepad = devices.OfType<Gamepad>().FirstOrDefault();
 	}
 
+	/// <summary> Registers an <see cref="InputAction"/> so it's updated each frame and can be looked up by name. </summary>
+	public InputAction RegisterAction(InputAction action)
+	{
+		actions[action.Name] = action;
+		return action;
+	}
+
+	/// <summary> Gets a previously registered <see cref="InputAction"/> by name. </summary>
+	public InputAction GetAction(string name) => actions[name];
+
 	/// <inheritdoc/>
 	public override void Dispose()
 	{
@@ -66,5 +77,8 @@ public class InputModule : BaseModule
 	{
 		foreach (var device in devices)
 			device.Update();
+
+		foreach (var action in actions.Values)
+			action.Update();
 	}
 }
