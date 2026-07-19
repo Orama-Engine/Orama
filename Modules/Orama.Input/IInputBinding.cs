@@ -3,7 +3,11 @@
 
 namespace Orama.Input;
 
+/// <summary>
+/// A single physical input source (a key, button, or axis) that can drive an <see cref="InputAction"/>.
+/// </summary>
 public interface IInputBinding
 {
+	/// <summary> Reads the current value of this binding. </summary>
 	public float Read();
 }
