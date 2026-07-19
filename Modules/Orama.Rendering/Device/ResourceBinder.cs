@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Standard;
 using Orama.Common.Utility;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
@@ -16,6 +17,7 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public sealed class ResourceBinder : IDisposable
 {
+	/// <summary> The <see cref="GPUBuffer"/>s that have been queued for binding. </summary>
 	public Dictionary<string, GPUBuffer> GPUBufferQueue { get; } = new();
 
 	private readonly CommandList commandList;
@@ -47,8 +49,8 @@ public sealed class ResourceBinder : IDisposable
 
 		uint currentSet = uint.MaxValue;
 
-		KeyValuePair<string, ShaderResource>[] orderedResources = ArrayPool<KeyValuePair<string, ShaderResource>>.Shared.Rent(totalCount);
-		
+		using RentedArray<KeyValuePair<string, ShaderResource>> orderedResources = new(totalCount);
+
 		int count = 0;
 		foreach (var resource in shader.Resources)
 		{
@@ -56,28 +58,27 @@ public sealed class ResourceBinder : IDisposable
 			{
 				if (count > 0)
 				{
-					UploadSet(currentSet, orderedResources.AsSpan(0, count));
+					UploadSet(currentSet, orderedResources.Array.AsSpan(0, count));
 					count = 0;
 				}
 
 				currentSet = resource.Value.Set;
 			}
 
-			orderedResources[count++] = resource;
+			orderedResources.Array[count++] = resource;
 		}
 
-
 		if (count > 0)
-			UploadSet(currentSet, orderedResources.AsSpan(0, count));
+			UploadSet(currentSet, orderedResources.Array.AsSpan(0, count));
 
-		ArrayPool<KeyValuePair<string, ShaderResource>>.Shared.Return(orderedResources);
 	}
 
 	private void UploadSet(uint setIndex, ReadOnlySpan<KeyValuePair<string, ShaderResource>> orderedResources)
 	{
 		int resourceCount = orderedResources.Length;
-		GPUBuffer[] queuedBuffers = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
-		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.AsSpan(0, resourceCount);
+		using RentedArray<GPUBuffer> queuedBuffers = new(resourceCount);
+
+		Span<GPUBuffer> queuedBuffersSpan = queuedBuffers.Array.AsSpan(0, resourceCount);
 
 		for (int i = 0; i < resourceCount; i++)
 		{
@@ -99,22 +100,20 @@ public sealed class ResourceBinder : IDisposable
 
 		if (lastBoundBuffers.TryGetValue(setIndex, out GPUBuffer[]? previous) && previous.AsSpan().SequenceEqual(queuedBuffersSpan))
 		{
-			ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
+			queuedBuffers.Dispose();
 			return;
 		}
 
-		ResourceLayoutElementDescription[] layoutElements = ArrayPool<ResourceLayoutElementDescription>.Shared.Rent(resourceCount);
+		using RentedArray<ResourceLayoutElementDescription> layoutElements = new(resourceCount);
 		for (int i = 0; i < resourceCount; i++)
 		{
 			var r = orderedResources[i];
-			layoutElements[i] = new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment);
+			layoutElements.Array[i] = new ResourceLayoutElementDescription(r.Key, r.Value.Kind, ShaderStages.Vertex | ShaderStages.Fragment);
 		}
 
-		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElements.AsSpan(0, resourceCount)));
+		FrameCountedResource<ResourceLayout> layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(layoutElements.Array.AsSpan(0, resourceCount)));
 
-		ArrayPool<ResourceLayoutElementDescription>.Shared.Return(layoutElements);
-
-		DeviceBuffer[] deviceBuffers = ArrayPool<DeviceBuffer>.Shared.Rent(resourceCount);
+		using RentedArray<DeviceBuffer> deviceBuffers = new(resourceCount);
 
 		for (int i = 0; i < resourceCount; i++)
 		{
@@ -124,12 +123,10 @@ public sealed class ResourceBinder : IDisposable
 
 			commandList.UpdateBuffer(buffer.Resource, 0, gpuBuffer.Data);
 
-			deviceBuffers[i] = buffer.Resource;
+			deviceBuffers.Array[i] = buffer.Resource;
 		}
 
-		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBuffers.AsSpan(0, resourceCount)));
-
-		ArrayPool<DeviceBuffer>.Shared.Return(deviceBuffers);
+		FrameCountedResource<ResourceSet> resourceSet = ResourceSetCache.Instance.GetOrCreate(new ResourceSetKey(layout.Resource, deviceBuffers.Array.AsSpan(0, resourceCount)));
 
 		commandList.SetGraphicsResourceSet(setIndex, resourceSet.Resource);
 
@@ -139,8 +136,6 @@ public sealed class ResourceBinder : IDisposable
 		GPUBuffer[] persistentSnapshot = ArrayPool<GPUBuffer>.Shared.Rent(resourceCount);
 		queuedBuffersSpan.CopyTo(persistentSnapshot);
 		lastBoundBuffers[setIndex] = persistentSnapshot;
-
-		ArrayPool<GPUBuffer>.Shared.Return(queuedBuffers);
 	}
 
 	/// <inheritdoc/>
