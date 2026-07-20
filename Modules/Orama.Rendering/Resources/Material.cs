@@ -27,7 +27,7 @@ public class Material
 
 	static Material()
 	{
-		Shader? def = Application.ResourceProvider.GetResource<Shader>("Assets/Orama/Debug.slang");
+		Shader? def = Application.ResourceProvider.GetResource<Shader>("Assets/Orama/Unlit.slang");
 		if (def == null)
 		{
 			Default = new Material(new Shader(""));

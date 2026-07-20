@@ -4,7 +4,6 @@
 using Orama.Assemblies;
 using Orama.Audio;
 using Orama.Common;
-using Orama.Common.Utility;
 using Orama.GUI;
 using Orama.Input;
 using Orama.Math;
@@ -51,10 +50,6 @@ internal sealed class Program
 			DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
 
 			cube.Transform.Position = new Vector3(0, 1, 0);
-
-			for (int i = 0; i < 1000; i++)
-				OramaConsole.Log($"Logging {i} times.");
-
 
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};
