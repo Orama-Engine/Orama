@@ -91,9 +91,9 @@ public class Shader
 			{
 				var parameters = new List<ShaderParameter>();
 
-				for (uint i = 0; i < resource.Type.FieldCount; i++)
+				for (uint i = 0; i < resource.TypeLayout.ElementTypeLayout.FieldCount; i++)
 				{
-					var @field = resource.Type.GetFieldByIndex(i);
+					var @field = resource.TypeLayout.ElementTypeLayout.GetFieldByIndex(i);
 
 					if (!Enum.TryParse(@field.Type.Name, true, out ShaderParameter.ParamType type))
 					{
@@ -103,9 +103,9 @@ public class Shader
 
 					object? defaultValue = null;
 
-					for (uint j = 0; j < @field.AttributeCount; j++)
+					for (uint j = 0; j < @field.Variable.AttributeCount; j++)
 					{
-						var attribute = @field.GetAttribute(j);
+						var attribute = @field.Variable.GetAttribute(j);
 
 						// Hacky
 						switch (attribute.Name)
