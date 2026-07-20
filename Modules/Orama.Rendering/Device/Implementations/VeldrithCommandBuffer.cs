@@ -5,6 +5,7 @@ using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
+using System.Diagnostics;
 using Veldrith;
 
 namespace Orama.Rendering.Device.Implementations;
@@ -60,6 +61,8 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			var setKey = new ResourceSetKey(layout.Resource, []);
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
+			Debug.Assert(setKey.BoundResources.Length == material.Shader.Layouts.Length);
+
 			CommandList.SetGraphicsResourceSet((uint)(i + 1), set.Resource);
 		}
 
@@ -73,7 +76,10 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	public void Draw(IClientRenderable renderable) => Draw(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, renderable.Transform, renderable.Material);
 
 	/// <inheritdoc/>
-	public void SetConstantBuffer(int slot, ReadOnlySpan<byte> data) => throw new NotImplementedException();
+	public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)
+	{
+
+	}
 
 	/// <inheritdoc/>
 	public void SetFrameBuffer(Framebuffer frameBuffer)

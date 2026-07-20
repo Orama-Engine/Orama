@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+
 using Veldrith;
 
 namespace Orama.Rendering.Resources.Caches;
@@ -25,14 +26,25 @@ public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, Con
 	}
 }
 
-public readonly ref struct ConstantBufferKey(ReadOnlySpan<byte> data) : IResourceKey
+public readonly ref struct ConstantBufferKey(string name, ReadOnlySpan<byte> data) : IResourceKey
 {
 	public readonly ReadOnlySpan<byte> Data = data;
+
+	public ReadOnlySpan<char> Name => name;
 
 	/// <inheritdoc/>
 	public int Hash => GetHashCode();
 
-	public bool Equals(ConstantBufferKey other) => Data.SequenceEqual(other.Data);
+	public bool Equals(ConstantBufferKey other)
+	{
+		if (Data.Length != other.Data.Length)
+			return false;
+
+		if (!Name.SequenceEqual(other.Name))
+			return false;
+
+		return Data.SequenceEqual(other.Data);
+	}
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
@@ -42,6 +54,8 @@ public readonly ref struct ConstantBufferKey(ReadOnlySpan<byte> data) : IResourc
 			int hash = 17;
 			foreach (byte b in Data)
 				hash = hash * 31 + b;
+
+			hash = hash * 31 + name.GetHashCode();
 			return hash;
 		}
 	}

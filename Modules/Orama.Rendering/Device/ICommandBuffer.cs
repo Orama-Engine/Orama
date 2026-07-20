@@ -40,7 +40,7 @@ public interface ICommandBuffer : IDisposable
 	#endregion
 
 	#region Binding
-	/// <summary> Sets a constant buffer for the given slot. </summary>
-	void SetConstantBuffer(int slot, ReadOnlySpan<byte> data);
+	/// <summary> Sets a constant buffer of name <paramref name="bufferName"/> to <paramref name="data"/>. </summary>
+	void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data);
 	#endregion
 }
