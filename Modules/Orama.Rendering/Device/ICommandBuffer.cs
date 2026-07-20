@@ -12,6 +12,9 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public interface ICommandBuffer : IDisposable
 {
+	/// <summary> The <see cref="CommandList"/> to which commands are internally recorded. </summary>
+	internal CommandList CommandList { get; }
+
 	#region Lifecycle
 	/// <summary> Begins recording GPU commands. </summary>
 	void Begin();

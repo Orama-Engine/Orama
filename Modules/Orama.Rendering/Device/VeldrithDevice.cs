@@ -2,7 +2,6 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Rendering.Device;
-
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
 
@@ -29,7 +28,7 @@ public class VeldrithDevice
 		this.backend = backend;
 	}
 
-	/// <inheritdoc/>
+	/// <summary> Initializes the graphics device for the given <see cref="IWindow"/>. </summary>
 	public void Initialize(IWindow window)
 	{
 		var native = window.Native;
@@ -61,9 +60,10 @@ public class VeldrithDevice
 
 	}
 
-	public void SubmitCommands(CommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
+	/// <summary> Submits an <see cref="ICommandBuffer"/> for execution. </summary>
+	public void SubmitCommands(ICommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
 
-	/// <inheritdoc/>
+	/// <summary> Resizes the swapchain. </summary>
 	public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
 
 	private static SwapchainSource CreateSwapchainSource(INativeWindow? native)
