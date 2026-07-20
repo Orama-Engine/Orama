@@ -14,7 +14,7 @@ public class OpaquePass : RenderPass
 	public override void Render(in RenderFrame frame, ICommandBuffer buffer)
 	{
 		buffer.CommandList.ClearDepthStencil(1.0f);
-		buffer.CommandList.ClearColorTarget(0, Veldrith.RgbaFloat.BLACK);
+		buffer.CommandList.ClearColorTarget(0, Veldrith.RgbaFloat.YELLOW);
 
 		foreach (IClientRenderable renderable in frame.Renderables)
 		{
