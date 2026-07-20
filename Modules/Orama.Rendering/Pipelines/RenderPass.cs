@@ -21,20 +21,18 @@ public abstract class RenderPass
 		using var buffer = CommandBufferPool.Shared.RentAuto();
 		buffer.Object.Begin();
 
-		buffer.Object.CommandList.SetFramebuffer(TargetBuffer);
-		buffer.Object.ResourceBinder.QueueGPUBuffer(frame.CameraBuffer, "Camera");
+		buffer.Object.SetFrameBuffer(TargetBuffer);
+		buffer.Object.SetConstantBuffer("Camera", frame.CameraBuffer);
 
-		Render(in frame, buffer);
-
-		buffer.Object.DrawQueue();
+		Render(in frame, buffer.Object);
 
 		buffer.Object.End();
-		Renderer.SubmitCommandBuffer(buffer);
+		Renderer.SubmitCommandBuffer(buffer.Object);
 	}
 
 	/// <summary> Performs rendering operations. </summary>
 	/// <remarks> This method is called by <see cref="RenderPass.Execute(in RenderFrame)"/>. </remarks>
-	public abstract void Render(in RenderFrame frame, CommandBuffer buffer);
+	public abstract void Render(in RenderFrame frame, ICommandBuffer buffer);
 
 	/// <summary> The target <see cref="Framebuffer"/> this pass is rendering to. </summary>
 	protected virtual Framebuffer TargetBuffer => Renderer.Veldrith.GraphicsDevice.SwapchainFramebuffer;

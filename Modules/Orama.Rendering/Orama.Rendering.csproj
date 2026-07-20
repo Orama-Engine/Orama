@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="AssimpNetter" Version="6.0.5" />
     <PackageReference Include="Silk.NET.Windowing" Version="2.23.0" />
-    <PackageReference Include="SlangShaderSharp" Version="2026.9.0" />
+    <PackageReference Include="SlangShaderSharp" Version="2026.13.1" />
     <PackageReference Include="StbImageSharp" Version="2.30.15" />
     <PackageReference Include="Veldrith" Version="1.2.18" />
     <PackageReference Include="Veldrith.SPIRV" Version="1.2.18" />
@@ -26,6 +26,9 @@
 
   <ItemGroup>
     <None Update="Assets\Orama\Attributes.slang">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Orama\Debug.slang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Orama\DummyLit.slang">

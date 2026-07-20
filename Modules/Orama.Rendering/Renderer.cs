@@ -61,7 +61,7 @@ public static class Renderer
 	}
 
 	/// <summary> Submits the given <see cref="CommandBuffer"/> to be ran. </summary>
-	public static void SubmitCommandBuffer(CommandBuffer commandBuffer) => Veldrith.SubmitCommands(commandBuffer);
+	public static void SubmitCommandBuffer(ICommandBuffer commandBuffer) => Veldrith.SubmitCommands(commandBuffer);
 
 	/// <summary> Resizes the renderer. </summary>
 	public static void Resize(int width, int height) => Veldrith.Resize(width, height);

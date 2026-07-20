@@ -34,7 +34,7 @@ public static class ShaderBaker
 
 		SessionDesc sesDesc = new()
 		{
-			Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv, Profile = globalSession.FindProfile("spirv_1_6") }],
+			Targets = [new TargetDesc { Format = SlangCompileTarget.Spirv, Profile = globalSession.FindProfile("spirv_1_3") }],
 			SearchPaths = ["Assets"], // Hacky
 			CompilerOptionEntries = options,
 		};
