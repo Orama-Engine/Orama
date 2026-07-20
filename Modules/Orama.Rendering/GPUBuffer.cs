@@ -49,13 +49,9 @@ public sealed class GPUBuffer
 	private byte[] data = new byte[DEFAULT_SIZE];
 	private int offset = 0;
 
-
-	/// <summary> Constructs a <see cref="GPUBuffer"/> from a <see cref="Material"/>s parameters. </summary>
-	/// <remarks> <see cref="GPUBuffer"/>s created via this method should be returned to the pool via <c>GPUBufferPool.Instance.Return()</c> when no longer in use. </remarks>
-	public static GPUBuffer ConstructFromMaterial(Material mat)
+	/// <summary> Adds the parameters of a <see cref="Material"/> to the buffer. </summary>
+	public void AddMaterialParameters(Material mat)
 	{
-		GPUBuffer buffer = GPUBufferPool.Shared.Rent();
-
 		ReadOnlySpan<ShaderParameter> paramSpan = mat.Shader.Resources.First(x => x.Name == "Parameters").Parameters.AsSpan();
 
 		foreach (ref readonly var param in paramSpan)
@@ -63,23 +59,23 @@ public sealed class GPUBuffer
 			switch (param)
 			{
 				case { Type: ShaderParameter.ParamType.Float, DefaultValue: float f }:
-					buffer.AddFloat(f);
+					AddFloat(f);
 					break;
 
 				case { Type: ShaderParameter.ParamType.Int, DefaultValue: long i }:
-					buffer.AddInt((int)i);
+					AddInt((int)i);
 					break;
 
 				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector3 v }:
-					buffer.AddFloat3(v.X, v.Y, v.Z);
+					AddFloat3(v.X, v.Y, v.Z);
 					break;
 
 				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector2 v }:
-					buffer.AddFloat2(v.X, v.Y);
+					AddFloat2(v.X, v.Y);
 					break;
 
 				case { Type: ShaderParameter.ParamType.Vector, DefaultValue: Vector4 v }:
-					buffer.AddFloat4(v.X, v.Y, v.Z, v.W);
+					AddFloat4(v.X, v.Y, v.Z, v.W);
 					break;
 
 				case { Type: ShaderParameter.ParamType.SampledTexture2D, DefaultValue: Texture text }:
@@ -95,8 +91,6 @@ public sealed class GPUBuffer
 					break;
 			}
 		}
-
-		return buffer;
 	}
 
 	public void AddInt(int value)

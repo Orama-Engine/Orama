@@ -23,12 +23,11 @@ public class OpaquePass : RenderPass
 				using var objectBuffer = GPUBufferPool.Shared.RentAuto();
 				objectBuffer.Object.AddMatrix4x4(renderable.Transform);
 
-				var paramBuffer = GPUBuffer.ConstructFromMaterial(renderable.Material);
+				using var paramBuffer = GPUBufferPool.Shared.RentAuto();
+				paramBuffer.Object.AddMaterialParameters(renderable.Material);
 
 				buffer.SetConstantBuffer("Object", objectBuffer.Object.Data);
-				buffer.SetConstantBuffer("Parameters", paramBuffer.Data);
-
-				GPUBufferPool.Shared.Return(paramBuffer);
+				buffer.SetConstantBuffer("Parameters", paramBuffer.Object.Data);
 
 				buffer.Draw(renderable);
 			}
