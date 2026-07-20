@@ -7,7 +7,6 @@ using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Veldrith;
-
 using Shader = Orama.Rendering.Resources.Shader;
 
 namespace Orama.Rendering.Device.Implementations;
@@ -83,7 +82,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 
 			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(group.LayoutElements.AsSpan()));
 
-			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index).ToArray());
+			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index));
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
 			CommandList.SetGraphicsResourceSet(group.Set, set.Resource);
