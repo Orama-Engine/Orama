@@ -41,6 +41,10 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			return;
 		}
 
+		using var transformBuffer = GPUBufferPool.Shared.RentAuto();
+		transformBuffer.Object.AddMatrix4x4(transform);
+		SetConstantBuffer("Object", transformBuffer.Object.Data);
+
 		var pipelineKey = new PipelineKey(
 			passName: material.Shader.Pass,
 			shader: new ShaderKey(material.Shader.VertexBytecode, material.Shader.FragmentBytecode),

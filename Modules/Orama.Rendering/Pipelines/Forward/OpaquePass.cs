@@ -20,13 +20,9 @@ public class OpaquePass : RenderPass
 		{
 			if (renderable.Material.Shader.Pass == "Opaque")
 			{
-				using var objectBuffer = GPUBufferPool.Shared.RentAuto();
-				objectBuffer.Object.AddMatrix4x4(renderable.Transform);
-
 				using var paramBuffer = GPUBufferPool.Shared.RentAuto();
 				paramBuffer.Object.AddMaterialParameters(renderable.Material);
 
-				buffer.SetConstantBuffer("Object", objectBuffer.Object.Data);
 				buffer.SetConstantBuffer("Parameters", paramBuffer.Object.Data);
 
 				buffer.Draw(renderable);
