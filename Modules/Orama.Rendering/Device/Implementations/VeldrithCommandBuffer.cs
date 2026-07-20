@@ -5,7 +5,6 @@ using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
-using System.Diagnostics;
 using Veldrith;
 
 namespace Orama.Rendering.Device.Implementations;
@@ -55,15 +54,38 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 		CommandList.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
 		CommandList.SetIndexBuffer(renderItem.Resource.IndexBuffer, IndexFormat.UInt32);
 
-		for (int i = 0; i < material.Shader.Layouts.Length; i++)
+		foreach (var group in material.Shader.Resources.GroupBy(r => r.Set).OrderBy(g => g.Key))
 		{
-			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(material.Shader.Layouts[i].Elements));
-			var setKey = new ResourceSetKey(layout.Resource, []);
+			var boundResources = new IBindableResource[group.Count()];
+
+			int index = 0;
+
+			foreach (var resource in group.OrderBy(r => r.Binding))
+			{
+				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferKey(resource.Name, resource.SizeInBytes));
+				if (buffer?.Resource == null)
+				{
+					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");
+					continue;
+				}
+
+				boundResources[index++] = buffer.Resource;
+			}
+
+			var layout = ResourceLayoutCache.Instance.GetOrCreate(
+				new ResourceLayoutKey(
+					group.OrderBy(r => r.Binding)
+						 .Select(r => new ResourceLayoutElementDescription(
+							 r.Name,
+							 r.Kind,
+							 ShaderStages.Vertex | ShaderStages.Fragment))
+						 .ToArray()));
+
+			var setKey = new ResourceSetKey(layout.Resource, boundResources);
+
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
-			Debug.Assert(setKey.BoundResources.Length == material.Shader.Layouts.Length);
-
-			CommandList.SetGraphicsResourceSet((uint)(i + 1), set.Resource);
+			CommandList.SetGraphicsResourceSet(group.Key, set.Resource);
 		}
 
 		CommandList.DrawIndexed(renderItem.Resource.IndexCount);
@@ -78,7 +100,16 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	/// <inheritdoc/>
 	public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)
 	{
+		ConstantBufferKey key = new(bufferName, (uint)data.Length);
+		FrameCountedResource<DeviceBuffer> buffer = ConstantBufferCache.Instance.GetOrCreate(key);
 
+		if (buffer.Resource.SizeInBytes != data.Length)
+		{
+			OramaConsole.Warning($"Constant buffer '{bufferName}' is {buffer.Resource.SizeInBytes} bytes, but {data.Length} bytes were written.");
+			return;
+		}
+
+		CommandList.UpdateBuffer(buffer.Resource, 0, data);
 	}
 
 	/// <inheritdoc/>

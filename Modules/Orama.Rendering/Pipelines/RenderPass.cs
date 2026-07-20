@@ -22,9 +22,9 @@ public abstract class RenderPass
 		buffer.Object.Begin();
 
 		buffer.Object.SetFrameBuffer(TargetBuffer);
+		buffer.Object.SetConstantBuffer("Camera", frame.CameraBuffer.Data);
 
 		Render(in frame, buffer.Object);
-
 
 		buffer.Object.End();
 		Renderer.SubmitCommandBuffer(buffer.Object);

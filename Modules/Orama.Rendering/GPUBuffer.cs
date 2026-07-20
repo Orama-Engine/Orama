@@ -56,7 +56,7 @@ public sealed class GPUBuffer
 	{
 		GPUBuffer buffer = GPUBufferPool.Shared.Rent();
 
-		ReadOnlySpan<ShaderParameter> paramSpan = mat.Shader.Parameters.AsSpan();
+		ReadOnlySpan<ShaderParameter> paramSpan = mat.Shader.Resources.First(x => x.Name == "ShaderParameters").Parameters.AsSpan();
 
 		foreach (ref readonly var param in paramSpan)
 		{

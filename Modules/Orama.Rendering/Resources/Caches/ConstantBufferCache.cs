@@ -14,49 +14,23 @@ public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, Con
 		var gd = Renderer.Veldrith.GraphicsDevice;
 		var factory = gd.ResourceFactory;
 		
-		// Should we align size here or leave it up to the user/GPUBuffer?
-		uint alignedSize = (uint)((key.Data.Length + 15) & ~15);
-
-		var desc = new BufferDescription(alignedSize, BufferUsage.UniformBuffer | BufferUsage.Dynamic);
+		var desc = new BufferDescription(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic);
 		DeviceBuffer buffer = factory.CreateBuffer(desc);
-
-		gd.UpdateBuffer(buffer, 0, key.Data);
 
 		return buffer;
 	}
 }
 
-public readonly ref struct ConstantBufferKey(string name, ReadOnlySpan<byte> data) : IResourceKey
+public readonly ref struct ConstantBufferKey(string name, uint size) : IResourceKey
 {
-	public readonly ReadOnlySpan<byte> Data = data;
-
+	public uint Size => size;
 	public ReadOnlySpan<char> Name => name;
 
 	/// <inheritdoc/>
-	public int Hash => GetHashCode();
+	public int Hash => unchecked(string.GetHashCode(name));
 
-	public bool Equals(ConstantBufferKey other)
-	{
-		if (Data.Length != other.Data.Length)
-			return false;
-
-		if (!Name.SequenceEqual(other.Name))
-			return false;
-
-		return Data.SequenceEqual(other.Data);
-	}
+	public bool Equals(ConstantBufferKey other) => name.SequenceEqual(other.Name);
 
 	/// <inheritdoc/>
-	public override int GetHashCode()
-	{
-		unchecked
-		{
-			int hash = 17;
-			foreach (byte b in Data)
-				hash = hash * 31 + b;
-
-			hash = hash * 31 + name.GetHashCode();
-			return hash;
-		}
-	}
+	public override int GetHashCode() => Hash;
 }

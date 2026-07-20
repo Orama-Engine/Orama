@@ -1,14 +1,13 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using System.Collections.Immutable;
-using System.Text;
-
 using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
-
+using SlangShaderSharp;
+using System.Collections.Immutable;
+using System.Text;
 using Veldrith;
 
 namespace Orama.Rendering.Resources;
@@ -41,15 +40,23 @@ public sealed class ShaderParameter
 
 public sealed class ShaderResource
 {
+	public string Name { get; }
 	public ResourceKind Kind { get; }
 	public uint Binding { get; }
 	public uint Set { get; }
+	public uint SizeInBytes { get; }
 
-	public ShaderResource(ResourceKind kind, uint binding, uint set)
+	public ImmutableArray<ShaderParameter> Parameters { get; }
+
+	public ShaderResource(string name, ResourceKind kind, uint binding, uint set, IEnumerable<ShaderParameter> parameters, uint sizeInBytes)
 	{
+		Name = name;
 		Kind = kind;
 		Binding = binding;
 		Set = set;
+		SizeInBytes = sizeInBytes;
+
+		Parameters = parameters.ToImmutableArray();
 	}
 }
 
@@ -78,93 +85,98 @@ public class Shader
 					Pass = attribute.GetArgumentValueString(0);
 			}
 
-			var parameters = new List<ShaderParameter>();
+			var resources = new List<ShaderResource>();
 
-			foreach (var parameter in comp.ShaderParameters)
+			foreach (var resource in comp.Resources)
 			{
-				if (!Enum.TryParse(parameter.Type.Name, true, out ShaderParameter.ParamType type))
+				var parameters = new List<ShaderParameter>();
+
+				for (uint i = 0; i < resource.Type.FieldCount; i++)
 				{
-					OramaConsole.Warning($"Unsupported or invalid shader parameter type '{parameter.Type.Name}'.");
-					continue;
-				}
+					var @field = resource.Type.GetFieldByIndex(i);
 
-				object? defaultValue = null;
-
-				uint attributeCount = parameter.AttributeCount;
-				for (uint i = 0; i < attributeCount; i++)
-				{
-					var attribute = parameter.GetAttribute(i);
-
-					// Hacky
-					switch (attribute.Name)
+					if (!Enum.TryParse(@field.Type.Name, true, out ShaderParameter.ParamType type))
 					{
-						case "DefaultFloat":
-							defaultValue = attribute.GetArgumentValueFloat(0);
-							break;
-
-						case "DefaultInt":
-							defaultValue = attribute.GetArgumentValueInt(0);
-							break;
-
-						case "DefaultFloat2":
-							defaultValue = new Vector2(
-								attribute.GetArgumentValueFloat(0),
-								attribute.GetArgumentValueFloat(1)
-							);
-							break;
-
-						case "DefaultFloat3":
-							defaultValue = new Vector3(
-								attribute.GetArgumentValueFloat(0),
-								attribute.GetArgumentValueFloat(1),
-								attribute.GetArgumentValueFloat(2)
-							);
-							break;
-
-						case "DefaultFloat4":
-							defaultValue = new Vector4(
-								attribute.GetArgumentValueFloat(0),
-								attribute.GetArgumentValueFloat(1),
-								attribute.GetArgumentValueFloat(2),
-								attribute.GetArgumentValueFloat(3)
-							);
-							break;
-
-						case "DefaultTexture":
-							defaultValue = Application.ResourceProvider.GetResource<Texture>(attribute.GetArgumentValueString(0));
-							break;
-
-						default:
-							continue;
+						OramaConsole.Warning($"Unsupported shader parameter type '{@field.Type.Name}'.");
+						continue;
 					}
 
-					parameters.Add(new ShaderParameter(parameter.Name, type, defaultValue));
+					object? defaultValue = null;
+
+					for (uint j = 0; j < @field.AttributeCount; j++)
+					{
+						var attribute = @field.GetAttribute(j);
+
+						// Hacky
+						switch (attribute.Name)
+						{
+							case "DefaultFloat":
+								defaultValue = attribute.GetArgumentValueFloat(0);
+								break;
+
+							case "DefaultInt":
+								defaultValue = attribute.GetArgumentValueInt(0);
+								break;
+
+							case "DefaultFloat2":
+								defaultValue = new Vector2(
+									attribute.GetArgumentValueFloat(0),
+									attribute.GetArgumentValueFloat(1));
+								break;
+
+							case "DefaultFloat3":
+								defaultValue = new Vector3(
+									attribute.GetArgumentValueFloat(0),
+									attribute.GetArgumentValueFloat(1),
+									attribute.GetArgumentValueFloat(2));
+								break;
+
+							case "DefaultFloat4":
+								defaultValue = new Vector4(
+									attribute.GetArgumentValueFloat(0),
+									attribute.GetArgumentValueFloat(1),
+									attribute.GetArgumentValueFloat(2),
+									attribute.GetArgumentValueFloat(3));
+								break;
+
+							case "DefaultTexture":
+								defaultValue = Application.ResourceProvider.GetResource<Texture>(
+									attribute.GetArgumentValueString(0));
+								break;
+						}
+					}
+
+					parameters.Add(new ShaderParameter(@field.Name, type, defaultValue));
 				}
 
-				var resources = new Dictionary<string, ShaderResource>();
+				var elementType = resource.TypeLayout;
 
-				// We use GetOffset because it seems to be the only method to consistently get the correct finalised bindings
-				// Be careful around BindingIndex & BindingSpace
-				foreach (var resource in comp.Resources)
-					resources.Add(resource.Name, new ShaderResource(ResourceKind.UniformBuffer, (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.DescriptorTableSlot), (uint)resource.GetOffset(SlangShaderSharp.SlangParameterCategory.SubElementRegisterSpace)));
+				uint size = (uint)elementType.ElementTypeLayout.GetSize(SlangParameterCategory.Uniform);
 
-				this.Parameters = parameters.ToImmutableArray();
-				this.Resources = resources.OrderBy(r => r.Value.Set).ThenBy(r => r.Value.Binding).ToDictionary(r => r.Key, r => r.Value).ToImmutableDictionary();
-
-				this.Layouts = resources
-					.GroupBy(r => r.Value.Set)
-					.OrderBy(g => g.Key)
-					.Select(g => new ResourceLayoutDescription(
-						g.OrderBy(r => r.Value.Binding)
-						 .Select(r => new ResourceLayoutElementDescription(
-							 r.Key,
-							 r.Value.Kind,
-							 ShaderStages.Vertex | ShaderStages.Fragment))
-						 .ToArray()))
-					.ToArray();
-
-				field = value;
+				resources.Add(new ShaderResource(
+					resource.Name,
+					ResourceKind.UniformBuffer,
+					(uint)resource.GetOffset(SlangParameterCategory.DescriptorTableSlot),
+					(uint)resource.GetOffset(SlangParameterCategory.SubElementRegisterSpace),
+					parameters,
+					size));
 			}
+
+			Resources = resources.OrderBy(r => r.Set).ThenBy(r => r.Binding).ToImmutableArray();
+
+			Layouts = Resources
+				.GroupBy(r => r.Set)
+				.OrderBy(g => g.Key)
+				.Select(g => new ResourceLayoutDescription(
+					g.OrderBy(r => r.Binding)
+					 .Select(r => new ResourceLayoutElementDescription(
+						 r.Name,
+						 r.Kind,
+						 ShaderStages.Vertex | ShaderStages.Fragment))
+					 .ToArray()))
+				.ToArray();
+
+			field = value;
 		}
 	}
 
@@ -172,11 +184,8 @@ public class Shader
 	/// <remarks> Defaults to <see cref="Rendering.ShaderDefaultsProvider"/>. </remarks>
 	public static IShaderDefaultsProvider DefaultsProvider { get; } = new ShaderDefaultsProvider();
 
-	/// <summary> The shader's parameter definitions. </summary>
-	public ImmutableArray<ShaderParameter> Parameters { get; private set; }
-
-	/// <summary> The shader's resource definitions mapped to their names. </summary>
-	public ImmutableDictionary<string, ShaderResource> Resources { get; private set; } = ImmutableDictionary<string, ShaderResource>.Empty;
+	/// <summary> The shader's resource definitions. </summary>
+	public ImmutableArray<ShaderResource> Resources { get; private set; } = ImmutableArray<ShaderResource>.Empty;
 
 	/// <summary> The shader's raw SPIR-V bytecode. </summary>
 	internal byte[] VertexBytecode { get; private set; } = Array.Empty<byte>();

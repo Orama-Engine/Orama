@@ -14,12 +14,23 @@ public class OpaquePass : RenderPass
 	public override void Render(in RenderFrame frame, ICommandBuffer buffer)
 	{
 		buffer.CommandList.ClearDepthStencil(1.0f);
-		buffer.CommandList.ClearColorTarget(0, Veldrith.RgbaFloat.YELLOW);
+		buffer.CommandList.ClearColorTarget(0, Veldrith.RgbaFloat.BLACK);
 
 		foreach (IClientRenderable renderable in frame.Renderables)
 		{
 			if (renderable.Material.Shader.Pass == "Opaque")
+			{
+				using var objectBuffer = GPUBufferPool.Shared.RentAuto();
+				objectBuffer.Object.AddMatrix4x4(renderable.Transform);
+
+				using var paramBuffer = GPUBufferPool.Shared.RentAuto();
+				paramBuffer.Object.AddFloat4(1, 1, 1, 1);
+
+				buffer.SetConstantBuffer("Object", objectBuffer.Object.Data);
+				buffer.SetConstantBuffer("Parameters", paramBuffer.Object.Data);
+
 				buffer.Draw(renderable);
+			}
 		}
 	}
 }

@@ -68,6 +68,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		return pipeline;
 	}
 }
+
 public readonly ref struct PipelineKey(string passName, ShaderKey shader, OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
 {
 	public readonly string PassName = passName;
