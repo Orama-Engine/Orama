@@ -10,7 +10,7 @@ namespace Orama.Rendering.Device.Implementations;
 /// <summary>
 /// Veldrith-based implementation of <see cref="ICommandBuffer"/>.
 /// </summary>
-internal class VeldrithCommandBuffer : ICommandBuffer
+internal sealed class VeldrithCommandBuffer : ICommandBuffer
 {
 	/// <inheritdoc/>
 	public CommandList CommandList { get; }
