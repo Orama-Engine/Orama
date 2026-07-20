@@ -34,7 +34,7 @@ public interface ICommandBuffer : IDisposable
 
 	/// <summary> Draws a <see cref="Mesh"/> with the given transform <see cref="Matrix4x4"/> and <see cref="Material"/>. </summary>
 	void Draw(Mesh mesh, Matrix4x4 transform, Material material);
-	
+
 	/// <summary> Draws an <see cref="IClientRenderable"/>. </summary>
 	void Draw(IClientRenderable renderable);
 	#endregion

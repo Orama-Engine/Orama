@@ -13,7 +13,7 @@ public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, Con
 	{
 		var gd = Renderer.Veldrith.GraphicsDevice;
 		var factory = gd.ResourceFactory;
-		
+
 		var desc = new BufferDescription(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic);
 		DeviceBuffer buffer = factory.CreateBuffer(desc);
 
