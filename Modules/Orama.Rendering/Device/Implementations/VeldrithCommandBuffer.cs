@@ -62,31 +62,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 		CommandList.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
 		CommandList.SetIndexBuffer(renderItem.Resource.IndexBuffer, IndexFormat.UInt32);
 
-		foreach (var group in material.Shader.ResourceGroups)
-		{
-			using RentedArray<IBindableResource> boundResources = new(group.Resources.Length);
-
-			int index = 0;
-
-			foreach (var resource in group.Resources)
-			{
-				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferKey(resource.Name, resource.SizeInBytes));
-				if (buffer?.Resource == null)
-				{
-					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");
-					continue;
-				}
-
-				boundResources.Array[index++] = buffer.Resource;
-			}
-
-			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(group.LayoutElements.AsSpan()));
-
-			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index));
-			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
-
-			CommandList.SetGraphicsResourceSet(group.Set, set.Resource);
-		}
+		BindShaderResources(material.Shader);
 
 		CommandList.DrawIndexed(renderItem.Resource.IndexCount);
 	}
@@ -117,5 +93,34 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	{
 		CommandList.SetFramebuffer(frameBuffer);
 		target = frameBuffer;
+	}
+
+	private void BindShaderResources(Shader shader)
+	{
+		foreach (var group in shader.ResourceGroups)
+		{
+			using RentedArray<IBindableResource> boundResources = new(group.Resources.Length);
+
+			int index = 0;
+
+			foreach (var resource in group.Resources)
+			{
+				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferKey(resource.Name, resource.SizeInBytes));
+				if (buffer?.Resource == null)
+				{
+					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");
+					continue;
+				}
+
+				boundResources.Array[index++] = buffer.Resource;
+			}
+
+			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(group.LayoutElements.AsSpan()));
+
+			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index));
+			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
+
+			CommandList.SetGraphicsResourceSet(group.Set, set.Resource);
+		}
 	}
 }
