@@ -1,7 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Math;
 using Orama.Rendering.Components;
+using Orama.Rendering.Device;
 
 namespace Orama.Rendering;
 
@@ -10,32 +12,30 @@ namespace Orama.Rendering;
 /// </summary>
 public interface IShaderDefaultsProvider
 {
-	/// <summary> Gets a <see cref="GPUBuffer"/> with data from <paramref name="camera"/>. </summary>
-	/// <remarks> <see cref="GPUBuffer"/>s obtained with this method must be manually returned to the <see cref="GPUBufferPool"/> when no longer in use. </remarks>
-	GPUBuffer GetCameraBuffer(Camera camera);
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with data from <paramref name="camera"/> formatted for uploading via <see cref="ICommandBuffer.SetConstantBuffer(string, ReadOnlySpan{byte})"/>. </summary>
+	ReadOnlySpan<byte> GetCameraBuffer(Camera camera);
 
-	/// <summary> Gets a <see cref="GPUBuffer"/> with data from <paramref name="renderable"/>. </summary>
-	/// <remarks> <see cref="GPUBuffer"/>s obtained with this method must be manually returned to the <see cref="GPUBufferPool"/> when no longer in use. </remarks>
-	GPUBuffer GetObjectBuffer(IClientRenderable renderable);
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with the given object data formatted for uploading via <see cref="ICommandBuffer.SetConstantBuffer(string, ReadOnlySpan{byte})"/>. </summary>
+	ReadOnlySpan<byte> GetObjectBuffer(Matrix4x4 transform);
 }
 
 public class ShaderDefaultsProvider : IShaderDefaultsProvider
 {
 	/// <inheritdoc/>
-	public GPUBuffer GetCameraBuffer(Camera camera)
+	public ReadOnlySpan<byte> GetCameraBuffer(Camera camera)
 	{
-		GPUBuffer cameraBuffer = GPUBufferPool.Shared.Rent();
-		cameraBuffer.AddMatrix4x4(camera.ViewMatrix);
-		cameraBuffer.AddMatrix4x4(camera.ProjectionMatrix);
+		using var cameraBuffer = GPUBufferPool.Shared.RentAuto();
+		cameraBuffer.Object.AddMatrix4x4(camera.ViewMatrix);
+		cameraBuffer.Object.AddMatrix4x4(camera.ProjectionMatrix);
 
-		return cameraBuffer;
+		return cameraBuffer.Object.Data;
 	}
 
 	/// <inheritdoc/>
-	public GPUBuffer GetObjectBuffer(IClientRenderable renderable)
+	public ReadOnlySpan<byte> GetObjectBuffer(Matrix4x4 transform)
 	{
-		GPUBuffer objectBuffer = GPUBufferPool.Shared.Rent();
-		objectBuffer.AddMatrix4x4(renderable.Transform);
-		return objectBuffer;
+		using var objectBuffer = GPUBufferPool.Shared.RentAuto();
+		objectBuffer.Object.AddMatrix4x4(transform);
+		return objectBuffer.Object.Data;
 	}
 }

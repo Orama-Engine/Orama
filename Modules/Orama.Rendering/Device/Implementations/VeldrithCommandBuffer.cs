@@ -6,6 +6,7 @@ using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Veldrith;
+using Shader = Orama.Rendering.Resources.Shader;
 
 namespace Orama.Rendering.Device.Implementations;
 
@@ -41,9 +42,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			return;
 		}
 
-		using var transformBuffer = GPUBufferPool.Shared.RentAuto();
-		transformBuffer.Object.AddMatrix4x4(transform);
-		SetConstantBuffer("Object", transformBuffer.Object.Data);
+		SetConstantBuffer("Object", Shader.DefaultsProvider.GetObjectBuffer(transform));
 
 		var pipelineKey = new PipelineKey(
 			passName: material.Shader.Pass,

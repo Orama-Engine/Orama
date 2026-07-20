@@ -44,7 +44,7 @@ public class RenderingModule : BaseModule
 		Matrix4x4 view = Camera.Main?.ViewMatrix ?? Matrix4x4.Identity;
 		Matrix4x4 projection = Camera.Main?.ProjectionMatrix ?? Matrix4x4.Identity;
 
-		GPUBuffer cameraBuffer = Shader.DefaultsProvider.GetCameraBuffer(Camera.Main!);
+		ReadOnlySpan<byte> cameraBuffer = Shader.DefaultsProvider.GetCameraBuffer(Camera.Main!);
 
 		var frame = new RenderFrame()
 		{
@@ -56,8 +56,6 @@ public class RenderingModule : BaseModule
 
 		Pipeline.Render(in frame);
 		Renderables.Clear();
-
-		GPUBufferPool.Shared.Return(cameraBuffer);
 
 		Renderer.Present();
 	}
