@@ -19,14 +19,7 @@ public class OpaquePass : RenderPass
 		foreach (IClientRenderable renderable in frame.Renderables)
 		{
 			if (renderable.Material.Shader.Pass == "Opaque")
-			{
-				using var paramBuffer = GPUBufferPool.Shared.RentAuto();
-				paramBuffer.Object.AddMaterialParameters(renderable.Material);
-
-				buffer.SetConstantBuffer("Parameters", paramBuffer.Object.Data);
-
 				buffer.Draw(renderable);
-			}
 		}
 	}
 }

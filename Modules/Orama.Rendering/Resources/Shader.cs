@@ -60,6 +60,13 @@ public sealed class ShaderResource
 	}
 }
 
+public readonly struct ShaderResourceGroup
+{
+	public uint Set { get; init; }
+	public ImmutableArray<ShaderResource> Resources { get; init; }
+	public ImmutableArray<ResourceLayoutElementDescription> LayoutElements { get; init; }
+}
+
 public class Shader
 {
 	/// <summary> The name of the shader's pass. </summary>
@@ -164,6 +171,18 @@ public class Shader
 
 			Resources = resources.OrderBy(r => r.Set).ThenBy(r => r.Binding).ToImmutableArray();
 
+			var layouts = Resources.Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment)).ToImmutableArray();
+
+			ResourceGroups = Resources
+				.GroupBy(r => r.Set)
+				.Select(g => new ShaderResourceGroup
+				{
+					Set = g.Key,
+					Resources = g.OrderBy(r => r.Binding).ToImmutableArray(),
+					LayoutElements = layouts
+				})
+				.ToImmutableArray();
+
 			Layouts = Resources
 				.GroupBy(r => r.Set)
 				.OrderBy(g => g.Key)
@@ -186,6 +205,9 @@ public class Shader
 
 	/// <summary> The shader's resource definitions. </summary>
 	public ImmutableArray<ShaderResource> Resources { get; private set; } = ImmutableArray<ShaderResource>.Empty;
+
+	/// <summary> The shader's resource definitions, grouped by set. </summary>
+	public ImmutableArray<ShaderResourceGroup> ResourceGroups { get; private set; }
 
 	/// <summary> The shader's raw SPIR-V bytecode. </summary>
 	internal byte[] VertexBytecode { get; private set; } = Array.Empty<byte>();

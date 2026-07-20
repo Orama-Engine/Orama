@@ -1,11 +1,13 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Standard;
 using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Veldrith;
+
 using Shader = Orama.Rendering.Resources.Shader;
 
 namespace Orama.Rendering.Device.Implementations;
@@ -42,6 +44,10 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			return;
 		}
 
+		using var paramBuffer = GPUBufferPool.Shared.RentAuto();
+		paramBuffer.Object.AddMaterialParameters(material);
+
+		SetConstantBuffer("Parameters", paramBuffer.Object.Data);
 		SetConstantBuffer("Object", Shader.DefaultsProvider.GetObjectBuffer(transform));
 
 		var pipelineKey = new PipelineKey(
@@ -57,13 +63,13 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 		CommandList.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
 		CommandList.SetIndexBuffer(renderItem.Resource.IndexBuffer, IndexFormat.UInt32);
 
-		foreach (var group in material.Shader.Resources.GroupBy(r => r.Set).OrderBy(g => g.Key))
+		foreach (var group in material.Shader.ResourceGroups)
 		{
-			var boundResources = new IBindableResource[group.Count()];
+			using RentedArray<IBindableResource> boundResources = new(group.Resources.Length);
 
 			int index = 0;
 
-			foreach (var resource in group.OrderBy(r => r.Binding))
+			foreach (var resource in group.Resources)
 			{
 				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferKey(resource.Name, resource.SizeInBytes));
 				if (buffer?.Resource == null)
@@ -72,23 +78,15 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 					continue;
 				}
 
-				boundResources[index++] = buffer.Resource;
+				boundResources.Array[index++] = buffer.Resource;
 			}
 
-			var layout = ResourceLayoutCache.Instance.GetOrCreate(
-				new ResourceLayoutKey(
-					group.OrderBy(r => r.Binding)
-						 .Select(r => new ResourceLayoutElementDescription(
-							 r.Name,
-							 r.Kind,
-							 ShaderStages.Vertex | ShaderStages.Fragment))
-						 .ToArray()));
+			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(group.LayoutElements.AsSpan()));
 
-			var setKey = new ResourceSetKey(layout.Resource, boundResources);
-
+			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index).ToArray());
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
-			CommandList.SetGraphicsResourceSet(group.Key, set.Resource);
+			CommandList.SetGraphicsResourceSet(group.Set, set.Resource);
 		}
 
 		CommandList.DrawIndexed(renderItem.Resource.IndexCount);
