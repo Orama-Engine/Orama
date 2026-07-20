@@ -1,8 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Utility;
 using Orama.Math;
 using Orama.Rendering.Resources;
+using Orama.Rendering.Resources.Caches;
 using Veldrith;
 
 namespace Orama.Rendering.Device.Implementations;
@@ -14,6 +16,8 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 {
 	/// <inheritdoc/>
 	public CommandList CommandList { get; }
+
+	private Framebuffer? target;
 
 	/// <summary> Initializes a new instance of the <see cref="VeldrithCommandBuffer"/> class. </summary>
 	/// <remarks> As this creates a new <see cref="Veldrith.CommandList"/> it is an expensive operation. For performance reasons, use <see cref="CommandBufferPool"/>. </remarks>
@@ -29,7 +33,38 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	public void End() => CommandList.End();
 
 	/// <inheritdoc/>
-	public void Draw(ReadOnlySpan<Vector3> vertices, ReadOnlySpan<Vector3> normals, ReadOnlySpan<Vector2> uvs, ReadOnlySpan<uint> indices, Matrix4x4 transform, Material material) => throw new NotImplementedException();
+	public void Draw(ReadOnlySpan<Vector3> vertices, ReadOnlySpan<Vector3> normals, ReadOnlySpan<Vector2> uvs, ReadOnlySpan<uint> indices, Matrix4x4 transform, Material material)
+	{
+		if (target == null)
+		{
+			OramaConsole.Warning("Command Buffer requested draw without a target framebuffer.");
+			return;
+		}
+
+		var pipelineKey = new PipelineKey(
+			passName: material.Shader.Pass,
+			shader: new ShaderKey(material.Shader.VertexBytecode, material.Shader.FragmentBytecode),
+			outputs: target.OutputDescription,
+			resourceLayouts: material.Shader.Layouts
+		);
+
+		FrameCountedResource<RenderItem> renderItem = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(vertices, normals, uvs, indices, pipelineKey));
+
+		CommandList.SetPipeline(renderItem.Resource.Pipeline);
+		CommandList.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
+		CommandList.SetIndexBuffer(renderItem.Resource.IndexBuffer, IndexFormat.UInt32);
+
+		for (int i = 0; i < material.Shader.Layouts.Length; i++)
+		{
+			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(material.Shader.Layouts[i].Elements));
+			var setKey = new ResourceSetKey(layout.Resource, []);
+			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
+
+			CommandList.SetGraphicsResourceSet((uint)(i + 1), set.Resource);
+		}
+
+		CommandList.DrawIndexed(renderItem.Resource.IndexCount);
+	}
 
 	/// <inheritdoc/>
 	public void Draw(Mesh mesh, Matrix4x4 transform, Material material) => Draw(mesh.Vertices, mesh.Normals, mesh.UVs, mesh.Indices, transform, material);
@@ -41,5 +76,9 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	public void SetConstantBuffer(int slot, ReadOnlySpan<byte> data) => throw new NotImplementedException();
 
 	/// <inheritdoc/>
-	public void SetFrameBuffer(Framebuffer frameBuffer) => CommandList.SetFramebuffer(frameBuffer);
+	public void SetFrameBuffer(Framebuffer frameBuffer)
+	{
+		CommandList.SetFramebuffer(frameBuffer);
+		target = frameBuffer;
+	}
 }
