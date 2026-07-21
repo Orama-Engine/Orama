@@ -16,6 +16,9 @@ public interface IGraphicsDevice : IDisposable
 	/// <summary> Whether the Y axis is inverted in clip space for this <see cref="IGraphicsDevice"/>. </summary>
 	bool IsClipSpaceYInverted { get; }
 
+	/// <summary> The <see cref="IFramebuffer"/> used by the main swapchain. </summary>
+	IFramebuffer SwapchainFramebuffer { get; }
+
 	/// <summary> Creates a new <see cref="ICommandBuffer"/>. </summary>
 	ICommandBuffer GetCommandBuffer();
 

@@ -3,8 +3,6 @@
 
 using Orama.Rendering.Device;
 
-using Veldrith;
-
 namespace Orama.Rendering.Pipelines;
 
 /// <summary>
@@ -34,6 +32,6 @@ public abstract class RenderPass
 	/// <remarks> This method is called by <see cref="RenderPass.Execute(in RenderFrame)"/>. </remarks>
 	public abstract void Render(in RenderFrame frame, ICommandBuffer buffer);
 
-	/// <summary> The target <see cref="Framebuffer"/> this pass is rendering to. </summary>
-	protected virtual Framebuffer TargetBuffer => Renderer.Device.GraphicsDevice.SwapchainFramebuffer;
+	/// <summary> The target <see cref="IFramebuffer"/> this pass is rendering to. </summary>
+	protected virtual IFramebuffer TargetBuffer => Renderer.Device.SwapchainFramebuffer;
 }

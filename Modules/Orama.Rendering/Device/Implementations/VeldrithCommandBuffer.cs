@@ -19,7 +19,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	/// <inheritdoc/>
 	public CommandList CommandList { get; }
 
-	private Framebuffer? target;
+	private IFramebuffer? target;
 
 	/// <summary> Initializes a new instance of the <see cref="VeldrithCommandBuffer"/> class. </summary>
 	/// <remarks> As this creates a new <see cref="Veldrith.CommandList"/> it is an expensive operation. For performance reasons, use <see cref="CommandBufferPool"/>. </remarks>
@@ -89,11 +89,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	}
 
 	/// <inheritdoc/>
-	public void SetFrameBuffer(Framebuffer frameBuffer)
-	{
-		CommandList.SetFramebuffer(frameBuffer);
-		target = frameBuffer;
-	}
+	public void SetFrameBuffer(IFramebuffer frameBuffer) => target = frameBuffer;
 
 	/// <inheritdoc/>
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(depth);

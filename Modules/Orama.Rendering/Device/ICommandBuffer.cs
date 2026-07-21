@@ -3,7 +3,6 @@
 
 using Orama.Math;
 using Orama.Rendering.Resources;
-using Veldrith;
 
 namespace Orama.Rendering.Device;
 
@@ -21,8 +20,8 @@ public interface ICommandBuffer : IDisposable
 	#endregion
 
 	#region Render Targets
-	/// <summary> Sets the <see cref="Framebuffer"/> to render commands to. </summary>
-	void SetFrameBuffer(Framebuffer frameBuffer);
+	/// <summary> Sets the <see cref="IFramebuffer"/> to render commands to. </summary>
+	void SetFrameBuffer(IFramebuffer frameBuffer);
 	#endregion
 
 	#region Drawing
