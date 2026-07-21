@@ -12,9 +12,6 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public interface ICommandBuffer : IDisposable
 {
-	/// <summary> The <see cref="CommandList"/> to which commands are internally recorded. </summary>
-	internal CommandList CommandList { get; }
-
 	#region Lifecycle
 	/// <summary> Begins recording GPU commands. </summary>
 	void Begin();
@@ -42,5 +39,13 @@ public interface ICommandBuffer : IDisposable
 	#region Binding
 	/// <summary> Sets a constant buffer of name <paramref name="bufferName"/> to <paramref name="data"/>. </summary>
 	void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data);
+	#endregion
+
+	#region Clearing
+	/// <summary> Clears the depth stencil to <paramref name="depth"/>. </summary>
+	void ClearDepth(float depth);
+
+	/// <summary> Clears the color buffer to <paramref name="color"/>. </summary>
+	void ClearColor(Color color);
 	#endregion
 }

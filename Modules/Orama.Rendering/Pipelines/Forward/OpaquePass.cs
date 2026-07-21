@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Math;
 using Orama.Rendering.Device;
 
 namespace Orama.Rendering.Pipelines.Forward;
@@ -13,8 +14,8 @@ public class OpaquePass : RenderPass
 	/// <inheritdoc/>
 	public override void Render(in RenderFrame frame, ICommandBuffer buffer)
 	{
-		buffer.CommandList.ClearDepthStencil(1.0f);
-		buffer.CommandList.ClearColorTarget(0, Veldrith.RgbaFloat.BLACK);
+		buffer.ClearDepth(1.0f);
+		buffer.ClearColor(Color.Black);
 
 		foreach (IClientRenderable renderable in frame.Renderables)
 		{

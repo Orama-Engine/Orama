@@ -64,7 +64,11 @@ internal class VeldrithDevice : IGraphicsDevice
 
 
 	/// <inheritdoc/>
-	public void SubmitCommands(ICommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
+	public void SubmitCommands(ICommandBuffer commandBuffer)
+	{
+		var buffer = (VeldrithCommandBuffer)commandBuffer;
+		GraphicsDevice.SubmitCommands(buffer.CommandList);
+	}
 
 	/// <inheritdoc/>
 	public void ResizeSwapchain(uint width, uint height) => GraphicsDevice.MainSwapchain.Resize(width, height);
