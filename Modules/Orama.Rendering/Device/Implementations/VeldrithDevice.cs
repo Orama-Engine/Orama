@@ -25,7 +25,10 @@ internal class VeldrithDevice : IGraphicsDevice
 	public bool IsClipSpaceYInverted => GraphicsDevice.IsClipSpaceYInverted;
 
 	/// <inheritdoc/>
-	public IFramebuffer SwapchainFramebuffer { get; } 
+	public IFramebuffer SwapchainFramebuffer { get; }
+
+	/// <inheritdoc/>
+	public IResourceFactory ResourceFactory { get; } = new VeldrithResourceFactory();
 
 	private readonly RendererBackend backend;
 

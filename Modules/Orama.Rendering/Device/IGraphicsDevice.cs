@@ -19,8 +19,8 @@ public interface IGraphicsDevice : IDisposable
 	/// <summary> The <see cref="IFramebuffer"/> used by the main swapchain. </summary>
 	IFramebuffer SwapchainFramebuffer { get; }
 
-	/// <summary> Creates a new <see cref="ICommandBuffer"/>. </summary>
-	ICommandBuffer GetCommandBuffer();
+	/// <summary> The <see cref="IResourceFactory"/> used to create GPU resources. </summary>
+	IResourceFactory ResourceFactory { get; }
 
 	/// <summary> Initializes the <see cref="IGraphicsDevice"/> for the given <see cref="IWindow"/>. </summary>
 	void Initialize(IWindow window);

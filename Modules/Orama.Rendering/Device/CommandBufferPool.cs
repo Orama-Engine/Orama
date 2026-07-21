@@ -8,5 +8,5 @@ using Orama.Common.Datatypes;
 public class CommandBufferPool : ObjectPool<CommandBufferPool, ICommandBuffer>
 {
 	/// <inheritdoc/>
-	protected override ICommandBuffer CreateObject() => Renderer.Device.GetCommandBuffer();
+	protected override ICommandBuffer CreateObject() => Renderer.Device.ResourceFactory.CreateCommandBuffer();
 }
