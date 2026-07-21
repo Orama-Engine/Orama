@@ -27,48 +27,6 @@ Logic is built around Entities and Components. Components are the reusable build
 ### Vulkan Renderer
 Rendering is built on a Veldrid-based descriptor defined Vulkan-first engine with DirectX12 for compatibility. 'Descriptor Defined' means all CPU/GPU heterogeneous resources are built around a 'Descriptor' that defines their data and is then mapped to the GPU sided resource, allowing every resource to reuse buffers from eachother when possible.
 
-```csharp
-
-/// <summary> My Custom Pass. </summary>
-public class CustomRenderPass : RenderPass
-{
-    /// <inheritdoc/>
-    public override void Render(ref RenderFrame frame)
-    {
-        var gd = Renderer.Veldrid.GraphicsDevice;
-        var buffer = Renderer.AllocateCommandBuffer();
-
-        buffer.Begin();
-
-        buffer.CommandList.SetFramebuffer(gd.SwapchainFramebuffer);
-
-        buffer.ClearColor(Color.Black);
-
-        foreach (IClientRenderable renderable in ModuleManager.GetModule<RenderingModule>()?.Renderables ?? Enumerable.Empty<IClientRenderable>())
-            if (renderable.Material.Pass == "Opaque")
-            {
-                Matrix4x4 model = renderable.Transform;
-                Matrix4x4 view = frame.Camera.ViewMatrix;
-                Matrix4x4 proj = frame.Camera.ProjectionMatrix;
-
-                GPUBuffer paramBuffer = new GPUBuffer();
-
-                paramBuffer.AddMatrix4x4(model);
-                paramBuffer.AddMatrix4x4(view);
-                paramBuffer.AddMatrix4x4(proj);
-
-                buffer.QueueGPUBuffer(paramBuffer, 0);
-
-                buffer.DrawRenderable(renderable, model);
-            }
-
-        buffer.End();
-        Renderer.SubmitCommandBuffer(buffer);
-        buffer.Dispose();
-    }
-}
-```
-
 ### Slang Shaders
 ```slang
 import Orama.Core;
