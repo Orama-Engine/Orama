@@ -16,7 +16,6 @@ namespace Orama.Rendering.Device.Implementations;
 /// </summary>
 internal sealed class VeldrithCommandBuffer : ICommandBuffer
 {
-	/// <inheritdoc/>
 	public CommandList CommandList { get; }
 
 	private IFramebuffer? target;
@@ -89,7 +88,11 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	}
 
 	/// <inheritdoc/>
-	public void SetFrameBuffer(IFramebuffer frameBuffer) => target = frameBuffer;
+	public void SetFrameBuffer(IFramebuffer frameBuffer)
+	{
+		target = frameBuffer;
+		CommandList.SetFramebuffer(((VeldrithFramebuffer)frameBuffer).Framebuffer);
+	}
 
 	/// <inheritdoc/>
 	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(depth);
