@@ -11,7 +11,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 	/// <inheritdoc/>
 	protected override Pipeline Create(PipelineKey key)
 	{
-		var factory = Renderer.Device.GraphicsDevice.ResourceFactory;
+		var factory = Renderer.Device.ResourceFactory;
 
 #if DEBUG
 		bool shouldDebug = true;

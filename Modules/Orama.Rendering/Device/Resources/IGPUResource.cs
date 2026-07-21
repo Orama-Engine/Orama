@@ -1,8 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-namespace Orama.Rendering.Device;
+namespace Orama.Rendering.Device.Resources;
 
-public interface IFramebuffer : IDisposable
+
+public interface IGPUResource : IDisposable
 {
 }

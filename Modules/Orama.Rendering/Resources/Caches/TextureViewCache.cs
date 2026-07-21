@@ -8,7 +8,7 @@ namespace Orama.Rendering.Resources.Caches;
 public sealed class TextureViewCache : ResourceCache<TextureViewCache, TextureViewKey, Veldrith.TextureView>
 {
 	/// <inheritdoc/>
-	protected override Veldrith.TextureView Create(TextureViewKey key) => Renderer.Device.GraphicsDevice.ResourceFactory.CreateTextureView(key.Texture);
+	protected override Veldrith.TextureView Create(TextureViewKey key) => Renderer.Device.ResourceFactory.CreateTextureView(key.Texture);
 }
 
 public readonly ref struct TextureViewKey(Veldrith.Texture texture) : IResourceKey

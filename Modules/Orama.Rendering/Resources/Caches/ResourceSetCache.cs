@@ -8,7 +8,7 @@ namespace Orama.Rendering.Resources.Caches;
 public sealed class ResourceSetCache : ResourceCache<ResourceSetCache, ResourceSetKey, ResourceSet>
 {
 	/// <inheritdoc/>
-	protected override ResourceSet Create(ResourceSetKey key) => Renderer.Device.GraphicsDevice.ResourceFactory.CreateResourceSet(new ResourceSetDescription(key.Layout, key.BoundResources.ToArray()));
+	protected override ResourceSet Create(ResourceSetKey key) => Renderer.Device.ResourceFactory.CreateResourceSet(new ResourceSetDescription(key.Layout, key.BoundResources.ToArray()));
 }
 
 public readonly ref struct ResourceSetKey(ResourceLayout resourceLayout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Math;
+using Orama.Rendering.Device.Resources;
 using Orama.Rendering.Resources;
 
 namespace Orama.Rendering.Device;

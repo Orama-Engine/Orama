@@ -4,6 +4,7 @@
 using Orama.Common.Standard;
 using Orama.Common.Utility;
 using Orama.Math;
+using Orama.Rendering.Device.Resources;
 using Orama.Rendering.Resources;
 using Orama.Rendering.Resources.Caches;
 using Veldrith;
