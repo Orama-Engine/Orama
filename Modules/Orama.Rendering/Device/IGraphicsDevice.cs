@@ -10,7 +10,11 @@ namespace Orama.Rendering.Device;
 /// </summary>
 public interface IGraphicsDevice : IDisposable
 {
+	/// <summary> The current frame. </summary>
 	ulong CurrentFrame { get; set; }
+
+	/// <summary> Whether the Y axis is inverted in clip space for this <see cref="IGraphicsDevice"/>. </summary>
+	bool IsClipSpaceYInverted { get; }
 
 	/// <summary> Creates a new <see cref="ICommandBuffer"/>. </summary>
 	ICommandBuffer GetCommandBuffer();

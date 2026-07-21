@@ -95,6 +95,12 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 		target = frameBuffer;
 	}
 
+	/// <inheritdoc/>
+	public void ClearDepth(float depth) => CommandList.ClearDepthStencil(depth);
+
+	/// <inheritdoc/>
+	public void ClearColor(Color color) => CommandList.ClearColorTarget(0, new RgbaFloat(color.R, color.G, color.B, color.A));
+
 	private void BindShaderResources(Shader shader)
 	{
 		foreach (var group in shader.ResourceGroups)

@@ -21,6 +21,9 @@ internal class VeldrithDevice : IGraphicsDevice
 	/// <inheritdoc/>
 	public ulong CurrentFrame { get; set; }
 
+	/// <inheritdoc/>
+	public bool IsClipSpaceYInverted => GraphicsDevice.IsClipSpaceYInverted;
+
 	private readonly RendererBackend backend;
 
 	/// <summary> Initializes a new instance of the <see cref="VeldrithDevice"/> class. </summary>
