@@ -2,19 +2,18 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common.Utility;
-using Orama.Rendering.Device;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
 
 using Veldrith;
 using Vortice.Vulkan;
 
-namespace Orama.Rendering;
+namespace Orama.Rendering.Device.Implementations;
 
 /// <summary>
 /// Interface into low-level Veldrith rendering.
 /// </summary>
-public class VeldrithDevice
+public class VeldrithDevice : IGraphicsDevice
 {
 	/// <summary> The underlying Veldrith <see cref="global::Veldrith.GraphicsDevice"/>. </summary>
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;

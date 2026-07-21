@@ -2,6 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Rendering.Device;
+using Orama.Rendering.Device.Implementations;
 using Orama.Rendering.Resources;
 
 using Silk.NET.Windowing;
