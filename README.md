@@ -8,6 +8,9 @@ The C# 14 Virtual-Reality Game Engine built around the modern .NET ecosystem.
 > [!WARNING]
 > Orama is a Pre-Release engine. It's API will have **breaking changes**.
 
+## About
+Orama is a cross-platform, MIT licensed, Virtual Reality focused game engine built around modern C#. It's designed to give creators an engine that they'll enjoy using, no messy abstractions, no interop artifacts, and no licensing concerns.
+
 ## Features
 ### Virtual Reality
 Orama was made specifically for Virtual Reality with no workarounds and no retrofitting.
