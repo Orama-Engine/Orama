@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Input.Bindings;
+
 namespace Orama.Input;
 
 /// <summary>
