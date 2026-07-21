@@ -11,7 +11,7 @@ public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, Con
 	/// <inheritdoc/>
 	protected override DeviceBuffer Create(ConstantBufferKey key)
 	{
-		var gd = Renderer.Veldrith.GraphicsDevice;
+		var gd = Renderer.Device.GraphicsDevice;
 		var factory = gd.ResourceFactory;
 
 		var desc = new BufferDescription(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic);

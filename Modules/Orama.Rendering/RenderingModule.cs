@@ -75,5 +75,5 @@ public class RenderingModule : BaseModule
 	/// <param name="renderable">The object to render.</param>
 	public void QueueObject(IClientRenderable renderable) => Renderables.Add(renderable);
 
-	public void OnResize(int width, int height) => Renderer.Resize(width, height);
+	public void OnResize(int width, int height) => Renderer.Resize((uint)width, (uint)height);
 }

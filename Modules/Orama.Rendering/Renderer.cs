@@ -25,8 +25,8 @@ public static class Renderer
 	/// <summary> The renderer backend in use. </summary>
 	public static RendererBackend Backend { get; private set; }
 
-	/// <summary> The lower-level <see cref="VeldrithDevice"/>. </summary>
-	public static VeldrithDevice Veldrith { get; private set; } = null!;
+	/// <summary> The lower-level <see cref="IGraphicsDevice"/>. </summary>
+	public static IGraphicsDevice Device { get; private set; } = null!;
 
 	/// <summary> Initializes the desired backend. Should be called once after window loading. </summary>
 	/// <param name="window"> The window to initialize the backend for. </param>
@@ -48,29 +48,29 @@ public static class Renderer
 
 		Backend = backend.Value;
 
-		Veldrith = new VeldrithDevice(Backend);
-		Veldrith.Initialize(window);
+		Device = new VeldrithDevice(Backend);
+		Device.Initialize(window);
 	}
 
 	/// <summary> Presents the current frame. </summary>
 	public static void Present()
 	{
-		Veldrith.GraphicsDevice.SwapBuffers();
-		Veldrith.CurrentFrame++;
+		Device.SwapBuffers();
+		Device.CurrentFrame++;
 
-		FrameDisposalQueue.DisposeResources(Veldrith.CurrentFrame);
+		FrameDisposalQueue.DisposeResources(Device.CurrentFrame);
 	}
 
 	/// <summary> Submits the given <see cref="CommandBuffer"/> to be ran. </summary>
-	public static void SubmitCommandBuffer(ICommandBuffer commandBuffer) => Veldrith.SubmitCommands(commandBuffer);
+	public static void SubmitCommandBuffer(ICommandBuffer commandBuffer) => Device.SubmitCommands(commandBuffer);
 
 	/// <summary> Resizes the renderer. </summary>
-	public static void Resize(int width, int height) => Veldrith.Resize(width, height);
+	public static void Resize(uint width, uint height) => Device.ResizeSwapchain(width, height);
 
 	/// <summary> Cleans up the renderer. </summary>
 	public static void Dispose()
 	{
 		FrameDisposalQueue.DisposeResources(ulong.MaxValue);
-		Veldrith.GraphicsDevice.Dispose();
+		Device.Dispose();
 	}
 }

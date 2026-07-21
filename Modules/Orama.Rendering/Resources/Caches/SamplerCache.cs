@@ -18,7 +18,7 @@ public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, Veldr
 			AddressModeV = GetVeldrithAddressMode(key.Sampler.WrapV)
 		};
 
-		return Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateSampler(desc);
+		return Renderer.Device.GraphicsDevice.ResourceFactory.CreateSampler(desc);
 	}
 
 	private static Veldrith.SamplerFilter GetVeldrithFilter(SamplerFilter filter) => filter switch

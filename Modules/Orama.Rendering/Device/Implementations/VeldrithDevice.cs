@@ -13,13 +13,13 @@ namespace Orama.Rendering.Device.Implementations;
 /// <summary>
 /// Interface into low-level Veldrith rendering.
 /// </summary>
-public class VeldrithDevice : IGraphicsDevice
+internal class VeldrithDevice : IGraphicsDevice
 {
 	/// <summary> The underlying Veldrith <see cref="global::Veldrith.GraphicsDevice"/>. </summary>
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
-	/// <summary> The current frame number. </summary>
-	public ulong CurrentFrame { get; internal set; }
+	/// <inheritdoc/>
+	public ulong CurrentFrame { get; set; }
 
 	private readonly RendererBackend backend;
 
@@ -29,7 +29,7 @@ public class VeldrithDevice : IGraphicsDevice
 		this.backend = backend;
 	}
 
-	/// <summary> Initializes the graphics device for the given <see cref="IWindow"/>. </summary>
+	/// <inheritdoc/>
 	public void Initialize(IWindow window)
 	{
 		var native = window.Native;
@@ -62,11 +62,21 @@ public class VeldrithDevice : IGraphicsDevice
 		CheckDebugTools(backend);
 	}
 
-	/// <summary> Submits an <see cref="ICommandBuffer"/> for execution. </summary>
+
+	/// <inheritdoc/>
 	public void SubmitCommands(ICommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
 
-	/// <summary> Resizes the swapchain. </summary>
-	public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
+	/// <inheritdoc/>
+	public void ResizeSwapchain(uint width, uint height) => GraphicsDevice.MainSwapchain.Resize(width, height);
+
+	/// <inheritdoc/>
+	public void SwapBuffers() => GraphicsDevice.SwapBuffers();
+
+	/// <inheritdoc/>
+	public void Dispose() => GraphicsDevice.Dispose();
+
+	/// <inheritdoc/>
+	public ICommandBuffer GetCommandBuffer() => new VeldrithCommandBuffer(this);
 
 	/// <summary> Checks if the debug tools are available for the given <see cref="RendererBackend"/>. </summary>
 	/// <returns> <see langword="true"/> if the debug tools are available; otherwise, <see langword="false"/>. </returns>

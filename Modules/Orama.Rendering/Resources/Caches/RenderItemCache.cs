@@ -12,8 +12,8 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	/// <inheritdoc/>
 	protected override RenderItem Create(RenderItemKey key)
 	{
-		var gd = Renderer.Veldrith.GraphicsDevice;
-		var factory = Renderer.Veldrith.GraphicsDevice.ResourceFactory;
+		var gd = Renderer.Device.GraphicsDevice;
+		var factory = Renderer.Device.GraphicsDevice.ResourceFactory;
 
 		int vertCount = key.VertexPositions.Length;
 		float[] vertexData = new float[vertCount * 8];

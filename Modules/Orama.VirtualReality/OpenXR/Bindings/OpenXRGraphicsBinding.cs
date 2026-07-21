@@ -4,8 +4,6 @@
 using System.Runtime.CompilerServices;
 
 using Orama.Rendering;
-
-using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR.Bindings;
@@ -31,13 +29,14 @@ internal sealed class OpenXRGraphicsBinding : OpenXRBinding
 				case RendererBackend.Vulkan:
 					vulkanBinding = new GraphicsBindingVulkanKHR
 					{
+#warning TODO
 						Type = StructureType.GraphicsBindingVulkanKhr,
 
-						Instance = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().Instance),
-						PhysicalDevice = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
-						Device = new VkHandle(Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().Device),
+						// Instance = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().Instance),
+						// PhysicalDevice = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
+						// Device = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().Device),
 
-						QueueFamilyIndex = Renderer.Veldrith.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
+						// QueueFamilyIndex = Renderer.Device.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
 						QueueIndex = 0
 					};
 					Native = (IntPtr)Unsafe.AsPointer(ref vulkanBinding);
@@ -47,7 +46,7 @@ internal sealed class OpenXRGraphicsBinding : OpenXRBinding
 					d3d12Binding = new GraphicsBindingD3D12KHR()
 					{
 						Type = StructureType.GraphicsBindingD3D12Khr,
-						Device = (void*)Renderer.Veldrith.GraphicsDevice.GetD3D12Info().Device,
+						// Device = (void*)Renderer.Device.GraphicsDevice.GetD3D12Info().Device,
 					};
 					Native = (IntPtr)Unsafe.AsPointer(ref d3d12Binding);
 					break;

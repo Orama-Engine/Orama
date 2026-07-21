@@ -10,9 +10,9 @@ public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldr
 	{
 		var desc = new Veldrith.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldrithFormat(key.Format), Veldrith.TextureUsage.Sampled, Veldrith.TextureType.Texture2D);
 
-		Veldrith.Texture texture = Renderer.Veldrith.GraphicsDevice.ResourceFactory.CreateTexture(desc);
+		Veldrith.Texture texture = Renderer.Device.GraphicsDevice.ResourceFactory.CreateTexture(desc);
 
-		Renderer.Veldrith.GraphicsDevice.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
+		Renderer.Device.GraphicsDevice.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
 
 		return texture;
 	}

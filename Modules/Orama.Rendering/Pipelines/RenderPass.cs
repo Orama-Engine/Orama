@@ -35,5 +35,5 @@ public abstract class RenderPass
 	public abstract void Render(in RenderFrame frame, ICommandBuffer buffer);
 
 	/// <summary> The target <see cref="Framebuffer"/> this pass is rendering to. </summary>
-	protected virtual Framebuffer TargetBuffer => Renderer.Veldrith.GraphicsDevice.SwapchainFramebuffer;
+	protected virtual Framebuffer TargetBuffer => Renderer.Device.GraphicsDevice.SwapchainFramebuffer;
 }
