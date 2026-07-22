@@ -54,7 +54,7 @@ internal sealed class Program
 
 		Application.OnExit += () =>
 		{
-			ModuleManager.DisposeAll();
+			
 		};
 
 		Application.OnUpdate += () =>
