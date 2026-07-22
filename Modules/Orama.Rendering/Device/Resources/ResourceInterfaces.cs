@@ -95,10 +95,10 @@ public readonly ref struct BufferKey(uint size, BufferUsage usage) : IResourceKe
 	public readonly BufferUsage Usage = usage;
 
 	/// <inheritdoc/>
-	public int Hash => HashCode.Combine(Size, Usage);
+	public int Hash => GetHashCode();
 
 	/// <inheritdoc/>
-	public override int GetHashCode() => Hash;
+	public override int GetHashCode() => HashCode.Combine(Size, Usage);
 }
 
 public readonly struct ResourceLayoutElementDescription(string name, ResourceKind kind, ShaderStages stages)

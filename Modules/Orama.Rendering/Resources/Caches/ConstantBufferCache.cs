@@ -11,17 +11,3 @@ public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, Con
 	/// <inheritdoc/>
 	protected override IBuffer Create(ConstantBufferKey key) => Renderer.Device.ResourceFactory.CreateBuffer(new BufferKey(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
 }
-
-public readonly ref struct ConstantBufferKey(string name, uint size) : IResourceKey
-{
-	public uint Size => size;
-	public ReadOnlySpan<char> Name => name;
-
-	/// <inheritdoc/>
-	public int Hash => unchecked(string.GetHashCode(name));
-
-	public bool Equals(ConstantBufferKey other) => name.SequenceEqual(other.Name);
-
-	/// <inheritdoc/>
-	public override int GetHashCode() => Hash;
-}

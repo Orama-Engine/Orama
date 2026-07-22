@@ -12,16 +12,3 @@ public sealed class TextureViewCache : ResourceCache<TextureViewCache, TextureVi
 	/// <inheritdoc/>
 	protected override ITextureView Create(TextureViewKey key) => Renderer.Device.ResourceFactory.CreateTextureView(key);
 }
-
-public readonly ref struct TextureViewKey(ITexture texture) : IResourceKey
-{
-	public readonly ITexture Texture = texture;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public bool Equals(TextureViewKey other) => ReferenceEquals(Texture, other.Texture);
-
-	/// <inheritdoc/>
-	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
-}
