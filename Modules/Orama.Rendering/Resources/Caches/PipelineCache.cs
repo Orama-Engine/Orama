@@ -8,8 +8,8 @@ namespace Orama.Rendering.Resources.Caches;
 /// <summary>
 /// Caches graphics pipelines.
 /// </summary>
-public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, IPipeline>
+public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineDescriptor, IPipeline>
 {
 	/// <inheritdoc/>
-	protected override IPipeline Create(PipelineKey key) => Renderer.Device.ResourceFactory.CreateGraphicsPipeline(key);
+	protected override IPipeline Create(PipelineDescriptor key) => Renderer.Device.ResourceFactory.CreateGraphicsPipeline(key);
 }

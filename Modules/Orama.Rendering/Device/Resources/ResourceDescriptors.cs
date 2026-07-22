@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 
 namespace Orama.Rendering.Device.Resources;
 
-public readonly ref struct ConstantBufferKey(string name, uint size) : IResourceKey
+public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IResourceKey
 {
 	public uint Size => size;
 	public ReadOnlySpan<char> Name => name;
@@ -18,11 +18,11 @@ public readonly ref struct ConstantBufferKey(string name, uint size) : IResource
 }
 
 
-public readonly ref struct PipelineKey(string passName, ShaderKey vertShader, ShaderKey fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups) : IResourceKey
+public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups) : IResourceKey
 {
 	public readonly string PassName = passName;
-	public readonly ShaderKey VertShader = vertShader;
-	public readonly ShaderKey FragShader = fragShader;
+	public readonly ShaderDescriptor VertShader = vertShader;
+	public readonly ShaderDescriptor FragShader = fragShader;
 	public readonly IFramebuffer Output = output;
 	public readonly ReadOnlySpan<ShaderResourceGroup> ResourceGroups = resourceGroups;
 
@@ -49,7 +49,7 @@ public readonly ref struct PipelineKey(string passName, ShaderKey vertShader, Sh
 }
 
 
-public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey
+public readonly ref struct SamplerDescriptor(Sampler sampler) : IResourceKey
 {
 	public readonly Sampler Sampler = sampler;
 
@@ -67,7 +67,7 @@ public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey
 	}
 }
 
-public readonly ref struct TextureKey(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey
+public readonly ref struct TextureDescriptor(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey
 {
 	public readonly uint Width = width;
 	public readonly uint Height = height;
@@ -90,7 +90,7 @@ public readonly ref struct TextureKey(uint width, uint height, TextureFormat for
 	}
 }
 
-public readonly ref struct TextureViewKey(ITexture texture) : IResourceKey
+public readonly ref struct TextureViewDescriptor(ITexture texture) : IResourceKey
 {
 	public readonly ITexture Texture = texture;
 
@@ -98,7 +98,7 @@ public readonly ref struct TextureViewKey(ITexture texture) : IResourceKey
 	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
 }
 
-public readonly ref struct BufferKey(uint size, BufferUsage usage) : IResourceKey
+public readonly ref struct BufferDescriptor(uint size, BufferUsage usage) : IResourceKey
 {
 	public readonly uint Size = size;
 	public readonly BufferUsage Usage = usage;
@@ -117,7 +117,7 @@ public readonly struct ResourceLayoutElementDescription(string name, ResourceKin
 	public readonly ShaderStages Stages = stages;
 }
 
-public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey
+public readonly ref struct ResourceLayoutDescriptor(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey
 {
 	public readonly ReadOnlySpan<ResourceLayoutElementDescription> Elements = elements;
 
@@ -138,7 +138,7 @@ public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementD
 	}
 }
 
-public readonly ref struct ResourceSetKey(IResourceLayout layout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey
+public readonly ref struct ResourceDescriptor(IResourceLayout layout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey
 {
 	public readonly IResourceLayout Layout = layout;
 	public readonly ReadOnlySpan<IBindableResource> BoundResources = boundResources;
@@ -154,7 +154,7 @@ public readonly ref struct ResourceSetKey(IResourceLayout layout, ReadOnlySpan<I
 	}
 }
 
-public readonly ref struct ShaderKey(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IResourceKey
+public readonly ref struct ShaderDescriptor(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IResourceKey
 {
 	public readonly ReadOnlySpan<byte> Bytecode = bytecode;
 	public readonly ShaderStages Stage = stage;

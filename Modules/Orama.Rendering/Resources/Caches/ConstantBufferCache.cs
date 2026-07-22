@@ -6,8 +6,8 @@ using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, ConstantBufferKey, IBuffer>
+public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, ConstantBufferDescriptor, IBuffer>
 {
 	/// <inheritdoc/>
-	protected override IBuffer Create(ConstantBufferKey key) => Renderer.Device.ResourceFactory.CreateBuffer(new BufferKey(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
+	protected override IBuffer Create(ConstantBufferDescriptor key) => Renderer.Device.ResourceFactory.CreateBuffer(new BufferDescriptor(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
 }

@@ -28,8 +28,8 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 			vertexData[i * 8 + 7] = i < key.VertexUVs.Length ? key.VertexUVs[i].Y : 0f;
 		}
 
-		IBuffer vb = factory.CreateBuffer(new BufferKey((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer));
-		IBuffer ib = factory.CreateBuffer(new BufferKey((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer));
+		IBuffer vb = factory.CreateBuffer(new BufferDescriptor((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer));
+		IBuffer ib = factory.CreateBuffer(new BufferDescriptor((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer));
 
 		Renderer.Device.UpdateBuffer(vb, 0, vertexData);
 		Renderer.Device.UpdateBuffer(ib, 0, key.Indices);
@@ -40,13 +40,13 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	}
 }
 
-public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineKey pipeline) : IResourceKey
+public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineDescriptor pipeline) : IResourceKey
 {
 	public readonly ReadOnlySpan<Vector3> VertexPositions = vertexPositions;
 	public readonly ReadOnlySpan<Vector3> VertexNormals = vertexNormals;
 	public readonly ReadOnlySpan<Vector2> VertexUVs = vertexUVs;
 	public readonly ReadOnlySpan<uint> Indices = indices;
-	public readonly PipelineKey Pipeline = pipeline;
+	public readonly PipelineDescriptor Pipeline = pipeline;
 
 	/// <inheritdoc/>
 	public override int GetHashCode()

@@ -5,8 +5,8 @@ using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class ResourceSetCache : ResourceCache<ResourceSetCache, ResourceSetKey, IResourceSet>
+public sealed class ResourceSetCache : ResourceCache<ResourceSetCache, ResourceDescriptor, IResourceSet>
 {
 	/// <inheritdoc/>
-	protected override IResourceSet Create(ResourceSetKey key) => Renderer.Device.ResourceFactory.CreateResourceSet(key);
+	protected override IResourceSet Create(ResourceDescriptor key) => Renderer.Device.ResourceFactory.CreateResourceSet(key);
 }

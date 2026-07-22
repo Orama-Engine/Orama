@@ -49,10 +49,10 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 		SetConstantBuffer("Parameters", paramBuffer.Object.Data);
 		SetConstantBuffer("Object", Shader.DefaultsProvider.GetObjectBuffer(transform));
 
-		var pipelineKey = new PipelineKey(
+		var pipelineKey = new PipelineDescriptor(
 			passName: material.Shader.Pass,
-			vertShader: new ShaderKey(material.Shader.VertexBytecode, Resources.ShaderStages.Vertex),
-			fragShader: new ShaderKey(material.Shader.FragmentBytecode, Resources.ShaderStages.Fragment),
+			vertShader: new ShaderDescriptor(material.Shader.VertexBytecode, Resources.ShaderStages.Vertex),
+			fragShader: new ShaderDescriptor(material.Shader.FragmentBytecode, Resources.ShaderStages.Fragment),
 			output: target,
 			resourceGroups: material.Shader.ResourceGroups.AsSpan()
 		);
@@ -77,7 +77,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	/// <inheritdoc/>
 	public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)
 	{
-		ConstantBufferKey key = new(bufferName, (uint)data.Length);
+		ConstantBufferDescriptor key = new(bufferName, (uint)data.Length);
 		FrameCountedResource<IBuffer> buffer = ConstantBufferCache.Instance.GetOrCreate(key);
 
 		if (buffer.Resource.SizeInBytes != data.Length)
@@ -112,7 +112,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 
 			foreach (var resource in group.Resources)
 			{
-				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferKey(resource.Name, resource.SizeInBytes));
+				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferDescriptor(resource.Name, resource.SizeInBytes));
 				if (buffer?.Resource == null)
 				{
 					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");
@@ -122,9 +122,9 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 				boundResources.Array[index++] = buffer.Resource;
 			}
 
-			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutKey(group.LayoutElements.AsSpan()));
+			var layout = ResourceLayoutCache.Instance.GetOrCreate(new ResourceLayoutDescriptor(group.LayoutElements.AsSpan()));
 
-			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index));
+			var setKey = new ResourceDescriptor(layout.Resource, boundResources.Array.AsSpan(0, index));
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
 			CommandList.SetGraphicsResourceSet(group.Set, ((VeldrithResourceSet)set.Resource).Resource);

@@ -5,8 +5,8 @@ namespace Orama.Rendering.Resources.Caches;
 
 using Orama.Rendering.Device.Resources;
 
-public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, ITexture>
+public sealed class TextureCache : ResourceCache<TextureCache, TextureDescriptor, ITexture>
 {
 	/// <inheritdoc/>
-	protected override ITexture Create(TextureKey key) => Renderer.Device.ResourceFactory.CreateTexture(key);
+	protected override ITexture Create(TextureDescriptor key) => Renderer.Device.ResourceFactory.CreateTexture(key);
 }

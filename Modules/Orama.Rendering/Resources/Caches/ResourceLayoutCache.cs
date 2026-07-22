@@ -5,8 +5,8 @@ using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, ResourceLayoutKey, IResourceLayout>
+public sealed class ResourceLayoutCache : ResourceCache<ResourceLayoutCache, ResourceLayoutDescriptor, IResourceLayout>
 {
 	/// <inheritdoc/>
-	protected override IResourceLayout Create(ResourceLayoutKey key) => Renderer.Device.ResourceFactory.CreateResourceLayout(key);
+	protected override IResourceLayout Create(ResourceLayoutDescriptor key) => Renderer.Device.ResourceFactory.CreateResourceLayout(key);
 }

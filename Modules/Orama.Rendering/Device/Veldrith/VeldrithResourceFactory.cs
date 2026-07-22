@@ -14,7 +14,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	public ICommandBuffer CreateCommandBuffer() => new VeldrithCommandBuffer(device);
 
 	/// <inheritdoc/>
-	public IShader CreateShader(ShaderKey key)
+	public IShader CreateShader(ShaderDescriptor key)
 	{
 		Veldrith.ShaderStages stage = key.Stage == Resources.ShaderStages.Vertex
 			? Veldrith.ShaderStages.Vertex
@@ -25,14 +25,14 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	}
 
 	/// <inheritdoc/>
-	public IBuffer CreateBuffer(BufferKey key)
+	public IBuffer CreateBuffer(BufferDescriptor key)
 	{
 		var description = new BufferDescription(key.Size, ToVeldrith(key.Usage));
 		return new VeldrithBuffer(device.GraphicsDevice.ResourceFactory.CreateBuffer(description));
 	}
 
 	/// <inheritdoc/>
-	public ITexture CreateTexture(TextureKey key)
+	public ITexture CreateTexture(TextureDescriptor key)
 	{
 		var description = new TextureDescription(
 			key.Width,
@@ -50,14 +50,14 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	}
 
 	/// <inheritdoc/>
-	public ITextureView CreateTextureView(TextureViewKey key)
+	public ITextureView CreateTextureView(TextureViewDescriptor key)
 	{
 		TextureView textureView = device.GraphicsDevice.ResourceFactory.CreateTextureView(((VeldrithTexture)key.Texture).Resource);
 		return new VeldrithTextureView(textureView);
 	}
 
 	/// <inheritdoc/>
-	public ISampler CreateSampler(SamplerKey key)
+	public ISampler CreateSampler(SamplerDescriptor key)
 	{
 		var description = new SamplerDescription
 		{
@@ -76,7 +76,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	}
 
 	/// <inheritdoc/>
-	public IResourceLayout CreateResourceLayout(ResourceLayoutKey key)
+	public IResourceLayout CreateResourceLayout(ResourceLayoutDescriptor key)
 	{
 		Veldrith.ResourceLayoutElementDescription[] elements = key.Elements.ToArray()
 			.Select(element => new Veldrith.ResourceLayoutElementDescription(
@@ -90,7 +90,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	}
 
 	/// <inheritdoc/>
-	public IResourceSet CreateResourceSet(ResourceSetKey key)
+	public IResourceSet CreateResourceSet(ResourceDescriptor key)
 	{
 		var description = new ResourceSetDescription(
 			((VeldrithResourceLayout)key.Layout).Resource,
@@ -100,10 +100,10 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	}
 
 	/// <inheritdoc/>
-	public IPipeline CreateGraphicsPipeline(PipelineKey key)
+	public IPipeline CreateGraphicsPipeline(PipelineDescriptor key)
 	{
 		ResourceLayout[] layouts = key.ResourceGroups.ToArray()
-			.Select(group => ((VeldrithResourceLayout)CreateResourceLayout(new ResourceLayoutKey(group.LayoutElements.AsSpan()))).Resource)
+			.Select(group => ((VeldrithResourceLayout)CreateResourceLayout(new ResourceLayoutDescriptor(group.LayoutElements.AsSpan()))).Resource)
 			.ToArray();
 		var vertexLayout = new VertexLayoutDescription(
 			new VertexElementDescription("POSITION", VertexElementSemantic.Position, VertexElementFormat.Float3),
