@@ -36,8 +36,6 @@ internal sealed class Program
 
 		Application.OnStart += () =>
 		{
-			ModuleManager.InitializeAll();
-
 			// Setup debug scene
 			Entity flyController = EntityRegistry.CreateEntity("fly_controller");
 			flyController.Name = "Camera";

@@ -42,7 +42,7 @@ public static class Application
 
 		Window = new Window();
 
-		Window.InternalWindow.Load += () => OnStart?.Invoke();
+		Window.InternalWindow.Load += () => { ModuleManager.InitializeAll(); OnStart?.Invoke(); };
 		Window.InternalWindow.Closing += () => OnExit?.Invoke();
 		Window.InternalWindow.Render += (delta) => OnRender?.Invoke();
 		Window.InternalWindow.Resize += (size) => OnResize?.Invoke(new Vector2(size.X, size.Y));
