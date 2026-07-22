@@ -1,8 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Rendering.Device.Resources;
 using Veldrith;
-using Veldrith.SPIRV;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -19,11 +19,7 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 		bool shouldDebug = false;
 #endif
 
-		global::Veldrith.Shader[] shaders = factory.CreateFromSpirv(
-			new ShaderDescription(ShaderStages.Vertex, key.Shader.VertexBytecode.ToArray(), "main", debug: shouldDebug),
-			new ShaderDescription(ShaderStages.Fragment, key.Shader.FragmentBytecode.ToArray(), "main", debug: shouldDebug),
-			new CrossCompileOptions(fixClipSpaceZ: true, invertVertexOutputY: true, normalizeResourceNames: false)
-		);
+		IShader[] shaders = [factory.CreateShader(key.VertShader), factory.CreateShader(key.FragShader)];
 
 		VertexLayoutDescription vertexLayout = new(
 			new VertexElementDescription("POSITION", VertexElementSemantic.Position, VertexElementFormat.Float3),
@@ -69,10 +65,11 @@ public sealed class PipelineCache : ResourceCache<PipelineCache, PipelineKey, Pi
 	}
 }
 
-public readonly ref struct PipelineKey(string passName, ShaderKey shader, OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
+public readonly ref struct PipelineKey(string passName, ShaderKey vertShader, ShaderKey fragShader, OutputDescription outputs, ReadOnlySpan<ResourceLayoutDescription> resourceLayouts) : IResourceKey
 {
 	public readonly string PassName = passName;
-	public readonly ShaderKey Shader = shader;
+	public readonly ShaderKey VertShader = vertShader;
+	public readonly ShaderKey FragShader = fragShader;
 	public readonly OutputDescription Outputs = outputs;
 
 	public readonly ReadOnlySpan<ResourceLayoutDescription> ResourceLayouts = resourceLayouts;
@@ -87,9 +84,10 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader, Output
 		if (!Outputs.Equals(other.Outputs))
 			return false;
 
-		if (!Shader.VertexBytecode.SequenceEqual(other.Shader.VertexBytecode))
+		if (!VertShader.Bytecode.SequenceEqual(other.VertShader.Bytecode))
 			return false;
-		if (!Shader.FragmentBytecode.SequenceEqual(other.Shader.FragmentBytecode))
+
+		if (!FragShader.Bytecode.SequenceEqual(other.FragShader.Bytecode))
 			return false;
 
 		if (ResourceLayouts.Length != other.ResourceLayouts.Length)
@@ -122,7 +120,8 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader, Output
 
 			hash = hash * 31 + (PassName?.GetHashCode() ?? 0);
 
-			hash = hash * 31 + Shader.Hash;
+			hash = hash * 31 + VertShader.Hash;
+			hash = hash * 31 + FragShader.Hash;
 
 			hash = hash * 31 + Outputs.GetHashCode();
 
@@ -139,31 +138,6 @@ public readonly ref struct PipelineKey(string passName, ShaderKey shader, Output
 					hash = hash * 31 + (int)element.Options;
 				}
 			}
-
-			return hash;
-		}
-	}
-}
-
-public readonly ref struct ShaderKey(ReadOnlySpan<byte> vertexBytecode, ReadOnlySpan<byte> fragmentBytecode) : IResourceKey
-{
-	public readonly ReadOnlySpan<byte> VertexBytecode = vertexBytecode;
-	public readonly ReadOnlySpan<byte> FragmentBytecode = fragmentBytecode;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public override int GetHashCode()
-	{
-		unchecked
-		{
-			int hash = 17;
-
-			foreach (byte b in VertexBytecode)
-				hash = hash * 31 + b;
-
-			foreach (byte b in FragmentBytecode)
-				hash = hash * 31 + b;
 
 			return hash;
 		}

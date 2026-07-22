@@ -14,7 +14,7 @@ namespace Orama.Rendering.Device.Implementations;
 /// <summary>
 /// Interface into low-level Veldrith rendering.
 /// </summary>
-internal class VeldrithDevice : IGraphicsDevice
+internal sealed class VeldrithDevice : IGraphicsDevice
 {
 	/// <summary> The underlying Veldrith <see cref="global::Veldrith.GraphicsDevice"/>. </summary>
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;
