@@ -49,25 +49,6 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 	public readonly PipelineKey Pipeline = pipeline;
 
 	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public bool Equals(RenderItemKey other)
-	{
-		if (!VertexPositions.SequenceEqual(other.VertexPositions))
-			return false;
-		if (!VertexNormals.SequenceEqual(other.VertexNormals))
-			return false;
-		if (!VertexUVs.SequenceEqual(other.VertexUVs))
-			return false;
-		if (!Indices.SequenceEqual(other.Indices))
-			return false;
-		if (Pipeline.Hash != other.Pipeline.Hash)
-			return false;
-
-		return true;
-	}
-
-	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
 		unchecked
@@ -76,14 +57,17 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 
 			foreach (var v in VertexPositions)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (var v in VertexNormals)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (var v in VertexUVs)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (uint i in Indices)
 				hash = hash * 31 + (int)i;
 
-			hash = hash * 31 + Pipeline.Hash;
+			hash = hash * 31 + Pipeline.GetHashCode();
 			return hash;
 		}
 	}

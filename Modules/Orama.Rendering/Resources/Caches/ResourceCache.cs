@@ -21,7 +21,7 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 	/// <summary> Gets or creates a <typeparamref name="TResource"/> for the given key. </summary>
 	public FrameCountedResource<TResource> GetOrCreate(TKey key)
 	{
-		int hs = key.Hash;
+		int hs = key.GetHashCode();
 		if (Cache.TryGetValue(hs, out FrameCountedResource<TResource>? existing))
 		{
 			existing.Touch();
@@ -36,7 +36,7 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 	/// <summary> Gets a <typeparamref name="TResource"/> for the given key. </summary>
 	public FrameCountedResource<TResource>? Get(TKey key)
 	{
-		int hs = key.Hash;
+		int hs = key.GetHashCode();
 		if (Cache.TryGetValue(hs, out FrameCountedResource<TResource>? existing))
 		{
 			existing.Touch();
@@ -53,7 +53,7 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 		var value = new FrameCountedResource<TResource>(created);
 		value.Touch();
 
-		int hash = key.Hash;
+		int hash = key.GetHashCode();
 		value.Disposed += () => Cache.Remove(hash);
 		Cache[hash] = value;
 
@@ -64,5 +64,5 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 
 public interface IResourceKey
 {
-	int Hash { get; }
+	int GetHashCode();
 }

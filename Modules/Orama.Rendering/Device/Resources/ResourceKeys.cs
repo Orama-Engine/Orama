@@ -14,9 +14,6 @@ public readonly ref struct ConstantBufferKey(string name, uint size) : IResource
 	public ReadOnlySpan<char> Name => name;
 
 	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	/// <inheritdoc/>
 	public override int GetHashCode() => unchecked(string.GetHashCode(name));
 }
 
@@ -28,9 +25,6 @@ public readonly ref struct PipelineKey(string passName, ShaderKey vertShader, Sh
 	public readonly ShaderKey FragShader = fragShader;
 	public readonly IFramebuffer Output = output;
 	public readonly ReadOnlySpan<ShaderResourceGroup> ResourceGroups = resourceGroups;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
@@ -60,23 +54,6 @@ public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey
 	public readonly Sampler Sampler = sampler;
 
 	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public bool Equals(SamplerKey other)
-	{
-		if (Sampler.Filter != other.Sampler.Filter)
-			return false;
-
-		if (Sampler.WrapU != other.Sampler.WrapU)
-			return false;
-
-		if (Sampler.WrapV != other.Sampler.WrapV)
-			return false;
-
-		return true;
-	}
-
-	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
 		unchecked
@@ -98,26 +75,6 @@ public readonly ref struct TextureKey(uint width, uint height, TextureFormat for
 	public readonly ReadOnlySpan<byte> Data = data;
 
 	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public bool Equals(TextureKey other)
-	{
-		if (Width != other.Width)
-			return false;
-
-		if (Height != other.Height)
-			return false;
-
-		if (Format != other.Format)
-			return false;
-
-		if (!Data.SequenceEqual(other.Data))
-			return false;
-
-		return true;
-	}
-
-	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
 		unchecked
@@ -136,9 +93,6 @@ public readonly ref struct TextureKey(uint width, uint height, TextureFormat for
 public readonly ref struct TextureViewKey(ITexture texture) : IResourceKey
 {
 	public readonly ITexture Texture = texture;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
 
 	/// <inheritdoc/>
 	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
