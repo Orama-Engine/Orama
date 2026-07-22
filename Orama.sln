@@ -31,8 +31,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Modules\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.VirtualReality", "Modules\Orama.VirtualReality\Orama.VirtualReality.csproj", "{987D14DF-081F-465C-AB42-9EE59718030E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Graphics", "Orama.Graphics\Orama.Graphics.csproj", "{6EF72932-BD11-46E2-801F-DEB129B47AA3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
