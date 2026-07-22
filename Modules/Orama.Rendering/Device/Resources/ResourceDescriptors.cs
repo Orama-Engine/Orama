@@ -2,13 +2,13 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 
+using Orama.Common.Standard;
 using Orama.Rendering.Resources;
-using Orama.Rendering.Resources.Caches;
 using System.Runtime.CompilerServices;
 
 namespace Orama.Rendering.Device.Resources;
 
-public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IResourceKey
+public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IAlwaysHashable
 {
 	public uint Size => size;
 	public ReadOnlySpan<char> Name => name;
@@ -18,7 +18,7 @@ public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IR
 }
 
 
-public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups) : IResourceKey
+public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups) : IAlwaysHashable
 {
 	public readonly string PassName = passName;
 	public readonly ShaderDescriptor VertShader = vertShader;
@@ -49,7 +49,7 @@ public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor 
 }
 
 
-public readonly ref struct SamplerDescriptor(Sampler sampler) : IResourceKey
+public readonly ref struct SamplerDescriptor(Sampler sampler) : IAlwaysHashable
 {
 	public readonly Sampler Sampler = sampler;
 
@@ -67,7 +67,7 @@ public readonly ref struct SamplerDescriptor(Sampler sampler) : IResourceKey
 	}
 }
 
-public readonly ref struct TextureDescriptor(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey
+public readonly ref struct TextureDescriptor(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IAlwaysHashable
 {
 	public readonly uint Width = width;
 	public readonly uint Height = height;
@@ -90,7 +90,7 @@ public readonly ref struct TextureDescriptor(uint width, uint height, TextureFor
 	}
 }
 
-public readonly ref struct TextureViewDescriptor(ITexture texture) : IResourceKey
+public readonly ref struct TextureViewDescriptor(ITexture texture) : IAlwaysHashable
 {
 	public readonly ITexture Texture = texture;
 
@@ -98,13 +98,10 @@ public readonly ref struct TextureViewDescriptor(ITexture texture) : IResourceKe
 	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
 }
 
-public readonly ref struct BufferDescriptor(uint size, BufferUsage usage) : IResourceKey
+public readonly ref struct BufferDescriptor(uint size, BufferUsage usage) : IAlwaysHashable
 {
 	public readonly uint Size = size;
 	public readonly BufferUsage Usage = usage;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
 
 	/// <inheritdoc/>
 	public override int GetHashCode() => HashCode.Combine(Size, Usage);
@@ -117,7 +114,7 @@ public readonly struct ResourceLayoutElementDescription(string name, ResourceKin
 	public readonly ShaderStages Stages = stages;
 }
 
-public readonly ref struct ResourceLayoutDescriptor(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey
+public readonly ref struct ResourceLayoutDescriptor(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IAlwaysHashable
 {
 	public readonly ReadOnlySpan<ResourceLayoutElementDescription> Elements = elements;
 
@@ -138,7 +135,7 @@ public readonly ref struct ResourceLayoutDescriptor(ReadOnlySpan<ResourceLayoutE
 	}
 }
 
-public readonly ref struct ResourceDescriptor(IResourceLayout layout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey
+public readonly ref struct ResourceDescriptor(IResourceLayout layout, ReadOnlySpan<IBindableResource> boundResources) : IAlwaysHashable
 {
 	public readonly IResourceLayout Layout = layout;
 	public readonly ReadOnlySpan<IBindableResource> BoundResources = boundResources;
@@ -154,7 +151,7 @@ public readonly ref struct ResourceDescriptor(IResourceLayout layout, ReadOnlySp
 	}
 }
 
-public readonly ref struct ShaderDescriptor(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IResourceKey
+public readonly ref struct ShaderDescriptor(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IAlwaysHashable
 {
 	public readonly ReadOnlySpan<byte> Bytecode = bytecode;
 	public readonly ShaderStages Stage = stage;

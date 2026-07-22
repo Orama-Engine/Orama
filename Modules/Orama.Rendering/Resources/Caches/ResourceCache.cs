@@ -1,6 +1,8 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Standard;
+
 namespace Orama.Rendering.Resources.Caches;
 
 /// <summary>
@@ -8,7 +10,7 @@ namespace Orama.Rendering.Resources.Caches;
 /// </summary>
 /// <typeparam name="TKey">The type of the key.</typeparam>
 /// <typeparam name="TResource">The type of the resource.</typeparam>
-public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : new() where TKey : IResourceKey, allows ref struct where TResource : IDisposable
+public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSingletonOwner : new() where TKey : IAlwaysHashable, allows ref struct where TResource : IDisposable
 {
 	/// <summary> Singleton instance. </summary>
 	public static TSingletonOwner Instance { get; } = new TSingletonOwner();
@@ -59,10 +61,4 @@ public abstract class ResourceCache<TSingletonOwner, TKey, TResource> where TSin
 
 		return value;
 	}
-}
-
-
-public interface IResourceKey
-{
-	int GetHashCode();
 }

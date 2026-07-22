@@ -1,6 +1,7 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Standard;
 using Orama.Math;
 
 using Orama.Rendering.Device.Resources;
@@ -40,7 +41,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	}
 }
 
-public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineDescriptor pipeline) : IResourceKey
+public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineDescriptor pipeline) : IAlwaysHashable
 {
 	public readonly ReadOnlySpan<Vector3> VertexPositions = vertexPositions;
 	public readonly ReadOnlySpan<Vector3> VertexNormals = vertexNormals;
