@@ -15,7 +15,7 @@ internal sealed class VeldrithFramebuffer(Framebuffer framebuffer) : IFramebuffe
 }
 
 
-internal sealed class VeldrithShader(Shader resource) : IShader
+internal sealed class VeldrithResources(Shader resource) : IShader
 {
 	internal Shader Resource { get; } = resource;
 

@@ -16,12 +16,12 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	/// <inheritdoc/>
 	public IShader CreateShader(ShaderKey key)
 	{
-		Veldrith.ShaderStages stage = key.Stage == IShader.ShaderStage.Vertex
+		Veldrith.ShaderStages stage = key.Stage == Resources.ShaderStages.Vertex
 			? Veldrith.ShaderStages.Vertex
 			: Veldrith.ShaderStages.Fragment;
 
 		var description = new ShaderDescription(stage, key.Bytecode.ToArray(), "main");
-		return new VeldrithShader(device.GraphicsDevice.ResourceFactory.CreateFromSpirv(description));
+		return new VeldrithResources(device.GraphicsDevice.ResourceFactory.CreateFromSpirv(description));
 	}
 
 	/// <inheritdoc/>
@@ -111,7 +111,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 			new VertexElementDescription("TEXCOORD0", VertexElementSemantic.TextureCoordinate, VertexElementFormat.Float2));
 		var shaderSet = new ShaderSetDescription(
 			[vertexLayout],
-			[((VeldrithShader)CreateShader(key.VertShader)).Resource, ((VeldrithShader)CreateShader(key.FragShader)).Resource]);
+			[((VeldrithResources)CreateShader(key.VertShader)).Resource, ((VeldrithResources)CreateShader(key.FragShader)).Resource]);
 		var description = new GraphicsPipelineDescription
 		{
 			BlendState = BlendStateDescription.SINGLE_OVERRIDE_BLEND,

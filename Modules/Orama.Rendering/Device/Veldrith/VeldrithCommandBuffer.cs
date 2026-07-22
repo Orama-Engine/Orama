@@ -51,8 +51,8 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 
 		var pipelineKey = new PipelineKey(
 			passName: material.Shader.Pass,
-			vertShader: new ShaderKey(material.Shader.VertexBytecode, IShader.ShaderStage.Vertex),
-			fragShader: new ShaderKey(material.Shader.FragmentBytecode, IShader.ShaderStage.Fragment),
+			vertShader: new ShaderKey(material.Shader.VertexBytecode, Resources.ShaderStages.Vertex),
+			fragShader: new ShaderKey(material.Shader.FragmentBytecode, Resources.ShaderStages.Fragment),
 			output: target,
 			resourceGroups: material.Shader.ResourceGroups.AsSpan()
 		);

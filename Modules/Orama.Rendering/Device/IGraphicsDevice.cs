@@ -23,10 +23,10 @@ public interface IGraphicsDevice : IDisposable
 	/// <summary> The <see cref="IResourceFactory"/> used to create GPU resources. </summary>
 	IResourceFactory ResourceFactory { get; }
 
-	/// <summary> Initializes the <see cref="IGraphicsDevice"/> for the given <see cref="IWindow"/>. </summary>
+	/// <summary> Initializes the <see cref="IGraphicsDevice"/> for <paramref name="window"/>. </summary>
 	void Initialize(IWindow window);
 
-	/// <summary> Submits an <see cref="ICommandBuffer"/> for execution. </summary>
+	/// <summary> Submits <paramref name="buffer"/> for execution. </summary>
 	void SubmitCommands(ICommandBuffer buffer);
 
 	/// <summary> Swaps the front and back buffers. </summary>

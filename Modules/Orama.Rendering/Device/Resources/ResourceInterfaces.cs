@@ -15,6 +15,16 @@ public interface IBuffer : IBindableResource
 }
 
 /// <summary>
+/// A GPU framebuffer.
+/// </summary>
+public interface IFramebuffer : IGPUResource { }
+
+/// <summary>
+/// A GPU shader.
+/// </summary>
+public interface IShader : IGPUResource { }
+
+/// <summary>
 /// A GPU texture.
 /// </summary>
 public interface ITexture : IBindableResource { }
@@ -70,7 +80,7 @@ public enum ResourceKind : byte
 }
 
 /// <summary>
-/// The shader stages which access a resource.
+/// All stages of a shader.
 /// </summary>
 [Flags]
 public enum ShaderStages : byte
@@ -135,5 +145,28 @@ public readonly ref struct ResourceSetKey(IResourceLayout layout, ReadOnlySpan<I
 		foreach (IBindableResource resource in BoundResources)
 			hash.Add(resource);
 		return hash.ToHashCode();
+	}
+}
+
+public readonly ref struct ShaderKey(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IResourceKey
+{
+	public readonly ReadOnlySpan<byte> Bytecode = bytecode;
+	public readonly ShaderStages Stage = stage;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
+	/// <inheritdoc/>
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hash = 17;
+
+			foreach (byte b in Bytecode)
+				hash = hash * 31 + b;
+
+			return hash;
+		}
 	}
 }
