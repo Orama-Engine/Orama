@@ -106,7 +106,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	{
 		foreach (var group in shader.ResourceGroups)
 		{
-		using RentedArray<Orama.Rendering.Device.Resources.IBindableResource> boundResources = new(group.Resources.Length);
+			using RentedArray<Orama.Rendering.Device.Resources.IBindableResource> boundResources = new(group.Resources.Length);
 
 			int index = 0;
 
