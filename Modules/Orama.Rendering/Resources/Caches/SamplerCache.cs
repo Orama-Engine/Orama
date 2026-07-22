@@ -1,39 +1,15 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Veldrith;
+using Orama.Rendering.Device.Resources;
 
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, Veldrith.Sampler>
+public sealed class SamplerCache : ResourceCache<SamplerCache, SamplerKey, ISampler>
 {
 	/// <inheritdoc/>
-	protected override Veldrith.Sampler Create(SamplerKey key)
-	{
-		var desc = new SamplerDescription()
-		{
-			Filter = GetVeldrithFilter(key.Sampler.Filter),
-			AddressModeU = GetVeldrithAddressMode(key.Sampler.WrapU),
-			AddressModeV = GetVeldrithAddressMode(key.Sampler.WrapV)
-		};
-
-		return Renderer.Device.GraphicsDevice.ResourceFactory.CreateSampler(desc);
-	}
-
-	private static Veldrith.SamplerFilter GetVeldrithFilter(SamplerFilter filter) => filter switch
-	{
-		SamplerFilter.Nearest => Veldrith.SamplerFilter.MinPointMagPointMipPoint,
-		SamplerFilter.Linear => Veldrith.SamplerFilter.MinLinearMagLinearMipPoint,
-		_ => throw new NotSupportedException()
-	};
-
-	private static Veldrith.SamplerAddressMode GetVeldrithAddressMode(TextureWrapMode mode) => mode switch
-	{
-		TextureWrapMode.Clamp => Veldrith.SamplerAddressMode.Clamp,
-		TextureWrapMode.Repeat => Veldrith.SamplerAddressMode.Wrap,
-		_ => throw new NotSupportedException()
-	};
+	protected override ISampler Create(SamplerKey key) => Renderer.Device.ResourceFactory.CreateSampler(key);
 }
 
 public readonly ref struct SamplerKey(Sampler sampler) : IResourceKey

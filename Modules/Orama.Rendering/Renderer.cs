@@ -2,12 +2,10 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Rendering.Device;
-using Orama.Rendering.Device.Implementations;
 using Orama.Rendering.Resources;
 
 using Silk.NET.Windowing;
 
-using Veldrith;
 
 namespace Orama.Rendering;
 
@@ -35,20 +33,18 @@ public static class Renderer
 	{
 		Options = options;
 
-		if (backend == null)
+		if (backend is null)
 		{
-			backend = true switch
-			{
-				_ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Vulkan) => RendererBackend.Vulkan,
-				_ when GraphicsDevice.IsBackendSupported(GraphicsBackend.Direct3D12) => RendererBackend.Direct3D12,
-
-				_ => throw new InvalidOperationException("No supported graphics backend found.")
-			};
+			backend = GraphicsDeviceFactory.IsBackendSupported(RendererBackend.Vulkan)
+				? RendererBackend.Vulkan
+				: GraphicsDeviceFactory.IsBackendSupported(RendererBackend.Direct3D12)
+					? RendererBackend.Direct3D12
+					: throw new InvalidOperationException("No supported graphics backend found.");
 		}
 
 		Backend = backend.Value;
 
-		Device = new VeldrithDevice(Backend);
+		Device = GraphicsDeviceFactory.Create(Backend);
 		Device.Initialize(window);
 	}
 

@@ -2,22 +2,14 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 
-using Veldrith;
+using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, ConstantBufferKey, DeviceBuffer>
+public sealed class ConstantBufferCache : ResourceCache<ConstantBufferCache, ConstantBufferKey, IBuffer>
 {
 	/// <inheritdoc/>
-	protected override DeviceBuffer Create(ConstantBufferKey key)
-	{
-		var factory = Renderer.Device.ResourceFactory;
-
-		var desc = new BufferDescription(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic);
-		DeviceBuffer buffer = factory.CreateBuffer(desc);
-
-		return buffer;
-	}
+	protected override IBuffer Create(ConstantBufferKey key) => Renderer.Device.ResourceFactory.CreateBuffer(new BufferKey(key.Size, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
 }
 
 public readonly ref struct ConstantBufferKey(string name, uint size) : IResourceKey

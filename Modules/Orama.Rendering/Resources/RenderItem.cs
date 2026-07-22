@@ -1,21 +1,21 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Veldrith;
+using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources;
 
 /// <summary>
 /// Low-Level representation of a rendered object.
 /// </summary>
-public class RenderItem : IDisposable
+public sealed class RenderItem : IDisposable
 {
-	public DeviceBuffer VertexBuffer { get; }
-	public DeviceBuffer IndexBuffer { get; }
+	public IBuffer VertexBuffer { get; }
+	public IBuffer IndexBuffer { get; }
 	public uint IndexCount { get; }
-	public Pipeline Pipeline { get; }
+	public IPipeline Pipeline { get; }
 
-	public RenderItem(DeviceBuffer vertexBuffer, DeviceBuffer indexBuffer, uint indexCount, Pipeline pipeline)
+	public RenderItem(IBuffer vertexBuffer, IBuffer indexBuffer, uint indexCount, IPipeline pipeline)
 	{
 		VertexBuffer = vertexBuffer;
 		IndexBuffer = indexBuffer;

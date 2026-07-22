@@ -26,10 +26,10 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 	public bool IsClipSpaceYInverted => GraphicsDevice.IsClipSpaceYInverted;
 
 	/// <inheritdoc/>
-	public IFramebuffer SwapchainFramebuffer { get; }
+	public IFramebuffer SwapchainFramebuffer { get; private set; }
 
 	/// <inheritdoc/>
-	public IResourceFactory ResourceFactory { get; } = new VeldrithResourceFactory();
+	public IResourceFactory ResourceFactory { get; }
 
 	private readonly RendererBackend backend;
 
@@ -37,7 +37,8 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 	public VeldrithDevice(RendererBackend backend)
 	{
 		this.backend = backend;
-		SwapchainFramebuffer = new VeldrithFramebuffer(GraphicsDevice.SwapchainFramebuffer);
+		ResourceFactory = new VeldrithResourceFactory(this);
+		SwapchainFramebuffer = null!;
 	}
 
 	/// <inheritdoc/>
@@ -71,6 +72,7 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 		}
 
 		CheckDebugTools(backend);
+		SwapchainFramebuffer = new VeldrithFramebuffer(GraphicsDevice.SwapchainFramebuffer);
 	}
 
 
@@ -83,6 +85,9 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 
 	/// <inheritdoc/>
 	public void ResizeSwapchain(uint width, uint height) => GraphicsDevice.MainSwapchain.Resize(width, height);
+
+	/// <inheritdoc/>
+	public void UpdateBuffer<T>(IBuffer buffer, uint offset, ReadOnlySpan<T> data) where T : unmanaged => GraphicsDevice.UpdateBuffer(((VeldrithBuffer)buffer).Resource, offset, data);
 
 	/// <inheritdoc/>
 	public void SwapBuffers() => GraphicsDevice.SwapBuffers();

@@ -34,4 +34,7 @@ public interface IGraphicsDevice : IDisposable
 
 	/// <summary> Resizes the swapchain. </summary>
 	void ResizeSwapchain(uint width, uint height);
+
+	/// <summary> Updates <paramref name="buffer"/> with unmanaged <paramref name="data"/>. </summary>
+	void UpdateBuffer<T>(IBuffer buffer, uint offset, ReadOnlySpan<T> data) where T : unmanaged;
 }

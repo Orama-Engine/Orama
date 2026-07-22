@@ -53,15 +53,15 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			passName: material.Shader.Pass,
 			vertShader: new ShaderKey(material.Shader.VertexBytecode, IShader.ShaderStage.Vertex),
 			fragShader: new ShaderKey(material.Shader.FragmentBytecode, IShader.ShaderStage.Fragment),
-			outputs: target.OutputDescription,
-			resourceLayouts: material.Shader.Layouts
+			output: target,
+			resourceGroups: material.Shader.ResourceGroups.AsSpan()
 		);
 
 		FrameCountedResource<RenderItem> renderItem = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(vertices, normals, uvs, indices, pipelineKey));
 
-		CommandList.SetPipeline(renderItem.Resource.Pipeline);
-		CommandList.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
-		CommandList.SetIndexBuffer(renderItem.Resource.IndexBuffer, IndexFormat.UInt32);
+		CommandList.SetPipeline(((VeldrithPipeline)renderItem.Resource.Pipeline).Resource);
+		CommandList.SetVertexBuffer(0, ((VeldrithBuffer)renderItem.Resource.VertexBuffer).Resource);
+		CommandList.SetIndexBuffer(((VeldrithBuffer)renderItem.Resource.IndexBuffer).Resource, IndexFormat.UInt32);
 
 		BindShaderResources(material.Shader);
 
@@ -78,7 +78,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)
 	{
 		ConstantBufferKey key = new(bufferName, (uint)data.Length);
-		FrameCountedResource<DeviceBuffer> buffer = ConstantBufferCache.Instance.GetOrCreate(key);
+		FrameCountedResource<IBuffer> buffer = ConstantBufferCache.Instance.GetOrCreate(key);
 
 		if (buffer.Resource.SizeInBytes != data.Length)
 		{
@@ -86,7 +86,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			return;
 		}
 
-		CommandList.UpdateBuffer(buffer.Resource, 0, data);
+		CommandList.UpdateBuffer(((VeldrithBuffer)buffer.Resource).Resource, 0, data);
 	}
 
 	/// <inheritdoc/>
@@ -106,7 +106,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 	{
 		foreach (var group in shader.ResourceGroups)
 		{
-			using RentedArray<IBindableResource> boundResources = new(group.Resources.Length);
+		using RentedArray<Orama.Rendering.Device.Resources.IBindableResource> boundResources = new(group.Resources.Length);
 
 			int index = 0;
 
@@ -127,7 +127,7 @@ internal sealed class VeldrithCommandBuffer : ICommandBuffer
 			var setKey = new ResourceSetKey(layout.Resource, boundResources.Array.AsSpan(0, index));
 			var set = ResourceSetCache.Instance.GetOrCreate(setKey);
 
-			CommandList.SetGraphicsResourceSet(group.Set, set.Resource);
+			CommandList.SetGraphicsResourceSet(group.Set, ((VeldrithResourceSet)set.Resource).Resource);
 		}
 	}
 }

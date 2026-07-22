@@ -2,11 +2,82 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Rendering.Device.Resources;
+using Veldrith;
 
-namespace Orama.Rendering.Device.Veldrith;
+namespace Orama.Rendering.Device.Implementations;
 
-internal class VeldrithShader : IShader
+internal sealed class VeldrithFramebuffer(Framebuffer framebuffer) : IFramebuffer
 {
+	internal Framebuffer Framebuffer { get; } = framebuffer;
+
 	/// <inheritdoc/>
-	public void Dispose() => throw new NotImplementedException();
+	public void Dispose() => Framebuffer.Dispose();
+}
+
+
+internal sealed class VeldrithShader(Shader resource) : IShader
+{
+	internal Shader Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithBuffer(DeviceBuffer resource) : IBuffer
+{
+	internal DeviceBuffer Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public uint SizeInBytes => Resource.SizeInBytes;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithTexture(Texture resource) : ITexture
+{
+	internal Texture Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithTextureView(TextureView resource) : ITextureView
+{
+	internal TextureView Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithSampler(Sampler resource) : ISampler
+{
+	internal Sampler Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithResourceLayout(ResourceLayout resource) : IResourceLayout
+{
+	internal ResourceLayout Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithResourceSet(ResourceSet resource) : IResourceSet
+{
+	internal ResourceSet Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
+}
+
+internal sealed class VeldrithPipeline(Pipeline resource) : IPipeline
+{
+	internal Pipeline Resource { get; } = resource;
+
+	/// <inheritdoc/>
+	public void Dispose() => Resource.Dispose();
 }

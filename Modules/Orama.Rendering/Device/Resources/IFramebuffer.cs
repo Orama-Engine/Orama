@@ -3,6 +3,4 @@
 
 namespace Orama.Rendering.Device.Resources;
 
-public interface IFramebuffer : IGPUResource
-{
-}
+public interface IFramebuffer : IGPUResource { }

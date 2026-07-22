@@ -3,26 +3,12 @@
 
 namespace Orama.Rendering.Resources.Caches;
 
-public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, Veldrith.Texture>
+using Orama.Rendering.Device.Resources;
+
+public sealed class TextureCache : ResourceCache<TextureCache, TextureKey, ITexture>
 {
 	/// <inheritdoc/>
-	protected override Veldrith.Texture Create(TextureKey key)
-	{
-		var desc = new Veldrith.TextureDescription(key.Width, key.Height, 1, 1, 1, GetVeldrithFormat(key.Format), Veldrith.TextureUsage.Sampled, Veldrith.TextureType.Texture2D);
-
-		Veldrith.Texture texture = Renderer.Device.ResourceFactory.CreateTexture(desc);
-
-		Renderer.Device.UpdateTexture(texture, key.Data, 0, 0, 0, key.Width, key.Height, 1, 0, 0);
-
-		return texture;
-	}
-
-	private static Veldrith.PixelFormat GetVeldrithFormat(TextureFormat format) => format switch
-	{
-		TextureFormat.RGB8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
-		TextureFormat.RGBA8 => Veldrith.PixelFormat.R8G8B8A8UNorm,
-		_ => throw new NotSupportedException($"Unsupported texture format: {format}")
-	};
+	protected override ITexture Create(TextureKey key) => Renderer.Device.ResourceFactory.CreateTexture(key);
 }
 
 public readonly ref struct TextureKey(uint width, uint height, TextureFormat format, ReadOnlySpan<byte> data) : IResourceKey

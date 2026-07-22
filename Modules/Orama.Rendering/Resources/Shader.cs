@@ -5,10 +5,10 @@ using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
+using Orama.Rendering.Device.Resources;
 using SlangShaderSharp;
 using System.Collections.Immutable;
 using System.Text;
-using Veldrith;
 
 namespace Orama.Rendering.Resources;
 
@@ -186,13 +186,9 @@ public class Shader
 			Layouts = Resources
 				.GroupBy(r => r.Set)
 				.OrderBy(g => g.Key)
-				.Select(g => new ResourceLayoutDescription(
-					g.OrderBy(r => r.Binding)
-					 .Select(r => new ResourceLayoutElementDescription(
-						 r.Name,
-						 r.Kind,
-						 ShaderStages.Vertex | ShaderStages.Fragment))
-					 .ToArray()))
+				.Select(g => g.OrderBy(r => r.Binding)
+					 .Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment))
+					.ToArray())
 				.ToArray();
 
 			field = value;
@@ -218,7 +214,7 @@ public class Shader
 	// HACK: This is definitely too close to the GPU
 	// We should move this ASAP
 	/// <summary> The shader's resource layouts. </summary>
-	internal ResourceLayoutDescription[] Layouts = Array.Empty<ResourceLayoutDescription>();
+	internal ResourceLayoutElementDescription[][] Layouts = Array.Empty<ResourceLayoutElementDescription[]>();
 
 	/// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
 	public Shader(string shaderLangSource, string name = "None")

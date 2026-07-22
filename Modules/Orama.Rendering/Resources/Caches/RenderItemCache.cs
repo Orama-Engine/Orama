@@ -3,7 +3,7 @@
 
 using Orama.Math;
 
-using Veldrith;
+using Orama.Rendering.Device.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -12,8 +12,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	/// <inheritdoc/>
 	protected override RenderItem Create(RenderItemKey key)
 	{
-		var gd = Renderer.Device.GraphicsDevice;
-		var factory = Renderer.Device.GraphicsDevice.ResourceFactory;
+		var factory = Renderer.Device.ResourceFactory;
 
 		int vertCount = key.VertexPositions.Length;
 		float[] vertexData = new float[vertCount * 8];
@@ -29,16 +28,13 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 			vertexData[i * 8 + 7] = i < key.VertexUVs.Length ? key.VertexUVs[i].Y : 0f;
 		}
 
-		var vbDesc = new BufferDescription((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer);
-		var ibDesc = new BufferDescription((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer);
+		IBuffer vb = factory.CreateBuffer(new BufferKey((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer));
+		IBuffer ib = factory.CreateBuffer(new BufferKey((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer));
 
-		DeviceBuffer vb = factory.CreateBuffer(vbDesc);
-		gd.UpdateBuffer(vb, 0, vertexData);
+		Renderer.Device.UpdateBuffer(vb, 0, vertexData);
+		Renderer.Device.UpdateBuffer(ib, 0, key.Indices);
 
-		DeviceBuffer ib = factory.CreateBuffer(ibDesc);
-		gd.UpdateBuffer(ib, 0, key.Indices);
-
-		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
+		FrameCountedResource<IPipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
 		return new RenderItem(vb, ib, (uint)key.Indices.Length, pipeline.Resource);
 	}
@@ -65,7 +61,7 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 			return false;
 		if (!Indices.SequenceEqual(other.Indices))
 			return false;
-		if (!Pipeline.Equals(other.Pipeline))
+		if (Pipeline.Hash != other.Pipeline.Hash)
 			return false;
 
 		return true;
