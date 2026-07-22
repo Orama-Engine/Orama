@@ -31,8 +31,8 @@ public readonly ref struct PipelineKey(string passName, ShaderKey vertShader, Sh
 	{
 		var hash = new HashCode();
 		hash.Add(PassName);
-		hash.Add(VertShader.Hash);
-		hash.Add(FragShader.Hash);
+		hash.Add(VertShader.GetHashCode());
+		hash.Add(FragShader.GetHashCode());
 		hash.Add(Output);
 		foreach (ref readonly var group in ResourceGroups)
 		{
@@ -96,4 +96,80 @@ public readonly ref struct TextureViewKey(ITexture texture) : IResourceKey
 
 	/// <inheritdoc/>
 	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
+}
+
+public readonly ref struct BufferKey(uint size, BufferUsage usage) : IResourceKey
+{
+	public readonly uint Size = size;
+	public readonly BufferUsage Usage = usage;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
+	/// <inheritdoc/>
+	public override int GetHashCode() => HashCode.Combine(Size, Usage);
+}
+
+public readonly struct ResourceLayoutElementDescription(string name, ResourceKind kind, ShaderStages stages)
+{
+	public readonly string Name = name;
+	public readonly ResourceKind Kind = kind;
+	public readonly ShaderStages Stages = stages;
+}
+
+public readonly ref struct ResourceLayoutKey(ReadOnlySpan<ResourceLayoutElementDescription> elements) : IResourceKey
+{
+	public readonly ReadOnlySpan<ResourceLayoutElementDescription> Elements = elements;
+
+	/// <inheritdoc/>
+	public int Hash => GetHashCode();
+
+	/// <inheritdoc/>
+	public override int GetHashCode()
+	{
+		var hash = new HashCode();
+		foreach (ref readonly var element in Elements)
+		{
+			hash.Add(element.Name);
+			hash.Add(element.Kind);
+			hash.Add(element.Stages);
+		}
+		return hash.ToHashCode();
+	}
+}
+
+public readonly ref struct ResourceSetKey(IResourceLayout layout, ReadOnlySpan<IBindableResource> boundResources) : IResourceKey
+{
+	public readonly IResourceLayout Layout = layout;
+	public readonly ReadOnlySpan<IBindableResource> BoundResources = boundResources;
+
+	/// <inheritdoc/>
+	public override int GetHashCode()
+	{
+		var hash = new HashCode();
+		hash.Add(Layout);
+		foreach (IBindableResource resource in BoundResources)
+			hash.Add(resource);
+		return hash.ToHashCode();
+	}
+}
+
+public readonly ref struct ShaderKey(ReadOnlySpan<byte> bytecode, ShaderStages stage) : IResourceKey
+{
+	public readonly ReadOnlySpan<byte> Bytecode = bytecode;
+	public readonly ShaderStages Stage = stage;
+
+	/// <inheritdoc/>
+	public override int GetHashCode()
+	{
+		unchecked
+		{
+			int hash = 17;
+
+			foreach (byte b in Bytecode)
+				hash = hash * 31 + b;
+
+			return hash;
+		}
+	}
 }
