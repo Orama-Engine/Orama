@@ -2,14 +2,14 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common.Utility;
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
 
 using Veldrith;
 using Vortice.Vulkan;
 
-namespace Orama.Rendering.Device.Implementations;
+namespace Orama.RHI.VeldrithBackend;
 
 /// <summary>
 /// Interface into low-level Veldrith rendering.
@@ -99,7 +99,6 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 	public ICommandBuffer GetCommandBuffer() => new VeldrithCommandBuffer(this);
 
 	/// <summary> Checks if the debug tools are available for the given <see cref="RendererBackend"/>. </summary>
-	/// <returns> <see langword="true"/> if the debug tools are available; otherwise, <see langword="false"/>. </returns>
 	public static unsafe bool CheckDebugTools(RendererBackend backend)
 	{
 		if (backend == RendererBackend.Vulkan)
@@ -138,7 +137,6 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 			return hasValidation;
 		}
 
-		// TODO: D3D12
 		if (backend == RendererBackend.Direct3D12)
 		{
 			OramaConsole.Warning("Direct3D12 debug tools are not currently available.");

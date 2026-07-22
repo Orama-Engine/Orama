@@ -3,7 +3,7 @@
 
 namespace Orama.Rendering.Resources.Caches;
 
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 
 public sealed class TextureCache : ResourceCache<TextureCache, TextureDescriptor, ITexture>
 {

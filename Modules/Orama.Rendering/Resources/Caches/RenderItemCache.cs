@@ -4,7 +4,7 @@
 using Orama.Common.Standard;
 using Orama.Math;
 
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 

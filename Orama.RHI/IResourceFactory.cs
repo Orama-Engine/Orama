@@ -1,10 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device.Resources;
-using Orama.Rendering.Resources.Caches;
+using Orama.RHI.Resources;
 
-namespace Orama.Rendering.Device;
+namespace Orama.RHI;
 
 /// <summary>
 /// Defines how an <see cref="IGraphicsDevice"/> creates GPU resources.

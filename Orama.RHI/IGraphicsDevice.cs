@@ -1,10 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 using Silk.NET.Windowing;
 
-namespace Orama.Rendering.Device;
+namespace Orama.RHI;
 
 /// <summary>
 /// Low-Level interface into the current Graphics API.

@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.GUI", "Modules\Orama.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.Rendering", "Modules\Orama.Rendering\Orama.Rendering.csproj", "{35D62D7D-7AD6-4312-A76C-B5ACC3900723}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.RHI", "Orama.RHI\Orama.RHI.csproj", "{C8A4ED1D-0B7C-4F58-9F13-7C45A3E8F2A1}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orama.VirtualReality", "Modules\Orama.VirtualReality\Orama.VirtualReality.csproj", "{987D14DF-081F-465C-AB42-9EE59718030E}"
 EndProject
 Global
@@ -81,14 +83,14 @@ Global
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35D62D7D-7AD6-4312-A76C-B5ACC3900723}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8A4ED1D-0B7C-4F58-9F13-7C45A3E8F2A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8A4ED1D-0B7C-4F58-9F13-7C45A3E8F2A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8A4ED1D-0B7C-4F58-9F13-7C45A3E8F2A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8A4ED1D-0B7C-4F58-9F13-7C45A3E8F2A1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{987D14DF-081F-465C-AB42-9EE59718030E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{987D14DF-081F-465C-AB42-9EE59718030E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{987D14DF-081F-465C-AB42-9EE59718030E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{987D14DF-081F-465C-AB42-9EE59718030E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6EF72932-BD11-46E2-801F-DEB129B47AA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6EF72932-BD11-46E2-801F-DEB129B47AA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6EF72932-BD11-46E2-801F-DEB129B47AA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6EF72932-BD11-46E2-801F-DEB129B47AA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

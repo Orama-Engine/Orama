@@ -1,12 +1,11 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device.Resources;
-using Orama.Rendering.Resources.Caches;
+using Orama.RHI.Resources;
 using Veldrith;
 using Veldrith.SPIRV;
 
-namespace Orama.Rendering.Device.Implementations;
+namespace Orama.RHI.VeldrithBackend;
 
 internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResourceFactory
 {
@@ -61,13 +60,13 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 	{
 		var description = new SamplerDescription
 		{
-			Filter = key.Sampler.Filter == Orama.Rendering.Resources.SamplerFilter.Nearest
+			Filter = key.Sampler.Filter == Resources.SamplerFilter.Nearest
 				? Veldrith.SamplerFilter.MinPointMagPointMipPoint
 				: Veldrith.SamplerFilter.MinLinearMagLinearMipPoint,
-			AddressModeU = key.Sampler.WrapU == Orama.Rendering.Resources.TextureWrapMode.Clamp
+			AddressModeU = key.Sampler.WrapU == TextureWrapMode.Clamp
 				? Veldrith.SamplerAddressMode.Clamp
 				: Veldrith.SamplerAddressMode.Wrap,
-			AddressModeV = key.Sampler.WrapV == Orama.Rendering.Resources.TextureWrapMode.Clamp
+			AddressModeV = key.Sampler.WrapV == TextureWrapMode.Clamp
 				? Veldrith.SamplerAddressMode.Clamp
 				: Veldrith.SamplerAddressMode.Wrap
 		};
@@ -116,7 +115,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 		{
 			BlendState = BlendStateDescription.SINGLE_OVERRIDE_BLEND,
 			DepthStencilState = new DepthStencilStateDescription(true, true, ComparisonKind.LessEqual),
-			RasterizerState = ToVeldrith(Renderer.Options.Culling),
+			RasterizerState = ToVeldrith(key.CullingMode),
 			PrimitiveTopology = PrimitiveTopology.TriangleList,
 			ShaderSet = shaderSet,
 			ResourceLayouts = layouts,
@@ -126,29 +125,29 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 		return new VeldrithPipeline(device.GraphicsDevice.ResourceFactory.CreateGraphicsPipeline(ref description));
 	}
 
-	private static Veldrith.BufferUsage ToVeldrith(Orama.Rendering.Device.Resources.BufferUsage usage)
+	private static Veldrith.BufferUsage ToVeldrith(Resources.BufferUsage usage)
 	{
 		Veldrith.BufferUsage result = 0;
 
-		if (usage.HasFlag(Orama.Rendering.Device.Resources.BufferUsage.VertexBuffer))
+		if (usage.HasFlag(Resources.BufferUsage.VertexBuffer))
 			result |= Veldrith.BufferUsage.VertexBuffer;
-		if (usage.HasFlag(Orama.Rendering.Device.Resources.BufferUsage.IndexBuffer))
+		if (usage.HasFlag(Resources.BufferUsage.IndexBuffer))
 			result |= Veldrith.BufferUsage.IndexBuffer;
-		if (usage.HasFlag(Orama.Rendering.Device.Resources.BufferUsage.UniformBuffer))
+		if (usage.HasFlag(Resources.BufferUsage.UniformBuffer))
 			result |= Veldrith.BufferUsage.UniformBuffer;
-		if (usage.HasFlag(Orama.Rendering.Device.Resources.BufferUsage.Dynamic))
+		if (usage.HasFlag(Resources.BufferUsage.Dynamic))
 			result |= Veldrith.BufferUsage.Dynamic;
 
 		return result;
 	}
 
-	private static Veldrith.ShaderStages ToVeldrith(Orama.Rendering.Device.Resources.ShaderStages stages)
+	private static Veldrith.ShaderStages ToVeldrith(Resources.ShaderStages stages)
 	{
 		Veldrith.ShaderStages result = 0;
 
-		if (stages.HasFlag(Orama.Rendering.Device.Resources.ShaderStages.Vertex))
+		if (stages.HasFlag(Resources.ShaderStages.Vertex))
 			result |= Veldrith.ShaderStages.Vertex;
-		if (stages.HasFlag(Orama.Rendering.Device.Resources.ShaderStages.Fragment))
+		if (stages.HasFlag(Resources.ShaderStages.Fragment))
 			result |= Veldrith.ShaderStages.Fragment;
 
 		return result;
@@ -161,7 +160,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 		_ => RasterizerStateDescription.CULL_NONE
 	};
 
-	private static Veldrith.IBindableResource ToVeldrith(Orama.Rendering.Device.Resources.IBindableResource resource) => resource switch
+	private static Veldrith.IBindableResource ToVeldrith(Resources.IBindableResource resource) => resource switch
 	{
 		VeldrithBuffer buffer => buffer.Resource,
 		VeldrithTexture texture => texture.Resource,

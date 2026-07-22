@@ -2,7 +2,8 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Math;
-using Orama.Rendering.Device;
+using Orama.RHI;
+using Orama.Rendering;
 
 namespace Orama.Rendering.Pipelines.Forward;
 

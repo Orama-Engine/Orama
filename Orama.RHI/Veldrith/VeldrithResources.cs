@@ -1,10 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 using Veldrith;
 
-namespace Orama.Rendering.Device.Implementations;
+namespace Orama.RHI.VeldrithBackend;
 
 internal sealed class VeldrithFramebuffer(Framebuffer framebuffer) : IFramebuffer
 {
@@ -50,9 +50,9 @@ internal sealed class VeldrithTextureView(TextureView resource) : ITextureView
 	public void Dispose() => Resource.Dispose();
 }
 
-internal sealed class VeldrithSampler(Sampler resource) : ISampler
+internal sealed class VeldrithSampler(global::Veldrith.Sampler resource) : ISampler
 {
-	internal Sampler Resource { get; } = resource;
+	internal global::Veldrith.Sampler Resource { get; } = resource;
 
 	/// <inheritdoc/>
 	public void Dispose() => Resource.Dispose();

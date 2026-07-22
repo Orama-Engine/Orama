@@ -1,19 +1,13 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device;
+using Orama.RHI;
 using Orama.Rendering.Resources;
 
 using Silk.NET.Windowing;
 
 
 namespace Orama.Rendering;
-
-public enum RendererBackend
-{
-	Vulkan,
-	Direct3D12
-}
 
 public static class Renderer
 {

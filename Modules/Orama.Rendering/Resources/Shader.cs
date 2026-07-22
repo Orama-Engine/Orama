@@ -5,67 +5,12 @@ using Orama.Common;
 using Orama.Common.Resources.DefaultProvider;
 using Orama.Common.Utility;
 using Orama.Math;
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 using SlangShaderSharp;
 using System.Collections.Immutable;
 using System.Text;
 
 namespace Orama.Rendering.Resources;
-
-public sealed class ShaderParameter
-{
-	/// <summary> The type of the parameter. </summary>
-	/// <remarks> Each value should match the relative Slang type. </remarks>
-	public enum ParamType
-	{
-		Int,
-		Float,
-		Matrix,
-		Vector,
-		SampledTexture2D
-	}
-
-	public string Name { get; }
-	public ParamType Type { get; }
-	public object? DefaultValue { get; }
-
-	/// <summary> Initializes a new instance of the <see cref="ShaderParameter"/> class. </summary>
-	public ShaderParameter(string name, ParamType type, object? defaultValue = null)
-	{
-		Name = name;
-		Type = type;
-		DefaultValue = defaultValue;
-	}
-}
-
-public sealed class ShaderResource
-{
-	public string Name { get; }
-	public ResourceKind Kind { get; }
-	public uint Binding { get; }
-	public uint Set { get; }
-	public uint SizeInBytes { get; }
-
-	public ImmutableArray<ShaderParameter> Parameters { get; }
-
-	public ShaderResource(string name, ResourceKind kind, uint binding, uint set, IEnumerable<ShaderParameter> parameters, uint sizeInBytes)
-	{
-		Name = name;
-		Kind = kind;
-		Binding = binding;
-		Set = set;
-		SizeInBytes = sizeInBytes;
-
-		Parameters = parameters.ToImmutableArray();
-	}
-}
-
-public readonly struct ShaderResourceGroup
-{
-	public uint Set { get; init; }
-	public ImmutableArray<ShaderResource> Resources { get; init; }
-	public ImmutableArray<ResourceLayoutElementDescription> LayoutElements { get; init; }
-}
 
 public class Shader
 {

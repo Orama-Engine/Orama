@@ -1,9 +1,14 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-namespace Orama.Rendering.Device.Resources;
+namespace Orama.RHI;
 
-
-public interface IGPUResource : IDisposable
+/// <summary>
+/// Face culling mode.
+/// </summary>
+public enum CullingMode
 {
+	None,
+	Front,
+	Back
 }

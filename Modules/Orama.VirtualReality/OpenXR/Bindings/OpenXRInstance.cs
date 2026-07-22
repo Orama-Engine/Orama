@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 using Orama.Common.Utility;
 using Orama.Rendering;
+using Orama.RHI;
 
 using Silk.NET.Core;
 using Silk.NET.Core.Native;

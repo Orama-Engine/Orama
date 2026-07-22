@@ -1,9 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device.Implementations;
+using Orama.RHI.VeldrithBackend;
 
-namespace Orama.Rendering.Device;
+namespace Orama.RHI;
 
 /// <summary>
 /// Creates graphics devices for the configured rendering backend.

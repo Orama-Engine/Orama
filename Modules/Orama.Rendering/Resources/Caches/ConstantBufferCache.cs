@@ -2,7 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 
-using Orama.Rendering.Device.Resources;
+using Orama.RHI.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 

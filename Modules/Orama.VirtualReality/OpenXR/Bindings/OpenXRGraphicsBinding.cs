@@ -3,7 +3,7 @@
 
 using System.Runtime.CompilerServices;
 
-using Orama.Rendering;
+using Orama.RHI;
 using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR.Bindings;

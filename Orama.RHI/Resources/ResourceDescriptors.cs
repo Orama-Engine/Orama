@@ -1,12 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-
 using Orama.Common.Standard;
-using Orama.Rendering.Resources;
 using System.Runtime.CompilerServices;
 
-namespace Orama.Rendering.Device.Resources;
+namespace Orama.RHI.Resources;
 
 public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IAlwaysHashable
 {
@@ -18,13 +16,14 @@ public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IA
 }
 
 
-public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups) : IAlwaysHashable
+public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups, CullingMode cullingMode = CullingMode.Back) : IAlwaysHashable
 {
 	public readonly string PassName = passName;
 	public readonly ShaderDescriptor VertShader = vertShader;
 	public readonly ShaderDescriptor FragShader = fragShader;
 	public readonly IFramebuffer Output = output;
 	public readonly ReadOnlySpan<ShaderResourceGroup> ResourceGroups = resourceGroups;
+	public readonly CullingMode CullingMode = cullingMode;
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
@@ -34,6 +33,7 @@ public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor 
 		hash.Add(VertShader.GetHashCode());
 		hash.Add(FragShader.GetHashCode());
 		hash.Add(Output);
+		hash.Add(CullingMode);
 		foreach (ref readonly var group in ResourceGroups)
 		{
 			hash.Add(group.Set);

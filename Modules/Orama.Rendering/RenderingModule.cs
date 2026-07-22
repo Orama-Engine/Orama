@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 
 using Orama.Common;
 using Orama.Math;
+using Orama.RHI;
 using Orama.Rendering.Components;
 using Orama.Rendering.Pipelines;
 using Orama.Rendering.Pipelines.Forward;

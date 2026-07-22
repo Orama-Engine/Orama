@@ -3,6 +3,7 @@
 
 using Orama.Common.Utility;
 using Orama.Math;
+using Orama.RHI.Resources;
 using Orama.Rendering.Resources;
 
 namespace Orama.Rendering;
