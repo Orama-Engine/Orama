@@ -11,8 +11,6 @@ using Orama.Physics;
 using Orama.Rendering;
 using Orama.Rendering.Entities;
 using Orama.Scenes;
-using Orama.Scenes.Entities;
-using Orama.Scenes.Resources;
 using Orama.VirtualReality;
 
 namespace Orama.Desktop;
@@ -31,32 +29,25 @@ internal sealed class Program
 		ModuleManager.RegisterModule<VirtualRealityModule>();
 		ModuleManager.RegisterModule<RenderingModule>();
 
-		var debugScene = new Scene();
-		ModuleManager.GetModule<SceneModule>()?.CurrentScene = debugScene;
-
 		Application.OnStart += () =>
 		{
-			ModuleManager.InitializeAll();
-
 			// Setup debug scene
-			Entity flyController = EntityRegistry.CreateEntity("fly_controller");
+			FlyController flyController = new();
 			flyController.Name = "Camera";
-			flyController.Transform.Position = new Vector3(0, 0, 0);
 
-			DebugEntity floor = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
+			DebugEntity floor = new();
 			floor.Name = "Floor";
 			floor.Transform.Scale = new Vector3(10, 1, 10);
 
-			DebugEntity cube = EntityRegistry.CreateEntity<DebugEntity>("debug_entity");
-
-			cube.Transform.Position = new Vector3(0, 1, 0);
+			DebugEntity cube = new();
+			cube.Transform.Position = new Vector3(0, 2, 0);
 
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};
 
 		Application.OnExit += () =>
 		{
-			ModuleManager.DisposeAll();
+			
 		};
 
 		Application.OnUpdate += () =>
