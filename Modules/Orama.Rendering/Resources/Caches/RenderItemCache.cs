@@ -1,9 +1,10 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
+using Orama.Common.Standard;
 using Orama.Math;
 
-using Veldrith;
+using Orama.RHI.Resources;
 
 namespace Orama.Rendering.Resources.Caches;
 
@@ -12,8 +13,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 	/// <inheritdoc/>
 	protected override RenderItem Create(RenderItemKey key)
 	{
-		var gd = Renderer.Veldrith.GraphicsDevice;
-		var factory = Renderer.Veldrith.GraphicsDevice.ResourceFactory;
+		var factory = Renderer.Device.ResourceFactory;
 
 		int vertCount = key.VertexPositions.Length;
 		float[] vertexData = new float[vertCount * 8];
@@ -29,47 +29,25 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 			vertexData[i * 8 + 7] = i < key.VertexUVs.Length ? key.VertexUVs[i].Y : 0f;
 		}
 
-		var vbDesc = new BufferDescription((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer);
-		var ibDesc = new BufferDescription((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer);
+		IBuffer vb = factory.CreateBuffer(new BufferDescriptor((uint)vertexData.Length * sizeof(float), BufferUsage.VertexBuffer));
+		IBuffer ib = factory.CreateBuffer(new BufferDescriptor((uint)key.Indices.Length * sizeof(uint), BufferUsage.IndexBuffer));
 
-		DeviceBuffer vb = factory.CreateBuffer(vbDesc);
-		gd.UpdateBuffer(vb, 0, vertexData);
+		Renderer.Device.UpdateBuffer(vb, 0, vertexData);
+		Renderer.Device.UpdateBuffer(ib, 0, key.Indices);
 
-		DeviceBuffer ib = factory.CreateBuffer(ibDesc);
-		gd.UpdateBuffer(ib, 0, key.Indices);
-
-		FrameCountedResource<Pipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
+		FrameCountedResource<IPipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
 		return new RenderItem(vb, ib, (uint)key.Indices.Length, pipeline.Resource);
 	}
 }
 
-public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineKey pipeline) : IResourceKey
+public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, ReadOnlySpan<Vector3> vertexNormals, ReadOnlySpan<Vector2> vertexUVs, ReadOnlySpan<uint> indices, PipelineDescriptor pipeline) : IAlwaysHashable
 {
 	public readonly ReadOnlySpan<Vector3> VertexPositions = vertexPositions;
 	public readonly ReadOnlySpan<Vector3> VertexNormals = vertexNormals;
 	public readonly ReadOnlySpan<Vector2> VertexUVs = vertexUVs;
 	public readonly ReadOnlySpan<uint> Indices = indices;
-	public readonly PipelineKey Pipeline = pipeline;
-
-	/// <inheritdoc/>
-	public int Hash => GetHashCode();
-
-	public bool Equals(RenderItemKey other)
-	{
-		if (!VertexPositions.SequenceEqual(other.VertexPositions))
-			return false;
-		if (!VertexNormals.SequenceEqual(other.VertexNormals))
-			return false;
-		if (!VertexUVs.SequenceEqual(other.VertexUVs))
-			return false;
-		if (!Indices.SequenceEqual(other.Indices))
-			return false;
-		if (!Pipeline.Equals(other.Pipeline))
-			return false;
-
-		return true;
-	}
+	public readonly PipelineDescriptor Pipeline = pipeline;
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
@@ -80,14 +58,17 @@ public readonly ref struct RenderItemKey(ReadOnlySpan<Vector3> vertexPositions, 
 
 			foreach (var v in VertexPositions)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (var v in VertexNormals)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (var v in VertexUVs)
 				hash = hash * 31 + v.GetHashCode();
+
 			foreach (uint i in Indices)
 				hash = hash * 31 + (int)i;
 
-			hash = hash * 31 + Pipeline.Hash;
+			hash = hash * 31 + Pipeline.GetHashCode();
 			return hash;
 		}
 	}

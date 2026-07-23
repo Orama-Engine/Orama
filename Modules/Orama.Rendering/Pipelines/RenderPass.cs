@@ -1,9 +1,9 @@
 // This file is part of the Orama Game Engine.
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
-using Orama.Rendering.Device;
-
-using Veldrith;
+using Orama.RHI;
+using Orama.RHI.Resources;
+using Orama.Rendering;
 
 namespace Orama.Rendering.Pipelines;
 
@@ -34,6 +34,6 @@ public abstract class RenderPass
 	/// <remarks> This method is called by <see cref="RenderPass.Execute(in RenderFrame)"/>. </remarks>
 	public abstract void Render(in RenderFrame frame, ICommandBuffer buffer);
 
-	/// <summary> The target <see cref="Framebuffer"/> this pass is rendering to. </summary>
-	protected virtual Framebuffer TargetBuffer => Renderer.Veldrith.GraphicsDevice.SwapchainFramebuffer;
+	/// <summary> The target <see cref="IFramebuffer"/> this pass is rendering to. </summary>
+	protected virtual IFramebuffer TargetBuffer => Renderer.Device.SwapchainFramebuffer;
 }

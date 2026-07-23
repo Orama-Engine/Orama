@@ -2,25 +2,50 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common.Utility;
-using Orama.Rendering.Device;
+using Orama.RHI.Resources;
 using Silk.NET.Core.Contexts;
 using Silk.NET.Windowing;
 
 using Veldrith;
 using Vortice.Vulkan;
 
-namespace Orama.Rendering;
+namespace Orama.RHI.VeldrithBackend;
 
 /// <summary>
 /// Interface into low-level Veldrith rendering.
 /// </summary>
-public class VeldrithDevice
+internal sealed class VeldrithDevice : IGraphicsDevice
 {
 	/// <summary> The underlying Veldrith <see cref="global::Veldrith.GraphicsDevice"/>. </summary>
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
-	/// <summary> The current frame number. </summary>
-	public ulong CurrentFrame { get; internal set; }
+	/// <inheritdoc/>
+	public VulkanInfo? VulkanInfo
+	{
+		get
+		{
+			Veldrith.BackendInfoVulkan backend = GraphicsDevice.GetVulkanInfo();
+			return new VulkanInfo()
+			{
+				Instance = backend.Instance,
+				Device = backend.Device,
+				PhysicalDevice = backend.PhysicalDevice,
+				GraphicsQueueFamilyIndex = backend.GraphicsQueueFamilyIndex
+			};
+		}
+	}
+
+	/// <inheritdoc/>
+	public ulong CurrentFrame { get; set; }
+
+	/// <inheritdoc/>
+	public bool IsClipSpaceYInverted => GraphicsDevice.IsClipSpaceYInverted;
+
+	/// <inheritdoc/>
+	public IFramebuffer SwapchainFramebuffer { get; private set; }
+
+	/// <inheritdoc/>
+	public IResourceFactory ResourceFactory { get; }
 
 	private readonly RendererBackend backend;
 
@@ -28,9 +53,11 @@ public class VeldrithDevice
 	public VeldrithDevice(RendererBackend backend)
 	{
 		this.backend = backend;
+		ResourceFactory = new VeldrithResourceFactory(this);
+		SwapchainFramebuffer = null!;
 	}
 
-	/// <summary> Initializes the graphics device for the given <see cref="IWindow"/>. </summary>
+	/// <inheritdoc/>
 	public void Initialize(IWindow window)
 	{
 		var native = window.Native;
@@ -61,16 +88,33 @@ public class VeldrithDevice
 		}
 
 		CheckDebugTools(backend);
+		SwapchainFramebuffer = new VeldrithFramebuffer(GraphicsDevice.SwapchainFramebuffer);
 	}
 
-	/// <summary> Submits an <see cref="ICommandBuffer"/> for execution. </summary>
-	public void SubmitCommands(ICommandBuffer commandBuffer) => GraphicsDevice.SubmitCommands(commandBuffer.CommandList);
 
-	/// <summary> Resizes the swapchain. </summary>
-	public void Resize(int width, int height) => GraphicsDevice.MainSwapchain.Resize((uint)width, (uint)height);
+	/// <inheritdoc/>
+	public void SubmitCommands(ICommandBuffer commandBuffer)
+	{
+		var buffer = (VeldrithCommandBuffer)commandBuffer;
+		GraphicsDevice.SubmitCommands(buffer.CommandList);
+	}
+
+	/// <inheritdoc/>
+	public void ResizeSwapchain(uint width, uint height) => GraphicsDevice.MainSwapchain.Resize(width, height);
+
+	/// <inheritdoc/>
+	public void UpdateBuffer<T>(IBuffer buffer, uint offset, ReadOnlySpan<T> data) where T : unmanaged => GraphicsDevice.UpdateBuffer(((VeldrithBuffer)buffer).Resource, offset, data);
+
+	/// <inheritdoc/>
+	public void SwapBuffers() => GraphicsDevice.SwapBuffers();
+
+	/// <inheritdoc/>
+	public void Dispose() => GraphicsDevice.Dispose();
+
+	/// <inheritdoc/>
+	public ICommandBuffer GetCommandBuffer() => new VeldrithCommandBuffer(this);
 
 	/// <summary> Checks if the debug tools are available for the given <see cref="RendererBackend"/>. </summary>
-	/// <returns> <see langword="true"/> if the debug tools are available; otherwise, <see langword="false"/>. </returns>
 	public static unsafe bool CheckDebugTools(RendererBackend backend)
 	{
 		if (backend == RendererBackend.Vulkan)
@@ -109,7 +153,6 @@ public class VeldrithDevice
 			return hasValidation;
 		}
 
-		// TODO: D3D12
 		if (backend == RendererBackend.Direct3D12)
 		{
 			OramaConsole.Warning("Direct3D12 debug tools are not currently available.");

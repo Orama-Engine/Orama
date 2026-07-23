@@ -2,29 +2,11 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common.Resources.DefaultProvider;
+using Orama.RHI.Resources;
 
 using StbImageSharp;
 
 namespace Orama.Rendering.Resources;
-
-public enum TextureFormat
-{
-	RGBA8,
-	RGB8
-}
-
-public enum SamplerFilter
-{
-	Nearest,
-	Linear
-}
-
-public enum TextureWrapMode
-{
-	Repeat,
-	Clamp
-}
-
 
 /// <summary>
 /// Represents an image used in a material.
@@ -102,15 +84,6 @@ public class Texture
 	}
 }
 
-
-public struct Sampler
-{
-	public SamplerFilter Filter { get; set; } = SamplerFilter.Linear;
-	public TextureWrapMode WrapU { get; set; } = TextureWrapMode.Repeat;
-	public TextureWrapMode WrapV { get; set; } = TextureWrapMode.Repeat;
-
-	public Sampler() { }
-}
 
 [ResourceLoader]
 internal sealed class TextureLoader : ResourceLoader<Texture>
