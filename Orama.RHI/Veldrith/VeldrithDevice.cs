@@ -20,6 +20,22 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 	public GraphicsDevice GraphicsDevice { get; private set; } = null!;
 
 	/// <inheritdoc/>
+	public VulkanInfo? VulkanInfo
+	{
+		get
+		{
+			Veldrith.BackendInfoVulkan backend = GraphicsDevice.GetVulkanInfo();
+			return new VulkanInfo()
+			{
+				Instance = backend.Instance,
+				Device = backend.Device,
+				PhysicalDevice = backend.PhysicalDevice,
+				GraphicsQueueFamilyIndex = backend.GraphicsQueueFamilyIndex
+			};
+		}
+	}
+
+	/// <inheritdoc/>
 	public ulong CurrentFrame { get; set; }
 
 	/// <inheritdoc/>

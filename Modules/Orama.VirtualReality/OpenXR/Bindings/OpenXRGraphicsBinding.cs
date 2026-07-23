@@ -2,8 +2,9 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using System.Runtime.CompilerServices;
-
+using Orama.Rendering;
 using Orama.RHI;
+using Silk.NET.Core.Native;
 using Silk.NET.OpenXR;
 
 namespace Orama.VirtualReality.OpenXR.Bindings;
@@ -27,16 +28,18 @@ internal sealed class OpenXRGraphicsBinding : OpenXRBinding
 			switch (target)
 			{
 				case RendererBackend.Vulkan:
+					if (Renderer.Device.VulkanInfo == null)
+						throw new Exception();
+
 					vulkanBinding = new GraphicsBindingVulkanKHR
 					{
-#warning TODO
 						Type = StructureType.GraphicsBindingVulkanKhr,
 
-						// Instance = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().Instance),
-						// PhysicalDevice = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().PhysicalDevice),
-						// Device = new VkHandle(Renderer.Device.GraphicsDevice.GetVulkanInfo().Device),
+						Instance = new VkHandle(Renderer.Device.VulkanInfo.Value.Instance),
+						PhysicalDevice = new VkHandle(Renderer.Device.VulkanInfo.Value.PhysicalDevice),
+						Device = new VkHandle(Renderer.Device.VulkanInfo.Value.Device),
 
-						// QueueFamilyIndex = Renderer.Device.GraphicsDevice.GetVulkanInfo().GraphicsQueueFamilyIndex,
+						QueueFamilyIndex = Renderer.Device.VulkanInfo.Value.GraphicsQueueFamilyIndex,
 						QueueIndex = 0
 					};
 					Native = (IntPtr)Unsafe.AsPointer(ref vulkanBinding);

@@ -11,6 +11,11 @@ namespace Orama.RHI;
 /// </summary>
 public interface IGraphicsDevice : IDisposable
 {
+	#region Native
+	/// <summary> Low-Level information about the Vulkan backend or null if not using Vulkan. </summary>
+	VulkanInfo? VulkanInfo { get; }
+	#endregion
+
 	/// <summary> The current frame. </summary>
 	ulong CurrentFrame { get; set; }
 
