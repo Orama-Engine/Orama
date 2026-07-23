@@ -5,11 +5,12 @@ using Orama.Common.Utility;
 using Orama.Math;
 using Orama.RHI.Resources;
 using Orama.Rendering.Resources;
+using Orama.RHI;
 
 namespace Orama.Rendering;
 
 /// <summary>
-/// Buffer that assembles data in a format readable by a <see cref="CommandBuffer"/>.
+/// Buffer that assembles data in a format readable by an <see cref="IGraphicsDevice"/>.
 /// </summary>
 public sealed class GPUBuffer
 {

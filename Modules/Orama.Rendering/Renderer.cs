@@ -51,7 +51,7 @@ public static class Renderer
 		FrameDisposalQueue.DisposeResources(Device.CurrentFrame);
 	}
 
-	/// <summary> Submits the given <see cref="CommandBuffer"/> to be ran. </summary>
+	/// <summary> Submits the given <see cref="ICommandBuffer"/> to be ran. </summary>
 	public static void SubmitCommandBuffer(ICommandBuffer commandBuffer) => Device.SubmitCommands(commandBuffer);
 
 	/// <summary> Resizes the renderer. </summary>

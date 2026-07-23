@@ -12,10 +12,10 @@ namespace Orama.Rendering;
 /// </summary>
 public interface IShaderDefaultsProvider
 {
-	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with data from <paramref name="camera"/> formatted for uploading via <see cref="ICommandBuffer.SetConstantBuffer(string, ReadOnlySpan{byte})"/>. </summary>
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with data from <paramref name="camera"/> formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
 	ReadOnlySpan<byte> GetCameraBuffer(Camera camera);
 
-	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with the given object data formatted for uploading via <see cref="ICommandBuffer.SetConstantBuffer(string, ReadOnlySpan{byte})"/>. </summary>
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with the given object data formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
 	ReadOnlySpan<byte> GetObjectBuffer(Matrix4x4 transform);
 }
 
