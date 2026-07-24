@@ -39,7 +39,18 @@ internal sealed class VeldrithDevice : IGraphicsDevice
 	public ulong CurrentFrame { get; set; }
 
 	/// <inheritdoc/>
-	public bool IsClipSpaceYInverted => GraphicsDevice.IsClipSpaceYInverted;
+	public DeviceFeatures Features
+	{
+		get
+		{
+			DeviceFeatures features = DeviceFeatures.None;
+
+			if (GraphicsDevice.IsClipSpaceYInverted)
+				features |= DeviceFeatures.ClipSpaceYInverted;
+
+			return features;
+		}
+	}
 
 	/// <inheritdoc/>
 	public IFramebuffer SwapchainFramebuffer { get; private set; }

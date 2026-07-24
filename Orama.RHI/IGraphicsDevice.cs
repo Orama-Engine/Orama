@@ -19,8 +19,8 @@ public interface IGraphicsDevice : IDisposable
 	/// <summary> The current frame. </summary>
 	ulong CurrentFrame { get; set; }
 
-	/// <summary> Whether the Y axis is inverted in clip space for this <see cref="IGraphicsDevice"/>. </summary>
-	bool IsClipSpaceYInverted { get; }
+	/// <summary> Unique features of this <see cref="IGraphicsDevice"/> implementation. </summary>
+	DeviceFeatures Features { get; }
 
 	/// <summary> The <see cref="IFramebuffer"/> used by the main swapchain. </summary>
 	IFramebuffer SwapchainFramebuffer { get; }
