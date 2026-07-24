@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report on unexpected behavior.
 title: "[Bug] My Issue"
-labels: bug
+labels: bug, enhancement
 assignees: ''
 type: Bug
 
@@ -18,7 +18,7 @@ Steps to reproduce the behavior:
 3. Scroll down to '....'
 4. See error
 
-## Expected Behaviour
+## Expected Behavior
 A clear and concise description of what you expected to happen.
 
 ## Additional Context
