@@ -19,5 +19,5 @@ public static class GraphicsDeviceFactory
 	};
 
 	/// <summary> Creates a graphics device for <paramref name="backend"/>. </summary>
-	public static IGraphicsDevice Create(RendererBackend backend) => new VeldrithDevice(backend);
+	public static IGraphicsDevice Create(RendererBackend backend) => new VeldrithBackend.VeldrithDevice(backend);
 }
