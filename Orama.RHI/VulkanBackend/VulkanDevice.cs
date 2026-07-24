@@ -17,6 +17,8 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 	/// <summary> Low-Level Vulkan API. </summary>
 	public static Vk Vk => Vk.GetApi();
 
+	// TODO: Storing so many vulkan objects like this will get messy, maybe actually move all these to VulkanInfo?
+
 	/// <summary> The underlying Vulkan <see cref="Silk.NET.Vulkan.Instance"/>. </summary>
 	public Instance Instance { get; private set; }
 
@@ -34,6 +36,12 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 
 	/// <summary> Index that points to the Queue Family responsible for compute operations. </summary>
 	public uint ComputeQueueFamilyIndex { get; private set; }
+
+	/// <summary> <see cref="Queue"/> taken from the <see cref="GraphicsQueueFamilyIndex"/>. </summary>
+	public Queue GraphicsQueue { get; private set; }
+
+	/// <summary> <see cref="Queue"/> taken from the <see cref="ComputeQueueFamilyIndex"/>. </summary>
+	public Queue ComputeQueue { get; private set; }
 
 	/// <inheritdoc/>
 	public VulkanInfo? VulkanInfo
@@ -144,7 +152,23 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 			Vk.CreateDevice(PhysicalDevice, &deviceInfo, null, &device).ThrowIfFailed("Failed to create Vulkan Device.");
 			Device = device;
 
-			OramaConsole.Log(Device.Handle.ToString());
+			DeviceQueueInfo2 graphicsQueueInfo = new()
+			{
+				SType = StructureType.DeviceQueueInfo2,
+				QueueFamilyIndex = GraphicsQueueFamilyIndex,
+				QueueIndex = 0
+			};
+
+			GraphicsQueue = Vk.GetDeviceQueue2(Device, ref graphicsQueueInfo);
+
+			DeviceQueueInfo2 computeQueueInfo = new()
+			{
+				SType = StructureType.DeviceQueueInfo2,
+				QueueFamilyIndex = ComputeQueueFamilyIndex,
+				QueueIndex = 0
+			};
+
+			ComputeQueue = Vk.GetDeviceQueue2(Device, ref computeQueueInfo);
 		}
 		finally
 		{
