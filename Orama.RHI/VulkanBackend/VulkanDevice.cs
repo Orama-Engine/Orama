@@ -95,6 +95,8 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 
 			var surfaceHandle = window.VkSurface.Create<AllocationCallbacks>(instance.ToHandle(), null);
 			Surface = surfaceHandle.ToSurface();
+
+			PhysicalDevice = Vk.GetOptimalPhysicalDevice(instance);
 		}
 		finally
 		{
