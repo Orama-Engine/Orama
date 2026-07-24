@@ -31,6 +31,18 @@ public unsafe static class VulkanExtensions
 
 			return optimal;
 		}
+
+		/// <summary> Returns a <see cref="ReadOnlySpan{T}"/> containing all available <see cref="QueueFamilyProperties2"/> for the given <see cref="PhysicalDevice"/>. </summary>
+		public ReadOnlySpan<QueueFamilyProperties2> GetPhysicalDeviceQueueFamilyPropertiesSpan(PhysicalDevice device)
+		{
+			uint queueFamilyCount;
+			vk.GetPhysicalDeviceQueueFamilyProperties2(device, &queueFamilyCount, null);
+			QueueFamilyProperties2[] queueFamilies = new QueueFamilyProperties2[queueFamilyCount];
+
+			vk.GetPhysicalDeviceQueueFamilyProperties2(device, &queueFamilyCount, queueFamilies);
+
+			return queueFamilies;
+		}
 	}
 
 	extension(Result res)

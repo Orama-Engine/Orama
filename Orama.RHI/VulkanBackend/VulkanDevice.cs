@@ -28,6 +28,12 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 	/// <summary> The underlying Vulkan <see cref="Silk.NET.Vulkan.SurfaceKHR"/>. </summary>
 	public SurfaceKHR Surface { get; private set; }
 
+	/// <summary> Index that points to the Queue Family responsible for graphics operations. </summary>
+	public uint GraphicsQueueFamilyIndex { get; private set; }
+
+	/// <summary> Index that points to the Queue Family responsible for compute operations. </summary>
+	public uint ComputeQueueFamilyIndex { get; private set; }
+
 	/// <inheritdoc/>
 	public VulkanInfo? VulkanInfo
 	{
@@ -36,7 +42,8 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 			VulkanInfo info = new()
 			{
 				Device = Device.Handle,
-				PhysicalDevice = PhysicalDevice.Handle
+				PhysicalDevice = PhysicalDevice.Handle,
+				GraphicsQueueFamilyIndex = GraphicsQueueFamilyIndex,
 			};
 
 			return info;
@@ -97,6 +104,17 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 			Surface = surfaceHandle.ToSurface();
 
 			PhysicalDevice = Vk.GetOptimalPhysicalDevice(instance);
+
+			ReadOnlySpan<QueueFamilyProperties2> queueFamilyProperties = Vk.GetPhysicalDeviceQueueFamilyPropertiesSpan(PhysicalDevice);
+
+			for (int i = 0; i < queueFamilyProperties.Length; i++)
+			{
+				if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.GraphicsBit))
+					GraphicsQueueFamilyIndex = (uint)i;
+				else if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.ComputeBit))
+					ComputeQueueFamilyIndex = (uint)i;
+			}
+
 		}
 		finally
 		{
