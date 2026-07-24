@@ -64,7 +64,7 @@ public class Entity
 
 		foreach (var property in GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
 		{
-			if (property.PropertyType.IsAssignableTo(typeof(Component)) && property.GetCustomAttributes(typeof(ImplicitComponentAttribute), false).Length > 0 && property.CanWrite)
+			if (property.PropertyType.IsAssignableTo(typeof(Component)) && property.GetCustomAttributes(typeof(ImplicitComponentAttribute), false).Length > 0)
 			{
 				var component = (Component?)property.GetValue(this);
 				if (component == null)
@@ -77,7 +77,18 @@ public class Entity
 					}
 
 					component = (Component)Activator.CreateInstance(property.PropertyType)!;
-					property.SetValue(this, component);
+
+					if (property.CanWrite)
+					{
+						property.SetValue(this, component);
+					}
+					else
+					{
+						string backingFieldName = $"<{property.Name}>k__BackingField";
+
+						FieldInfo? backingField = GetType().GetField(backingFieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+						backingField?.SetValue(this, component);
+					}
 				}
 
 				AddComponent(component);

@@ -18,13 +18,13 @@ namespace Orama.Rendering.Entities;
 public class DebugEntity : Entity
 {
 	[ImplicitComponent]
-	public MeshRenderer Renderer { get; private set; } = null!;
+	public MeshRenderer Renderer { get; } = null!;
 
 	[ImplicitComponent]
-	public RigidBody RigidBody { get; private set; } = null!;
+	public RigidBody RigidBody { get; } = null!;
 
 	[ImplicitComponent]
-	public BoxCollider Collider { get; private set; } = null!;
+	public BoxCollider Collider { get; } = null!;
 
 	/// <inheritdoc/>
 	public override void Start()
