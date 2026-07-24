@@ -17,19 +17,19 @@ namespace Orama.Rendering.Entities;
 [Entity("debug_entity")]
 public class DebugEntity : Entity
 {
-	[ImplicitComponentAttribute]
+	[ImplicitComponent]
 	public MeshRenderer Renderer { get; private set; } = null!;
 
-	[ImplicitComponentAttribute]
+	[ImplicitComponent]
 	public RigidBody RigidBody { get; private set; } = null!;
+
+	[ImplicitComponent]
+	public BoxCollider Collider { get; private set; } = null!;
 
 	/// <inheritdoc/>
 	public override void Start()
 	{
 		base.Start();
-
-		var col = (BoxCollider)AddComponent(new BoxCollider(Transform.Scale));
-		col.Start();
 
 		RigidBody.IsStatic = true;
 

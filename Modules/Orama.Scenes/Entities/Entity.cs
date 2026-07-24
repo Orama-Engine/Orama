@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 using Orama.Common;
+using Orama.Common.Utility;
 using Orama.Scenes.Components;
 using Orama.Serialization.Attributes;
 
@@ -68,6 +69,13 @@ public class Entity
 				var component = (Component?)property.GetValue(this);
 				if (component == null)
 				{
+					var constructor = property.PropertyType.GetConstructor(Type.EmptyTypes);
+					if (constructor == null)
+					{
+						OramaConsole.Warning($"Implicit component '{property.PropertyType.Name}' does not have a parameterless constructor, skipping.");
+						continue;
+					}
+
 					component = (Component)Activator.CreateInstance(property.PropertyType)!;
 					property.SetValue(this, component);
 				}
