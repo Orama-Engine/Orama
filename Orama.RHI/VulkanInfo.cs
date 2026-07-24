@@ -8,9 +8,9 @@ namespace Orama.RHI;
 /// </summary>
 public readonly struct VulkanInfo
 {
-    public IntPtr Instance { get; init; }
-    public IntPtr PhysicalDevice { get; init; }
-    public IntPtr Device { get; init; }
+	public IntPtr Instance { get; init; }
+	public IntPtr PhysicalDevice { get; init; }
+	public IntPtr Device { get; init; }
 
-    public uint GraphicsQueueFamilyIndex { get; init; }
+	public uint GraphicsQueueFamilyIndex { get; init; }
 }

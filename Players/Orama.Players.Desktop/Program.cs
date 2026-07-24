@@ -47,7 +47,7 @@ internal sealed class Program
 
 		Application.OnExit += () =>
 		{
-			
+
 		};
 
 		Application.OnUpdate += () =>

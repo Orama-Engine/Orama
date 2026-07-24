@@ -16,7 +16,7 @@ namespace Orama.Rendering;
 /// </summary>
 public static class CommandBufferExtensions
 {
-	extension (ICommandBuffer cmd)
+	extension(ICommandBuffer cmd)
 	{
 		/// <summary> Sets a constant buffer of name <paramref name="bufferName"/> to <paramref name="data"/>. </summary>
 		public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)

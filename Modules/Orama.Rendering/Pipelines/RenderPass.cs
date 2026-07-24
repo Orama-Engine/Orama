@@ -3,7 +3,6 @@
 
 using Orama.RHI;
 using Orama.RHI.Resources;
-using Orama.Rendering;
 
 namespace Orama.Rendering.Pipelines;
 
