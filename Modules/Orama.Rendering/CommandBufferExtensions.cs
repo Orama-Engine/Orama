@@ -42,10 +42,7 @@ public static class CommandBufferExtensions
 				return;
 			}
 
-			using var paramBuffer = GPUBufferPool.Shared.RentAuto();
-			paramBuffer.Object.AddMaterialParameters(material);
-
-			cmd.SetConstantBuffer("Parameters", paramBuffer.Object.Data);
+			cmd.SetConstantBuffer("Parameters", Shader.DefaultsProvider.GetMaterialBuffer(material));
 			cmd.SetConstantBuffer("Object", Shader.DefaultsProvider.GetObjectBuffer(transform));
 
 			var pipelineKey = new PipelineDescriptor(

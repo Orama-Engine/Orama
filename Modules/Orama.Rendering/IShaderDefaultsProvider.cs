@@ -3,6 +3,7 @@
 
 using Orama.Math;
 using Orama.Rendering.Components;
+using Orama.Rendering.Resources;
 using Orama.RHI;
 
 namespace Orama.Rendering;
@@ -15,8 +16,11 @@ public interface IShaderDefaultsProvider
 	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with data from <paramref name="camera"/> formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
 	ReadOnlySpan<byte> GetCameraBuffer(Camera camera);
 
-	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with the given object data formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with data from <paramref name="transform"/> formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
 	ReadOnlySpan<byte> GetObjectBuffer(Matrix4x4 transform);
+
+	/// <summary> Gets a <see cref="ReadOnlySpan{T}"/> with <paramref name="material"/> parameter data formatted for uploading via <see cref="ICommandBuffer.UpdateBuffer(RHI.Resources.IBuffer, uint, ReadOnlySpan{byte})"/>. </summary>
+	ReadOnlySpan<byte> GetMaterialBuffer(Material material);
 }
 
 public class ShaderDefaultsProvider : IShaderDefaultsProvider
@@ -37,5 +41,13 @@ public class ShaderDefaultsProvider : IShaderDefaultsProvider
 		using var objectBuffer = GPUBufferPool.Shared.RentAuto();
 		objectBuffer.Object.AddMatrix4x4(transform);
 		return objectBuffer.Object.Data;
+	}
+
+	/// <inheritdoc/>
+	public ReadOnlySpan<byte> GetMaterialBuffer(Material material)
+	{
+		using var materialBuffer = GPUBufferPool.Shared.RentAuto();
+		materialBuffer.Object.AddMaterialParameters(material);
+		return materialBuffer.Object.Data;
 	}
 }
