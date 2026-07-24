@@ -10,7 +10,6 @@
   <ItemGroup>
     <PackageReference Include="Silk.NET.Windowing" Version="2.23.0" />
     <PackageReference Include="Veldrith" Version="1.2.18" />
-    <PackageReference Include="Veldrith.SPIRV" Version="1.2.18" />
   </ItemGroup>
 
   <ItemGroup>

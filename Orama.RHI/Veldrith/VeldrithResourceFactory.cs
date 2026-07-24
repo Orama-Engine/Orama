@@ -3,7 +3,6 @@
 
 using Orama.RHI.Resources;
 using Veldrith;
-using Veldrith.SPIRV;
 
 namespace Orama.RHI.VeldrithBackend;
 
@@ -20,7 +19,7 @@ internal sealed class VeldrithResourceFactory(VeldrithDevice device) : IResource
 			: Veldrith.ShaderStages.Fragment;
 
 		var description = new ShaderDescription(stage, key.Bytecode.ToArray(), "main");
-		return new VeldrithResources(device.GraphicsDevice.ResourceFactory.CreateFromSpirv(description));
+		return new VeldrithResources(device.GraphicsDevice.ResourceFactory.CreateShader(description));
 	}
 
 	/// <inheritdoc/>
