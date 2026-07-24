@@ -107,16 +107,16 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 			PhysicalDevice = Vk.GetOptimalPhysicalDevice(instance);
 
 			ReadOnlySpan<QueueFamilyProperties2> queueFamilyProperties = Vk.GetPhysicalDeviceQueueFamilyProperties2Span(PhysicalDevice);
-			DeviceQueueCreateInfo[] queueCreateInfos = new DeviceQueueCreateInfo[queueFamilyProperties.Length];
+			DeviceQueueCreateInfo* queueCreateInfos = stackalloc DeviceQueueCreateInfo[queueFamilyProperties.Length];
 
 			for (int i = 0; i < queueFamilyProperties.Length; i++)
 			{
 				if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.GraphicsBit))
 					GraphicsQueueFamilyIndex = (uint)i;
-				else if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.ComputeBit))
+
+				if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.ComputeBit))
 					ComputeQueueFamilyIndex = (uint)i;
 
-				// TODO: Multiple queues
 				float queuePriority = 1f;
 
 				queueCreateInfos[i] = new DeviceQueueCreateInfo()
@@ -128,30 +128,23 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				};
 			}
 
-			fixed (DeviceQueueCreateInfo* queueCreateInfosPtr = queueCreateInfos)
+			PhysicalDeviceFeatures deviceFeatures;
+
+			DeviceCreateInfo deviceInfo = new()
 			{
-				PhysicalDeviceFeatures deviceFeatures;
+				SType = StructureType.DeviceCreateInfo,
+				QueueCreateInfoCount = (uint)queueFamilyProperties.Length,
+				PQueueCreateInfos = queueCreateInfos,
+				PEnabledFeatures = &deviceFeatures,
+				EnabledExtensionCount = 0,
+				PpEnabledExtensionNames = null
+			};
 
-				DeviceCreateInfo deviceInfo = new()
-				{
-					SType = StructureType.DeviceCreateInfo,
-					QueueCreateInfoCount = (uint)queueCreateInfos.Length,
-					PQueueCreateInfos = queueCreateInfosPtr,
-					PEnabledFeatures = &deviceFeatures,
+			Device device;
+			Vk.CreateDevice(PhysicalDevice, &deviceInfo, null, &device).ThrowIfFailed("Failed to create Vulkan Device.");
+			Device = device;
 
-					// TODO
-					EnabledExtensionCount = 0,
-					PpEnabledExtensionNames = null
-				};
-
-				Device device;
-				Vk.CreateDevice(PhysicalDevice, &deviceInfo, null, &device).ThrowIfFailed("Failed to create Vulkan Device.");
-
-				Device = device;
-			}
-
-
-
+			OramaConsole.Log(Device.Handle.ToString());
 		}
 		finally
 		{
