@@ -76,6 +76,11 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 		nint appNamePtr = SilkMarshal.StringToPtr(window.Title);
 		nint engineNamePtr = SilkMarshal.StringToPtr("Orama");
 
+
+		// TODO: is there a const that has extension names?
+		string[] deviceExtensions = { "VK_KHR_swapchain" };
+		byte** deviceExtensionsPtr = (byte**)SilkMarshal.StringArrayToPtr(deviceExtensions);
+
 		try
 		{
 			if (window.VkSurface == null)
@@ -94,14 +99,14 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 			};
 			
 			// TODO: Custom extensions
-			byte** extensionsPtr = window.VkSurface.GetRequiredExtensions(out uint count);
+			byte** surfaceExtensions = window.VkSurface.GetRequiredExtensions(out uint count);
 
 			InstanceCreateInfo instanceInfo = new()
 			{
 				SType = StructureType.InstanceCreateInfo,
 				PApplicationInfo = &appInfo,
 				EnabledExtensionCount = count,
-				PpEnabledExtensionNames = extensionsPtr
+				PpEnabledExtensionNames = surfaceExtensions
 			};
 
 			Vk.CreateInstance(ref instanceInfo, null, out Instance instance).ThrowIfFailed("Failed to create Vulkan Instance.");
@@ -142,8 +147,8 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				QueueCreateInfoCount = (uint)queueFamilyProperties.Length,
 				PQueueCreateInfos = queueCreateInfos,
 				PEnabledFeatures = &deviceFeatures,
-				EnabledExtensionCount = 0,
-				PpEnabledExtensionNames = null
+				EnabledExtensionCount = (uint)deviceExtensions.Length,
+				PpEnabledExtensionNames = deviceExtensionsPtr
 			};
 
 			Vk.CreateDevice(PhysicalDevice, ref deviceInfo, null, out Device device).ThrowIfFailed("Failed to create Vulkan Device.");
@@ -156,8 +161,6 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				QueueIndex = 0
 			};
 
-			GraphicsQueue = Vk.GetDeviceQueue2(Device, ref graphicsQueueInfo);
-
 			DeviceQueueInfo2 computeQueueInfo = new()
 			{
 				SType = StructureType.DeviceQueueInfo2,
@@ -165,12 +168,14 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				QueueIndex = 0
 			};
 
+			GraphicsQueue = Vk.GetDeviceQueue2(Device, ref graphicsQueueInfo);
 			ComputeQueue = Vk.GetDeviceQueue2(Device, ref computeQueueInfo);
 		}
 		finally
 		{
 			SilkMarshal.Free(appNamePtr);
 			SilkMarshal.Free(engineNamePtr);
+			SilkMarshal.Free((nint)deviceExtensionsPtr);
 		}
 	}
 
