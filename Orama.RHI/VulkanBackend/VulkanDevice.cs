@@ -5,7 +5,6 @@ using Orama.RHI.Resources;
 using Silk.NET.Windowing;
 using Silk.NET.Vulkan;
 using Silk.NET.Core.Native;
-using Orama.Common.Utility;
 
 namespace Orama.RHI.VulkanBackend;
 
@@ -105,8 +104,7 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				PpEnabledExtensionNames = extensionsPtr
 			};
 
-			Instance instance;
-			Vk.CreateInstance(&instanceInfo, null, &instance).ThrowIfFailed("Failed to create Vulkan Instance.");
+			Vk.CreateInstance(ref instanceInfo, null, out Instance instance).ThrowIfFailed("Failed to create Vulkan Instance.");
 			Instance = instance;
 
 			var surfaceHandle = window.VkSurface.Create<AllocationCallbacks>(instance.ToHandle(), null);
@@ -148,8 +146,7 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				PpEnabledExtensionNames = null
 			};
 
-			Device device;
-			Vk.CreateDevice(PhysicalDevice, &deviceInfo, null, &device).ThrowIfFailed("Failed to create Vulkan Device.");
+			Vk.CreateDevice(PhysicalDevice, ref deviceInfo, null, out Device device).ThrowIfFailed("Failed to create Vulkan Device.");
 			Device = device;
 
 			DeviceQueueInfo2 graphicsQueueInfo = new()
