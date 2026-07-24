@@ -25,6 +25,9 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 	/// <summary> The underlying Vulkan <see cref="Silk.NET.Vulkan.PhysicalDevice"/>. </summary>
 	public PhysicalDevice PhysicalDevice { get; private set; }
 
+	/// <summary> The underlying Vulkan <see cref="Silk.NET.Vulkan.SurfaceKHR"/>. </summary>
+	public SurfaceKHR Surface { get; private set; }
+
 	/// <inheritdoc/>
 	public VulkanInfo? VulkanInfo
 	{
@@ -60,6 +63,9 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 
 		try
 		{
+			if (window.VkSurface == null)
+				throw new VulkanException("Failed to create Vulkan Surface.", Result.ErrorInitializationFailed);
+
 			ApplicationInfo appInfo = new()
 			{
 				SType = StructureType.ApplicationInfo,
@@ -71,15 +77,24 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 				EngineVersion = Vk.MakeVersion(1, 0),
 				ApiVersion = Vk.Version13
 			};
+			
+			// TODO: Custom extensions
+			byte** extensionsPtr = window.VkSurface.GetRequiredExtensions(out uint count);
 
 			InstanceCreateInfo instanceInfo = new()
 			{
 				SType = StructureType.InstanceCreateInfo,
 				PApplicationInfo = &appInfo,
+				EnabledExtensionCount = count,
+				PpEnabledExtensionNames = extensionsPtr
 			};
 
 			Instance instance;
-			Result instanceResult = Vk.CreateInstance(&instanceInfo, null, &instance).ThrowIfFailed("Failed to create Vulkan Instance.");
+			Vk.CreateInstance(&instanceInfo, null, &instance).ThrowIfFailed("Failed to create Vulkan Instance.");
+			Instance = instance;
+
+			var surfaceHandle = window.VkSurface.Create<AllocationCallbacks>(instance.ToHandle(), null);
+			Surface = surfaceHandle.ToSurface();
 		}
 		finally
 		{

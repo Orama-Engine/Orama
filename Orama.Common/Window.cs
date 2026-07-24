@@ -32,7 +32,7 @@ public class Window
 	{
 		WindowOptions options = WindowOptions.Default with
 		{
-			API = GraphicsAPI.None
+			API = GraphicsAPI.DefaultVulkan
 		};
 
 		options.VSync = false;
