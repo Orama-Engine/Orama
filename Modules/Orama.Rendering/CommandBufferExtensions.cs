@@ -71,7 +71,7 @@ public static class CommandBufferExtensions
 		public void Draw(Mesh mesh, Matrix4x4 transform, Material material) => cmd.Draw(mesh.Vertices, mesh.Normals, mesh.UVs, mesh.Indices, transform, material);
 
 		/// <summary> Draws an <see cref="IClientRenderable"/>. </summary>
-		public void Draw(IClientRenderable renderable) => cmd.Draw(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, renderable.Transform, renderable.Material);
+		public void Draw(IClientRenderable renderable, Matrix4x4 transform) => cmd.Draw(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, transform, renderable.Material);
 	}
 
 	private static void BindShaderResources(ICommandBuffer cmd, Shader shader)

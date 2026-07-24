@@ -11,7 +11,7 @@ namespace Orama.Rendering.Resources;
 /// <summary>
 /// A Collection of vertices, indices, normals and UVs that form a renderable object.
 /// </summary>
-public class Mesh
+public class Mesh : IClientRenderable
 {
 	/// <summary> The material to use when rendering this mesh. </summary>
 	public Material Material { get; set; } = Material.Default;

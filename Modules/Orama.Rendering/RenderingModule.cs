@@ -19,7 +19,7 @@ namespace Orama.Rendering;
 public class RenderingModule : BaseModule
 {
 	/// <summary> The renderable objects to render next frame. </summary>
-	internal List<IClientRenderable> Renderables { get; set; } = new();
+	internal List<(IClientRenderable Renderable, Matrix4x4 Transform)> Renderables { get; set; } = new();
 
 	/// <summary> The <see cref="RenderPipeline"/> in use. </summary>
 	public RenderPipeline Pipeline { get; set; } = new ForwardRenderPipeline();
@@ -74,7 +74,8 @@ public class RenderingModule : BaseModule
 
 	/// <summary> Renders a client renderable to the window during the next frame. </summary>
 	/// <param name="renderable">The object to render.</param>
-	public void QueueObject(IClientRenderable renderable) => Renderables.Add(renderable);
+	/// <param name="transform">The object's transform matrix.</param>
+	public void QueueObject(IClientRenderable renderable, Matrix4x4 transform) => Renderables.Add((renderable, transform));
 
 	public void OnResize(int width, int height) => Renderer.Resize((uint)width, (uint)height);
 }

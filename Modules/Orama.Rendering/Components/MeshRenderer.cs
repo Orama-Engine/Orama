@@ -2,28 +2,15 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.Common;
-using Orama.Math;
 using Orama.Rendering.Resources;
 using Orama.Scenes.Components;
 
 namespace Orama.Rendering.Components;
 
-public class MeshRenderer : Component, IClientRenderable
+public class MeshRenderer : Component
 {
 	/// <summary> The <see cref="Resources.Mesh"/> to render. </summary>
 	public Mesh? Mesh { get; set; }
-
-	public Matrix4x4 Transform => Entity.Transform.Matrix;
-
-	public Vector3[] Vertices => Mesh?.Vertices ?? Array.Empty<Vector3>();
-
-	public Vector3[] Normals => Mesh?.Normals ?? Array.Empty<Vector3>();
-
-	public Vector2[] UVs => Mesh?.UVs ?? Array.Empty<Vector2>();
-
-	public uint[] Indices => Mesh?.Indices ?? Array.Empty<uint>();
-
-	public Material Material => Mesh?.Material ?? Material.Default;
 
 	/// <inheritdoc/>
 	public override void Update()
@@ -31,6 +18,6 @@ public class MeshRenderer : Component, IClientRenderable
 		if (Mesh == null)
 			return;
 
-		ModuleManager.GetModule<RenderingModule>()?.QueueObject(this);
+		ModuleManager.GetModule<RenderingModule>()?.QueueObject(Mesh, Entity.Transform.Matrix);
 	}
 }

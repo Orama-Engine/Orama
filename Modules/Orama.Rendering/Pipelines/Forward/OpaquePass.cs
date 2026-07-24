@@ -17,10 +17,10 @@ public class OpaquePass : RenderPass
 		buffer.ClearDepth(1.0f);
 		buffer.ClearColor(Color.Black);
 
-		foreach (IClientRenderable renderable in frame.Renderables)
+		foreach ((IClientRenderable Renderable, Matrix4x4 Transform) renderable in frame.Renderables)
 		{
-			if (renderable.Material.Shader.Pass == "Opaque")
-				buffer.Draw(renderable);
+			if (renderable.Renderable.Material.Shader.Pass == "Opaque")
+				buffer.Draw(renderable.Renderable, renderable.Transform);
 		}
 	}
 }
