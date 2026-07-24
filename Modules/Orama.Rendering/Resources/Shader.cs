@@ -128,14 +128,6 @@ public class Shader
 				})
 				.ToImmutableArray();
 
-			Layouts = Resources
-				.GroupBy(r => r.Set)
-				.OrderBy(g => g.Key)
-				.Select(g => g.OrderBy(r => r.Binding)
-					 .Select(r => new ResourceLayoutElementDescription(r.Name, r.Kind, ShaderStages.Vertex | ShaderStages.Fragment))
-					.ToArray())
-				.ToArray();
-
 			field = value;
 		}
 	}
@@ -155,11 +147,6 @@ public class Shader
 
 	/// <summary> The shader's raw SPIR-V bytecode. </summary>
 	internal byte[] FragmentBytecode { get; private set; } = Array.Empty<byte>();
-
-	// HACK: This is definitely too close to the GPU
-	// We should move this ASAP
-	/// <summary> The shader's resource layouts. </summary>
-	internal ResourceLayoutElementDescription[][] Layouts = Array.Empty<ResourceLayoutElementDescription[]>();
 
 	/// <summary> Initializes a new instance of the <see cref="Shader"/> class. </summary>
 	/// <param name="source">The slang source code.</param>
