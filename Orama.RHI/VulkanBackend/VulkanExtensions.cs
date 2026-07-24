@@ -33,7 +33,7 @@ public unsafe static class VulkanExtensions
 		}
 
 		/// <summary> Returns a <see cref="ReadOnlySpan{T}"/> containing all available <see cref="QueueFamilyProperties2"/> for the given <see cref="PhysicalDevice"/>. </summary>
-		public ReadOnlySpan<QueueFamilyProperties2> GetPhysicalDeviceQueueFamilyPropertiesSpan(PhysicalDevice device)
+		public ReadOnlySpan<QueueFamilyProperties2> GetPhysicalDeviceQueueFamilyProperties2Span(PhysicalDevice device)
 		{
 			uint queueFamilyCount;
 			vk.GetPhysicalDeviceQueueFamilyProperties2(device, &queueFamilyCount, null);

@@ -5,6 +5,7 @@ using Orama.RHI.Resources;
 using Silk.NET.Windowing;
 using Silk.NET.Vulkan;
 using Silk.NET.Core.Native;
+using Orama.Common.Utility;
 
 namespace Orama.RHI.VulkanBackend;
 
@@ -105,7 +106,8 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 
 			PhysicalDevice = Vk.GetOptimalPhysicalDevice(instance);
 
-			ReadOnlySpan<QueueFamilyProperties2> queueFamilyProperties = Vk.GetPhysicalDeviceQueueFamilyPropertiesSpan(PhysicalDevice);
+			ReadOnlySpan<QueueFamilyProperties2> queueFamilyProperties = Vk.GetPhysicalDeviceQueueFamilyProperties2Span(PhysicalDevice);
+			DeviceQueueCreateInfo[] queueCreateInfos = new DeviceQueueCreateInfo[queueFamilyProperties.Length];
 
 			for (int i = 0; i < queueFamilyProperties.Length; i++)
 			{
@@ -113,7 +115,42 @@ internal unsafe sealed class VulkanDevice : IGraphicsDevice
 					GraphicsQueueFamilyIndex = (uint)i;
 				else if (queueFamilyProperties[i].QueueFamilyProperties.QueueFlags.HasFlag(QueueFlags.ComputeBit))
 					ComputeQueueFamilyIndex = (uint)i;
+
+				// TODO: Multiple queues
+				float queuePriority = 1f;
+
+				queueCreateInfos[i] = new DeviceQueueCreateInfo()
+				{
+					SType = StructureType.DeviceQueueCreateInfo,
+					QueueFamilyIndex = (uint)i,
+					QueueCount = 1,
+					PQueuePriorities = &queuePriority
+				};
 			}
+
+			fixed (DeviceQueueCreateInfo* queueCreateInfosPtr = queueCreateInfos)
+			{
+				PhysicalDeviceFeatures deviceFeatures;
+
+				DeviceCreateInfo deviceInfo = new()
+				{
+					SType = StructureType.DeviceCreateInfo,
+					QueueCreateInfoCount = (uint)queueCreateInfos.Length,
+					PQueueCreateInfos = queueCreateInfosPtr,
+					PEnabledFeatures = &deviceFeatures,
+
+					// TODO
+					EnabledExtensionCount = 0,
+					PpEnabledExtensionNames = null
+				};
+
+				Device device;
+				Vk.CreateDevice(PhysicalDevice, &deviceInfo, null, &device).ThrowIfFailed("Failed to create Vulkan Device.");
+
+				Device = device;
+			}
+
+
 
 		}
 		finally
