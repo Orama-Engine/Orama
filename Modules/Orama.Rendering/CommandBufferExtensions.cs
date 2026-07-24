@@ -21,8 +21,8 @@ public static class CommandBufferExtensions
 		/// <summary> Sets a constant buffer of name <paramref name="bufferName"/> to <paramref name="data"/>. </summary>
 		public void SetConstantBuffer(string bufferName, ReadOnlySpan<byte> data)
 		{
-			ConstantBufferDescriptor key = new(bufferName, (uint)data.Length);
-			FrameCountedResource<IBuffer> buffer = ConstantBufferCache.Instance.GetOrCreate(key);
+			NamedBufferDescriptor key = new(bufferName, (uint)data.Length, BufferUsage.UniformBuffer | BufferUsage.Dynamic);
+			FrameCountedResource<IBuffer> buffer = NamedBufferCache.Instance.GetOrCreate(key);
 
 			if (buffer.Resource.SizeInBytes != data.Length)
 			{
@@ -78,7 +78,7 @@ public static class CommandBufferExtensions
 
 			foreach (var resource in group.Resources)
 			{
-				var buffer = ConstantBufferCache.Instance.Get(new ConstantBufferDescriptor(resource.Name, resource.SizeInBytes));
+				var buffer = NamedBufferCache.Instance.Get(new NamedBufferDescriptor(resource.Name, resource.SizeInBytes, BufferUsage.UniformBuffer | BufferUsage.Dynamic));
 				if (buffer?.Resource == null)
 				{
 					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");

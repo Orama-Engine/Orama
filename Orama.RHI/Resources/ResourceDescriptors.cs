@@ -6,21 +6,33 @@ using System.Runtime.CompilerServices;
 
 namespace Orama.RHI.Resources;
 
-public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IAlwaysHashable
+public readonly ref struct NamedBufferDescriptor(string name, uint size, BufferUsage usage) : IAlwaysHashable
 {
-	public uint Size => size;
-	public ReadOnlySpan<char> Name => name;
+	public readonly uint Size = size;
+	public readonly BufferUsage Usage = usage;
+	public readonly ReadOnlySpan<char> Name = name;
 
 	/// <inheritdoc/>
 	public override int GetHashCode()
 	{
-		int hash = unchecked(string.GetHashCode(name));
+		int hash = unchecked(string.GetHashCode(Name));
 
-		hash = hash * 31 + (int)size;
+		hash = hash * 31 + (int)Size;
+		hash = hash * 31 + (int)Usage;
 
 		return hash;
 	}
 }
+
+public readonly ref struct BufferDescriptor(uint size, BufferUsage usage) : IAlwaysHashable
+{
+	public readonly uint Size = size;
+	public readonly BufferUsage Usage = usage;
+
+	/// <inheritdoc/>
+	public override int GetHashCode() => HashCode.Combine(Size, Usage);
+}
+
 
 
 public readonly ref struct PipelineDescriptor(string passName, ShaderDescriptor vertShader, ShaderDescriptor fragShader, IFramebuffer output, ReadOnlySpan<ShaderResourceGroup> resourceGroups, CullingMode cullingMode = CullingMode.Back) : IAlwaysHashable
@@ -103,15 +115,6 @@ public readonly ref struct TextureViewDescriptor(ITexture texture) : IAlwaysHash
 
 	/// <inheritdoc/>
 	public override int GetHashCode() => RuntimeHelpers.GetHashCode(Texture);
-}
-
-public readonly ref struct BufferDescriptor(uint size, BufferUsage usage) : IAlwaysHashable
-{
-	public readonly uint Size = size;
-	public readonly BufferUsage Usage = usage;
-
-	/// <inheritdoc/>
-	public override int GetHashCode() => HashCode.Combine(Size, Usage);
 }
 
 public readonly struct ResourceLayoutElementDescription(string name, ResourceKind kind, ShaderStages stages)
