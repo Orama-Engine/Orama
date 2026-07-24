@@ -67,10 +67,7 @@ public static class CommandBufferExtensions
 			cmd.DrawIndexed(renderItem.Resource.IndexCount);
 		}
 
-		/// <summary> Draws a <see cref="Mesh"/> with the given transform <see cref="Matrix4x4"/> and <see cref="Material"/>. </summary>
-		public void Draw(Mesh mesh, Matrix4x4 transform, Material material) => cmd.Draw(mesh.Vertices, mesh.Normals, mesh.UVs, mesh.Indices, transform, material);
-
-		/// <summary> Draws an <see cref="IClientRenderable"/>. </summary>
+		/// <summary> Draws a <see cref="IClientRenderable"/> with the given transform <see cref="Matrix4x4"/> and <see cref="Material"/>. </summary>
 		public void Draw(IClientRenderable renderable, Matrix4x4 transform) => cmd.Draw(renderable.Vertices, renderable.Normals, renderable.UVs, renderable.Indices, transform, renderable.Material);
 	}
 
