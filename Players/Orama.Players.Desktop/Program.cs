@@ -9,8 +9,11 @@ using Orama.Input;
 using Orama.Math;
 using Orama.Physics;
 using Orama.Rendering;
+using Orama.Rendering.Components;
 using Orama.Rendering.Entities;
+using Orama.Rendering.Resources;
 using Orama.Scenes;
+using Orama.Scenes.Entities;
 using Orama.VirtualReality;
 
 namespace Orama.Desktop;
@@ -39,8 +42,14 @@ internal sealed class Program
 			floor.Name = "Floor";
 			floor.Transform.Scale = new Vector3(10, 1, 10);
 
-			DebugEntity cube = new();
+			Mesh? cubeMesh = Application.ResourceProvider.GetResource<Mesh>("Assets/PrimitiveCube.fbx");
+			Shader? shader = Application.ResourceProvider.GetResource<Shader>("Assets/Orama/Unlit.slang");
+			cubeMesh?.Material = new(shader ?? throw new Exception("Shader not found"));
+
+			Entity cube = new();
 			cube.Transform.Position = new Vector3(0, 2, 0);
+			MeshRenderer renderer = cube.AddComponent<MeshRenderer>();
+			renderer.Mesh = cubeMesh;
 
 			ModuleManager.GetModule<SceneModule>()?.CurrentScene.StartAll();
 		};

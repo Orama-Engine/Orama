@@ -82,6 +82,7 @@ public static class CommandBufferExtensions
 				if (buffer?.Resource == null)
 				{
 					OramaConsole.Warning($"Could not find constant buffer '{resource.Name}'.");
+					index++;
 					continue;
 				}
 

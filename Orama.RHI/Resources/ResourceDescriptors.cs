@@ -12,7 +12,14 @@ public readonly ref struct ConstantBufferDescriptor(string name, uint size) : IA
 	public ReadOnlySpan<char> Name => name;
 
 	/// <inheritdoc/>
-	public override int GetHashCode() => unchecked(string.GetHashCode(name));
+	public override int GetHashCode()
+	{
+		int hash = unchecked(string.GetHashCode(name));
+
+		hash = hash * 31 + (int)size;
+
+		return hash;
+	}
 }
 
 
