@@ -55,7 +55,7 @@ public static class CommandBufferExtensions
 
 			FrameCountedResource<RenderItem> renderItem = RenderItemCache.Instance.GetOrCreate(new RenderItemKey(vertices, normals, uvs, indices, pipelineKey));
 
-			cmd.SetPipeline(renderItem.Resource.Pipeline);
+			cmd.SetPipeline(renderItem.Resource.Pipeline.Resource);
 			cmd.SetVertexBuffer(0, renderItem.Resource.VertexBuffer);
 			cmd.SetIndexBuffer(renderItem.Resource.IndexBuffer);
 

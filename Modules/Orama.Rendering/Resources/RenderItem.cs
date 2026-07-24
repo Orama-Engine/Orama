@@ -13,9 +13,9 @@ public sealed class RenderItem : IDisposable
 	public IBuffer VertexBuffer { get; }
 	public IBuffer IndexBuffer { get; }
 	public uint IndexCount { get; }
-	public IPipeline Pipeline { get; }
+	public FrameCountedResource<IPipeline> Pipeline { get; }
 
-	public RenderItem(IBuffer vertexBuffer, IBuffer indexBuffer, uint indexCount, IPipeline pipeline)
+	public RenderItem(IBuffer vertexBuffer, IBuffer indexBuffer, uint indexCount, FrameCountedResource<IPipeline> pipeline)
 	{
 		VertexBuffer = vertexBuffer;
 		IndexBuffer = indexBuffer;

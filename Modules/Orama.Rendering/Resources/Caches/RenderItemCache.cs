@@ -37,7 +37,7 @@ public sealed class RenderItemCache : ResourceCache<RenderItemCache, RenderItemK
 
 		FrameCountedResource<IPipeline> pipeline = PipelineCache.Instance.GetOrCreate(key.Pipeline);
 
-		return new RenderItem(vb, ib, (uint)key.Indices.Length, pipeline.Resource);
+		return new RenderItem(vb, ib, (uint)key.Indices.Length, pipeline);
 	}
 }
 
