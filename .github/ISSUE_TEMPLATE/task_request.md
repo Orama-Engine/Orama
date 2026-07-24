@@ -2,7 +2,6 @@
 name: Task request
 about: Discuss basic chore-work that needs doing.
 title: "[Task] My Issue"
-labels: enhancement
 assignees: ''
 type: Task
 

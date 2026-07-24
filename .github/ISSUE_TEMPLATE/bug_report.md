@@ -2,7 +2,7 @@
 name: Bug report
 about: Create a report on unexpected behavior.
 title: "[Bug] My Issue"
-labels: bug, enhancement
+labels: bug
 assignees: ''
 type: Bug
 
