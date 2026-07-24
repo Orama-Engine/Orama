@@ -161,11 +161,13 @@ public class Shader
 	/// <summary> The shader's resource layouts. </summary>
 	internal ResourceLayoutElementDescription[][] Layouts = Array.Empty<ResourceLayoutElementDescription[]>();
 
-	/// <summary> Initializes a new <see cref="Shader"/> from the specified ShaderLang source. </summary>
-	public Shader(string shaderLangSource, string name = "None")
+	/// <summary> Initializes a new instance of the <see cref="Shader"/> class. </summary>
+	/// <param name="source">The slang source code.</param>
+	/// <param name="name">The name of the shader. This is used to import this shader into other shaders.</param>
+	public Shader(string source, string name = "None")
 	{
 		Name = name;
-		Source = shaderLangSource;
+		Source = source;
 	}
 }
 

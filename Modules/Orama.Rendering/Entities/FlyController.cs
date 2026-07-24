@@ -14,7 +14,7 @@ namespace Orama.Rendering.Entities;
 [Entity("fly_controller")]
 public class FlyController : Entity
 {
-	[ImplicitComponent] public Camera Camera { get; set; } = null!;
+	[ImplicitComponentAttribute] public Camera Camera { get; set; } = null!;
 
 	private readonly float mouseSensitivity = 0.0025f;
 	private readonly float moveSpeed = 8.0f;

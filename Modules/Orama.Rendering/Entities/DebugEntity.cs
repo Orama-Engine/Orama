@@ -17,10 +17,10 @@ namespace Orama.Rendering.Entities;
 [Entity("debug_entity")]
 public class DebugEntity : Entity
 {
-	[ImplicitComponent]
+	[ImplicitComponentAttribute]
 	public MeshRenderer Renderer { get; private set; } = null!;
 
-	[ImplicitComponent]
+	[ImplicitComponentAttribute]
 	public RigidBody RigidBody { get; private set; } = null!;
 
 	/// <inheritdoc/>

@@ -41,5 +41,4 @@ public class Transform : Component
 		Rotation = rotation;
 		Scale = scale;
 	}
-
 }

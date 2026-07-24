@@ -25,4 +25,4 @@ public class EntityAttribute : Attribute
 /// </summary>
 /// <remarks> An implicit component is a component that is automatically added to the <see cref="Entity"/> upon creation. </remarks>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field)]
-public class ImplicitComponent : Attribute { }
+public class ImplicitComponentAttribute : Attribute { }
