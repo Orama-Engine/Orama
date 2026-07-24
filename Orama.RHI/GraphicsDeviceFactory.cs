@@ -2,6 +2,7 @@
 // Licensed under the MIT license. (https://github.com/Orama-Engine/Orama/blob/main/LICENSE)
 
 using Orama.RHI.VeldrithBackend;
+using Orama.RHI.VulkanBackend;
 
 namespace Orama.RHI;
 
@@ -19,5 +20,10 @@ public static class GraphicsDeviceFactory
 	};
 
 	/// <summary> Creates a graphics device for <paramref name="backend"/>. </summary>
-	public static IGraphicsDevice Create(RendererBackend backend) => new VeldrithBackend.VeldrithDevice(backend);
+	public static IGraphicsDevice Create(RendererBackend backend) => backend switch
+	{
+		RendererBackend.Vulkan => new VulkanDevice(),
+		RendererBackend.Direct3D12 => new VeldrithDevice(backend),
+		_ => throw new NotSupportedException($"Backend {backend} is not supported.")
+	};
 }
